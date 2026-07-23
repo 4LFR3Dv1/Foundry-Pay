@@ -27,7 +27,7 @@ broadcast capability.
 
 ```text
 python -m pytest
-48 passed in 0.91s
+48 passed in 1.08s
 
 python -m ruff check .
 All checks passed!
@@ -41,6 +41,11 @@ Secret guard passed (55 files scanned).
 git diff --check
 passed
 ```
+
+The CI dependency range was subsequently constrained to Ruff `0.15.x` after a
+clean runner resolved `0.16.0`, whose changed default lint set rejected
+pre-existing files that were not part of this work item. This makes the stated
+static gate reproducible without broad unrelated rewrites.
 
 ## Acceptance
 

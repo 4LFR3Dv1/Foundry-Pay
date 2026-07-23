@@ -10,6 +10,7 @@ allowed_paths:
   - evidence/runs/FP-AUTH-001.md
   - .agents/tasks/FP-AUTH-001.yaml
   - .agents/reviews/FP-AUTH-001.yaml
+  - pyproject.toml
 dependencies:
   - FP-PROTO-007
   - SA-GW-002
@@ -33,6 +34,8 @@ verification_commands:
   - python -m ruff check .
   - python -m ruff format --check .
   - python scripts/check_secrets.py
+toolchain:
+  - Ruff is constrained to the verified 0.15 release line so clean CI and local gates agree
 evidence:
   - evidence/runs/FP-AUTH-001.md
 provenance: []
