@@ -1,0 +1,42 @@
+{
+  "aggregate": {
+    "consensus": "disputed",
+    "execution_request_id": "exec_fp_e2e_001_20260723T204614Z",
+    "execution_status": "confirmed",
+    "expected_amount_base_units": "1000000",
+    "independent_verification": "disputed",
+    "obligation_id": "obl_fp_e2e_001_20260723T204614Z",
+    "observations": [
+      {
+        "disagreements": [],
+        "observation_hash": "sha256:20147b7ceb7fa8190a9f354c6d7d36707e716ba20d8aace3eb3f8508817a2cf4",
+        "result": "matched",
+        "source_class": "L1",
+        "source_id": "foundry_l1_canonical_devnet"
+      },
+      {
+        "disagreements": [
+          "amount_base_units"
+        ],
+        "observation_hash": "sha256:44a1fdd7d22bf9e9ad3e51b1a709e7efb9012c47c94c24c42d7988cdd692e35e",
+        "result": "disagreed",
+        "source_class": "L2",
+        "source_id": "alchemy_devnet"
+      }
+    ],
+    "protocol_version": "1.0.0",
+    "reconciliation_status": "reconciliation_disputed",
+    "type": "reconciliation_result",
+    "unavailable_source_ids": []
+  },
+  "broadcast_count": 1,
+  "economic_effect_count": 1,
+  "execution_request_id": "exec_fp_e2e_001_20260723T204614Z",
+  "execution_status_preserved": "confirmed",
+  "final_state": "reconciliation_disputed",
+  "may_rematerialize": false,
+  "obligation_id": "obl_fp_e2e_001_20260723T204614Z",
+  "protocol_version": "1.0.0",
+  "scenario": "reconciliation_l1_l2_divergence",
+  "type": "failure_scenario_evidence"
+}

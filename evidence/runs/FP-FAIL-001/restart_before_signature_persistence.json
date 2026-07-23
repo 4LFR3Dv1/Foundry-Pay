@@ -1,0 +1,28 @@
+{
+  "broadcast_count": 0,
+  "economic_effect_count": 0,
+  "event_chain_head": "sha256:18f486863c0f5f7d882ee723b887f0bfa972a8c1c2208e02bad72a79f89eae72",
+  "events": [
+    {
+      "event_hash": "sha256:18f486863c0f5f7d882ee723b887f0bfa972a8c1c2208e02bad72a79f89eae72",
+      "event_type": "execution_registered",
+      "payload": {
+        "message_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "obligation_id": "obl_restart_before_signature_persistence"
+      },
+      "previous_hash": "genesis",
+      "recorded_at": "2026-07-23T22:00:00Z",
+      "sequence": 1
+    }
+  ],
+  "execution_request_id": "exec_restart_before_signature_persistence",
+  "final_state": "authorized",
+  "may_rematerialize": true,
+  "obligation_id": "obl_restart_before_signature_persistence",
+  "protocol_version": "1.0.0",
+  "provider_broadcast_calls": 0,
+  "recovery_count": 0,
+  "scenario": "restart_before_signature_persistence",
+  "signature_persisted": false,
+  "type": "failure_scenario_evidence"
+}
