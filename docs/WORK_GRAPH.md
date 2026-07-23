@@ -23,7 +23,8 @@ Status values: `blocked`, `ready`, `active`, `review`, `done`.
 | FP-AUTH-001 | done | FP-PROTO-007, SA-GW-002 | short-lived exact-message execution authorization |
 | FP-SIGN-001 | done | FP-AUTH-001 | validate authorization and sign only exact prepared bytes |
 | SA-EXEC-001 | done | FP-SIGN-001, SA-GW-002 | single broadcast, status, recovery, and evidence |
-| FP-E2E-001 | review | FP-SIGN-001, SA-EXEC-001 | governed devnet remediation and reconciliation proof |
+| FP-E2E-001 | done | FP-SIGN-001, SA-EXEC-001 | governed devnet remediation and reconciliation proof |
+| FP-REC-001 | active | FP-E2E-001 | source-diverse reconciliation protocol and consensus |
 | FP-PROD-001 | ready | - | three operator interviews |
 | FP-PROD-002 | blocked | FP-PROD-001 | five frequent incidents |
 | FP-PROD-003 | blocked | FP-PROD-002 | sanitized incident fixture |
@@ -38,6 +39,7 @@ Status values: `blocked`, `ready`, `active`, `review`, `done`.
 | FP-AUTH-001 | authorization service, authorization tests, protocol docs, task/review contracts, evidence |
 | FP-SIGN-001 | signer service, signer tests, protocol docs, task/review contracts, evidence |
 | FP-E2E-001 | E2E harness, E2E tests, generated evidence bundle, task/review contracts |
+| FP-REC-001 | reconciliation service, observation schema, tests, docs, evidence, task/review contracts |
 
 ## First gate
 

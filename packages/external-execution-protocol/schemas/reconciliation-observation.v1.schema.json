@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundry.pay/schemas/reconciliation-observation.v1.schema.json",
+  "title": "Foundry Pay Reconciliation Source Observation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "protocol_version",
+    "normalization_profile",
+    "source_id",
+    "source_class",
+    "source_kind",
+    "provider_id",
+    "trust_domain_id",
+    "endpoint_identity_hash",
+    "parser_id",
+    "queried_at",
+    "signature",
+    "network",
+    "slot",
+    "confirmation_status",
+    "transaction_error",
+    "source_account",
+    "destination_account",
+    "source_account_before",
+    "source_account_after",
+    "destination_account_before",
+    "destination_account_after",
+    "observed_amount_base_units",
+    "raw_response_hash"
+  ],
+  "properties": {
+    "type": { "const": "source_observation" },
+    "protocol_version": { "const": "1.0.0" },
+    "normalization_profile": { "const": "foundry-pay-domain-v1" },
+    "source_id": { "$ref": "#/$defs/Identifier" },
+    "source_class": { "enum": ["L1", "L2", "L3"] },
+    "source_kind": {
+      "enum": ["rpc", "archival_rpc", "indexer", "explorer", "validator"]
+    },
+    "provider_id": { "$ref": "#/$defs/Identifier" },
+    "trust_domain_id": { "$ref": "#/$defs/Identifier" },
+    "endpoint_identity_hash": { "$ref": "#/$defs/Sha256" },
+    "parser_id": { "$ref": "#/$defs/Identifier" },
+    "queried_at": { "$ref": "#/$defs/UtcTimestamp" },
+    "signature": { "type": "string", "minLength": 64, "maxLength": 128 },
+    "network": { "const": "solana:devnet" },
+    "slot": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "confirmation_status": { "enum": ["confirmed", "finalized"] },
+    "transaction_error": {
+      "oneOf": [
+        { "const": "none" },
+        { "$ref": "#/$defs/Sha256" }
+      ]
+    },
+    "source_account": { "$ref": "#/$defs/SolanaPubkey" },
+    "destination_account": { "$ref": "#/$defs/SolanaPubkey" },
+    "source_account_before": { "$ref": "#/$defs/Amount" },
+    "source_account_after": { "$ref": "#/$defs/Amount" },
+    "destination_account_before": { "$ref": "#/$defs/Amount" },
+    "destination_account_after": { "$ref": "#/$defs/Amount" },
+    "observed_amount_base_units": { "$ref": "#/$defs/Amount" },
+    "raw_response_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}$"
+    },
+    "Sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "UtcTimestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-([0-2][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]Z$"
+    },
+    "Amount": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)$"
+    },
+    "SolanaPubkey": {
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 44,
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]+$"
+    }
+  }
+}

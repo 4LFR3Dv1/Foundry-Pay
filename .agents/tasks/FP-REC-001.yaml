@@ -1,0 +1,42 @@
+work_item: FP-REC-001
+objective: classify and aggregate immutable L1/L2/L3 reconciliation observations
+owner: implementation-agent
+branch: agent/reconciliation/FP-REC-001
+allowed_paths:
+  - services/reconciliation/**
+  - tests/reconciliation/**
+  - packages/external-execution-protocol/schemas/reconciliation-observation.v1.schema.json
+  - docs/RECONCILIATION.md
+  - docs/WORK_GRAPH.md
+  - evidence/runs/FP-REC-001/**
+  - .agents/tasks/FP-REC-001.yaml
+  - .agents/reviews/FP-REC-001.yaml
+dependencies:
+  - FP-E2E-001
+invariants:
+  - executor receipts are never treated as reconciliation observations
+  - every observation is closed, normalized, hashed, and source-attributed
+  - L2 requires a different provider and endpoint identity from L1
+  - L3 requires a distinct indexed, archival, validator, or third-party pipeline
+  - disagreement opens reconciliation_disputed and preserves all observations
+  - confirmed, finalized, reconciled, and independently reconciled remain distinct
+acceptance:
+  - FP-E2E-001 backfills to an immutable L1 matched observation
+  - diverse agreeing L2 upgrades independent verification to l2_verified
+  - L3 can upgrade to l3_verified without blocking operational response
+  - same-provider or same-endpoint observations cannot count as L2
+  - any material disagreement produces reconciliation_disputed
+  - unavailable independent sources remain pending rather than changing execution status
+verification_commands:
+  - python -m pytest
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+evidence:
+  - evidence/runs/FP-REC-001/
+provenance: []
+stop_conditions:
+  - an executor-authored receipt is accepted as independent evidence
+  - source diversity can be spoofed by labels alone
+  - a disagreement is silently reduced to success
+  - L2 or L3 is claimed without a qualifying source
