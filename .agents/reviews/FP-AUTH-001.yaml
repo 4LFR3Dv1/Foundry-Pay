@@ -1,0 +1,16 @@
+work_item: FP-AUTH-001
+reviewer: independent-security-reviewer
+commit: 69604b125bbc8c1f15a3bf8c9041729305cb1330
+checks:
+  authority_boundary: pending
+  exact_message_binding: pending
+  commitment_reconstruction: pending
+  expiry_and_single_use: pending
+  concurrency_and_persistence: pending
+  negative_cases: pending
+  secrets: pending
+  evidence_reproducibility: pending
+decision: pending
+findings: []
+evidence:
+  - evidence/runs/FP-AUTH-001.md

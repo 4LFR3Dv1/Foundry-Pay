@@ -20,7 +20,7 @@ Status values: `blocked`, `ready`, `active`, `review`, `done`.
 | SA-BASE-001 | done | FP-ADR-001 | immutable Solana-Agent baseline |
 | SA-GW-001 | done | FP-PROTO-003, SA-BASE-001 | JSONL gateway |
 | SA-GW-002 | done | SA-GW-001 | live devnet SPL preparation and simulation |
-| FP-AUTH-001 | active | FP-PROTO-007, SA-GW-002 | short-lived exact-message execution authorization |
+| FP-AUTH-001 | review | FP-PROTO-007, SA-GW-002 | short-lived exact-message execution authorization |
 | FP-PROD-001 | ready | - | three operator interviews |
 | FP-PROD-002 | blocked | FP-PROD-001 | five frequent incidents |
 | FP-PROD-003 | blocked | FP-PROD-002 | sanitized incident fixture |
