@@ -77,6 +77,8 @@ python scripts/check_secrets.py
 4. Select a ready item from `docs/WORK_GRAPH.md`.
 5. Create a task contract from `.agents/task-template.yaml`.
 
-This repository is private product infrastructure. Solana-Agent remains an
-independent Apache-2.0 public good and integrates only through the
+This repository publishes the reference protocol, sanitized proof-of-work, and
+reproducible evidence. Production credentials, customer data, custody
+infrastructure, and deployment configuration are not included. Solana-Agent
+remains an independent Apache-2.0 public good and integrates only through the
 `ExternalExecutionAgent` protocol.
