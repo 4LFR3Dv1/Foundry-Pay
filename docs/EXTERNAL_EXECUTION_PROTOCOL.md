@@ -72,6 +72,31 @@ commitment. `PreparedExecution` does not duplicate the obligation identifier;
 Foundry reconstructs the commitment using its authoritative economic plan and
 the prepared fields returned by the executor.
 
+## Foundry execution authorization
+
+`FP-AUTH-001` makes Foundry the authorization authority for the COMMIT phase.
+Foundry accepts only a closed `PreparedExecution`, then independently:
+
+1. normalizes the authoritative economic plan and recalculates
+   `economic_plan_hash`;
+2. decodes the prepared message and hashes its exact bytes;
+3. recalculates `simulation_attestation_hash`;
+4. reconstructs the normative commitment with the authoritative
+   `obligation_id`;
+5. verifies the request, executor, signer, constraints, fee, program allowlist,
+   simulation success, and all expiry bounds;
+6. emits a short-lived `ExecutionAuthorization` bound to those exact hashes.
+
+Authorization authenticity is supplied through an injected signing interface.
+The authorization service contains no Solana key, transaction-signing, RPC, or
+broadcast capability. A production authority may place its authorization key
+behind an HSM or KMS without giving Foundry access to a Solana asset key.
+
+Emissions and consumptions are persisted in a SQLite journal. At most one
+authorization may be active for the same request or obligation. Reissuing the
+same authorization is idempotent; a competing grant is rejected. Consumption
+is single-use, survives process restart, and rejects replay or expiry.
+
 ## Recovery rule
 
 If the executor may have broadcast but the response was lost, Foundry queries

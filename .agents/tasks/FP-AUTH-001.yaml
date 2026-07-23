@@ -1,0 +1,44 @@
+work_item: FP-AUTH-001
+objective: issue durable short-lived single-use authorization bound to an exact verified execution
+owner: implementation-agent
+branch: agent/auth/FP-AUTH-001
+allowed_paths:
+  - services/authorization/**
+  - tests/authorization/**
+  - docs/EXTERNAL_EXECUTION_PROTOCOL.md
+  - docs/WORK_GRAPH.md
+  - evidence/runs/FP-AUTH-001.md
+  - .agents/tasks/FP-AUTH-001.yaml
+  - .agents/reviews/FP-AUTH-001.yaml
+dependencies:
+  - FP-PROTO-007
+  - SA-GW-002
+invariants:
+  - Foundry recalculates every material hash before authorization
+  - authoritative obligation, request, signer, executor, and constraints must match
+  - authorization expires no later than the plan, simulation, or prepared execution
+  - only one active authorization exists per request and obligation
+  - consumption is durable and replay fails
+  - no Solana private key, transaction signature, RPC send, or broadcast path exists
+acceptance:
+  - live SA-GW-002 commitment is accepted
+  - exact message, simulation, commitment, and economic hashes are recalculated
+  - tampered message, obligation, signer, fee, or program is rejected
+  - expired plan, simulation, prepared execution, or authorization is rejected
+  - repeated issuance is idempotent only for identical inputs and authorization id
+  - process restart preserves issuance and consumption
+  - consumed authorization replay fails
+verification_commands:
+  - python -m pytest tests/authorization tests/protocol
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+evidence:
+  - evidence/runs/FP-AUTH-001.md
+provenance: []
+stop_conditions:
+  - an altered prepared execution can be authorized
+  - an authorization can outlive any bound validity window
+  - concurrent issuance creates multiple active authorizations
+  - replay succeeds after durable consumption
+  - implementation accepts or accesses Solana signing material
