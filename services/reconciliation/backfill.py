@@ -126,3 +126,69 @@ def write_fp_rec_001_evidence(
             json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
         )
+
+
+def write_fp_rec_001_live_l2_evidence(
+    proof_path: Path,
+    output_directory: Path,
+    *,
+    credential_bearing_endpoint: str,
+    implementation_commit: str,
+) -> None:
+    """Query Alchemy live and upgrade the evidence bundle without storing its URL."""
+
+    from .protocol import SourceRegistry, aggregate_reconciliation, observation_hash
+    from .solana_rpc import SolanaRpcSnapshotReader
+    from .sources import ObservationSource
+
+    expected, l1, l1_descriptor = backfill_fp_e2e_001(proof_path)
+    l2_descriptor = SourceDescriptor(
+        source_id="alchemy_devnet",
+        source_class="L2",
+        source_kind="rpc",
+        provider_id="alchemy",
+        trust_domain_id="alchemy_infrastructure",
+        endpoint_identity_hash=endpoint_identity_hash("https://solana-devnet.g.alchemy.com/v2"),
+        parser_id="solana_json_rpc_reader_v1",
+    )
+    l2 = ObservationSource(
+        l2_descriptor,
+        SolanaRpcSnapshotReader(credential_bearing_endpoint),
+    ).observe(
+        signature=expected["signature"],
+        source_account=expected["source_account"],
+        destination_account=expected["destination_account"],
+    )
+    result = aggregate_reconciliation(
+        expected,
+        [l1, l2],
+        SourceRegistry([l1_descriptor, l2_descriptor]),
+    )
+    manifest = {
+        "work_item": "FP-REC-001",
+        "implementation_commit": implementation_commit,
+        "live_l1": "verified",
+        "live_l2": "verified",
+        "observation_hashes": {
+            "L1": observation_hash(l1),
+            "L2": observation_hash(l2),
+        },
+        "artifacts": [
+            "l1-observation.json",
+            "l2-observation.json",
+            "reconciliation-result.json",
+        ],
+        "credential_persisted": False,
+    }
+    output_directory.mkdir(parents=True, exist_ok=True)
+    artifacts = {
+        "l1-observation.json": l1,
+        "l2-observation.json": l2,
+        "reconciliation-result.json": result,
+        "manifest.json": manifest,
+    }
+    for name, payload in artifacts.items():
+        (output_directory / name).write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )

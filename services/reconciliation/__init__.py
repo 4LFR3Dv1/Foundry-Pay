@@ -11,11 +11,13 @@ from .protocol import (
     raw_response_hash,
 )
 from .sources import ObservationSource, SnapshotReader, TransactionSnapshot
+from .solana_rpc import SolanaRpcSnapshotReader
 
 __all__ = [
     "ReconciliationInvalid",
     "SourceDescriptor",
     "SourceRegistry",
+    "SolanaRpcSnapshotReader",
     "ObservationSource",
     "SnapshotReader",
     "TransactionSnapshot",
