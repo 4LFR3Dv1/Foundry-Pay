@@ -1,0 +1,65 @@
+{
+  "vector_version": "1",
+  "cases": [
+    {
+      "id": "leading-zero-amount",
+      "target": "economic_plan",
+      "path": ["amount_base_units"],
+      "value": "01000000"
+    },
+    {
+      "id": "numeric-financial-amount",
+      "target": "economic_plan",
+      "path": ["amount_base_units"],
+      "value": 1000000
+    },
+    {
+      "id": "noncanonical-network",
+      "target": "economic_plan",
+      "path": ["network"],
+      "value": "solana-devnet"
+    },
+    {
+      "id": "noncanonical-capability",
+      "target": "economic_plan",
+      "path": ["capability"],
+      "value": "spl_transfer"
+    },
+    {
+      "id": "null-optional-field",
+      "target": "economic_plan",
+      "path": ["reason"],
+      "value": null
+    },
+    {
+      "id": "noncanonical-utc-offset",
+      "target": "economic_plan",
+      "path": ["expires_at"],
+      "value": "2026-07-23T18:00:00+00:00"
+    },
+    {
+      "id": "invalid-destination-address",
+      "target": "economic_plan",
+      "path": ["destination"],
+      "value": "not-a-solana-address"
+    },
+    {
+      "id": "unknown-signed-field",
+      "target": "economic_plan",
+      "path": ["memo"],
+      "value": "not part of v1"
+    },
+    {
+      "id": "fractional-structural-number",
+      "target": "economic_plan",
+      "path": ["asset", "decimals"],
+      "value": 1.5
+    },
+    {
+      "id": "unsafe-javascript-integer",
+      "target": "execution_commitment",
+      "path": ["constraints", "max_fee_lamports"],
+      "value": 9007199254740992
+    }
+  ]
+}

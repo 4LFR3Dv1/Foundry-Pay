@@ -6,6 +6,7 @@ import pytest
 
 from foundry_external_execution_protocol import (
     DomainNormalizationError,
+    canonicalize,
     economic_plan_hash,
     execution_commitment_hash,
     normalize_economic_plan,
@@ -24,7 +25,8 @@ def economic_plan() -> dict:
         "protocol_version": "1.0.0",
         "normalization_profile": "foundry-pay-domain-v1",
         "obligation_id": "obl_demo_001",
-        "network": "solana-devnet",
+        "network": "solana:devnet",
+        "capability": "solana.spl_transfer.v1",
         "asset": {
             "kind": "spl-token",
             "mint": PUBKEY_A,
@@ -49,7 +51,8 @@ def test_economic_hash_is_order_independent(economic_plan: dict) -> None:
         ("amount_base_units", "01"),
         ("amount_base_units", 1_000_000),
         ("amount_base_units", "0"),
-        ("network", "devnet"),
+        ("network", "solana-devnet"),
+        ("capability", "spl_transfer"),
         ("expires_at", "2026-07-23T18:00:00+00:00"),
     ],
 )
@@ -128,3 +131,48 @@ def test_rejects_floats_in_signed_constraints(economic_plan: dict) -> None:
     }
     with pytest.raises(DomainNormalizationError, match="floating-point"):
         execution_commitment_hash(commitment)
+
+
+def test_rejects_unsupported_numbers_and_null() -> None:
+    for value in [
+        float("nan"),
+        float("inf"),
+        float("-inf"),
+        1.5,
+        9_007_199_254_740_992,
+    ]:
+        with pytest.raises(DomainNormalizationError):
+            canonicalize({"value": value})
+    with pytest.raises(DomainNormalizationError, match="null is forbidden"):
+        canonicalize({"value": None})
+    with pytest.raises(DomainNormalizationError, match="unsupported JSON type"):
+        canonicalize({"value": b"not-json"})
+
+
+def test_array_order_is_material(economic_plan: dict) -> None:
+    base = {
+        "economic_plan_hash": economic_plan_hash(economic_plan),
+        "allowed_programs": [PUBKEY_A, PUBKEY_B],
+    }
+    reversed_array = {
+        "economic_plan_hash": economic_plan_hash(economic_plan),
+        "allowed_programs": [PUBKEY_B, PUBKEY_A],
+    }
+    assert canonicalize(base) != canonicalize(reversed_array)
+
+
+def test_single_field_tampering_changes_economic_hash(economic_plan: dict) -> None:
+    original = economic_plan_hash(economic_plan)
+    economic_plan["amount_base_units"] = "1000001"
+    assert economic_plan_hash(economic_plan) != original
+
+
+def test_unicode_is_not_normalized_silently(economic_plan: dict) -> None:
+    composed = copy.deepcopy(economic_plan)
+    decomposed = copy.deepcopy(economic_plan)
+    composed["reason"] = "\u00e9"
+    decomposed["reason"] = "e\u0301"
+    assert canonicalize(composed) != canonicalize(decomposed)
+    assert economic_plan_hash(composed) != economic_plan_hash(decomposed)
+    with pytest.raises(DomainNormalizationError, match="surrogate"):
+        canonicalize({"value": "\ud800"})

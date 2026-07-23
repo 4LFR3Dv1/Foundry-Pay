@@ -10,9 +10,9 @@ Status values: `blocked`, `ready`, `active`, `review`, `done`.
 | FP-CTRL-004 | done | FP-CTRL-001 | CI and secret scanning |
 | FP-CTRL-005 | active | FP-CTRL-001 | work graph and decision ledger |
 | FP-ADR-001 | done | FP-CTRL-001 | external-first decision |
-| FP-PROTO-001 | active | FP-ADR-001 | v1 protocol schemas |
-| FP-PROTO-002 | active | FP-PROTO-001 | normalization and three hashes |
-| FP-PROTO-003 | blocked | FP-PROTO-001, FP-PROTO-002 | fake executor and conformance kit |
+| FP-PROTO-001 | done | FP-ADR-001 | v1 protocol schemas |
+| FP-PROTO-002 | done | FP-PROTO-001 | normalization and three hashes |
+| FP-PROTO-003 | ready | FP-PROTO-001, FP-PROTO-002 | fake executor and conformance kit |
 | FP-PROTO-004 | blocked | FP-PROTO-001 | errors, capabilities, versioning |
 | FP-PROTO-005 | blocked | FP-PROTO-001 | correlated journal and evidence manifest |
 | FP-PROTO-006 | blocked | FP-PROTO-001 | simulation validity and drift |
