@@ -21,7 +21,7 @@ Status values: `blocked`, `ready`, `active`, `review`, `done`.
 | SA-GW-001 | done | FP-PROTO-003, SA-BASE-001 | JSONL gateway |
 | SA-GW-002 | done | SA-GW-001 | live devnet SPL preparation and simulation |
 | FP-AUTH-001 | done | FP-PROTO-007, SA-GW-002 | short-lived exact-message execution authorization |
-| FP-SIGN-001 | active | FP-AUTH-001 | validate authorization and sign only exact prepared bytes |
+| FP-SIGN-001 | review | FP-AUTH-001 | validate authorization and sign only exact prepared bytes |
 | FP-PROD-001 | ready | - | three operator interviews |
 | FP-PROD-002 | blocked | FP-PROD-001 | five frequent incidents |
 | FP-PROD-003 | blocked | FP-PROD-002 | sanitized incident fixture |

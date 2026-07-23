@@ -1,0 +1,17 @@
+work_item: FP-SIGN-001
+reviewer: independent-security-reviewer
+commit: 31eb2f9cf28c23d332d9cfe1bd2370da141b984a
+checks:
+  authority_authenticity: pending
+  exact_message_binding: pending
+  signer_identity: pending
+  durable_single_use: pending
+  concurrency_and_restart: pending
+  unknown_outcome_recovery: pending
+  raw_key_isolation: pending
+  secrets: pending
+  evidence_reproducibility: pending
+decision: pending
+findings: []
+evidence:
+  - evidence/runs/FP-SIGN-001.md
