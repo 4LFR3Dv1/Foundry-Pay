@@ -33,7 +33,25 @@ jobs:
           python -m ruff format --check .
           python -m ruff check .
           python scripts/check_secrets.py
+      - name: Check out pinned Solana-Agent chaos runtime
+        uses: actions/checkout@v4
+        with:
+          repository: 4LFR3Dv1/Solana-Agent
+          ref: 5707240af22bc288149b68456b2a9fe810928efb
+          path: .chaos/Solana-Agent
+      - name: Install pinned Solana-Agent
+        run: python -m pip install -e .chaos/Solana-Agent
       - name: Protocol tests
+        env:
+          SOLANA_AGENT_ROOT: ${{ github.workspace }}/.chaos/Solana-Agent
         run: |
           python -m pytest
           npm test --prefix packages/external-execution-protocol/typescript
+      - name: Publish FP-FAIL-002 journal root
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fp-fail-002-journal-root-${{ github.sha }}
+          path: evidence/runs/FP-FAIL-002/journal-root.json
+          if-no-files-found: error
+          retention-days: 90

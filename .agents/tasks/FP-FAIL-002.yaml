@@ -1,0 +1,56 @@
+work_item: FP-FAIL-002
+objective: verify single-broadcast recovery across real gateway and RPC proxy processes
+owner: implementation-agent
+branch: agent/chaos/FP-FAIL-002
+allowed_paths:
+  - services/chaos_proxy/**
+  - services/process_chaos/**
+  - tests/chaos/**
+  - scripts/chaos/**
+  - docs/PROCESS_CHAOS.md
+  - docs/WORK_GRAPH.md
+  - evidence/runs/FP-FAIL-002/**
+  - .agents/tasks/FP-FAIL-002.yaml
+  - .agents/reviews/FP-FAIL-002.yaml
+  - .github/workflows/ci.yml
+dependencies:
+  - FP-FAIL-001
+  - SA-CHAOS-001
+invariants:
+  - the proxy persists every sendTransaction receipt before applying a response fault
+  - proxy counters are independent from the gateway journal
+  - gateway subprocesses never receive private keys through protocol payloads
+  - an unknown send outcome is recovered by the persisted signature
+  - replay and concurrent workers cannot produce a second sendTransaction
+  - unavailable L2 remains pending while conflicting L2 opens a durable dispute
+  - the external journal root is derived from generated artifacts
+acceptance:
+  - nine real-process scenarios have generated evidence
+  - kill before broadcast yields zero proxy sendTransaction requests
+  - kill after broadcast intent yields needs_recovery and zero automatic sends
+  - response loss after upstream acceptance recovers confirmed with one send
+  - definitive rejection remains distinct from unknown
+  - not-found-after-expiry requires Foundry reconciliation
+  - temporary source unavailability converges without erasing history
+  - replay after restart returns the same signature without rebroadcast
+  - two gateway processes sharing one journal produce one winning claim and one send
+  - CI publishes a hash-bound journal root artifact
+verification_commands:
+  - python -m pytest
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+evidence:
+  - evidence/runs/FP-FAIL-002/
+provenance:
+  - repository: https://github.com/4LFR3Dv1/Solana-Agent
+    commit: 5707240af22bc288149b68456b2a9fe810928efb
+    paths:
+      - gateway/**
+    use: external subprocess runtime only; no kernel code copied
+stop_conditions:
+  - a response fault occurs before the proxy persists its counter
+  - a kill point is enabled by default
+  - a second sendTransaction reaches the proxy
+  - a private key or RPC credential enters evidence
+  - a null independent observation is classified as a disagreement

@@ -1,0 +1,9 @@
+{
+  "all_send_transaction_counts_at_most_one": true,
+  "artifact_root": "sha256:483b8a6fd7a73a65f086c5f5b9fd4d7758f581243b1926b6d5c0288093de8899",
+  "gateway_process_scenario_count": 8,
+  "journal_root": "sha256:a48b2303b908a928e1901a099bec67c45a7e1302cb67fe158159d7ef08056070",
+  "master_demo": "master-demo.json",
+  "scenario_count": 9,
+  "work_item": "FP-FAIL-002"
+}

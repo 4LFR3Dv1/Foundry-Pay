@@ -1,0 +1,508 @@
+{
+  "execution_request_id": "exec_definitive_rejection",
+  "gateway_responses": [
+    {
+      "command": "authorize-and-execute",
+      "error": {
+        "code": "definitive_rejection",
+        "details": {
+          "method": "sendTransaction",
+          "rpc_error_code": -32099
+        },
+        "message": "Solana RPC conclusively rejected sendTransaction",
+        "retryable": false
+      },
+      "gateway_protocol_version": "1.0.0",
+      "gateway_request_id": "gw_execute",
+      "journal_sequence": 4,
+      "ok": false,
+      "replayed": false
+    },
+    {
+      "command": "evidence",
+      "gateway_protocol_version": "1.0.0",
+      "gateway_request_id": "gw_evidence",
+      "journal_sequence": 6,
+      "ok": true,
+      "replayed": false,
+      "result": {
+        "execution": {
+          "authorization": {
+            "authorization_id": "auth_definitive_rejection",
+            "authorization_signature": "public-sha256:7c2e06132e27b5eed4963c17bfeba8bf6d8e5a2f1762bf4a219ea0582b227268",
+            "execution_commitment_hash": "sha256:75c033fbe787c96a878f5dc94b301f47dd19ed71c732244ea851a7a479284aed",
+            "execution_request_id": "exec_definitive_rejection",
+            "expires_at": "2026-07-23T22:21:33Z",
+            "issued_at": "2026-07-23T22:21:03Z",
+            "prepared_message_hash": "sha256:0a7e065e6db73a9859e1b9742a542abca427bdd831a9d0499c60d6e2f12ef428",
+            "protocol_version": "1.0.0",
+            "signer": "public-sha256:f7ce74e1a2239d0df33cc99bbd58177ee57a79d514c15bfc378fd8664489861e",
+            "single_use": true,
+            "type": "execution_authorization"
+          },
+          "authorization_id": "auth_definitive_rejection",
+          "broadcast_count": 1,
+          "confirmed_at": null,
+          "execution_commitment_hash": "sha256:75c033fbe787c96a878f5dc94b301f47dd19ed71c732244ea851a7a479284aed",
+          "prepared_message_hash": "sha256:0a7e065e6db73a9859e1b9742a542abca427bdd831a9d0499c60d6e2f12ef428",
+          "receipt": null,
+          "rpc_submission": null,
+          "signature": "public-sha256:0f8e9231126a00dec704ddbee1fe42b0e4d9d792e671518eb27124d3e9c4b79b",
+          "signature_persisted_at": "2026-07-23T22:21:04Z",
+          "signed_transaction_base64": "bytes-sha256:3456e6a2179fdbbb64729d41f5d0c35dbbaa3a8b527dc2ed324379411addd5e5",
+          "signer": "public-sha256:f7ce74e1a2239d0df33cc99bbd58177ee57a79d514c15bfc378fd8664489861e",
+          "state": "failed",
+          "status_observation": {
+            "error": {
+              "code": "definitive_rejection",
+              "details": {
+                "method": "sendTransaction",
+                "rpc_error_code": -32099
+              },
+              "message": "Solana RPC conclusively rejected sendTransaction",
+              "retryable": false
+            },
+            "outcome": "definitive_rejection"
+          },
+          "submitted_at": null,
+          "updated_at": "2026-07-23T22:21:04Z"
+        },
+        "execution_request_id": "exec_definitive_rejection",
+        "observed_at": "2026-07-23T22:21:04Z",
+        "preparation_evidence": {
+          "destination_token_account": "public-sha256:a519e93eeacaee57f82268e78524008138ece4753795be9d40785e08909dc82e",
+          "local_policy": {
+            "decision": "allow",
+            "rule_id": "spl-transfer-prepare-v1"
+          },
+          "programs": [
+            "public-sha256:3df99733e34ba92be4040448ef74357301e4e05f072dad52fc401f17e9834285"
+          ],
+          "rpc_endpoint": "http://127.0.0.1:59155",
+          "source_token_account": "public-sha256:2294501e664b3a6f4d3597615eaa481dd477e8bdd7372db79bf4d94a754b8651"
+        },
+        "prepared_execution": {
+          "constraints": {
+            "allowed_programs": [
+              "public-sha256:3df99733e34ba92be4040448ef74357301e4e05f072dad52fc401f17e9834285"
+            ],
+            "max_fee_lamports": 50000
+          },
+          "economic_plan_hash": "sha256:b8f09c9f695ecd97cef7e2af965c442c26d05728d54be05964ec0e24a5ad1ed6",
+          "execution_commitment_hash": "sha256:75c033fbe787c96a878f5dc94b301f47dd19ed71c732244ea851a7a479284aed",
+          "execution_request_id": "exec_definitive_rejection",
+          "executor_id": "solana-agent",
+          "executor_version": "0.3.0",
+          "expires_at": "2026-07-23T22:22:03Z",
+          "prepared_message_base64": "bytes-sha256:c0dc342512ba5bb8db3f9576d6c5696278e27aa3e97836a67730d552874bda20",
+          "prepared_message_hash": "sha256:0a7e065e6db73a9859e1b9742a542abca427bdd831a9d0499c60d6e2f12ef428",
+          "protocol_version": "1.0.0",
+          "signer": "public-sha256:f7ce74e1a2239d0df33cc99bbd58177ee57a79d514c15bfc378fd8664489861e",
+          "simulation": {
+            "accounts_observed_hash": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "commitment_level": "confirmed",
+            "fee_lamports": 5000,
+            "genesis_hash": "public-sha256:8a83665f3798727f14f92ad0e6c99fdab08ee731d6cd644c131223fd2f4fed2a",
+            "last_valid_block_height": 100,
+            "logs_hash": "sha256:d424ac8e48fbbfde50f4963d3fe15bac67117a3005ff8d59f3b1ace9101d7546",
+            "post_balances_hash": "sha256:9b77d0d841b36782621eb39bd4a15942d35643698d811908f3244eb824be0006",
+            "pre_balances_hash": "sha256:3ec0dcf42e6b02ba042bdd922abb7698ac9d0694299b7f764d0fbe60fa240221",
+            "programs_observed_hash": "sha256:e53138d33bc1a6896b1c369580f25abd4097a677372cfcbd49e1f69a22aea407",
+            "recent_blockhash": "public-sha256:8a83665f3798727f14f92ad0e6c99fdab08ee731d6cd644c131223fd2f4fed2a",
+            "rpc_provider_id": "solana-devnet-public",
+            "simulated_at": "2026-07-23T22:21:03Z",
+            "slot": 89,
+            "success": true,
+            "units_consumed": 1714,
+            "valid_until": "2026-07-23T22:22:03Z"
+          },
+          "simulation_attestation_hash": "sha256:69ec91aa42b8dd90e2f3c12e692072a92f8baf52af3aa5a0c1453ba3b5fbe1ab",
+          "type": "prepared_execution"
+        },
+        "protocol_version": "1.0.0",
+        "type": "execution_evidence"
+      }
+    }
+  ],
+  "kill_sentinel": null,
+  "private_material_persisted": false,
+  "process_exit_codes": [],
+  "protocol_version": "1.0.0",
+  "proxy_event_chain": [
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "method": "getAccountInfo",
+        "request_hash": "sha256:9de244a1746804c20e3dbbddecb6770b8c38b4a197c72c89ba1dff147078476a"
+      },
+      "event_hash": "sha256:f29745d1e4d29c22531ecf63fce88e9198aae7ba3793056626c84ef650879f3a",
+      "event_type": "request_received",
+      "previous_hash": "genesis",
+      "request_sequence": 1,
+      "sequence": 1
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "state": "forwarded"
+      },
+      "event_hash": "sha256:457f6e3a7c5280e357a0cc639c80d4ceb8b808260c9c47b294b78c16488c13c9",
+      "event_type": "request_forwarded",
+      "previous_hash": "sha256:f29745d1e4d29c22531ecf63fce88e9198aae7ba3793056626c84ef650879f3a",
+      "request_sequence": 1,
+      "sequence": 2
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "response_hash": "sha256:c7dcb721096bd9fa2ba6e29bed2a7b9f5a05f3a1677a177dcb7b98239bba0afa",
+        "state": "upstream_responded"
+      },
+      "event_hash": "sha256:b7320e83caa32c7d2afe355a72e95cbef73bbdc6c9fded6c3d3d4090c1a72980",
+      "event_type": "upstream_response_persisted",
+      "previous_hash": "sha256:457f6e3a7c5280e357a0cc639c80d4ceb8b808260c9c47b294b78c16488c13c9",
+      "request_sequence": 1,
+      "sequence": 3
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "state": "client_response_delivered"
+      },
+      "event_hash": "sha256:986dec12779b6879da915c4f0a8586c29f972b915bf67d5bf3052f0dfe84d0f1",
+      "event_type": "client_response_delivered",
+      "previous_hash": "sha256:b7320e83caa32c7d2afe355a72e95cbef73bbdc6c9fded6c3d3d4090c1a72980",
+      "request_sequence": 1,
+      "sequence": 4
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "method": "getAccountInfo",
+        "request_hash": "sha256:57e7f3aed92508d4d4f6e9088e74bfd0520a49c5dc454f094f709972f64c0543"
+      },
+      "event_hash": "sha256:c3228ac806cfdb4ceea5f248d72e27b6f952220af5f01e556a8bdfb55dfd0a04",
+      "event_type": "request_received",
+      "previous_hash": "sha256:986dec12779b6879da915c4f0a8586c29f972b915bf67d5bf3052f0dfe84d0f1",
+      "request_sequence": 2,
+      "sequence": 5
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "state": "forwarded"
+      },
+      "event_hash": "sha256:f9785d66a0dd7d9bb8344c357b44efb4717df56e34d4c8cf6ed8420b7e885659",
+      "event_type": "request_forwarded",
+      "previous_hash": "sha256:c3228ac806cfdb4ceea5f248d72e27b6f952220af5f01e556a8bdfb55dfd0a04",
+      "request_sequence": 2,
+      "sequence": 6
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "response_hash": "sha256:424f66c0e35158f019b23dbceb4f7a0655e6f41dd04c6d6a68c276098a59cb9f",
+        "state": "upstream_responded"
+      },
+      "event_hash": "sha256:2396be5be368bfcf9d0dc5f339c207ad8852589ac7dff9d7a7c1d2e4b78cc77b",
+      "event_type": "upstream_response_persisted",
+      "previous_hash": "sha256:f9785d66a0dd7d9bb8344c357b44efb4717df56e34d4c8cf6ed8420b7e885659",
+      "request_sequence": 2,
+      "sequence": 7
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "state": "client_response_delivered"
+      },
+      "event_hash": "sha256:b6b1a8c26cc50210e96bcefbfd5ea15c9864176394327faea5cacac26621034c",
+      "event_type": "client_response_delivered",
+      "previous_hash": "sha256:2396be5be368bfcf9d0dc5f339c207ad8852589ac7dff9d7a7c1d2e4b78cc77b",
+      "request_sequence": 2,
+      "sequence": 8
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "method": "getAccountInfo",
+        "request_hash": "sha256:d487cdfd7f97ce9efac1de03847354e70235e2b40a4036d37742aa24fc24aae2"
+      },
+      "event_hash": "sha256:956133229e4e25b69db8db36a559cf0d00bc20ff629e8c4acd939035c4c4dfc6",
+      "event_type": "request_received",
+      "previous_hash": "sha256:b6b1a8c26cc50210e96bcefbfd5ea15c9864176394327faea5cacac26621034c",
+      "request_sequence": 3,
+      "sequence": 9
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "state": "forwarded"
+      },
+      "event_hash": "sha256:c092551279ab491609a1af8866ba41431d814e9442f52500a6fb85f5a35b899b",
+      "event_type": "request_forwarded",
+      "previous_hash": "sha256:956133229e4e25b69db8db36a559cf0d00bc20ff629e8c4acd939035c4c4dfc6",
+      "request_sequence": 3,
+      "sequence": 10
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "response_hash": "sha256:b0ff52d9b35100cdad0100a5f1a06778b8817074e00a194542f202c0be8de65d",
+        "state": "upstream_responded"
+      },
+      "event_hash": "sha256:6e23a0f966bc905fac6463cddf55092dd2fb108c24ac03cc32a8447eb84e1dc3",
+      "event_type": "upstream_response_persisted",
+      "previous_hash": "sha256:c092551279ab491609a1af8866ba41431d814e9442f52500a6fb85f5a35b899b",
+      "request_sequence": 3,
+      "sequence": 11
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "state": "client_response_delivered"
+      },
+      "event_hash": "sha256:4a5e47ef381a8f550f5a0c0722181f04f8a7766e2fcf8368237d431d617cb2a8",
+      "event_type": "client_response_delivered",
+      "previous_hash": "sha256:6e23a0f966bc905fac6463cddf55092dd2fb108c24ac03cc32a8447eb84e1dc3",
+      "request_sequence": 3,
+      "sequence": 12
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "method": "getGenesisHash",
+        "request_hash": "sha256:636766331070dce165af359a7b97563192e588d31236a95c6013a36300adeba0"
+      },
+      "event_hash": "sha256:debcd5deb3d719fac312dfcf2da87be7e318ed33b0d22841e919e0d787f00b4d",
+      "event_type": "request_received",
+      "previous_hash": "sha256:4a5e47ef381a8f550f5a0c0722181f04f8a7766e2fcf8368237d431d617cb2a8",
+      "request_sequence": 4,
+      "sequence": 13
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "state": "forwarded"
+      },
+      "event_hash": "sha256:8e688daa8569585b6e69e5ece23935c88f95481ec6fff0861d8ac197d31888b9",
+      "event_type": "request_forwarded",
+      "previous_hash": "sha256:debcd5deb3d719fac312dfcf2da87be7e318ed33b0d22841e919e0d787f00b4d",
+      "request_sequence": 4,
+      "sequence": 14
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "response_hash": "sha256:44eac57afe3b79fc1d92d6a63cef94be5656d54e3fda3b16759327fef5d997a9",
+        "state": "upstream_responded"
+      },
+      "event_hash": "sha256:263c55d8a784cec34467065cd8cb2b44ade94d71f011105e6b6bbe10f3a96818",
+      "event_type": "upstream_response_persisted",
+      "previous_hash": "sha256:8e688daa8569585b6e69e5ece23935c88f95481ec6fff0861d8ac197d31888b9",
+      "request_sequence": 4,
+      "sequence": 15
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "state": "client_response_delivered"
+      },
+      "event_hash": "sha256:908da2d20dc3224f90091f6c93b64af4b4e45e07d63fad58bee3204027757803",
+      "event_type": "client_response_delivered",
+      "previous_hash": "sha256:263c55d8a784cec34467065cd8cb2b44ade94d71f011105e6b6bbe10f3a96818",
+      "request_sequence": 4,
+      "sequence": 16
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "method": "getLatestBlockhash",
+        "request_hash": "sha256:21d4469b7345025423a2990891751823b5e224f0a005979c3486b7f7193c9209"
+      },
+      "event_hash": "sha256:af5855af3c81bea039111177886385e9212143c588bb9e765d32bf0c6a75f292",
+      "event_type": "request_received",
+      "previous_hash": "sha256:908da2d20dc3224f90091f6c93b64af4b4e45e07d63fad58bee3204027757803",
+      "request_sequence": 5,
+      "sequence": 17
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "state": "forwarded"
+      },
+      "event_hash": "sha256:96eec8b5c778fd49e6b9b3ee817a0065e30d2244adbf81de678facad7f1b57a6",
+      "event_type": "request_forwarded",
+      "previous_hash": "sha256:af5855af3c81bea039111177886385e9212143c588bb9e765d32bf0c6a75f292",
+      "request_sequence": 5,
+      "sequence": 18
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "response_hash": "sha256:70f7b448be139040526da90960a9b999b5e44a7f91e2e76602f1f4d6b978da68",
+        "state": "upstream_responded"
+      },
+      "event_hash": "sha256:aef154b97b5673f6d861f6481d95f3cb9de5cf3859d0efd4c96f38d4f5a6102f",
+      "event_type": "upstream_response_persisted",
+      "previous_hash": "sha256:96eec8b5c778fd49e6b9b3ee817a0065e30d2244adbf81de678facad7f1b57a6",
+      "request_sequence": 5,
+      "sequence": 19
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "state": "client_response_delivered"
+      },
+      "event_hash": "sha256:95ccbc76d02f736eac3a48f1522efa0745d554ef2dbbee7635c7b910c554aab7",
+      "event_type": "client_response_delivered",
+      "previous_hash": "sha256:aef154b97b5673f6d861f6481d95f3cb9de5cf3859d0efd4c96f38d4f5a6102f",
+      "request_sequence": 5,
+      "sequence": 20
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "method": "simulateTransaction",
+        "request_hash": "sha256:652112e5a78362a592802337bf0c0b27bf12664b2dfa18467940946d92ae9d02"
+      },
+      "event_hash": "sha256:e6f40e4988b9971570c8db7e33bb6ff9bfc4339e9d7abb813eb9cabbade7b503",
+      "event_type": "request_received",
+      "previous_hash": "sha256:95ccbc76d02f736eac3a48f1522efa0745d554ef2dbbee7635c7b910c554aab7",
+      "request_sequence": 6,
+      "sequence": 21
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "state": "forwarded"
+      },
+      "event_hash": "sha256:2f75933b12a881377d27d9378b4785102049bbca07a7d35486949f4393c8de36",
+      "event_type": "request_forwarded",
+      "previous_hash": "sha256:e6f40e4988b9971570c8db7e33bb6ff9bfc4339e9d7abb813eb9cabbade7b503",
+      "request_sequence": 6,
+      "sequence": 22
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "response_hash": "sha256:24550cce6461642fa5662b4bdbf665d2a63bb174baeb99a9e499d8af18046951",
+        "state": "upstream_responded"
+      },
+      "event_hash": "sha256:5a5dd3bf5902bed7a5a216581bf83486899f091422d224802f53407166a52e58",
+      "event_type": "upstream_response_persisted",
+      "previous_hash": "sha256:2f75933b12a881377d27d9378b4785102049bbca07a7d35486949f4393c8de36",
+      "request_sequence": 6,
+      "sequence": 23
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "state": "client_response_delivered"
+      },
+      "event_hash": "sha256:471be1c9cddb6ed52f2bb31837b514f3a860d6964b2524c2b92bc4aa6794896d",
+      "event_type": "client_response_delivered",
+      "previous_hash": "sha256:5a5dd3bf5902bed7a5a216581bf83486899f091422d224802f53407166a52e58",
+      "request_sequence": 6,
+      "sequence": 24
+    },
+    {
+      "created_at": "2026-07-23T22:21:03Z",
+      "event": {
+        "delay_ms": 0,
+        "method": "sendTransaction",
+        "mode": "reject_before_forward"
+      },
+      "event_hash": "sha256:e4b56df361b0b35f6ad8c1e40a74ce93a4c22966eca94030dd973f164e796e90",
+      "event_type": "fault_rule_configured",
+      "previous_hash": "sha256:471be1c9cddb6ed52f2bb31837b514f3a860d6964b2524c2b92bc4aa6794896d",
+      "request_sequence": "control",
+      "sequence": 25
+    },
+    {
+      "created_at": "2026-07-23T22:21:04Z",
+      "event": {
+        "method": "getBlockHeight",
+        "request_hash": "sha256:b6af3d7de91b5072e57ec03eafd2620720bf1406360fe269d65fa3501bbedf7c"
+      },
+      "event_hash": "sha256:e9818d5017203403db55ba8825cfa24da8eadba88326077cb395edd8781b235f",
+      "event_type": "request_received",
+      "previous_hash": "sha256:e4b56df361b0b35f6ad8c1e40a74ce93a4c22966eca94030dd973f164e796e90",
+      "request_sequence": 7,
+      "sequence": 26
+    },
+    {
+      "created_at": "2026-07-23T22:21:04Z",
+      "event": {
+        "state": "forwarded"
+      },
+      "event_hash": "sha256:47fe1fb61d075699aa12a3a3bef41ce8adb28222d83890385ce87ab729030a4b",
+      "event_type": "request_forwarded",
+      "previous_hash": "sha256:e9818d5017203403db55ba8825cfa24da8eadba88326077cb395edd8781b235f",
+      "request_sequence": 7,
+      "sequence": 27
+    },
+    {
+      "created_at": "2026-07-23T22:21:04Z",
+      "event": {
+        "response_hash": "sha256:0d11d0e0d832b2a80ac262335e589ecd4dff2c8f5377e915255bc920aa4bc028",
+        "state": "upstream_responded"
+      },
+      "event_hash": "sha256:d0e6f1b01d95bbc42b434ead2c8b61eedb599d82b88dfd7097732014e9521b49",
+      "event_type": "upstream_response_persisted",
+      "previous_hash": "sha256:47fe1fb61d075699aa12a3a3bef41ce8adb28222d83890385ce87ab729030a4b",
+      "request_sequence": 7,
+      "sequence": 28
+    },
+    {
+      "created_at": "2026-07-23T22:21:04Z",
+      "event": {
+        "state": "client_response_delivered"
+      },
+      "event_hash": "sha256:5bd10133a772e643592f0a0a96a92b8d5377a9bddd78f77222ca8a5988e41cf2",
+      "event_type": "client_response_delivered",
+      "previous_hash": "sha256:d0e6f1b01d95bbc42b434ead2c8b61eedb599d82b88dfd7097732014e9521b49",
+      "request_sequence": 7,
+      "sequence": 29
+    },
+    {
+      "created_at": "2026-07-23T22:21:04Z",
+      "event": {
+        "method": "sendTransaction",
+        "request_hash": "sha256:c8e7e937280cb40d7587b8907de33e0abb3e54ecc1d773633e6866181189b408"
+      },
+      "event_hash": "sha256:38f98ad6d8893077a9f6d4f183bdc03fe6418b66310aaeb3c66330c130677ce1",
+      "event_type": "request_received",
+      "previous_hash": "sha256:5bd10133a772e643592f0a0a96a92b8d5377a9bddd78f77222ca8a5988e41cf2",
+      "request_sequence": 8,
+      "sequence": 30
+    },
+    {
+      "created_at": "2026-07-23T22:21:04Z",
+      "event": {
+        "state": "rejected_before_forward"
+      },
+      "event_hash": "sha256:ddcd2a0cbc847fedfdf7521147651169f8d6901d3b6873d4f65472fc584d7745",
+      "event_type": "request_rejected_before_forward",
+      "previous_hash": "sha256:38f98ad6d8893077a9f6d4f183bdc03fe6418b66310aaeb3c66330c130677ce1",
+      "request_sequence": 8,
+      "sequence": 31
+    }
+  ],
+  "proxy_event_chain_head": "sha256:ddcd2a0cbc847fedfdf7521147651169f8d6901d3b6873d4f65472fc584d7745",
+  "proxy_send_transaction": {
+    "client_responses_delivered": 0,
+    "client_responses_dropped": 0,
+    "method": "sendTransaction",
+    "rejected_before_forward": 1,
+    "requests_received": 1,
+    "upstream_requests_forwarded": 0,
+    "upstream_responses_received": 0
+  },
+  "recovery_response": null,
+  "scenario": "definitive_rejection",
+  "signature": "public-sha256:0f8e9231126a00dec704ddbee1fe42b0e4d9d792e671518eb27124d3e9c4b79b",
+  "type": "real_process_chaos_result",
+  "upstream_metrics": {
+    "accepted_transactions": []
+  }
+}

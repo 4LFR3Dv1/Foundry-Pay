@@ -1,0 +1,46 @@
+{
+  "artifact_root": "sha256:483b8a6fd7a73a65f086c5f5b9fd4d7758f581243b1926b6d5c0288093de8899",
+  "artifacts": [
+    {
+      "path": "concurrent_gateways.json",
+      "sha256": "sha256:c463a02e690912036981763af58becf7fa16a0d71d896945a9a8d0ab7fe22413"
+    },
+    {
+      "path": "definitive_rejection.json",
+      "sha256": "sha256:90185ca314c4c5c21208e39c6bfdaf5336e283e3ed1d523dd48d91c920eae570"
+    },
+    {
+      "path": "kill_after_broadcast_intent.json",
+      "sha256": "sha256:57cee237277dcb63575a1b34fab8635f626b225c3a9a52e27ee02a3cbb70b1bb"
+    },
+    {
+      "path": "kill_before_broadcast.json",
+      "sha256": "sha256:0027baec6816246ad1ad199f8a5d0fc31c2d0d8efbaf98d218bd82a997b5bb5c"
+    },
+    {
+      "path": "kill_during_send_transaction.json",
+      "sha256": "sha256:71484d0277cd2b7b81907d0b093304334622a62b5e26120e6c0929afd5fce175"
+    },
+    {
+      "path": "not_found_after_expiry.json",
+      "sha256": "sha256:5361735e2a3758a01c8f22bee5a07c9732e415f7e7ae3d3062bdb74ee17e184e"
+    },
+    {
+      "path": "replay_after_restart.json",
+      "sha256": "sha256:32d3eb7a750069408c9e1a7c530d47fcdfcbcf573484d80b37b8907f444c3e25"
+    },
+    {
+      "path": "response_lost_after_acceptance.json",
+      "sha256": "sha256:15b21c0742a6dc613ab5a4c7ba19524261b04f379e7f31f1ffa47c90b19d7cf5"
+    },
+    {
+      "path": "source_unavailable_then_converged.json",
+      "sha256": "sha256:b5052ee1eae065fa846e43def5be75b1746723bba4a7216f2011acf4171edaf2"
+    }
+  ],
+  "foundry_implementation_commit": "951ab699c827e7e7dbfca59a3beb6ebca4800935",
+  "protocol_version": "1.0.0",
+  "solana_agent_implementation_commit": "5707240af22bc288149b68456b2a9fe810928efb",
+  "type": "external_journal_checkpoint",
+  "work_item": "FP-FAIL-002"
+}
