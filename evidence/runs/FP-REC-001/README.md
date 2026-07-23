@@ -1,27 +1,31 @@
 # FP-REC-001 evidence
 
-Implementation commit: `aba57d0892a27f6b55905995369b652e6f6a8a40`
+Implementation commit: `5a57bdaee36ab3c66f8e378811134d3c804a8d8a`
 
 This bundle deterministically backfills the merged FP-E2E-001 devnet proof into
 the normative reconciliation protocol:
 
 - `l1-observation.json` is the immutable, normalized L1 source observation;
-- `reconciliation-result.json` records `confirmed`, `l1_verified`, and
-  independent verification `pending`;
+- `l2-observation.json` is the independently obtained Alchemy observation;
+- `reconciliation-result.json` records `finalized`, `l1_verified`, and
+  independent verification `l2_verified`;
 - `manifest.json` binds the evidence to the implementation commit and
   observation hash.
 
-The L1 observation is live evidence. The conformance suite proves L2/L3
-qualification and disagreement behavior using controlled readers, but those
-tests are not represented as live independent verification.
+Both L1 and L2 are live observations of the FP-E2E-001 transaction. L2 was read
+directly from Alchemy using `getTransaction` and `getSignatureStatuses`. Alchemy
+has a provider, trust domain, endpoint identity, transport invocation, and parser
+boundary distinct from the L1 backfill. The credential-bearing endpoint was used
+only at runtime and was not persisted.
 
-Live L2 remains `pending_external_provider`. It requires a Solana devnet endpoint
-whose provider, trust domain, and endpoint identity differ from the L1 public
-RPC. No L2 claim is made by this bundle.
+To reproduce, set a credential-bearing Alchemy devnet endpoint in the current
+process, then
+invoke `write_fp_rec_001_live_l2_evidence` with implementation commit
+`5a57bdaee36ab3c66f8e378811134d3c804a8d8a`. Never place the endpoint in a
+tracked file or command transcript.
 
-Reproduce from the repository root:
+Then run:
 
 ```text
-python -c "from pathlib import Path; from services.reconciliation.backfill import write_fp_rec_001_evidence; root=Path.cwd(); write_fp_rec_001_evidence(root/'evidence/runs/FP-E2E-001/live-proof.json', root/'evidence/runs/FP-REC-001', implementation_commit='aba57d0892a27f6b55905995369b652e6f6a8a40')"
 python -m pytest tests/reconciliation -q
 ```
