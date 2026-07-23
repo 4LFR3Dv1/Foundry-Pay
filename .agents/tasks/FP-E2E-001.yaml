@@ -1,0 +1,42 @@
+work_item: FP-E2E-001
+objective: prove one governed SPL remediation on devnet without duplicate economic effect
+owner: implementation-agent
+branch: agent/e2e/FP-E2E-001
+allowed_paths:
+  - scripts/e2e/**
+  - tests/e2e/**
+  - evidence/runs/FP-E2E-001/**
+  - docs/WORK_GRAPH.md
+  - .agents/tasks/FP-E2E-001.yaml
+  - .agents/reviews/FP-E2E-001.yaml
+dependencies:
+  - FP-SIGN-001
+  - SA-EXEC-001
+invariants:
+  - exact approved operation is one devnet SPL transfer of 1000000 base units
+  - asset signing material remains inside an isolated local signer process
+  - Solana-Agent receives only exact message bytes, authorization, and signature
+  - signature is persisted before the single broadcast
+  - unknown outcome is recovered by signature and never rebroadcast
+  - Foundry independently observes chain state and balance deltas
+acceptance:
+  - fresh preparation and simulation pass
+  - Foundry recomputes commitment and issues short single-use authorization
+  - signer signs only the authorized exact bytes
+  - Solana-Agent submits once and confirms
+  - source and destination token deltas equal the authorized amount
+  - evidence bundle contains correlated request, hashes, signature, receipt, and reconciliation
+verification_commands:
+  - python -m pytest
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+evidence:
+  - evidence/runs/FP-E2E-001/
+provenance: []
+stop_conditions:
+  - any preflight hash or balance differs
+  - authorization or prepared message expires
+  - broadcast outcome becomes ambiguous
+  - a second broadcast is attempted
+  - signing material appears in output or evidence

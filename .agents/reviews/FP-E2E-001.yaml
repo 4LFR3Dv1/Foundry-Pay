@@ -1,0 +1,19 @@
+work_item: FP-E2E-001
+reviewer: independent-security-and-reconciliation-reviewer
+commit: pending
+checks:
+  explicit_operation_matches_approval: pending
+  exact_hash_bindings: pending
+  authorization_authenticity: pending
+  isolated_asset_signer: pending
+  signature_persisted_before_response: pending
+  single_broadcast: pending
+  independent_balance_reconciliation: pending
+  secret_safety: pending
+  evidence_reproducibility: pending
+decision: pending
+findings: []
+evidence:
+  - evidence/runs/FP-E2E-001/README.md
+  - evidence/runs/FP-E2E-001/live-proof.json
+  - evidence/runs/FP-E2E-001/journal-audit.json
