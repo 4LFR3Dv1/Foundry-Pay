@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
 
 import pytest
+from foundry_external_execution_protocol import canonicalize, sha256_digest
 
 from services.process_chaos import run_process_matrix
 
@@ -153,3 +155,27 @@ def test_no_scenario_persists_private_material_or_second_send(
         metrics = report.get("proxy_send_transaction")
         if metrics is not None:
             assert metrics["requests_received"] <= 1
+
+
+def test_committed_journal_root_binds_every_scenario_and_demo() -> None:
+    evidence = ROOT / "evidence" / "runs" / "FP-FAIL-002"
+    checkpoint_path = evidence / "journal-root.json"
+    checkpoint_bytes = checkpoint_path.read_bytes()
+    checkpoint = json.loads(checkpoint_bytes)
+    manifest = json.loads((evidence / "manifest.json").read_text(encoding="utf-8"))
+    demo = json.loads((evidence / "master-demo.json").read_text(encoding="utf-8"))
+
+    for artifact in checkpoint["artifacts"]:
+        assert sha256_digest((evidence / artifact["path"]).read_bytes()) == artifact["sha256"]
+    assert checkpoint["artifact_root"] == sha256_digest(canonicalize(checkpoint["artifacts"]))
+    assert manifest["journal_root"] == sha256_digest(checkpoint_bytes)
+    assert manifest["scenario_count"] == 9
+    assert manifest["gateway_process_scenario_count"] == 8
+    assert manifest["all_send_transaction_counts_at_most_one"] is True
+    assert demo["demo_assertions"] == {
+        "client_responses_delivered": 0,
+        "gateway_recovery_outcome": "recovered_confirmed",
+        "rebroadcasts": 0,
+        "send_transaction_requests_received": 1,
+        "upstream_requests_forwarded": 1,
+    }
