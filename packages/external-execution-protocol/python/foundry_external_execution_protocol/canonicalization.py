@@ -12,6 +12,9 @@ import rfc8785
 
 PROFILE = "foundry-pay-domain-v1"
 PROTOCOL_VERSION = "1.0.0"
+NETWORK = "solana:devnet"
+CAPABILITY = "solana.spl_transfer.v1"
+MAX_SAFE_INTEGER = 9_007_199_254_740_991
 _IDENTIFIER = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}$")
 _AMOUNT = re.compile(r"^(0|[1-9][0-9]*)$")
 _TIMESTAMP = re.compile(
@@ -26,6 +29,7 @@ _PLAN_REQUIRED = {
     "normalization_profile",
     "obligation_id",
     "network",
+    "capability",
     "asset",
     "amount_base_units",
     "source",
@@ -52,15 +56,33 @@ class DomainNormalizationError(ValueError):
     """Input is not in the normative domain representation."""
 
 
-def _reject_floats(value: Any, path: str = "$") -> None:
+def _reject_unsupported_json(value: Any, path: str = "$") -> None:
+    if value is None:
+        raise DomainNormalizationError(f"{path}: null is forbidden")
     if isinstance(value, float):
         raise DomainNormalizationError(f"{path}: floating-point values are forbidden")
+    if isinstance(value, bool):
+        return
+    if isinstance(value, int) and not isinstance(value, bool):
+        if not -MAX_SAFE_INTEGER <= value <= MAX_SAFE_INTEGER:
+            raise DomainNormalizationError(f"{path}: integer exceeds JavaScript safe range")
+        return
+    if isinstance(value, str):
+        if any(0xD800 <= ord(character) <= 0xDFFF for character in value):
+            raise DomainNormalizationError(f"{path}: lone Unicode surrogate is forbidden")
+        return
     if isinstance(value, Mapping):
         for key, child in value.items():
-            _reject_floats(child, f"{path}.{key}")
-    elif isinstance(value, (list, tuple)):
+            if not isinstance(key, str):
+                raise DomainNormalizationError(f"{path}: object keys must be strings")
+            _reject_unsupported_json(key, f"{path}.<key>")
+            _reject_unsupported_json(child, f"{path}.{key}")
+        return
+    if isinstance(value, list):
         for index, child in enumerate(value):
-            _reject_floats(child, f"{path}[{index}]")
+            _reject_unsupported_json(child, f"{path}[{index}]")
+        return
+    raise DomainNormalizationError(f"{path}: unsupported JSON type")
 
 
 def _require_closed_keys(
@@ -127,7 +149,7 @@ def normalize_economic_plan(plan: Mapping[str, Any]) -> dict[str, Any]:
 
     if not isinstance(plan, Mapping):
         raise DomainNormalizationError("$: economic plan must be an object")
-    _reject_floats(plan)
+    _reject_unsupported_json(plan)
     _require_closed_keys(
         plan,
         required=_PLAN_REQUIRED,
@@ -139,8 +161,10 @@ def normalize_economic_plan(plan: Mapping[str, Any]) -> dict[str, Any]:
     if plan["normalization_profile"] != PROFILE:
         raise DomainNormalizationError("$.normalization_profile: unsupported profile")
     _require_identifier(plan["obligation_id"], "$.obligation_id")
-    if plan["network"] != "solana-devnet":
+    if plan["network"] != NETWORK:
         raise DomainNormalizationError("$.network: unsupported network")
+    if plan["capability"] != CAPABILITY:
+        raise DomainNormalizationError("$.capability: unsupported capability")
     amount = plan["amount_base_units"]
     if not isinstance(amount, str) or not _AMOUNT.fullmatch(amount):
         raise DomainNormalizationError("$.amount_base_units: non-canonical amount")
@@ -176,9 +200,9 @@ def normalize_economic_plan(plan: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def canonicalize(value: Any) -> bytes:
-    """Return RFC 8785 canonical JSON bytes after rejecting floats."""
+    """Return RFC 8785 bytes after enforcing the signed-object JSON domain."""
 
-    _reject_floats(value)
+    _reject_unsupported_json(value)
     try:
         return rfc8785.dumps(value)
     except (rfc8785.CanonicalizationError, rfc8785.FloatDomainError) as error:
@@ -208,7 +232,7 @@ def simulation_attestation_hash(attestation: Mapping[str, Any]) -> str:
 def execution_commitment_hash(commitment: Mapping[str, Any]) -> str:
     if not isinstance(commitment, Mapping):
         raise DomainNormalizationError("execution commitment must be an object")
-    _reject_floats(commitment)
+    _reject_unsupported_json(commitment)
     _require_closed_keys(commitment, required=_COMMITMENT_REQUIRED, path="$")
     if commitment["protocol_version"] != PROTOCOL_VERSION:
         raise DomainNormalizationError("$.protocol_version: unsupported version")

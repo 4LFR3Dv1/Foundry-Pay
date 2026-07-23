@@ -27,6 +27,26 @@ protocol input.
 Economic objects are normalized by a versioned Domain Normalization Profile and
 canonicalized with RFC 8785 before SHA-256.
 
+Protocol v1 uses:
+
+```json
+{
+  "amount_base_units": "1000000",
+  "network": "solana:devnet",
+  "capability": "solana.spl_transfer.v1",
+  "expires_at": "2026-07-23T18:00:00Z"
+}
+```
+
+Financial values are decimal base-unit strings, never floats. Optional values
+are absent rather than `null`. Signed objects reject floats, NaN, Infinity,
+negative zero, and integers outside JavaScript's safe range. Addresses are
+validated before hashing.
+
+Unicode is not normalized silently: canonicalization hashes the exact input
+sequence and rejects lone surrogates. Array order is material; object property
+order is not.
+
 The prepared message hash is SHA-256 over exact serialized transaction message
 bytes, not a semantic reconstruction.
 

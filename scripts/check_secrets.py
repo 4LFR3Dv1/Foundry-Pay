@@ -11,9 +11,13 @@ ROOT = Path(__file__).parents[1]
 SKIP_PARTS = {".git", ".venv", "node_modules", "dist", "build"}
 TEXT_SUFFIXES = {
     ".json",
+    ".js",
     ".md",
+    ".mjs",
     ".py",
     ".toml",
+    ".ts",
+    ".tsx",
     ".yaml",
     ".yml",
 }

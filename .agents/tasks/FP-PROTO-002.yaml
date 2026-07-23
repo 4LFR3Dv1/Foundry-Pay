@@ -1,0 +1,41 @@
+work_item: FP-PROTO-002
+objective: prove normative canonicalization and hashing across Python and TypeScript
+owner: implementation-agent
+branch: agent/protocol/FP-PROTO-002
+allowed_paths:
+  - packages/external-execution-protocol/**
+  - tests/protocol/**
+  - docs/EXTERNAL_EXECUTION_PROTOCOL.md
+  - docs/DECISIONS.md
+  - docs/WORK_GRAPH.md
+  - evidence/runs/FP-PROTO-002.md
+  - .agents/tasks/FP-PROTO-002.yaml
+  - .github/workflows/ci.yml
+  - scripts/check_secrets.py
+dependencies:
+  - FP-PROTO-001
+invariants:
+  - financial values use decimal base-unit strings
+  - signed objects never contain null or floating-point values
+  - Unicode is not normalized silently
+  - array order remains material
+  - object property order is immaterial
+acceptance:
+  - Python canonical bytes equal TypeScript canonical bytes
+  - Python SHA-256 equals TypeScript SHA-256
+  - positive vectors pass
+  - negative vectors fail
+  - single-field tampering changes hash
+  - unsafe JavaScript numeric values are rejected
+verification_commands:
+  - python -m pytest tests/protocol
+  - npm test --prefix packages/external-execution-protocol/typescript
+  - python scripts/check_secrets.py
+evidence:
+  - evidence/runs/FP-PROTO-002.md
+provenance: []
+stop_conditions:
+  - cross-language bytes differ
+  - unsupported numeric value is accepted
+  - normalization changes Unicode input
+  - incompatible schema change lacks explicit version decision
