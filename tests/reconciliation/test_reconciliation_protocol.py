@@ -23,6 +23,7 @@ from services.reconciliation.backfill import backfill_fp_e2e_001
 
 ROOT = Path(__file__).parents[2]
 PROOF = ROOT / "evidence" / "runs" / "FP-E2E-001" / "live-proof.json"
+LIVE_EVIDENCE = ROOT / "evidence" / "runs" / "FP-REC-001"
 SCHEMA = (
     ROOT
     / "packages"
@@ -87,6 +88,52 @@ def test_live_fp_e2e_backfills_to_hashed_schema_valid_l1(
     assert result["reconciliation_status"] == "l1_verified"
     assert result["independent_verification"] == "pending"
     assert result["consensus"] == "approved"
+
+
+def test_committed_live_l2_bundle_is_valid_and_approved() -> None:
+    expected, _, _ = backfill_fp_e2e_001(PROOF)
+    l1 = json.loads((LIVE_EVIDENCE / "l1-observation.json").read_text(encoding="utf-8"))
+    l2 = json.loads((LIVE_EVIDENCE / "l2-observation.json").read_text(encoding="utf-8"))
+    stored_result = json.loads(
+        (LIVE_EVIDENCE / "reconciliation-result.json").read_text(encoding="utf-8")
+    )
+    manifest = json.loads((LIVE_EVIDENCE / "manifest.json").read_text(encoding="utf-8"))
+
+    assert list(VALIDATOR.iter_errors(l1)) == []
+    assert list(VALIDATOR.iter_errors(l2)) == []
+    descriptors = [
+        SourceDescriptor(
+            **{
+                field: observation[field]
+                for field in (
+                    "source_id",
+                    "source_class",
+                    "source_kind",
+                    "provider_id",
+                    "trust_domain_id",
+                    "endpoint_identity_hash",
+                    "parser_id",
+                )
+            }
+        )
+        for observation in (l1, l2)
+    ]
+    result = aggregate_reconciliation(
+        expected,
+        [l1, l2],
+        SourceRegistry(descriptors),
+    )
+
+    assert result == stored_result
+    assert result["execution_status"] == "finalized"
+    assert result["independent_verification"] == "l2_verified"
+    assert descriptors[0].provider_id != descriptors[1].provider_id
+    assert descriptors[0].trust_domain_id != descriptors[1].trust_domain_id
+    assert descriptors[0].endpoint_identity_hash != descriptors[1].endpoint_identity_hash
+    assert manifest["observation_hashes"] == {
+        "L1": observation_hash(l1),
+        "L2": observation_hash(l2),
+    }
 
 
 def test_hash_ignores_property_order_but_detects_single_field_tamper(

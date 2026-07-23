@@ -73,9 +73,10 @@ The first live devnet proof is converted into the normative L1 format by
 payload. The resulting bundle proves L1 reconciliation and intentionally records
 L2 as `pending_external_provider`.
 
-The live L2 gate requires a devnet endpoint operated by a provider and trust
-domain different from the L1 public RPC. Supplying that endpoint completes an
-external observation; it does not require a protocol or consensus change.
+The live L2 gate uses an Alchemy devnet endpoint, a provider and trust domain
+different from the L1 public RPC. The credential-bearing URL is accepted only at
+runtime. Neither it nor its API key is persisted; evidence stores the normalized
+provider identity and endpoint identity hash.
 
 ## Verification
 

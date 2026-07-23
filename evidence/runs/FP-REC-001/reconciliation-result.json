@@ -1,9 +1,9 @@
 {
   "consensus": "approved",
   "execution_request_id": "exec_fp_e2e_001_20260723T204614Z",
-  "execution_status": "confirmed",
+  "execution_status": "finalized",
   "expected_amount_base_units": "1000000",
-  "independent_verification": "pending",
+  "independent_verification": "l2_verified",
   "obligation_id": "obl_fp_e2e_001_20260723T204614Z",
   "observations": [
     {
@@ -12,12 +12,17 @@
       "result": "matched",
       "source_class": "L1",
       "source_id": "foundry_l1_canonical_devnet"
+    },
+    {
+      "disagreements": [],
+      "observation_hash": "sha256:e465874ba90be369df1616edd226a083a0aaa5797001e4d4595f753971ac4121",
+      "result": "matched",
+      "source_class": "L2",
+      "source_id": "alchemy_devnet"
     }
   ],
   "protocol_version": "1.0.0",
   "reconciliation_status": "l1_verified",
   "type": "reconciliation_result",
-  "unavailable_source_ids": [
-    "l2_provider_required"
-  ]
+  "unavailable_source_ids": []
 }
