@@ -1,0 +1,11 @@
+{
+  "artifacts": [
+    "l1-observation.json",
+    "reconciliation-result.json"
+  ],
+  "implementation_commit": "aba57d0892a27f6b55905995369b652e6f6a8a40",
+  "live_l1": "verified",
+  "live_l2": "pending_external_provider",
+  "observation_hash": "sha256:20147b7ceb7fa8190a9f354c6d7d36707e716ba20d8aace3eb3f8508817a2cf4",
+  "work_item": "FP-REC-001"
+}
