@@ -1,0 +1,46 @@
+work_item: FP-FAIL-001
+objective: prove durable fail-closed recovery across the distributed execution boundary
+owner: implementation-agent
+branch: agent/failures/FP-FAIL-001
+allowed_paths:
+  - services/failure_lab/**
+  - tests/failures/**
+  - docs/FAILURE_RECOVERY.md
+  - docs/WORK_GRAPH.md
+  - evidence/runs/FP-FAIL-001/**
+  - .agents/tasks/FP-FAIL-001.yaml
+  - .agents/reviews/FP-FAIL-001.yaml
+dependencies:
+  - FP-E2E-001
+  - FP-REC-001
+invariants:
+  - signature is durably persisted before any broadcast attempt
+  - an ambiguous broadcast outcome becomes needs_recovery
+  - no automatic retry occurs from needs_recovery
+  - no new message is materialized while an obligation has an unknown outcome
+  - blockhash expiry never authorizes rebuilding an unresolved operation
+  - reconciliation failure never rewrites executor history
+  - evidence is generated from the durable journal and scenario runner
+acceptance:
+  - lost response after broadcast recovers the persisted signature and effect
+  - restart before signature persistence proves no broadcast occurred
+  - restart after signature persistence preserves the exact signed transaction
+  - RPC unavailability remains pending without retransmission
+  - unknown broadcast state remains needs_recovery
+  - expired blockhash requires a new prepare only when the journal proves no broadcast attempt occurred
+  - L1 and L2 divergence opens reconciliation_disputed
+  - every scenario proves broadcast_count is at most one
+  - every scenario produces a hash-bound evidence bundle
+verification_commands:
+  - python -m pytest
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+evidence:
+  - evidence/runs/FP-FAIL-001/
+provenance: []
+stop_conditions:
+  - a needs_recovery state triggers automatic broadcast
+  - an unknown obligation is rematerialized
+  - a scenario reports success without durable journal evidence
+  - a secret or credential enters a fixture or evidence bundle
