@@ -60,6 +60,12 @@
       "target": "execution_commitment",
       "path": ["constraints", "max_fee_lamports"],
       "value": 9007199254740992
+    },
+    {
+      "id": "invalid-obligation-identifier",
+      "target": "execution_commitment",
+      "path": ["obligation_id"],
+      "value": "invalid obligation id"
     }
   ]
 }

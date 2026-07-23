@@ -53,12 +53,24 @@ bytes, not a semantic reconstruction.
 The execution commitment binds:
 
 - protocol and normalization profile versions;
-- request, obligation, and executor identity;
+- `execution_request_id`, `obligation_id`, and executor identity;
 - economic plan hash;
 - prepared message hash;
 - simulation attestation hash;
 - signer and execution constraints;
 - authorization expiry.
+
+### Draft v1 pre-integration correction
+
+`FP-PROTO-007` made `obligation_id` an explicit required property of the
+normative execution commitment. No released consumer used the earlier draft.
+The correction aligns Foundry Pay with the first live Solana-Agent
+implementation and keeps protocol version `1.0.0`.
+
+Changing, omitting, or supplying a non-canonical `obligation_id` invalidates the
+commitment. `PreparedExecution` does not duplicate the obligation identifier;
+Foundry reconstructs the commitment using its authoritative economic plan and
+the prepared fields returned by the executor.
 
 ## Recovery rule
 

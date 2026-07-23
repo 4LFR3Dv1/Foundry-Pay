@@ -1,0 +1,40 @@
+work_item: FP-PROTO-007
+objective: align the draft v1 execution commitment with the live Solana-Agent commitment
+owner: implementation-agent
+branch: agent/protocol/FP-PROTO-007
+allowed_paths:
+  - packages/external-execution-protocol/**
+  - tests/protocol/**
+  - docs/EXTERNAL_EXECUTION_PROTOCOL.md
+  - docs/DECISIONS.md
+  - docs/WORK_GRAPH.md
+  - evidence/runs/FP-PROTO-007.md
+  - .agents/tasks/FP-PROTO-007.yaml
+  - .agents/reviews/FP-PROTO-007.yaml
+  - provenance/REUSE_LEDGER.yaml
+dependencies:
+  - FP-PROTO-003
+  - SA-GW-002
+invariants:
+  - obligation_id is required in every draft v1 execution commitment
+  - obligation_id uses the normative identifier grammar
+  - changing obligation_id changes execution_commitment_hash
+  - Python and TypeScript derive identical canonical bytes and hashes
+acceptance:
+  - positive vector includes obligation_id and passes in Python and TypeScript
+  - missing, invalid, and tampered obligation_id cases fail or change the hash
+  - fake executor constructs and reconstructs the same commitment shape
+  - protocol documentation records the pre-integration v1 correction
+verification_commands:
+  - python -m pytest tests/protocol
+  - npm test --prefix packages/external-execution-protocol/typescript
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+evidence:
+  - evidence/runs/FP-PROTO-007.md
+provenance: []
+stop_conditions:
+  - Python and TypeScript hashes diverge
+  - live Solana-Agent commitment cannot be represented by the corrected v1 contract
+  - an authorization can bind a different obligation without changing its commitment

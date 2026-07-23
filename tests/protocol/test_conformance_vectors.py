@@ -33,6 +33,14 @@ NEGATIVE_VECTOR = (
     / "vectors"
     / "negative-v1.json"
 )
+SOLANA_AGENT_LIVE_VECTOR = (
+    Path(__file__).parents[2]
+    / "packages"
+    / "external-execution-protocol"
+    / "conformance"
+    / "vectors"
+    / "solana-agent-live-v1.json"
+)
 
 
 def set_path(target: dict, path: list[str], value: object) -> None:
@@ -82,3 +90,12 @@ def test_shared_negative_vectors_fail() -> None:
         )
         with pytest.raises(DomainNormalizationError, match=".+"):
             operation(target)
+
+
+def test_live_solana_agent_commitment_matches_corrected_v1() -> None:
+    vector = json.loads(SOLANA_AGENT_LIVE_VECTOR.read_text(encoding="utf-8"))
+
+    assert (
+        execution_commitment_hash(vector["execution_commitment"])
+        == vector["execution_commitment_hash"]
+    )

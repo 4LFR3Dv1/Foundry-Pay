@@ -16,8 +16,11 @@ Status values: `blocked`, `ready`, `active`, `review`, `done`.
 | FP-PROTO-004 | ready | FP-PROTO-001 | errors, capabilities, versioning |
 | FP-PROTO-005 | ready | FP-PROTO-001 | correlated journal and evidence manifest |
 | FP-PROTO-006 | ready | FP-PROTO-001 | simulation validity and drift |
+| FP-PROTO-007 | review | FP-PROTO-003, SA-GW-002 | bind `obligation_id` in the draft v1 commitment |
 | SA-BASE-001 | done | FP-ADR-001 | immutable Solana-Agent baseline |
-| SA-GW-001 | ready | FP-PROTO-003, SA-BASE-001 | JSONL gateway |
+| SA-GW-001 | done | FP-PROTO-003, SA-BASE-001 | JSONL gateway |
+| SA-GW-002 | done | SA-GW-001 | live devnet SPL preparation and simulation |
+| FP-AUTH-001 | ready | FP-PROTO-007, SA-GW-002 | short-lived exact-message execution authorization |
 | FP-PROD-001 | ready | - | three operator interviews |
 | FP-PROD-002 | blocked | FP-PROD-001 | five frequent incidents |
 | FP-PROD-003 | blocked | FP-PROD-002 | sanitized incident fixture |
@@ -28,6 +31,7 @@ Status values: `blocked`, `ready`, `active`, `review`, `done`.
 |---|---|
 | FP-CTRL-001/005 | repository root, `.agents/**`, `docs/**`, `provenance/**` |
 | FP-PROTO-001/002 | `packages/external-execution-protocol/**`, `tests/protocol/**` |
+| FP-PROTO-007 | protocol package, protocol tests, protocol docs, task contract, evidence |
 
 ## First gate
 

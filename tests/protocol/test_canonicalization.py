@@ -96,6 +96,7 @@ def test_execution_commitment_binds_plan_message_and_simulation(
         "protocol_version": "1.0.0",
         "normalization_profile": "foundry-pay-domain-v1",
         "execution_request_id": "exec_demo_001",
+        "obligation_id": economic_plan["obligation_id"],
         "executor_id": "solana-agent",
         "executor_version": "0.1.0",
         "economic_plan_hash": economic_plan_hash(economic_plan),
@@ -114,12 +115,22 @@ def test_execution_commitment_binds_plan_message_and_simulation(
     mutated["prepared_message_hash"] = prepared_message_hash(b"message-v2")
     assert execution_commitment_hash(mutated) != original
 
+    changed_obligation = copy.deepcopy(commitment)
+    changed_obligation["obligation_id"] = "obl_demo_002"
+    assert execution_commitment_hash(changed_obligation) != original
+
+    missing_obligation = copy.deepcopy(commitment)
+    del missing_obligation["obligation_id"]
+    with pytest.raises(DomainNormalizationError, match="missing keys"):
+        execution_commitment_hash(missing_obligation)
+
 
 def test_rejects_floats_in_signed_constraints(economic_plan: dict) -> None:
     commitment = {
         "protocol_version": "1.0.0",
         "normalization_profile": "foundry-pay-domain-v1",
         "execution_request_id": "exec_demo_001",
+        "obligation_id": economic_plan["obligation_id"],
         "executor_id": "solana-agent",
         "executor_version": "0.1.0",
         "economic_plan_hash": economic_plan_hash(economic_plan),

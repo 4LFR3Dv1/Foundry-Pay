@@ -281,6 +281,7 @@ class FakeExternalExecutor:
             "protocol_version": PROTOCOL_VERSION,
             "normalization_profile": PROFILE,
             "execution_request_id": request["execution_request_id"],
+            "obligation_id": plan["obligation_id"],
             "executor_id": self.executor_id,
             "executor_version": self.executor_version,
             "economic_plan_hash": plan_hash,
@@ -434,7 +435,12 @@ class FakeExternalExecutor:
             if execution["state"] == "confirmed":
                 raise ObligationAlreadyExecuted(execution["obligation_id"])
             prepared = json.loads(execution["prepared_json"])
-            self._verify_binding(authorization, prepared, current)
+            self._verify_binding(
+                authorization,
+                prepared,
+                current,
+                obligation_id=execution["obligation_id"],
+            )
 
             existing_effect = connection.execute(
                 "SELECT 1 FROM effects WHERE obligation_id = ?",
@@ -513,6 +519,8 @@ class FakeExternalExecutor:
         authorization: Mapping[str, Any],
         prepared: Mapping[str, Any],
         current: datetime,
+        *,
+        obligation_id: str,
     ) -> None:
         exact_fields = (
             "execution_request_id",
@@ -541,6 +549,7 @@ class FakeExternalExecutor:
             "protocol_version": prepared["protocol_version"],
             "normalization_profile": PROFILE,
             "execution_request_id": prepared["execution_request_id"],
+            "obligation_id": obligation_id,
             "executor_id": prepared["executor_id"],
             "executor_version": prepared["executor_version"],
             "economic_plan_hash": prepared["economic_plan_hash"],

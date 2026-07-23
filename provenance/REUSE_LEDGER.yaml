@@ -5,6 +5,19 @@ policy:
   attribution_required: true
 
 sources:
+  - id: solana-agent-sa-gw-002-evidence
+    repository: 4LFR3Dv1/Solana-Agent
+    commit: 6bdecfbbcbc737ce8c5009cb9dd31e8b24fa64ec
+    visibility: public
+    license: Apache-2.0
+    disposition: conformance-evidence
+    candidate_assets:
+      - live devnet execution commitment
+    copied_paths:
+      - source: docs/evidence/sa-gw-002-live-devnet.json
+        destination: packages/external-execution-protocol/conformance/vectors/solana-agent-live-v1.json
+        modifications: reconstructed the normative commitment object from the correlated live request and evidence
+
   - id: solana-agent-baseline
     repository: 4LFR3Dv1/Solana-Agent
     commit: 6023d78b10b31b47a1beeecd438d67afbc722bd4

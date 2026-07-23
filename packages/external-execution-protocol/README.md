@@ -17,3 +17,12 @@ business approval logic.
 Both language implementations consume the same positive and negative vectors.
 Canonical bytes and SHA-256 values are asserted before either implementation
 can pass CI.
+
+Regenerate the positive vector after an approved draft-contract change:
+
+```text
+python packages/external-execution-protocol/conformance/generate_vectors.py
+```
+
+The generated file is then independently verified by both the Python and
+TypeScript conformance suites.

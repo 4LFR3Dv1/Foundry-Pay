@@ -299,6 +299,32 @@ def test_persisted_message_tampering_fails_before_effect(
     assert executor.effect_count("obl_demo_001") == 0
 
 
+def test_persisted_obligation_rebinding_fails_before_effect(
+    executor: FakeExternalExecutor,
+    authority: FakeAuthorizationAuthority,
+    vector: dict,
+) -> None:
+    prepared = prepare(executor, vector)
+    grant = authorization(authority, prepared)
+    with sqlite3.connect(executor.database) as connection:
+        connection.execute(
+            """
+            UPDATE executions
+            SET obligation_id = ?
+            WHERE execution_request_id = ?
+            """,
+            ("obl_demo_002", prepared["execution_request_id"]),
+        )
+
+    with pytest.raises(AuthorizationMismatch, match="commitment hash mismatch"):
+        executor.authorize_and_execute(
+            grant,
+            now=datetime(2026, 7, 23, 17, 32, tzinfo=UTC),
+        )
+    assert executor.effect_count("obl_demo_001") == 0
+    assert executor.effect_count("obl_demo_002") == 0
+
+
 def test_lost_response_recovers_durably_without_duplicate_effect(
     executor: FakeExternalExecutor,
     authority: FakeAuthorizationAuthority,

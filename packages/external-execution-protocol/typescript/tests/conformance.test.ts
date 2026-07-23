@@ -23,6 +23,12 @@ const vector = JSON.parse(
 const negativeVectors = JSON.parse(
   readFileSync(new URL("../../../conformance/vectors/negative-v1.json", import.meta.url), "utf8"),
 ) as { cases: Array<{ id: string; target: string; path: string[]; value: unknown }> };
+const solanaAgentLiveVector = JSON.parse(
+  readFileSync(
+    new URL("../../../conformance/vectors/solana-agent-live-v1.json", import.meta.url),
+    "utf8",
+  ),
+) as JsonObject;
 
 function clone<T>(value: T): T {
   return structuredClone(value);
@@ -104,6 +110,23 @@ test("single-field tampering changes the economic hash", () => {
   const original = economicPlanHash(plan);
   plan.amount_base_units = "1000001";
   assert.notEqual(economicPlanHash(plan), original);
+});
+
+test("obligation identity is required and material to the commitment", () => {
+  const commitment = clone(vector.execution_commitment as JsonObject);
+  const original = executionCommitmentHash(commitment);
+  commitment.obligation_id = "obl_demo_002";
+  assert.notEqual(executionCommitmentHash(commitment), original);
+
+  delete commitment.obligation_id;
+  assert.throws(() => executionCommitmentHash(commitment), DomainNormalizationError);
+});
+
+test("live Solana-Agent commitment matches corrected v1", () => {
+  assert.equal(
+    executionCommitmentHash(solanaAgentLiveVector.execution_commitment),
+    solanaAgentLiveVector.execution_commitment_hash,
+  );
 });
 
 test("unsupported JavaScript numeric values fail", () => {

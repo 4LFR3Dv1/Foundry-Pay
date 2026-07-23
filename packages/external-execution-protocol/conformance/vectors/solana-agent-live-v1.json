@@ -1,0 +1,29 @@
+{
+  "vector_version": "1",
+  "source": {
+    "repository": "4LFR3Dv1/Solana-Agent",
+    "commit": "6bdecfbbcbc737ce8c5009cb9dd31e8b24fa64ec",
+    "work_item": "SA-GW-002",
+    "execution_request_id": "exec_sa_gw_002_live_20260723T163529Z"
+  },
+  "execution_commitment": {
+    "protocol_version": "1.0.0",
+    "normalization_profile": "foundry-pay-domain-v1",
+    "execution_request_id": "exec_sa_gw_002_live_20260723T163529Z",
+    "obligation_id": "obl_sa_gw_002_live_20260723T163529Z",
+    "executor_id": "solana-agent",
+    "executor_version": "0.2.0",
+    "economic_plan_hash": "sha256:d1cff2a760c7ca3b377e1f640abfea194b939d1a48385e0f0838d87aad5adfb3",
+    "prepared_message_hash": "sha256:85a6b98ca7c050ee9dcba7aa0750d876a8ef5fd084458e768200256a9950cba6",
+    "simulation_attestation_hash": "sha256:8ea92ac3e6cf487989c3292d6b67059be5fc32b5b3e13086a6d648e082efb75f",
+    "signer": "9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb",
+    "constraints": {
+      "max_fee_lamports": 50000,
+      "allowed_programs": [
+        "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+      ]
+    },
+    "expires_at": "2026-07-23T16:36:32Z"
+  },
+  "execution_commitment_hash": "sha256:e5e6ec585f0e46a6a77a2c07c291d9bb1b0c02c9c375297abdf739b00421ee79"
+}
