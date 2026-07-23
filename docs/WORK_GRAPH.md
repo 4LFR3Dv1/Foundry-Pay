@@ -24,7 +24,7 @@ Status values: `blocked`, `ready`, `active`, `review`, `done`.
 | FP-SIGN-001 | done | FP-AUTH-001 | validate authorization and sign only exact prepared bytes |
 | SA-EXEC-001 | done | FP-SIGN-001, SA-GW-002 | single broadcast, status, recovery, and evidence |
 | FP-E2E-001 | done | FP-SIGN-001, SA-EXEC-001 | governed devnet remediation and reconciliation proof |
-| FP-REC-001 | active | FP-E2E-001 | source-diverse reconciliation protocol and consensus |
+| FP-REC-001 | review | FP-E2E-001 | source-diverse reconciliation protocol and consensus |
 | FP-PROD-001 | ready | - | three operator interviews |
 | FP-PROD-002 | blocked | FP-PROD-001 | five frequent incidents |
 | FP-PROD-003 | blocked | FP-PROD-002 | sanitized incident fixture |

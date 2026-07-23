@@ -1,0 +1,22 @@
+work_item: FP-REC-001
+reviewer: independent-security-and-reconciliation-reviewer
+commit: aba57d0892a27f6b55905995369b652e6f6a8a40
+checks:
+  executor_receipt_not_accepted_as_observation: pending
+  closed_normalized_observation: pending
+  observation_hash_reproducibility: pending
+  authoritative_source_registry: pending
+  l2_source_diversity: pending
+  l3_distinct_pipeline: pending
+  disagreement_preservation: pending
+  status_separation: pending
+  live_l1_evidence_reproducibility: pending
+  live_l2_claim_absent_until_provider_available: pending
+  secret_safety: pending
+decision: pending
+findings: []
+evidence:
+  - evidence/runs/FP-REC-001/README.md
+  - evidence/runs/FP-REC-001/manifest.json
+  - evidence/runs/FP-REC-001/l1-observation.json
+  - evidence/runs/FP-REC-001/reconciliation-result.json
