@@ -6,6 +6,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
+from foundry_external_execution_protocol import sha256_digest
 
 from services.failure_lab import (
     BroadcastOutcomeUnknown,
@@ -271,3 +272,15 @@ def test_generated_evidence_manifest_binds_every_scenario(tmp_path: Path) -> Non
     for artifact in manifest["artifacts"]:
         assert (tmp_path / artifact["path"]).is_file()
         assert artifact["sha256"].startswith("sha256:")
+
+
+def test_committed_evidence_manifest_hashes_every_report() -> None:
+    evidence = ROOT / "evidence" / "runs" / "FP-FAIL-001"
+    manifest = json.loads((evidence / "manifest.json").read_text(encoding="utf-8"))
+    assert manifest["scenario_count"] == 9
+    assert manifest["all_broadcast_counts_at_most_one"] is True
+    assert manifest["all_unknown_outcomes_non_rematerializable"] is True
+    assert len(manifest["implementation_commit"]) == 40
+    for artifact in manifest["artifacts"]:
+        payload = (evidence / artifact["path"]).read_bytes()
+        assert sha256_digest(payload) == artifact["sha256"]
