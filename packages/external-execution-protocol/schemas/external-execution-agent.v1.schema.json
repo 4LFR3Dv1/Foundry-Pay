@@ -158,6 +158,24 @@
         "success": { "type": "boolean" }
       }
     },
+    "ExecutionConstraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_fee_lamports", "allowed_programs"],
+      "properties": {
+        "max_fee_lamports": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "allowed_programs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/SolanaPubkey" }
+        }
+      }
+    },
     "PreparedExecution": {
       "type": "object",
       "additionalProperties": false,
@@ -173,6 +191,8 @@
         "simulation",
         "simulation_attestation_hash",
         "execution_commitment_hash",
+        "signer",
+        "constraints",
         "expires_at"
       ],
       "properties": {
@@ -187,6 +207,8 @@
         "simulation": { "$ref": "#/$defs/SimulationAttestation" },
         "simulation_attestation_hash": { "$ref": "#/$defs/Sha256" },
         "execution_commitment_hash": { "$ref": "#/$defs/Sha256" },
+        "signer": { "$ref": "#/$defs/SolanaPubkey" },
+        "constraints": { "$ref": "#/$defs/ExecutionConstraints" },
         "expires_at": { "$ref": "#/$defs/UtcTimestamp" }
       }
     },

@@ -12,12 +12,12 @@ Status values: `blocked`, `ready`, `active`, `review`, `done`.
 | FP-ADR-001 | done | FP-CTRL-001 | external-first decision |
 | FP-PROTO-001 | done | FP-ADR-001 | v1 protocol schemas |
 | FP-PROTO-002 | done | FP-PROTO-001 | normalization and three hashes |
-| FP-PROTO-003 | ready | FP-PROTO-001, FP-PROTO-002 | fake executor and conformance kit |
-| FP-PROTO-004 | blocked | FP-PROTO-001 | errors, capabilities, versioning |
-| FP-PROTO-005 | blocked | FP-PROTO-001 | correlated journal and evidence manifest |
-| FP-PROTO-006 | blocked | FP-PROTO-001 | simulation validity and drift |
+| FP-PROTO-003 | done | FP-PROTO-001, FP-PROTO-002 | fake executor and conformance kit |
+| FP-PROTO-004 | ready | FP-PROTO-001 | errors, capabilities, versioning |
+| FP-PROTO-005 | ready | FP-PROTO-001 | correlated journal and evidence manifest |
+| FP-PROTO-006 | ready | FP-PROTO-001 | simulation validity and drift |
 | SA-BASE-001 | done | FP-ADR-001 | immutable Solana-Agent baseline |
-| SA-GW-001 | blocked | FP-PROTO-003, SA-BASE-001 | JSONL gateway |
+| SA-GW-001 | ready | FP-PROTO-003, SA-BASE-001 | JSONL gateway |
 | FP-PROD-001 | ready | - | three operator interviews |
 | FP-PROD-002 | blocked | FP-PROD-001 | five frequent incidents |
 | FP-PROD-003 | blocked | FP-PROD-002 | sanitized incident fixture |
