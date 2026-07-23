@@ -20,7 +20,8 @@ Status values: `blocked`, `ready`, `active`, `review`, `done`.
 | SA-BASE-001 | done | FP-ADR-001 | immutable Solana-Agent baseline |
 | SA-GW-001 | done | FP-PROTO-003, SA-BASE-001 | JSONL gateway |
 | SA-GW-002 | done | SA-GW-001 | live devnet SPL preparation and simulation |
-| FP-AUTH-001 | review | FP-PROTO-007, SA-GW-002 | short-lived exact-message execution authorization |
+| FP-AUTH-001 | done | FP-PROTO-007, SA-GW-002 | short-lived exact-message execution authorization |
+| FP-SIGN-001 | review | FP-AUTH-001 | validate authorization and sign only exact prepared bytes |
 | FP-PROD-001 | ready | - | three operator interviews |
 | FP-PROD-002 | blocked | FP-PROD-001 | five frequent incidents |
 | FP-PROD-003 | blocked | FP-PROD-002 | sanitized incident fixture |
@@ -33,6 +34,7 @@ Status values: `blocked`, `ready`, `active`, `review`, `done`.
 | FP-PROTO-001/002 | `packages/external-execution-protocol/**`, `tests/protocol/**` |
 | FP-PROTO-007 | protocol package, protocol tests, protocol docs, task contract, evidence |
 | FP-AUTH-001 | authorization service, authorization tests, protocol docs, task/review contracts, evidence |
+| FP-SIGN-001 | signer service, signer tests, protocol docs, task/review contracts, evidence |
 
 ## First gate
 

@@ -1,0 +1,42 @@
+work_item: FP-SIGN-001
+objective: validate ExecutionAuthorization and delegate signing of only its exact prepared bytes
+owner: implementation-agent
+branch: agent/signer/FP-SIGN-001
+allowed_paths:
+  - services/signer/**
+  - tests/signer/**
+  - docs/EXTERNAL_EXECUTION_PROTOCOL.md
+  - docs/WORK_GRAPH.md
+  - evidence/runs/FP-SIGN-001.md
+  - .agents/tasks/FP-SIGN-001.yaml
+  - .agents/reviews/FP-SIGN-001.yaml
+dependencies:
+  - FP-AUTH-001
+invariants:
+  - authorization authenticity is verified before a message reaches the asset signer
+  - exact message bytes must reproduce the authorized prepared_message_hash
+  - request, commitment, signer, single-use flag, and validity window must match
+  - authorization consumption is durable before the external signing side effect
+  - raw signing material is never accepted or exposed by the service
+  - no RPC send or transaction broadcast path exists
+acceptance:
+  - a valid live PreparedExecution and ExecutionAuthorization reaches the injected signer
+  - the injected signer receives exactly the decoded authorized message bytes
+  - any changed byte, binding, signature, or validity field is rejected
+  - a second use of an authorization is rejected
+  - restart preserves consumption and replay protection
+  - signing failure becomes needs_recovery and is never retried automatically
+verification_commands:
+  - python -m pytest
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+evidence:
+  - evidence/runs/FP-SIGN-001.md
+provenance: []
+stop_conditions:
+  - an unauthorized byte reaches the signer
+  - an invalid or expired authorization reaches the signer
+  - a consumed authorization can be replayed
+  - a signing timeout causes an automatic retry
+  - implementation accepts raw private signing material
