@@ -1,0 +1,272 @@
+{
+  "proof_version": "1.0.0",
+  "work_item": "FP-E2E-001",
+  "generated_at": "2026-07-23T20:46:22Z",
+  "network": "solana:devnet",
+  "authority_public_key": "9LAfXjiLxADaSQw2ipGQq5kPyzCy8F2hZhnP4YLBEReV",
+  "economic_plan": {
+    "protocol_version": "1.0.0",
+    "normalization_profile": "foundry-pay-domain-v1",
+    "obligation_id": "obl_fp_e2e_001_20260723T204614Z",
+    "network": "solana:devnet",
+    "capability": "solana.spl_transfer.v1",
+    "asset": {
+      "kind": "spl-token",
+      "mint": "2tUzxADKHWxwTpihHuuzwfoGhYBY7735s2QXEuUcNX3k",
+      "decimals": 6
+    },
+    "amount_base_units": "1000000",
+    "source": "9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb",
+    "destination": "6dz2u59pmn9JnSMQMeB16Mq2iMDzx3Jz1Xa2dTdbxAiE",
+    "expires_at": "2026-07-23T20:56:14Z",
+    "reason": "FP-E2E-001 governed remediation proof"
+  },
+  "economic_plan_hash": "sha256:43c3fb1d1ba9d76127ccc9452be833c8265db57f9dd2d27e7e95afeab2761a33",
+  "prepared_execution": {
+    "constraints": {
+      "allowed_programs": [
+        "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+      ],
+      "max_fee_lamports": 50000
+    },
+    "economic_plan_hash": "sha256:43c3fb1d1ba9d76127ccc9452be833c8265db57f9dd2d27e7e95afeab2761a33",
+    "execution_commitment_hash": "sha256:1b79470062864179b011b5803843389f574d998d30e7afbf3a9fcb3962cbf8ff",
+    "execution_request_id": "exec_fp_e2e_001_20260723T204614Z",
+    "executor_id": "solana-agent",
+    "executor_version": "0.3.0",
+    "expires_at": "2026-07-23T20:47:18Z",
+    "prepared_message_base64": "gAEAAgWFsHxvfs2yH1RgxBZctl8ZoLw6rc/w4PB7W+ABcqvB+oiiLZz5mG6tGo131deKoFkkfkd38gqicxLl4LqSDiCYyExpveVZgDcjVfE+aGOlkifHBQKk+EaiEiUsI1/ioQoG3fbh12Whk9nL4UbO63msHLSF7V9bN5E6jPWFfv8AqRwL94kPv2krCiZw+yCBgni0b1KnXx+6CxMGt7TMCRavoWr7BstI3gYfwXh5y8cvxChFXNuuScPdA+e0fya2g0IBAwQBBAIACgxAQg8AAAAAAAYA",
+    "prepared_message_hash": "sha256:1aac4e92ecb84e91ac69d34d5f1f7040ff6ffde2988477e6b7eff6d5fc341d9b",
+    "protocol_version": "1.0.0",
+    "signer": "9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb",
+    "simulation": {
+      "accounts_observed_hash": "sha256:39bc72ff74f3cbde5f44f2059784905ec19210775de893b42f4b6747061acd21",
+      "commitment_level": "confirmed",
+      "fee_lamports": 5000,
+      "genesis_hash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+      "last_valid_block_height": 466238795,
+      "logs_hash": "sha256:becedab55edbd5cd907943abc79f44ee3eba8d14fd9df58d841a38d05035bb70",
+      "post_balances_hash": "sha256:88ecbd7cc446c368e14f6953a99992360c1431331e67b37a95c13a6fcea5e543",
+      "pre_balances_hash": "sha256:5b359b383ba646a49c66626085c30e4cfbcef983a6e9bb1db700fa18f4794990",
+      "programs_observed_hash": "sha256:e53138d33bc1a6896b1c369580f25abd4097a677372cfcbd49e1f69a22aea407",
+      "recent_blockhash": "Bs7FhmvFZccxBLjcC1ZZzFRqKPWPLFFqP9pqBaBBXHdB",
+      "rpc_provider_id": "solana-devnet-public",
+      "simulated_at": "2026-07-23T20:46:18Z",
+      "slot": 478403716,
+      "success": true,
+      "units_consumed": 105,
+      "valid_until": "2026-07-23T20:47:18Z"
+    },
+    "simulation_attestation_hash": "sha256:e81a50bfa4a4f84718e3fea5a51b4bdd4ee8bad95448add52c0a6fc6855ee7a0",
+    "type": "prepared_execution"
+  },
+  "execution_authorization": {
+    "type": "execution_authorization",
+    "protocol_version": "1.0.0",
+    "authorization_id": "auth_fp_e2e_001_20260723T204614Z",
+    "execution_request_id": "exec_fp_e2e_001_20260723T204614Z",
+    "execution_commitment_hash": "sha256:1b79470062864179b011b5803843389f574d998d30e7afbf3a9fcb3962cbf8ff",
+    "prepared_message_hash": "sha256:1aac4e92ecb84e91ac69d34d5f1f7040ff6ffde2988477e6b7eff6d5fc341d9b",
+    "signer": "9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb",
+    "single_use": true,
+    "issued_at": "2026-07-23T20:46:18Z",
+    "expires_at": "2026-07-23T20:46:48Z",
+    "authorization_signature": "uPx1o4L2CsXSntCxAHuXUGd5ac8xG7jXPPncm9fFkSwEsKteTf29tkLPUHXUZV5Tjnet7RbMCHHGPYHqYdKbM3D"
+  },
+  "signer_receipt": {
+    "type": "message_signature_receipt",
+    "protocol_version": "1.0.0",
+    "authorization_id": "auth_fp_e2e_001_20260723T204614Z",
+    "execution_request_id": "exec_fp_e2e_001_20260723T204614Z",
+    "execution_commitment_hash": "sha256:1b79470062864179b011b5803843389f574d998d30e7afbf3a9fcb3962cbf8ff",
+    "prepared_message_hash": "sha256:1aac4e92ecb84e91ac69d34d5f1f7040ff6ffde2988477e6b7eff6d5fc341d9b",
+    "signer": "9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb",
+    "signature_envelope": "RzgQYATtgFZNG7eDgktPAaKh3R922BEjYNLRnvM7u96eFjsnSe4aFYQAtgaP4Hi7kyn91itF1eTEeo498NJ8uS4",
+    "signed_at": "2026-07-23T20:46:18Z"
+  },
+  "execute_response": {
+    "command": "authorize-and-execute",
+    "gateway_protocol_version": "1.0.0",
+    "gateway_request_id": "gw_execute_20260723T204614Z",
+    "journal_sequence": 4,
+    "ok": true,
+    "replayed": false,
+    "result": {
+      "authorization_id": "auth_fp_e2e_001_20260723T204614Z",
+      "execution_commitment_hash": "sha256:1b79470062864179b011b5803843389f574d998d30e7afbf3a9fcb3962cbf8ff",
+      "execution_request_id": "exec_fp_e2e_001_20260723T204614Z",
+      "observed_at": "2026-07-23T20:46:19Z",
+      "prepared_message_hash": "sha256:1aac4e92ecb84e91ac69d34d5f1f7040ff6ffde2988477e6b7eff6d5fc341d9b",
+      "protocol_version": "1.0.0",
+      "signature": "RzgQYATtgFZNG7eDgktPAaKh3R922BEjYNLRnvM7u96eFjsnSe4aFYQAtgaP4Hi7kyn91itF1eTEeo498NJ8uS4",
+      "signer": "9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb",
+      "state": "submitted",
+      "type": "external_execution_receipt"
+    }
+  },
+  "terminal_status": {
+    "execution_request_id": "exec_fp_e2e_001_20260723T204614Z",
+    "protocol_version": "1.0.0",
+    "signature": "RzgQYATtgFZNG7eDgktPAaKh3R922BEjYNLRnvM7u96eFjsnSe4aFYQAtgaP4Hi7kyn91itF1eTEeo498NJ8uS4",
+    "state": "confirmed",
+    "type": "external_execution_status",
+    "updated_at": "2026-07-23T20:46:21Z"
+  },
+  "executor_evidence": {
+    "command": "evidence",
+    "gateway_protocol_version": "1.0.0",
+    "gateway_request_id": "gw_evidence_20260723T204614Z",
+    "journal_sequence": 8,
+    "ok": true,
+    "replayed": false,
+    "result": {
+      "execution": {
+        "authorization": {
+          "authorization_id": "auth_fp_e2e_001_20260723T204614Z",
+          "authorization_signature": "uPx1o4L2CsXSntCxAHuXUGd5ac8xG7jXPPncm9fFkSwEsKteTf29tkLPUHXUZV5Tjnet7RbMCHHGPYHqYdKbM3D",
+          "execution_commitment_hash": "sha256:1b79470062864179b011b5803843389f574d998d30e7afbf3a9fcb3962cbf8ff",
+          "execution_request_id": "exec_fp_e2e_001_20260723T204614Z",
+          "expires_at": "2026-07-23T20:46:48Z",
+          "issued_at": "2026-07-23T20:46:18Z",
+          "prepared_message_hash": "sha256:1aac4e92ecb84e91ac69d34d5f1f7040ff6ffde2988477e6b7eff6d5fc341d9b",
+          "protocol_version": "1.0.0",
+          "signer": "9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb",
+          "single_use": true,
+          "type": "execution_authorization"
+        },
+        "authorization_id": "auth_fp_e2e_001_20260723T204614Z",
+        "confirmed_at": "2026-07-23T20:46:21Z",
+        "execution_commitment_hash": "sha256:1b79470062864179b011b5803843389f574d998d30e7afbf3a9fcb3962cbf8ff",
+        "prepared_message_hash": "sha256:1aac4e92ecb84e91ac69d34d5f1f7040ff6ffde2988477e6b7eff6d5fc341d9b",
+        "receipt": {
+          "authorization_id": "auth_fp_e2e_001_20260723T204614Z",
+          "chain_observation": {
+            "signature": "RzgQYATtgFZNG7eDgktPAaKh3R922BEjYNLRnvM7u96eFjsnSe4aFYQAtgaP4Hi7kyn91itF1eTEeo498NJ8uS4",
+            "value": {
+              "confirmationStatus": "confirmed",
+              "confirmations": 0,
+              "err": null,
+              "slot": 478403722,
+              "status": {
+                "Ok": null
+              }
+            }
+          },
+          "execution_commitment_hash": "sha256:1b79470062864179b011b5803843389f574d998d30e7afbf3a9fcb3962cbf8ff",
+          "execution_request_id": "exec_fp_e2e_001_20260723T204614Z",
+          "observed_at": "2026-07-23T20:46:21Z",
+          "prepared_message_hash": "sha256:1aac4e92ecb84e91ac69d34d5f1f7040ff6ffde2988477e6b7eff6d5fc341d9b",
+          "protocol_version": "1.0.0",
+          "signature": "RzgQYATtgFZNG7eDgktPAaKh3R922BEjYNLRnvM7u96eFjsnSe4aFYQAtgaP4Hi7kyn91itF1eTEeo498NJ8uS4",
+          "signer": "9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb",
+          "state": "confirmed",
+          "type": "external_execution_receipt"
+        },
+        "rpc_submission": {
+          "id": "gateway-sendTransaction",
+          "jsonrpc": "2.0",
+          "result": "RzgQYATtgFZNG7eDgktPAaKh3R922BEjYNLRnvM7u96eFjsnSe4aFYQAtgaP4Hi7kyn91itF1eTEeo498NJ8uS4"
+        },
+        "signature": "RzgQYATtgFZNG7eDgktPAaKh3R922BEjYNLRnvM7u96eFjsnSe4aFYQAtgaP4Hi7kyn91itF1eTEeo498NJ8uS4",
+        "signature_persisted_at": "2026-07-23T20:46:19Z",
+        "signed_transaction_base64": "ARWN5ZUu3dLfuk2+o1X67ohXMnrtI9bOlvCV7vQKfhG68Tkhmt+6kl4qadsTvKBDrYrSH8RQVuXfW11KZMooFwWAAQACBYWwfG9+zbIfVGDEFly2XxmgvDqtz/Dg8Htb4AFyq8H6iKItnPmYbq0ajXfV14qgWSR+R3fyCqJzEuXgupIOIJjITGm95VmANyNV8T5oY6WSJ8cFAqT4RqISJSwjX+KhCgbd9uHXZaGT2cvhRs7reawctIXtX1s3kTqM9YV+/wCpHAv3iQ+/aSsKJnD7IIGCeLRvUqdfH7oLEwa3tMwJFq+havsGy0jeBh/BeHnLxy/EKEVc265Jw90D57R/JraDQgEDBAEEAgAKDEBCDwAAAAAABgA=",
+        "signer": "9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb",
+        "state": "confirmed",
+        "status_observation": {
+          "signature": "RzgQYATtgFZNG7eDgktPAaKh3R922BEjYNLRnvM7u96eFjsnSe4aFYQAtgaP4Hi7kyn91itF1eTEeo498NJ8uS4",
+          "value": {
+            "confirmationStatus": "confirmed",
+            "confirmations": 0,
+            "err": null,
+            "slot": 478403722,
+            "status": {
+              "Ok": null
+            }
+          }
+        },
+        "submitted_at": "2026-07-23T20:46:19Z",
+        "updated_at": "2026-07-23T20:46:21Z"
+      },
+      "execution_request_id": "exec_fp_e2e_001_20260723T204614Z",
+      "observed_at": "2026-07-23T20:46:21Z",
+      "preparation_evidence": {
+        "destination_token_account": "EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd",
+        "local_policy": {
+          "decision": "allow",
+          "rule_id": "spl-transfer-prepare-v1"
+        },
+        "programs": [
+          "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        ],
+        "rpc_endpoint": "https://api.devnet.solana.com",
+        "source_token_account": "ACMsvvFpaafhg3477mgTu3ovgrhFLn9VMTB6Nzp65mnf"
+      },
+      "prepared_execution": {
+        "constraints": {
+          "allowed_programs": [
+            "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          ],
+          "max_fee_lamports": 50000
+        },
+        "economic_plan_hash": "sha256:43c3fb1d1ba9d76127ccc9452be833c8265db57f9dd2d27e7e95afeab2761a33",
+        "execution_commitment_hash": "sha256:1b79470062864179b011b5803843389f574d998d30e7afbf3a9fcb3962cbf8ff",
+        "execution_request_id": "exec_fp_e2e_001_20260723T204614Z",
+        "executor_id": "solana-agent",
+        "executor_version": "0.3.0",
+        "expires_at": "2026-07-23T20:47:18Z",
+        "prepared_message_base64": "gAEAAgWFsHxvfs2yH1RgxBZctl8ZoLw6rc/w4PB7W+ABcqvB+oiiLZz5mG6tGo131deKoFkkfkd38gqicxLl4LqSDiCYyExpveVZgDcjVfE+aGOlkifHBQKk+EaiEiUsI1/ioQoG3fbh12Whk9nL4UbO63msHLSF7V9bN5E6jPWFfv8AqRwL94kPv2krCiZw+yCBgni0b1KnXx+6CxMGt7TMCRavoWr7BstI3gYfwXh5y8cvxChFXNuuScPdA+e0fya2g0IBAwQBBAIACgxAQg8AAAAAAAYA",
+        "prepared_message_hash": "sha256:1aac4e92ecb84e91ac69d34d5f1f7040ff6ffde2988477e6b7eff6d5fc341d9b",
+        "protocol_version": "1.0.0",
+        "signer": "9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb",
+        "simulation": {
+          "accounts_observed_hash": "sha256:39bc72ff74f3cbde5f44f2059784905ec19210775de893b42f4b6747061acd21",
+          "commitment_level": "confirmed",
+          "fee_lamports": 5000,
+          "genesis_hash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+          "last_valid_block_height": 466238795,
+          "logs_hash": "sha256:becedab55edbd5cd907943abc79f44ee3eba8d14fd9df58d841a38d05035bb70",
+          "post_balances_hash": "sha256:88ecbd7cc446c368e14f6953a99992360c1431331e67b37a95c13a6fcea5e543",
+          "pre_balances_hash": "sha256:5b359b383ba646a49c66626085c30e4cfbcef983a6e9bb1db700fa18f4794990",
+          "programs_observed_hash": "sha256:e53138d33bc1a6896b1c369580f25abd4097a677372cfcbd49e1f69a22aea407",
+          "recent_blockhash": "Bs7FhmvFZccxBLjcC1ZZzFRqKPWPLFFqP9pqBaBBXHdB",
+          "rpc_provider_id": "solana-devnet-public",
+          "simulated_at": "2026-07-23T20:46:18Z",
+          "slot": 478403716,
+          "success": true,
+          "units_consumed": 105,
+          "valid_until": "2026-07-23T20:47:18Z"
+        },
+        "simulation_attestation_hash": "sha256:e81a50bfa4a4f84718e3fea5a51b4bdd4ee8bad95448add52c0a6fc6855ee7a0",
+        "type": "prepared_execution"
+      },
+      "protocol_version": "1.0.0",
+      "type": "execution_evidence"
+    }
+  },
+  "independent_chain_status": {
+    "confirmationStatus": "confirmed",
+    "confirmations": 2,
+    "err": null,
+    "slot": 478403722,
+    "status": {
+      "Ok": null
+    }
+  },
+  "balances_before": {
+    "source_base_units": "100000000",
+    "destination_base_units": "0"
+  },
+  "balances_after": {
+    "source_base_units": "99000000",
+    "destination_base_units": "1000000"
+  },
+  "reconciliation": {
+    "source_delta_base_units": "-1000000",
+    "destination_delta_base_units": "1000000",
+    "expected_source_delta_base_units": "-1000000",
+    "expected_destination_delta_base_units": "1000000",
+    "matches_obligation": true,
+    "source_level": "L1 independent Foundry query to canonical devnet RPC",
+    "limitation": "No second RPC provider credential was available"
+  }
+}
