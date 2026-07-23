@@ -1,0 +1,36 @@
+work_item: FP-DOC-001
+objective: publish an accurate current-state README and a single evidence index
+owner: implementation-agent
+branch: agent/chaos/FP-FAIL-002
+allowed_paths:
+  - README.md
+  - docs/EVIDENCE.md
+  - docs/WORK_GRAPH.md
+  - .agents/tasks/FP-DOC-001.yaml
+dependencies:
+  - FP-E2E-001
+  - FP-REC-001
+  - FP-FAIL-002
+invariants:
+  - live devnet evidence remains distinct from deterministic chaos evidence
+  - public claims do not exceed committed artifacts
+  - private material and credential-bearing endpoints are never published
+  - Solana-Agent remains an external independent product
+acceptance:
+  - README reflects the governed devnet proof and current maturity
+  - one evidence index links every completed proof milestone
+  - public and private evidence surfaces are explicitly distinguished
+  - residual production gates are stated
+verification_commands:
+  - python -m pytest
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+evidence:
+  - docs/EVIDENCE.md
+provenance: []
+stop_conditions:
+  - evidence claim cannot be traced to a committed artifact
+  - public document contains private material or an RPC credential
+  - deterministic evidence is presented as live-chain evidence
