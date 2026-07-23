@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from pathlib import Path
 
 import pytest
 from foundry_external_execution_protocol import canonicalize, sha256_digest
 
 from services.process_chaos import run_process_matrix
+from services.process_chaos.matrix import _sanitize_evidence
 
 ROOT = Path(__file__).parents[2]
 SOLANA_AGENT = Path(os.environ.get("SOLANA_AGENT_ROOT", ROOT.parent / "Solana-Agent")).resolve()
@@ -179,3 +181,38 @@ def test_committed_journal_root_binds_every_scenario_and_demo() -> None:
         "send_transaction_requests_received": 1,
         "upstream_requests_forwarded": 1,
     }
+
+
+def test_evidence_sanitizer_hashes_public_wire_values() -> None:
+    signature = "1" * 88
+    value = {
+        "signature": signature,
+        "signed_transaction_base64": "c2lnbmVk",
+        "state": "confirmed",
+    }
+    sanitized = _sanitize_evidence(value)
+    assert sanitized["signature"].startswith("public-sha256:")
+    assert sanitized["signed_transaction_base64"].startswith("bytes-sha256:")
+    assert signature not in json.dumps(sanitized)
+    assert sanitized["state"] == "confirmed"
+
+
+def test_committed_evidence_contains_no_raw_base58_wire_values() -> None:
+    evidence = ROOT / "evidence" / "runs" / "FP-FAIL-002"
+    public_value = re.compile(r"^[1-9A-HJ-NP-Za-km-z]{32,128}$")
+
+    def strings(value):
+        if isinstance(value, dict):
+            for child in value.values():
+                yield from strings(child)
+        elif isinstance(value, list):
+            for child in value:
+                yield from strings(child)
+        elif isinstance(value, str):
+            yield value
+
+    for path in evidence.glob("*.json"):
+        for value in strings(json.loads(path.read_text(encoding="utf-8"))):
+            if re.fullmatch(r"[0-9a-f]{40}", value):
+                continue
+            assert not public_value.fullmatch(value), f"raw public value in {path.name}"

@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import json
 import os
+import re
 import socket
 import subprocess
 import sys
@@ -35,6 +36,7 @@ GATEWAY_SCENARIOS = (
     "replay_after_restart",
     "concurrent_gateways",
 )
+_BASE58_PUBLIC_VALUE = re.compile(r"^[1-9A-HJ-NP-Za-km-z]{32,128}$")
 
 
 def _port() -> int:
@@ -252,6 +254,21 @@ def _send_count(report: dict[str, Any]) -> int:
     return metrics["requests_received"] if isinstance(metrics, dict) else 0
 
 
+def _sanitize_evidence(value: Any, *, field: str = "") -> Any:
+    """Replace public high-entropy wire values with stable evidence hashes."""
+
+    if isinstance(value, dict):
+        return {key: _sanitize_evidence(child, field=key) for key, child in value.items()}
+    if isinstance(value, list):
+        return [_sanitize_evidence(child, field=field) for child in value]
+    if isinstance(value, str):
+        if field.endswith("_base64"):
+            return f"bytes-{sha256_digest(value.encode())}"
+        if _BASE58_PUBLIC_VALUE.fullmatch(value):
+            return f"public-{sha256_digest(value.encode())}"
+    return value
+
+
 def write_process_evidence(
     *,
     foundry_root: Path,
@@ -260,10 +277,11 @@ def write_process_evidence(
     foundry_implementation_commit: str,
     solana_agent_implementation_commit: str,
 ) -> None:
-    results = run_process_matrix(
+    raw_results = run_process_matrix(
         foundry_root=foundry_root,
         solana_agent_root=solana_agent_root,
     )
+    results = {scenario: _sanitize_evidence(report) for scenario, report in raw_results.items()}
     output_directory.mkdir(parents=True, exist_ok=True)
     artifacts: list[dict[str, str]] = []
     for scenario, report in sorted(results.items()):
