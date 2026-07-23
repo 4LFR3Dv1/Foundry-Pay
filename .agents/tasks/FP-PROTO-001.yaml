@@ -1,0 +1,25 @@
+work_item: FP-PROTO-001
+objective: define closed v1 schemas for the ExternalExecutionAgent boundary
+owner: domain-architecture-agent
+branch: agent/protocol/FP-PROTO-001
+allowed_paths:
+  - packages/external-execution-protocol/**
+  - tests/protocol/**
+dependencies:
+  - FP-ADR-001
+invariants:
+  - free-form prompts are forbidden
+  - signed objects reject unknown properties
+  - exact prepared message bytes remain independently hashable
+acceptance:
+  - draft-2020-12 schema is valid
+  - valid request passes
+  - unknown signed property fails
+verification_commands:
+  - python -m pytest tests/protocol/test_schema.py
+evidence:
+  - evidence/runs/FP-CTRL-PR-ZERO.md
+provenance: []
+stop_conditions:
+  - incompatible contract change
+  - executor gains economic authority

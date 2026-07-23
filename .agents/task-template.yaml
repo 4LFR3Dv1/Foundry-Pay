@@ -1,0 +1,16 @@
+work_item: FP-AREA-000
+objective: concise verifiable outcome
+owner: implementation-agent
+branch: agent/area/FP-AREA-000
+allowed_paths: []
+dependencies: []
+invariants: []
+acceptance: []
+verification_commands: []
+evidence: []
+provenance: []
+stop_conditions:
+  - secret found
+  - incompatible contract change
+  - change outside allowed paths
+  - unresolved ownership or license
