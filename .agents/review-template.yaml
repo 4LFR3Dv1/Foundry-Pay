@@ -1,0 +1,14 @@
+work_item: FP-AREA-000
+reviewer: verification-security-agent
+commit: immutable-sha
+checks:
+  authority_boundary: pending
+  schema_compatibility: pending
+  negative_cases: pending
+  replay_and_idempotency: pending
+  secrets: pending
+  provenance: pending
+  evidence_reproducibility: pending
+decision: pending
+findings: []
+evidence: []

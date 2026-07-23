@@ -1,0 +1,49 @@
+{
+  "vector_version": "1",
+  "normalization_profile": "foundry-pay-domain-v1",
+  "economic_plan": {
+    "protocol_version": "1.0.0",
+    "normalization_profile": "foundry-pay-domain-v1",
+    "obligation_id": "obl_demo_001",
+    "network": "solana-devnet",
+    "asset": {
+      "kind": "spl-token",
+      "mint": "11111111111111111111111111111111",
+      "decimals": 6
+    },
+    "amount_base_units": "1000000",
+    "source": "11111111111111111111111111111111",
+    "destination": "SysvarRent111111111111111111111111111111111",
+    "reason": "synthetic reconciliation fixture",
+    "expires_at": "2026-07-23T18:00:00Z"
+  },
+  "economic_plan_hash": "sha256:d768546e6e955b7e177f5b6ce5e6dfef41bae2f106439c30f965ab7ee68e67bd",
+  "prepared_message_hex": "6d6573736167652d7631",
+  "prepared_message_hash": "sha256:c4fd06388167e7aba56a3ed73c6bf666e937bf3fd638e3bc27bf17586b144b80",
+  "simulation_attestation": {
+    "rpc_provider_id": "rpc-demo",
+    "slot": 123,
+    "success": true,
+    "logs_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "simulation_attestation_hash": "sha256:9033c63ce3ee1aac6a785ffcd02b174078f909cd8d8779bba44a2986043ca7bb",
+  "execution_commitment": {
+    "protocol_version": "1.0.0",
+    "normalization_profile": "foundry-pay-domain-v1",
+    "execution_request_id": "exec_demo_001",
+    "executor_id": "solana-agent",
+    "executor_version": "0.1.0",
+    "economic_plan_hash": "sha256:d768546e6e955b7e177f5b6ce5e6dfef41bae2f106439c30f965ab7ee68e67bd",
+    "prepared_message_hash": "sha256:c4fd06388167e7aba56a3ed73c6bf666e937bf3fd638e3bc27bf17586b144b80",
+    "simulation_attestation_hash": "sha256:9033c63ce3ee1aac6a785ffcd02b174078f909cd8d8779bba44a2986043ca7bb",
+    "signer": "11111111111111111111111111111111",
+    "constraints": {
+      "max_fee_lamports": 50000,
+      "allowed_programs": [
+        "11111111111111111111111111111111"
+      ]
+    },
+    "expires_at": "2026-07-23T18:00:00Z"
+  },
+  "execution_commitment_hash": "sha256:1f13bca267b3c6d49be277fde1b5a782e25fe5f82b4d6b96f564e43c04de697b"
+}

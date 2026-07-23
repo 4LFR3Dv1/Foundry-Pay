@@ -1,0 +1,80 @@
+version: 1
+policy:
+  unresolved_license: reference-only
+  immutable_source_revision_required: true
+  attribution_required: true
+
+sources:
+  - id: solana-agent-baseline
+    repository: 4LFR3Dv1/Solana-Agent
+    commit: 6023d78b10b31b47a1beeecd438d67afbc722bd4
+    visibility: public
+    license: Apache-2.0
+    disposition: external-integration
+    candidate_assets:
+      - gateway behavior
+      - local policy
+      - simulation
+      - broadcast and recovery
+      - technical receipt
+    copied_paths: []
+
+  - id: vira-reference
+    repository: 4LFR3Dv1/VIRA-
+    commit: 24eff2f0ec0c9cd52fbf1f0d725b6ea0fb0a721d
+    visibility: public
+    license: unresolved
+    disposition: reference-only
+    candidate_assets:
+      - event sourcing
+      - replay
+      - adversarial fixtures
+      - smoke and demo automation
+    copied_paths: []
+
+  - id: xswallet-reference
+    repository: 4LFR3Dv1/XSWallet
+    commit: f42b20cd9fb438ad0ffee593615c9ec60fb4e400
+    visibility: public
+    license: unresolved
+    disposition: reference-only
+    candidate_assets:
+      - state timeline
+      - wallet observability
+      - network and address display
+    copied_paths: []
+
+  - id: foundry-landing-reference
+    repository: 4LFR3Dv1/FoundryLandingPage
+    commit: 3aac4cd0e6cc94e74ca4ffd6cd3b759c1461002a
+    visibility: private
+    license: first-party-unresolved
+    disposition: reference-only
+    candidate_assets:
+      - design system
+      - authority boundary presentation
+      - evidence gate presentation
+    copied_paths: []
+
+  - id: agentic-engineering-reference
+    repository: 4LFR3Dv1/Agentic-Engineering
+    commit: 14077decb9d71fe7e72c2d515d69cdd41ed0d810
+    visibility: public
+    license: unresolved
+    disposition: reference-only
+    candidate_assets:
+      - security model
+      - delivery checklist
+      - proof-of-work documentation
+    copied_paths: []
+
+  - id: ambiente-alfred-reference
+    repository: 4LFR3Dv1/AMBIENTE-ALFRED
+    commit: fcaec04e95edcd956630745aaad0e7763ba79464
+    visibility: private
+    license: first-party-unresolved
+    disposition: reference-only
+    candidate_assets:
+      - agent instruction patterns
+      - governance references
+    copied_paths: []

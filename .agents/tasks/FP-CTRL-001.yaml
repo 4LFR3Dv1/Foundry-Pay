@@ -1,0 +1,29 @@
+work_item: FP-CTRL-001
+objective: create the canonical private Foundry Pay repository baseline
+owner: lead-integrator
+branch: agent/control/FP-CTRL-001
+allowed_paths:
+  - "**"
+dependencies: []
+invariants:
+  - Solana-Agent remains external
+  - no secrets enter the repository
+  - reused source has immutable provenance
+acceptance:
+  - AGENTS.md exists
+  - ADR and work graph exist
+  - CI, secret guard, and protocol tests pass
+  - repository inventory and reuse ledger exist
+verification_commands:
+  - python -m ruff format --check .
+  - python -m ruff check .
+  - python scripts/check_secrets.py
+  - python -m pytest
+evidence:
+  - evidence/runs/FP-CTRL-PR-ZERO.md
+provenance:
+  - provenance/REUSE_LEDGER.yaml
+stop_conditions:
+  - secret found
+  - unresolved source copied
+  - executor authority broadened
