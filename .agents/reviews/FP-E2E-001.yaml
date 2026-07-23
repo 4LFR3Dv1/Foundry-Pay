@@ -1,6 +1,6 @@
 work_item: FP-E2E-001
 reviewer: independent-security-and-reconciliation-reviewer
-commit: pending
+commit: b70a584378120a4f49891dc402641bba0722d45d
 checks:
   explicit_operation_matches_approval: pending
   exact_hash_bindings: pending

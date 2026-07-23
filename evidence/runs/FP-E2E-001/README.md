@@ -5,6 +5,8 @@ Date: 2026-07-23
 Foundry Pay baseline: `a9de06a`  
 Solana-Agent baseline: `013540d`
 
+Evidence commit: `b70a584378120a4f49891dc402641bba0722d45d`
+
 ## Result
 
 One explicitly approved SPL transfer was prepared, authorized, signed,
@@ -70,3 +72,22 @@ The signature was durable before the RPC response and the final state is
 
 Neither artifact contains private keys, seed phrases, wallet files, or the
 ephemeral Foundry authorization secret.
+
+## Repository gates
+
+```text
+python -m pytest
+62 passed in 1.20s
+
+python -m ruff check .
+All checks passed!
+
+python -m ruff format --check .
+15 files already formatted
+
+python scripts/check_secrets.py
+Secret guard passed (66 files scanned).
+
+git diff --check
+passed
+```
