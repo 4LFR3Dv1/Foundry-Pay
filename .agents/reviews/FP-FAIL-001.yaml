@@ -1,0 +1,25 @@
+work_item: FP-FAIL-001
+reviewer: independent-security-and-recovery-reviewer
+commit: cd7e733583216c1900305b50393f100892b3e667
+checks:
+  signature_persisted_before_broadcast: pending
+  write_ahead_broadcast_intent: pending
+  lost_response_recovery: pending
+  restart_durability: pending
+  unknown_outcome_fail_closed: pending
+  blockhash_expiry_safety: pending
+  obligation_rematerialization_guard: pending
+  l1_l2_dispute_preservation: pending
+  broadcast_count_at_most_one: pending
+  event_chain_integrity: pending
+  evidence_reproducibility: pending
+  secret_safety: pending
+decision: pending
+findings: []
+evidence:
+  - evidence/runs/FP-FAIL-001/README.md
+  - evidence/runs/FP-FAIL-001/manifest.json
+  - evidence/runs/FP-FAIL-001/lost_response_after_broadcast.json
+  - evidence/runs/FP-FAIL-001/broadcast_outcome_unknown.json
+  - evidence/runs/FP-FAIL-001/recovery_without_second_broadcast.json
+  - evidence/runs/FP-FAIL-001/reconciliation_l1_l2_divergence.json

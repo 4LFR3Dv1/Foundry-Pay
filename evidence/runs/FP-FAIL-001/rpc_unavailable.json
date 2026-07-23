@@ -1,0 +1,79 @@
+{
+  "broadcast_count": 1,
+  "economic_effect_count": 0,
+  "event_chain_head": "sha256:de6b84c1fa5a2a623f3653ecc6610a65024bf849b05a574a7c0ae490247cef01",
+  "events": [
+    {
+      "event_hash": "sha256:00435048c143592c50fb45e935a9cccf4258a327214817493d0a4ebc22ea15e4",
+      "event_type": "execution_registered",
+      "payload": {
+        "message_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "obligation_id": "obl_rpc_unavailable"
+      },
+      "previous_hash": "genesis",
+      "recorded_at": "2026-07-23T22:00:00Z",
+      "sequence": 1
+    },
+    {
+      "event_hash": "sha256:ad2aa01a9d92b127fdc9c8f7df82c559bdde4d89a3f17a7d0d41f5500f4cf2be",
+      "event_type": "signature_persisted",
+      "payload": {
+        "signature": "failure-lab-signature-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "signed_transaction_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "previous_hash": "sha256:00435048c143592c50fb45e935a9cccf4258a327214817493d0a4ebc22ea15e4",
+      "recorded_at": "2026-07-23T22:00:01Z",
+      "sequence": 2
+    },
+    {
+      "event_hash": "sha256:a17bafbf3c4431fb3a582aa73f4137ae65f23f8388dbea70d791403179b06f71",
+      "event_type": "broadcast_intent_persisted",
+      "payload": {
+        "attempt": 1,
+        "signature": "failure-lab-signature-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "previous_hash": "sha256:ad2aa01a9d92b127fdc9c8f7df82c559bdde4d89a3f17a7d0d41f5500f4cf2be",
+      "recorded_at": "2026-07-23T22:00:02Z",
+      "sequence": 3
+    },
+    {
+      "event_hash": "sha256:b112cf45bf7e7e6fc504ef14bc235e7c97ae6a79c86d6ae8aec0f9314c438661",
+      "event_type": "broadcast_outcome_unknown",
+      "payload": {
+        "reason": "broadcast outcome is unknown"
+      },
+      "previous_hash": "sha256:a17bafbf3c4431fb3a582aa73f4137ae65f23f8388dbea70d791403179b06f71",
+      "recorded_at": "2026-07-23T22:00:02Z",
+      "sequence": 4
+    },
+    {
+      "event_hash": "sha256:de6b84c1fa5a2a623f3653ecc6610a65024bf849b05a574a7c0ae490247cef01",
+      "event_type": "recovery_source_unavailable",
+      "payload": {
+        "observation": "unavailable"
+      },
+      "previous_hash": "sha256:b112cf45bf7e7e6fc504ef14bc235e7c97ae6a79c86d6ae8aec0f9314c438661",
+      "recorded_at": "2026-07-23T22:00:03Z",
+      "sequence": 5
+    }
+  ],
+  "execution_request_id": "exec_rpc_unavailable",
+  "final_state": "needs_recovery",
+  "may_rematerialize": false,
+  "obligation_id": "obl_rpc_unavailable",
+  "protocol_version": "1.0.0",
+  "provider_broadcast_calls": 1,
+  "recovery_count": 1,
+  "recovery_result": {
+    "broadcast_count": 1,
+    "execution_request_id": "exec_rpc_unavailable",
+    "may_rematerialize": false,
+    "observed_at": "2026-07-23T22:00:03Z",
+    "outcome": "needs_recovery",
+    "protocol_version": "1.0.0",
+    "type": "recovery_result"
+  },
+  "scenario": "rpc_unavailable",
+  "signature_persisted": true,
+  "type": "failure_scenario_evidence"
+}

@@ -1,0 +1,50 @@
+{
+  "broadcast_count": 0,
+  "economic_effect_count": 0,
+  "event_chain_head": "sha256:c95df02d83c16c565c8b7bb78da323f7dcc11617ca1ca9aeb7bd48d4c773b39d",
+  "events": [
+    {
+      "event_hash": "sha256:e3ed226bc03dc3f6679dc6190e9b93fca942aa602a9911b48f550e704e482b9f",
+      "event_type": "execution_registered",
+      "payload": {
+        "message_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "obligation_id": "obl_blockhash_expired"
+      },
+      "previous_hash": "genesis",
+      "recorded_at": "2026-07-23T22:00:00Z",
+      "sequence": 1
+    },
+    {
+      "event_hash": "sha256:cdd4d2da709d26b6ecbe78b0049de64a840baa455ad8a56345b9fec89b4942b6",
+      "event_type": "signature_persisted",
+      "payload": {
+        "signature": "failure-lab-signature-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "signed_transaction_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "previous_hash": "sha256:e3ed226bc03dc3f6679dc6190e9b93fca942aa602a9911b48f550e704e482b9f",
+      "recorded_at": "2026-07-23T22:00:01Z",
+      "sequence": 2
+    },
+    {
+      "event_hash": "sha256:c95df02d83c16c565c8b7bb78da323f7dcc11617ca1ca9aeb7bd48d4c773b39d",
+      "event_type": "blockhash_expired_before_broadcast",
+      "payload": {
+        "broadcast_count": 0
+      },
+      "previous_hash": "sha256:cdd4d2da709d26b6ecbe78b0049de64a840baa455ad8a56345b9fec89b4942b6",
+      "recorded_at": "2026-07-23T22:00:02Z",
+      "sequence": 3
+    }
+  ],
+  "execution_request_id": "exec_blockhash_expired",
+  "final_state": "expired_requires_new_prepare",
+  "may_rematerialize": true,
+  "new_prepare_required": true,
+  "obligation_id": "obl_blockhash_expired",
+  "protocol_version": "1.0.0",
+  "provider_broadcast_calls": 0,
+  "recovery_count": 0,
+  "scenario": "blockhash_expired",
+  "signature_persisted": true,
+  "type": "failure_scenario_evidence"
+}

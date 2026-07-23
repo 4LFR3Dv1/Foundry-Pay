@@ -1,0 +1,60 @@
+{
+  "broadcast_count": 1,
+  "economic_effect_count": 0,
+  "event_chain_head": "sha256:32059fb04b214ef8e91cb4050f4c9f6db32b9599b991760e8a92a7f9e4750ff8",
+  "events": [
+    {
+      "event_hash": "sha256:f0e42c1b030db94316444636a2813b0743166391404512f8e7fdc775de0cc44f",
+      "event_type": "execution_registered",
+      "payload": {
+        "message_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "obligation_id": "obl_known_rpc_rejection"
+      },
+      "previous_hash": "genesis",
+      "recorded_at": "2026-07-23T22:00:00Z",
+      "sequence": 1
+    },
+    {
+      "event_hash": "sha256:9fe23745da23b64dcd331a9b681536d135251cf2050de1390fd6d859ae3b5498",
+      "event_type": "signature_persisted",
+      "payload": {
+        "signature": "failure-lab-signature-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "signed_transaction_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "previous_hash": "sha256:f0e42c1b030db94316444636a2813b0743166391404512f8e7fdc775de0cc44f",
+      "recorded_at": "2026-07-23T22:00:01Z",
+      "sequence": 2
+    },
+    {
+      "event_hash": "sha256:a46460c3481f25d84ca875cf240e8ed753b34475b430f96f598e8b11f08c4079",
+      "event_type": "broadcast_intent_persisted",
+      "payload": {
+        "attempt": 1,
+        "signature": "failure-lab-signature-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "previous_hash": "sha256:9fe23745da23b64dcd331a9b681536d135251cf2050de1390fd6d859ae3b5498",
+      "recorded_at": "2026-07-23T22:00:02Z",
+      "sequence": 3
+    },
+    {
+      "event_hash": "sha256:32059fb04b214ef8e91cb4050f4c9f6db32b9599b991760e8a92a7f9e4750ff8",
+      "event_type": "broadcast_rejected_before_acceptance",
+      "payload": {
+        "attempt": 1
+      },
+      "previous_hash": "sha256:a46460c3481f25d84ca875cf240e8ed753b34475b430f96f598e8b11f08c4079",
+      "recorded_at": "2026-07-23T22:00:02Z",
+      "sequence": 4
+    }
+  ],
+  "execution_request_id": "exec_known_rpc_rejection",
+  "final_state": "broadcast_failed_known",
+  "may_rematerialize": true,
+  "obligation_id": "obl_known_rpc_rejection",
+  "protocol_version": "1.0.0",
+  "provider_broadcast_calls": 1,
+  "recovery_count": 0,
+  "scenario": "known_rpc_rejection",
+  "signature_persisted": true,
+  "type": "failure_scenario_evidence"
+}

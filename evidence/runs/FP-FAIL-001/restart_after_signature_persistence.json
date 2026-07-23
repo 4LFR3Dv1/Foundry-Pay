@@ -1,0 +1,40 @@
+{
+  "broadcast_count": 0,
+  "economic_effect_count": 0,
+  "event_chain_head": "sha256:5e6a4a584136a7a6b10bc726036cd0c3cf3973c4e7d3d69ebbd47b82b7c5a43c",
+  "events": [
+    {
+      "event_hash": "sha256:3f676a9b2f80f56f28978c0873eae0813dbae74d6cb9f4674166e0831c79560b",
+      "event_type": "execution_registered",
+      "payload": {
+        "message_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "obligation_id": "obl_restart_after_signature_persistence"
+      },
+      "previous_hash": "genesis",
+      "recorded_at": "2026-07-23T22:00:00Z",
+      "sequence": 1
+    },
+    {
+      "event_hash": "sha256:5e6a4a584136a7a6b10bc726036cd0c3cf3973c4e7d3d69ebbd47b82b7c5a43c",
+      "event_type": "signature_persisted",
+      "payload": {
+        "signature": "failure-lab-signature-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "signed_transaction_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "previous_hash": "sha256:3f676a9b2f80f56f28978c0873eae0813dbae74d6cb9f4674166e0831c79560b",
+      "recorded_at": "2026-07-23T22:00:01Z",
+      "sequence": 2
+    }
+  ],
+  "execution_request_id": "exec_restart_after_signature_persistence",
+  "final_state": "signed",
+  "may_rematerialize": true,
+  "obligation_id": "obl_restart_after_signature_persistence",
+  "persisted_signature": "failure-lab-signature-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "protocol_version": "1.0.0",
+  "provider_broadcast_calls": 0,
+  "recovery_count": 0,
+  "scenario": "restart_after_signature_persistence",
+  "signature_persisted": true,
+  "type": "failure_scenario_evidence"
+}
