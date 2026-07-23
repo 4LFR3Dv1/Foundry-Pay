@@ -97,6 +97,27 @@ authorization may be active for the same request or obligation. Reissuing the
 same authorization is idempotent; a competing grant is rejected. Consumption
 is single-use, survives process restart, and rejects replay or expiry.
 
+## Exact-message signer boundary
+
+`FP-SIGN-001` treats the signer as a third authority boundary. Before any
+message reaches an asset signer, it:
+
+1. validates the closed `ExecutionAuthorization` and its Foundry signature;
+2. enforces issuance and expiry time, `single_use`, and the configured signer;
+3. matches request, commitment, message hash, and signer against the
+   `PreparedExecution`;
+4. decodes the canonical base64 message and recalculates SHA-256 over its exact
+   bytes;
+5. durably claims the authorization in a signer-local journal;
+6. delegates only those verified bytes to an injected HSM/MPC-style interface.
+
+The service never accepts raw asset signing material. Its signing provider
+receives only exact message bytes and the expected public signer identity. A
+successful result is persisted before it is returned. A timeout or any unknown
+outcome after the durable claim becomes `needs_recovery`; the authorization is
+never retried automatically. Completed grants remain consumed across process
+restart.
+
 ## Recovery rule
 
 If the executor may have broadcast but the response was lost, Foundry queries
