@@ -10,9 +10,29 @@ from .canonicalization import (
     sha256_digest,
     simulation_attestation_hash,
 )
+from .fake_executor import (
+    AuthorizationInvalid,
+    AuthorizationMismatch,
+    AuthorizationReplay,
+    FakeAuthorizationAuthority,
+    FakeExternalExecutor,
+    FakeExecutorError,
+    IdempotencyConflict,
+    ObligationAlreadyExecuted,
+    ResponseLost,
+)
 
 __all__ = [
     "DomainNormalizationError",
+    "AuthorizationInvalid",
+    "AuthorizationMismatch",
+    "AuthorizationReplay",
+    "FakeAuthorizationAuthority",
+    "FakeExternalExecutor",
+    "FakeExecutorError",
+    "IdempotencyConflict",
+    "ObligationAlreadyExecuted",
+    "ResponseLost",
     "canonicalize",
     "economic_plan_hash",
     "execution_commitment_hash",

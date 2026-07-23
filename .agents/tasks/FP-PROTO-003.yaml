@@ -1,0 +1,42 @@
+work_item: FP-PROTO-003
+objective: prove single-use authorization, anti-replay, and durable lost-response recovery
+owner: implementation-agent
+branch: agent/protocol/FP-PROTO-003
+allowed_paths:
+  - packages/external-execution-protocol/python/**
+  - packages/external-execution-protocol/schemas/**
+  - tests/protocol/**
+  - docs/EXTERNAL_EXECUTION_PROTOCOL.md
+  - docs/WORK_GRAPH.md
+  - evidence/runs/FP-PROTO-003.md
+  - .agents/tasks/FP-PROTO-003.yaml
+  - pyproject.toml
+  - .gitignore
+dependencies:
+  - FP-PROTO-001
+  - FP-PROTO-002
+invariants:
+  - authorization binds the exact prepared message and commitment
+  - authorization is short-lived and single-use
+  - consumption is persisted before the economic effect
+  - receipt is persisted before the response
+  - lost response never triggers a second economic effect
+acceptance:
+  - valid authorization executes exactly once
+  - expired and mutated authorization fail before effect
+  - authorization replay fails
+  - idempotency conflict fails
+  - process recreation recovers a committed receipt
+  - obligation effect count remains one after lost response and retry
+verification_commands:
+  - python -m pytest tests/protocol/test_fake_executor.py
+  - python -m pytest tests/protocol
+  - python -m ruff check .
+evidence:
+  - evidence/runs/FP-PROTO-003.md
+provenance: []
+stop_conditions:
+  - response loss can duplicate an effect
+  - authorization can be reused
+  - a changed message passes authorization
+  - recovery depends only on volatile process memory
