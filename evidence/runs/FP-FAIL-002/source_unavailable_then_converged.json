@@ -1,0 +1,75 @@
+{
+  "execution_request_id": "exec_fp_e2e_001_20260723T204614Z",
+  "final_independent_verification": "l2_verified",
+  "final_reconciliation_status": "l1_verified",
+  "history": [
+    {
+      "event": "l2_unavailable",
+      "result": {
+        "consensus": "approved",
+        "execution_request_id": "exec_fp_e2e_001_20260723T204614Z",
+        "execution_status": "confirmed",
+        "expected_amount_base_units": "1000000",
+        "independent_verification": "pending",
+        "obligation_id": "obl_fp_e2e_001_20260723T204614Z",
+        "observations": [
+          {
+            "disagreements": [],
+            "observation_hash": "sha256:20147b7ceb7fa8190a9f354c6d7d36707e716ba20d8aace3eb3f8508817a2cf4",
+            "result": "matched",
+            "source_class": "L1",
+            "source_id": "foundry_l1_canonical_devnet"
+          }
+        ],
+        "protocol_version": "1.0.0",
+        "reconciliation_status": "l1_verified",
+        "type": "reconciliation_result",
+        "unavailable_source_ids": [
+          "alchemy_devnet"
+        ]
+      },
+      "result_hash": "sha256:ff8cea03eb109f49c6f71a45ac426ca0ffb8d9b6d8666203ca8d3e85fef10ae6",
+      "sequence": 1
+    },
+    {
+      "event": "l2_converged",
+      "result": {
+        "consensus": "approved",
+        "execution_request_id": "exec_fp_e2e_001_20260723T204614Z",
+        "execution_status": "finalized",
+        "expected_amount_base_units": "1000000",
+        "independent_verification": "l2_verified",
+        "obligation_id": "obl_fp_e2e_001_20260723T204614Z",
+        "observations": [
+          {
+            "disagreements": [],
+            "observation_hash": "sha256:20147b7ceb7fa8190a9f354c6d7d36707e716ba20d8aace3eb3f8508817a2cf4",
+            "result": "matched",
+            "source_class": "L1",
+            "source_id": "foundry_l1_canonical_devnet"
+          },
+          {
+            "disagreements": [],
+            "observation_hash": "sha256:e465874ba90be369df1616edd226a083a0aaa5797001e4d4595f753971ac4121",
+            "result": "matched",
+            "source_class": "L2",
+            "source_id": "alchemy_devnet"
+          }
+        ],
+        "protocol_version": "1.0.0",
+        "reconciliation_status": "l1_verified",
+        "type": "reconciliation_result",
+        "unavailable_source_ids": []
+      },
+      "result_hash": "sha256:b6a2a8ea992c81d7acb098137d38501b75fb3cd5a4e0ef40d9b1f9526dd473fa",
+      "sequence": 2
+    }
+  ],
+  "history_preserved": true,
+  "initial_independent_verification": "pending",
+  "initial_reconciliation_status": "l1_verified",
+  "private_material_persisted": false,
+  "protocol_version": "1.0.0",
+  "scenario": "source_unavailable_then_converged",
+  "type": "real_process_chaos_result"
+}

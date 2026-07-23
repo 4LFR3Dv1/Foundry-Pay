@@ -26,7 +26,7 @@ Status values: `blocked`, `ready`, `active`, `review`, `done`.
 | FP-E2E-001 | done | FP-SIGN-001, SA-EXEC-001 | governed devnet remediation and reconciliation proof |
 | FP-REC-001 | done | FP-E2E-001 | source-diverse reconciliation protocol and consensus |
 | FP-FAIL-001 | done | FP-E2E-001, FP-REC-001 | distributed failure matrix and recovery evidence |
-| FP-FAIL-002 | active | FP-FAIL-001, SA-CHAOS-001 | real-process chaos proxy, recovery, and external journal root |
+| FP-FAIL-002 | review | FP-FAIL-001, SA-CHAOS-001 | real-process chaos proxy, recovery, and external journal root |
 | FP-PROD-001 | ready | - | three operator interviews |
 | FP-PROD-002 | blocked | FP-PROD-001 | five frequent incidents |
 | FP-PROD-003 | blocked | FP-PROD-002 | sanitized incident fixture |

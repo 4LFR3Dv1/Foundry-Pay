@@ -1,0 +1,449 @@
+{
+  "execution_request_id": "exec_replay_after_restart",
+  "gateway_responses": [
+    {
+      "command": "authorize-and-execute",
+      "error": {
+        "code": "needs_recovery",
+        "details": {
+          "execution_request_id": "exec_replay_after_restart",
+          "signature": "public-sha256:e438fdea63c6467323329ed4b61d24fcbd13a6843ab71e75899c73379256dd6d"
+        },
+        "message": "broadcast may have occurred; consult status or recover and never rebroadcast",
+        "retryable": false
+      },
+      "gateway_protocol_version": "1.0.0",
+      "gateway_request_id": "gw_execute",
+      "journal_sequence": 4,
+      "ok": false,
+      "replayed": false
+    },
+    {
+      "command": "authorize-and-execute",
+      "error": {
+        "code": "needs_recovery",
+        "details": {
+          "execution_request_id": "exec_replay_after_restart",
+          "signature": "public-sha256:e438fdea63c6467323329ed4b61d24fcbd13a6843ab71e75899c73379256dd6d"
+        },
+        "message": "broadcast may have occurred; consult status or recover and never rebroadcast",
+        "retryable": false
+      },
+      "gateway_protocol_version": "1.0.0",
+      "gateway_request_id": "gw_execute",
+      "journal_sequence": 5,
+      "ok": false,
+      "replayed": true
+    }
+  ],
+  "kill_sentinel": null,
+  "private_material_persisted": false,
+  "process_exit_codes": [],
+  "protocol_version": "1.0.0",
+  "proxy_event_chain": [
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "method": "getAccountInfo",
+        "request_hash": "sha256:9de244a1746804c20e3dbbddecb6770b8c38b4a197c72c89ba1dff147078476a"
+      },
+      "event_hash": "sha256:55a8c0e5d18bc2374e3895f062849a8edced6ef8660bad85c23eb662ee7961c0",
+      "event_type": "request_received",
+      "previous_hash": "genesis",
+      "request_sequence": 1,
+      "sequence": 1
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "state": "forwarded"
+      },
+      "event_hash": "sha256:ea397c001a09d732c2caff347cddec48b122bed5e60ca9d220a07d29f673bfb3",
+      "event_type": "request_forwarded",
+      "previous_hash": "sha256:55a8c0e5d18bc2374e3895f062849a8edced6ef8660bad85c23eb662ee7961c0",
+      "request_sequence": 1,
+      "sequence": 2
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "response_hash": "sha256:c7dcb721096bd9fa2ba6e29bed2a7b9f5a05f3a1677a177dcb7b98239bba0afa",
+        "state": "upstream_responded"
+      },
+      "event_hash": "sha256:d3fd60d609088f90cf55578763e08cd89f6d9f0506e94a7c214c2360b88cdc78",
+      "event_type": "upstream_response_persisted",
+      "previous_hash": "sha256:ea397c001a09d732c2caff347cddec48b122bed5e60ca9d220a07d29f673bfb3",
+      "request_sequence": 1,
+      "sequence": 3
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "state": "client_response_delivered"
+      },
+      "event_hash": "sha256:9d448aa30d83c503aa2fd6c9fc4c9818a6ece96201ab77b83c68e14041d41842",
+      "event_type": "client_response_delivered",
+      "previous_hash": "sha256:d3fd60d609088f90cf55578763e08cd89f6d9f0506e94a7c214c2360b88cdc78",
+      "request_sequence": 1,
+      "sequence": 4
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "method": "getAccountInfo",
+        "request_hash": "sha256:a842159850354b1898688ffeb0f7dc9b9d05ce0df3370623411d62e4d14382a2"
+      },
+      "event_hash": "sha256:b6d71d57012993754a28fc25c10a4bb341445cf9aa4ab191501960d304674293",
+      "event_type": "request_received",
+      "previous_hash": "sha256:9d448aa30d83c503aa2fd6c9fc4c9818a6ece96201ab77b83c68e14041d41842",
+      "request_sequence": 2,
+      "sequence": 5
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "state": "forwarded"
+      },
+      "event_hash": "sha256:d006dfc199b2dbc531482a7d04f7c7786fd384e2c13ce50bd3eaf11d853d32b7",
+      "event_type": "request_forwarded",
+      "previous_hash": "sha256:b6d71d57012993754a28fc25c10a4bb341445cf9aa4ab191501960d304674293",
+      "request_sequence": 2,
+      "sequence": 6
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "response_hash": "sha256:e3c3b47cf3d10f561a6415d9a4ff5a85b2dd5092cb8b16c8077e0ab000b5f9ee",
+        "state": "upstream_responded"
+      },
+      "event_hash": "sha256:6858c067d5bcd86a5221e57f1cddc0a66c78d63f819a13736941036f556828b5",
+      "event_type": "upstream_response_persisted",
+      "previous_hash": "sha256:d006dfc199b2dbc531482a7d04f7c7786fd384e2c13ce50bd3eaf11d853d32b7",
+      "request_sequence": 2,
+      "sequence": 7
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "state": "client_response_delivered"
+      },
+      "event_hash": "sha256:bd084e89954aff37ae15726b3df4075bc2c6a100734449e3ac52de24d6dc0fef",
+      "event_type": "client_response_delivered",
+      "previous_hash": "sha256:6858c067d5bcd86a5221e57f1cddc0a66c78d63f819a13736941036f556828b5",
+      "request_sequence": 2,
+      "sequence": 8
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "method": "getAccountInfo",
+        "request_hash": "sha256:d487cdfd7f97ce9efac1de03847354e70235e2b40a4036d37742aa24fc24aae2"
+      },
+      "event_hash": "sha256:8cf6c3ead958f885e21ba7a63bba9069665bc6532599678fe671df8fde0b08e3",
+      "event_type": "request_received",
+      "previous_hash": "sha256:bd084e89954aff37ae15726b3df4075bc2c6a100734449e3ac52de24d6dc0fef",
+      "request_sequence": 3,
+      "sequence": 9
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "state": "forwarded"
+      },
+      "event_hash": "sha256:e3e28d5596e8df1878d8fc587fac625914e505ca7b64f6d219e447749a790c61",
+      "event_type": "request_forwarded",
+      "previous_hash": "sha256:8cf6c3ead958f885e21ba7a63bba9069665bc6532599678fe671df8fde0b08e3",
+      "request_sequence": 3,
+      "sequence": 10
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "response_hash": "sha256:b0ff52d9b35100cdad0100a5f1a06778b8817074e00a194542f202c0be8de65d",
+        "state": "upstream_responded"
+      },
+      "event_hash": "sha256:9543ba5e3d2af67e107714c039c0fa97c6b687dd8a91285902f58a73c19f2ea5",
+      "event_type": "upstream_response_persisted",
+      "previous_hash": "sha256:e3e28d5596e8df1878d8fc587fac625914e505ca7b64f6d219e447749a790c61",
+      "request_sequence": 3,
+      "sequence": 11
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "state": "client_response_delivered"
+      },
+      "event_hash": "sha256:954710d11ab8196a265ea3bb2496ee6d27468b025e88c3afc306accdffcfd031",
+      "event_type": "client_response_delivered",
+      "previous_hash": "sha256:9543ba5e3d2af67e107714c039c0fa97c6b687dd8a91285902f58a73c19f2ea5",
+      "request_sequence": 3,
+      "sequence": 12
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "method": "getGenesisHash",
+        "request_hash": "sha256:636766331070dce165af359a7b97563192e588d31236a95c6013a36300adeba0"
+      },
+      "event_hash": "sha256:1e7a02233c5a1d1bf5c6e9907404fcb3547ce600e87500fbf370ef7e3ddec74c",
+      "event_type": "request_received",
+      "previous_hash": "sha256:954710d11ab8196a265ea3bb2496ee6d27468b025e88c3afc306accdffcfd031",
+      "request_sequence": 4,
+      "sequence": 13
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "state": "forwarded"
+      },
+      "event_hash": "sha256:ed74ffb552f3e96f7b899d30671c6f8777ff9a47914ff681cdd2cb29a987fab8",
+      "event_type": "request_forwarded",
+      "previous_hash": "sha256:1e7a02233c5a1d1bf5c6e9907404fcb3547ce600e87500fbf370ef7e3ddec74c",
+      "request_sequence": 4,
+      "sequence": 14
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "response_hash": "sha256:44eac57afe3b79fc1d92d6a63cef94be5656d54e3fda3b16759327fef5d997a9",
+        "state": "upstream_responded"
+      },
+      "event_hash": "sha256:3df79beedb8d376afcbf1efe3858bdbcc560da2d7a37c8fcffe314dbd0cbe040",
+      "event_type": "upstream_response_persisted",
+      "previous_hash": "sha256:ed74ffb552f3e96f7b899d30671c6f8777ff9a47914ff681cdd2cb29a987fab8",
+      "request_sequence": 4,
+      "sequence": 15
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "state": "client_response_delivered"
+      },
+      "event_hash": "sha256:ead4ff4ed40ae9c571ab6878c8fa8824594c3983c2e316350e0a0fed55f2bf15",
+      "event_type": "client_response_delivered",
+      "previous_hash": "sha256:3df79beedb8d376afcbf1efe3858bdbcc560da2d7a37c8fcffe314dbd0cbe040",
+      "request_sequence": 4,
+      "sequence": 16
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "method": "getLatestBlockhash",
+        "request_hash": "sha256:21d4469b7345025423a2990891751823b5e224f0a005979c3486b7f7193c9209"
+      },
+      "event_hash": "sha256:98766f02470d8d97a185d352bc72a4bd55e7316231ce12d7519e95867844943e",
+      "event_type": "request_received",
+      "previous_hash": "sha256:ead4ff4ed40ae9c571ab6878c8fa8824594c3983c2e316350e0a0fed55f2bf15",
+      "request_sequence": 5,
+      "sequence": 17
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "state": "forwarded"
+      },
+      "event_hash": "sha256:4609a4d35a9c98fbde1ad667164e7ec7894b709a1b819674839158b48dc218f0",
+      "event_type": "request_forwarded",
+      "previous_hash": "sha256:98766f02470d8d97a185d352bc72a4bd55e7316231ce12d7519e95867844943e",
+      "request_sequence": 5,
+      "sequence": 18
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "response_hash": "sha256:70f7b448be139040526da90960a9b999b5e44a7f91e2e76602f1f4d6b978da68",
+        "state": "upstream_responded"
+      },
+      "event_hash": "sha256:11172e766d49737b90539ecc47ba32d4952558f86b81d0cc6153014d02c18b59",
+      "event_type": "upstream_response_persisted",
+      "previous_hash": "sha256:4609a4d35a9c98fbde1ad667164e7ec7894b709a1b819674839158b48dc218f0",
+      "request_sequence": 5,
+      "sequence": 19
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "state": "client_response_delivered"
+      },
+      "event_hash": "sha256:3277123f39c1596ed5d43c0c62f85040e060da1fef798eaba2bb207328d1fcb2",
+      "event_type": "client_response_delivered",
+      "previous_hash": "sha256:11172e766d49737b90539ecc47ba32d4952558f86b81d0cc6153014d02c18b59",
+      "request_sequence": 5,
+      "sequence": 20
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "method": "simulateTransaction",
+        "request_hash": "sha256:3853e71ee9dfd093b42a909cd296e9c14aef06bdbd6455f78377d9e8e414430c"
+      },
+      "event_hash": "sha256:5f8b1b5e39adab8516b2915d241f8dc4f13af73caaacf1c4ee26539ef0f0fbb8",
+      "event_type": "request_received",
+      "previous_hash": "sha256:3277123f39c1596ed5d43c0c62f85040e060da1fef798eaba2bb207328d1fcb2",
+      "request_sequence": 6,
+      "sequence": 21
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "state": "forwarded"
+      },
+      "event_hash": "sha256:9fab8306ac040a125a79510a1e62cc7f376f3cd0e9b7674ac3055bae07dfc913",
+      "event_type": "request_forwarded",
+      "previous_hash": "sha256:5f8b1b5e39adab8516b2915d241f8dc4f13af73caaacf1c4ee26539ef0f0fbb8",
+      "request_sequence": 6,
+      "sequence": 22
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "response_hash": "sha256:24550cce6461642fa5662b4bdbf665d2a63bb174baeb99a9e499d8af18046951",
+        "state": "upstream_responded"
+      },
+      "event_hash": "sha256:38c9a36ea7bf0fcd318950cc12f2859096c792645b683d66dd59839b8e50a95f",
+      "event_type": "upstream_response_persisted",
+      "previous_hash": "sha256:9fab8306ac040a125a79510a1e62cc7f376f3cd0e9b7674ac3055bae07dfc913",
+      "request_sequence": 6,
+      "sequence": 23
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "state": "client_response_delivered"
+      },
+      "event_hash": "sha256:87a93a9a3a23dcfc9c9a43bf3a1d4415b761407c18fead7a29b5b88188a735b5",
+      "event_type": "client_response_delivered",
+      "previous_hash": "sha256:38c9a36ea7bf0fcd318950cc12f2859096c792645b683d66dd59839b8e50a95f",
+      "request_sequence": 6,
+      "sequence": 24
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "delay_ms": 0,
+        "method": "sendTransaction",
+        "mode": "drop_after_upstream"
+      },
+      "event_hash": "sha256:bcbfa2017c797b610d26e645a3c47b5737df20d455d2be3edfb16ddec56e881f",
+      "event_type": "fault_rule_configured",
+      "previous_hash": "sha256:87a93a9a3a23dcfc9c9a43bf3a1d4415b761407c18fead7a29b5b88188a735b5",
+      "request_sequence": "control",
+      "sequence": 25
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "method": "getBlockHeight",
+        "request_hash": "sha256:b6af3d7de91b5072e57ec03eafd2620720bf1406360fe269d65fa3501bbedf7c"
+      },
+      "event_hash": "sha256:6ce909360a18570d7f5edc673523e45da3219df2867e5749269bd8205dd69161",
+      "event_type": "request_received",
+      "previous_hash": "sha256:bcbfa2017c797b610d26e645a3c47b5737df20d455d2be3edfb16ddec56e881f",
+      "request_sequence": 7,
+      "sequence": 26
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "state": "forwarded"
+      },
+      "event_hash": "sha256:c25b6be92b76b7287035126ab2910b9c05efe618a10ba8de86aa1d2ecb83b1b6",
+      "event_type": "request_forwarded",
+      "previous_hash": "sha256:6ce909360a18570d7f5edc673523e45da3219df2867e5749269bd8205dd69161",
+      "request_sequence": 7,
+      "sequence": 27
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "response_hash": "sha256:0d11d0e0d832b2a80ac262335e589ecd4dff2c8f5377e915255bc920aa4bc028",
+        "state": "upstream_responded"
+      },
+      "event_hash": "sha256:96dbd52bb59eb46e580bb1a2e599c50f2e983aa35b22b47859d843aa2d281ae8",
+      "event_type": "upstream_response_persisted",
+      "previous_hash": "sha256:c25b6be92b76b7287035126ab2910b9c05efe618a10ba8de86aa1d2ecb83b1b6",
+      "request_sequence": 7,
+      "sequence": 28
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "state": "client_response_delivered"
+      },
+      "event_hash": "sha256:21ffb941a0b8ed36680a158440ba678da5ee750284d89b42b5f01c4762f5b728",
+      "event_type": "client_response_delivered",
+      "previous_hash": "sha256:96dbd52bb59eb46e580bb1a2e599c50f2e983aa35b22b47859d843aa2d281ae8",
+      "request_sequence": 7,
+      "sequence": 29
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "method": "sendTransaction",
+        "request_hash": "sha256:4240f8de9e8046cb18d9cb0339dc307a8957341dd861a7b1506f3d76d3dcfb89"
+      },
+      "event_hash": "sha256:129c6bc5718ba2928735541bf2e46d53db63dc81795c6125d06c18932ce21009",
+      "event_type": "request_received",
+      "previous_hash": "sha256:21ffb941a0b8ed36680a158440ba678da5ee750284d89b42b5f01c4762f5b728",
+      "request_sequence": 8,
+      "sequence": 30
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "state": "forwarded"
+      },
+      "event_hash": "sha256:6f040493d48433130331c557bffd6004fa817c90661f8c20353a0009081f9060",
+      "event_type": "request_forwarded",
+      "previous_hash": "sha256:129c6bc5718ba2928735541bf2e46d53db63dc81795c6125d06c18932ce21009",
+      "request_sequence": 8,
+      "sequence": 31
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "response_hash": "sha256:113ca91b199a0c3e7fed5c7bbd1214ac409120d0ac6972c80eaa0417e9565801",
+        "state": "upstream_responded"
+      },
+      "event_hash": "sha256:ef31f4e427de6abc96b576153d1a94f53fceea2933517b6923eb6181ef099a47",
+      "event_type": "upstream_response_persisted",
+      "previous_hash": "sha256:6f040493d48433130331c557bffd6004fa817c90661f8c20353a0009081f9060",
+      "request_sequence": 8,
+      "sequence": 32
+    },
+    {
+      "created_at": "2026-07-23T22:21:07Z",
+      "event": {
+        "state": "client_response_dropped"
+      },
+      "event_hash": "sha256:6f2a3514a9e181d4d9e72213dbbe8e0eb6639a3f8b5551a7034523d306b0cc2e",
+      "event_type": "client_response_intentionally_dropped",
+      "previous_hash": "sha256:ef31f4e427de6abc96b576153d1a94f53fceea2933517b6923eb6181ef099a47",
+      "request_sequence": 8,
+      "sequence": 33
+    }
+  ],
+  "proxy_event_chain_head": "sha256:6f2a3514a9e181d4d9e72213dbbe8e0eb6639a3f8b5551a7034523d306b0cc2e",
+  "proxy_send_transaction": {
+    "client_responses_delivered": 0,
+    "client_responses_dropped": 1,
+    "method": "sendTransaction",
+    "rejected_before_forward": 0,
+    "requests_received": 1,
+    "upstream_requests_forwarded": 1,
+    "upstream_responses_received": 1
+  },
+  "recovery_response": null,
+  "scenario": "replay_after_restart",
+  "signature": "public-sha256:e438fdea63c6467323329ed4b61d24fcbd13a6843ab71e75899c73379256dd6d",
+  "type": "real_process_chaos_result",
+  "upstream_metrics": {
+    "accepted_transactions": [
+      {
+        "accepted_count": 1,
+        "signature": "public-sha256:e438fdea63c6467323329ed4b61d24fcbd13a6843ab71e75899c73379256dd6d",
+        "transaction_hash": "sha256:30d4cfecbf6c3b8a7d6659c28cb362f2bea3cdfdcd61f6e76431100215ebfe7b"
+      }
+    ]
+  }
+}

@@ -42,7 +42,12 @@ verification_commands:
   - python scripts/check_secrets.py
 evidence:
   - evidence/runs/FP-FAIL-002/
-provenance: []
+provenance:
+  - repository: https://github.com/4LFR3Dv1/Solana-Agent
+    commit: 5707240af22bc288149b68456b2a9fe810928efb
+    paths:
+      - gateway/**
+    use: external subprocess runtime only; no kernel code copied
 stop_conditions:
   - a response fault occurs before the proxy persists its counter
   - a kill point is enabled by default
