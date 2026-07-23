@@ -54,3 +54,27 @@ and integer `decimals`.
 
 Validation rejects non-canonical input instead of silently rewriting financial
 meaning.
+
+## ExecutionCommitment v1
+
+Required key set:
+
+```text
+protocol_version
+normalization_profile
+execution_request_id
+obligation_id
+executor_id
+executor_version
+economic_plan_hash
+prepared_message_hash
+simulation_attestation_hash
+signer
+constraints
+expires_at
+```
+
+`obligation_id` uses the same normative identifier grammar as the economic
+plan. It is material to the commitment hash, preventing a prepared message from
+being rebound to another settlement obligation even when other identifiers or
+economic fields are reused incorrectly.

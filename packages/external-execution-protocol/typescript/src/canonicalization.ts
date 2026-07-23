@@ -31,6 +31,7 @@ const COMMITMENT_REQUIRED = new Set([
   "protocol_version",
   "normalization_profile",
   "execution_request_id",
+  "obligation_id",
   "executor_id",
   "executor_version",
   "economic_plan_hash",
@@ -284,6 +285,7 @@ export function executionCommitmentHash(commitment: unknown): string {
     throw new DomainNormalizationError("$.normalization_profile: unsupported profile");
   }
   requireIdentifier(commitment.execution_request_id, "$.execution_request_id");
+  requireIdentifier(commitment.obligation_id, "$.obligation_id");
   requireIdentifier(commitment.executor_id, "$.executor_id");
   if (typeof commitment.executor_version !== "string" || commitment.executor_version.length === 0) {
     throw new DomainNormalizationError("$.executor_version: required");

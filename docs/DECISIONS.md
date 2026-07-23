@@ -10,4 +10,5 @@
 | MVP identifiers are `solana:devnet` and `solana.spl_transfer.v1` | accepted | `EXTERNAL_EXECUTION_PROTOCOL.md` |
 | Signed objects reject null, floats, unsafe integers, and lone surrogates | accepted | `EXTERNAL_EXECUTION_PROTOCOL.md` |
 | Unicode is hashed exactly and never normalized silently | accepted | `EXTERNAL_EXECUTION_PROTOCOL.md` |
+| Draft v1 execution commitments bind `obligation_id` | accepted | pre-integration correction `FP-PROTO-007` |
 | JSONL stdio is the first transport | proposed | protocol specification pending |

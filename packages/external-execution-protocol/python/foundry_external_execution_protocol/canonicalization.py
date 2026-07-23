@@ -41,6 +41,7 @@ _COMMITMENT_REQUIRED = {
     "protocol_version",
     "normalization_profile",
     "execution_request_id",
+    "obligation_id",
     "executor_id",
     "executor_version",
     "economic_plan_hash",
@@ -239,6 +240,7 @@ def execution_commitment_hash(commitment: Mapping[str, Any]) -> str:
     if commitment["normalization_profile"] != PROFILE:
         raise DomainNormalizationError("$.normalization_profile: unsupported profile")
     _require_identifier(commitment["execution_request_id"], "$.execution_request_id")
+    _require_identifier(commitment["obligation_id"], "$.obligation_id")
     _require_identifier(commitment["executor_id"], "$.executor_id")
     if not isinstance(commitment["executor_version"], str) or not commitment["executor_version"]:
         raise DomainNormalizationError("$.executor_version: required")
