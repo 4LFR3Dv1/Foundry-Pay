@@ -1,0 +1,15 @@
+work_item: FP-PROTO-007
+reviewer: verification-security-agent
+commit: 9b4f842ed4d69f8be424ddb2b0a0d18d65ebc97e
+checks:
+  authority_boundary: pending
+  schema_compatibility: pending
+  negative_cases: pending
+  replay_and_idempotency: pending
+  secrets: pending
+  provenance: pending
+  evidence_reproducibility: pending
+decision: pending
+findings: []
+evidence:
+  - evidence/runs/FP-PROTO-007.md

@@ -10,6 +10,7 @@ allowed_paths:
   - docs/WORK_GRAPH.md
   - evidence/runs/FP-PROTO-007.md
   - .agents/tasks/FP-PROTO-007.yaml
+  - .agents/reviews/FP-PROTO-007.yaml
   - provenance/REUSE_LEDGER.yaml
 dependencies:
   - FP-PROTO-003
