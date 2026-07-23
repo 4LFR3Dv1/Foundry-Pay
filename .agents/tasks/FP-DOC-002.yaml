@@ -1,0 +1,33 @@
+work_item: FP-DOC-002
+objective: correct repository visibility, review status, and publication metadata
+owner: implementation-agent
+branch: agent/docs/FP-DOC-002
+allowed_paths:
+  - README.md
+  - docs/WORK_GRAPH.md
+  - .agents/tasks/FP-DOC-002.yaml
+  - .agents/reviews/FP-FAIL-002.yaml
+dependencies:
+  - FP-DOC-001
+  - FP-FAIL-002
+invariants:
+  - repository visibility statements match GitHub
+  - an unperformed independent review is never represented as approval
+  - no credential or private material enters documentation
+acceptance:
+  - README describes the public reference repository boundary
+  - FP-FAIL-002 review contract records not_performed with an explicit reason
+  - work graph reflects the documentation correction
+verification_commands:
+  - python -m pytest
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+evidence:
+  - README.md
+  - .agents/reviews/FP-FAIL-002.yaml
+provenance: []
+stop_conditions:
+  - GitHub visibility cannot be verified
+  - review outcome would be inferred rather than observed

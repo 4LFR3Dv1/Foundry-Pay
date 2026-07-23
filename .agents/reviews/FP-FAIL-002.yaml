@@ -1,22 +1,23 @@
 work_item: FP-FAIL-002
-reviewer: independent-process-safety-reviewer
+reviewer: not_assigned
 commit: 951ab699c827e7e7dbfca59a3beb6ebca4800935
 external_commit: 5707240af22bc288149b68456b2a9fe810928efb
 checks:
-  proxy_persists_before_fault: pending
-  proxy_gateway_journal_independence: pending
-  localhost_only_proxy_boundary: pending
-  kill_points_disabled_by_default: pending
-  signature_first_persistence: pending
-  definitive_rejection_distinction: pending
-  restart_recovery: pending
-  replay_without_rebroadcast: pending
-  two_process_single_claim: pending
-  l2_unavailability_not_dispute: pending
-  event_chain_integrity: pending
-  journal_root_reproducibility: pending
-  private_material_absent: pending
-decision: pending
+  proxy_persists_before_fault: not_performed
+  proxy_gateway_journal_independence: not_performed
+  localhost_only_proxy_boundary: not_performed
+  kill_points_disabled_by_default: not_performed
+  signature_first_persistence: not_performed
+  definitive_rejection_distinction: not_performed
+  restart_recovery: not_performed
+  replay_without_rebroadcast: not_performed
+  two_process_single_claim: not_performed
+  l2_unavailability_not_dispute: not_performed
+  event_chain_integrity: not_performed
+  journal_root_reproducibility: not_performed
+  private_material_absent: not_performed
+decision: not_performed
+reason: merged after internal verification; independent external review remains open
 findings: []
 evidence:
   - evidence/runs/FP-FAIL-002/README.md
