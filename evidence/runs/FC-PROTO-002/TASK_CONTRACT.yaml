@@ -1,0 +1,42 @@
+work_item: FC-PROTO-002
+objective: >-
+  Implement offline cumulative voucher hashing, injected signature verification,
+  and a durable monotonic reference ledger without asserting activation.
+owner: protocol-engineer
+repository: 4LFR3Dv1/Foundry-Pay
+baseline_commit: c9f66437c055143cf48e7de0f06443377737b024
+allowed_paths:
+  - packages/channel-protocol/python/**
+  - tests/channels/test_voucher.py
+  - contracts/channel/channel-voucher.schema.json
+  - contracts/channel/test-vectors/**
+  - evidence/runs/FC-PROTO-002/**
+dependencies:
+  - FOUNDATIONS-001
+invariants:
+  - cumulative total never decreases across verified issued vouchers
+  - sequence strictly increases inside the full signed domain
+  - stale vouchers produce no ledger effect
+  - only ChannelVault may declare activated state
+acceptance:
+  - exact RFC 8785 payload bytes and SHA-256 match the positive vector
+  - injected sender signature verifier receives those exact bytes
+  - domain replay, stale, decreasing, funding, policy, and expiry cases reject
+  - issued, verified, activation_requested, and rejected states survive restart
+  - concurrent verification cannot regress the latest issued sequence or total
+tests:
+  - focused voucher, channel, and foundation test suite
+  - full Python regression suite
+  - TypeScript external-protocol regression suite
+  - Ruff format and lint
+  - repository secret guard
+evidence:
+  - evidence/runs/FC-PROTO-002/README.md
+  - evidence/runs/FC-PROTO-002/validation-report.json
+  - evidence/runs/FC-PROTO-002/pytest-full.xml
+security_review: mandatory-independent-protocol-review
+stop_conditions:
+  - an off-chain assertion is treated as latest activated state
+  - a signed domain dimension is not checked
+  - restart or concurrency can regress monotonic state
+
