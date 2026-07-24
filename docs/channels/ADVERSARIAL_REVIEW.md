@@ -34,9 +34,11 @@ reviewed.
 
 ### Can sender closure erase an already activated right?
 
-No. Closing freezes the activated total, preserves the outstanding right during
-the explicit claim window, and refunds only unallocated capacity immediately.
-Final refund of expired outstanding value depends on an explicit expiry rule.
+No. Closing stops top-up but preserves voucher activation and settlement during
+the explicit claim window. No refund is permitted before the deadline because
+an unpresented signed voucher may still consume capacity. After the deadline,
+the final activated total is fixed; refund then remains subject to conservation
+and the explicit expiry rule for outstanding activated value.
 
 ### Can two settlement requests race?
 

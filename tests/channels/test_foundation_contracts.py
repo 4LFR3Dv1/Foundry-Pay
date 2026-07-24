@@ -26,6 +26,7 @@ def test_foundation_contracts_and_gates_pass() -> None:
     assert result["status"] == "passed", result["errors"]
     assert result["checks"]["schemas"]["count"] == 7
     assert result["checks"]["negative_vectors"]["count"] >= 12
+    assert result["checks"]["closing_race_vector"]["valid"] is True
     assert len(result["checks"]["work_graph"]["ready_items"]) == 5
     assert result["checks"]["accounting"] == {
         "conservation": True,

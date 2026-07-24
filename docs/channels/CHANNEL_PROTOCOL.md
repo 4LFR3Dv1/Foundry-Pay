@@ -19,7 +19,7 @@
 | `SettlementRequest` | requested delta against activated right | bound wallet + Foundry economic authority |
 | `SettlementExecution` | correlated network execution state | Foundry + Solana-Agent journals |
 | `SettlementReceipt` | reconciled settlement observation | ChannelVault + reconciler |
-| `ChannelClosure` | frozen rights and close grace | sender request + ChannelVault |
+| `ChannelClosure` | close request snapshot and presentation deadline | sender request + ChannelVault |
 | `ChannelRefund` | permitted return of unallocated/expired funds | ChannelVault |
 | `ChannelEvidence` | hash-indexed claim/evidence manifest | evidence builder; independently verifiable |
 
@@ -80,14 +80,18 @@ requested <= vault_balance
 destination == bound_recipient_wallet
 ```
 
-At refund during closing:
+Before the claim deadline:
 
 ```text
-immediate_refund <= unallocated_capacity
+voucher activation remains allowed under normal signature, sequence, funding,
+policy, epoch, and expiry checks
+top_up is forbidden
+refund = 0
 ```
 
-Outstanding activated rights stay reserved until settled or their explicit
-claim deadline and voucher expiry have passed.
+After the claim deadline, no new voucher can activate. The final activated
+total is then fixed. Outstanding activated rights remain reserved until settled
+or their explicit voucher/channel expiry rule permits refund.
 
 ## Required invariants
 
@@ -108,7 +112,13 @@ claim deadline and voucher expiry have passed.
 13. Critical execution and channel progress survives process restart.
 14. Activated rights are provable from signed artifacts and chain state without
    a Cloud assertion.
-15. Closing cannot invalidate unexpired outstanding activated rights.
+15. Closing cannot invalidate an unexpired sender-signed voucher: it remains
+    presentable for activation until `claim_deadline`.
+16. No refund is permitted between `request_close` and `claim_deadline`.
+17. Voucher `issued_at` is descriptive, not proof of when the signature was
+    created. Closing-window eligibility therefore depends on valid sender
+    signature and presentation before the on-chain deadline, not trusted
+    off-chain time.
 
 ## Operations
 
@@ -147,15 +157,20 @@ Reads public channel state. A Cloud index is optional.
 
 ### Close
 
-Freezes new activation and top-up, records the latest activated right and claim
-deadline, permits settlement of reserved outstanding value, and exposes
-unallocated excess for refund.
+Stops top-up and starts a claim window. Until `claim_deadline`, the recipient
+may present and activate any otherwise valid sender-signed voucher, including a
+voucher received before the close request, and may settle activated value. A
+sender that signs a new voucher during this window also validly grants that
+value; the program cannot prove off-chain signature creation time from
+`issued_at`.
 
 ### Refund
 
-Before the claim deadline, refunds only unallocated excess. After the deadline
-and explicit voucher/channel expiry, refunds any remaining vault balance and
-finalizes close.
+Before the claim deadline, refund is forbidden because an unpresented valid
+voucher may still consume capacity. After the deadline, activation stops and
+the program may refund capacity that is not reserved by the final activated
+right. Any remaining outstanding right follows the explicit expiry rule before
+final close.
 
 ## Canonicalization and hashing
 

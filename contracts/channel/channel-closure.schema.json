@@ -42,11 +42,13 @@
         "channel_id",
         "channel_account",
         "epoch",
-        "latest_activated_voucher_hash",
-        "frozen_authorized_total_base_units",
-        "settled_total_base_units",
-        "outstanding_right_base_units",
-        "immediately_refundable_base_units",
+        "latest_activated_sequence_at_request",
+        "latest_activated_voucher_hash_at_request",
+        "activated_authorized_total_at_request_base_units",
+        "settled_total_at_request_base_units",
+        "outstanding_right_at_request_base_units",
+        "activation_allowed_until",
+        "pre_deadline_refundable_base_units",
         "requested_at",
         "claim_deadline",
         "state"
@@ -71,20 +73,27 @@
           "type": "integer",
           "minimum": 0
         },
-        "latest_activated_voucher_hash": {
+        "latest_activated_sequence_at_request": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "latest_activated_voucher_hash_at_request": {
           "$ref": "#/$defs/Hash"
         },
-        "frozen_authorized_total_base_units": {
+        "activated_authorized_total_at_request_base_units": {
           "$ref": "#/$defs/Amount"
         },
-        "settled_total_base_units": {
+        "settled_total_at_request_base_units": {
           "$ref": "#/$defs/Amount"
         },
-        "outstanding_right_base_units": {
+        "outstanding_right_at_request_base_units": {
           "$ref": "#/$defs/Amount"
         },
-        "immediately_refundable_base_units": {
-          "$ref": "#/$defs/Amount"
+        "activation_allowed_until": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "pre_deadline_refundable_base_units": {
+          "const": "0"
         },
         "requested_at": {
           "$ref": "#/$defs/Timestamp"
@@ -153,7 +162,7 @@
         },
         "reason": {
           "enum": [
-            "unallocated_excess_during_close",
+            "post_claim_window_unallocated",
             "expired_outstanding_right",
             "final_close"
           ]

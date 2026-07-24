@@ -49,6 +49,12 @@ cumulative authorized total.
 - The Cloud can sponsor activation but cannot manufacture it.
 - Value updates require an on-chain activation operation in v1.
 - Issued-but-unactivated vouchers must be shown as pending, not received.
+- A close request opens an on-chain presentation window. Until its deadline, a
+  recipient may activate an otherwise valid sender-signed voucher and no refund
+  is permitted.
+- `issued_at` is not trusted as proof of signature creation time. A sender who
+  signs during the close window still grants value, while the recipient is
+  protected from a close race on a voucher already held.
 - No credit or underfunded entitlement exists.
 - Epoch reset requires all prior rights settled or expired and formally
   finalized; the MVP may require a new channel instead.

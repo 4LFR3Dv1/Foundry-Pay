@@ -169,10 +169,11 @@ Sender sees:
 40 authorized
 15 received
 25 reserved for recipient
-60 refundable now
+60 potentially refundable after the claim deadline
 ```
 
-Close freezes new updates. It does not remove the recipient's 25 until the
+Close stops top-ups but keeps signed-voucher presentation open until the claim
+deadline. It does not remove the recipient's 25 until the
 explicit claim deadline and expiry pass.
 
 ## Accessibility and privacy

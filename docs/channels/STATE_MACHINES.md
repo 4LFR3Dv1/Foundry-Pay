@@ -32,10 +32,12 @@ needs_review
 | settling | source divergence | material observations disagree | disputed |
 | needs_recovery | signature confirmed and reconciled | no rebroadcast | active |
 | needs_recovery | proven rejection before acceptance | policy review | needs_review |
-| active | close requested | freeze latest activated state | closing |
+| active | close requested | stop top-up, open voucher presentation window | closing |
+| closing | voucher presented | valid sender signature and normal activation checks; before claim deadline | closing |
 | closing | partial/final settlement | before claim deadline, outstanding right | closing |
-| closing | excess refund | refund <= unallocated capacity | closing |
-| closing | final refund and finalize | deadline+expiry passed, no reserved right | closed |
+| closing | refund attempted | before claim deadline | rejected |
+| closing | claim deadline reached | stop activation, freeze final activated total | closing |
+| closing | post-deadline refund/finalize | no unexpired reserved right is consumed | closed |
 
 `closed` is terminal. No transition from exceptional states may happen without
 an explicit observation, review decision, or recovery result.
@@ -130,7 +132,8 @@ issued → activation_requested → validating → activated
 ```
 
 There is no transition from `activated` back to `issued`, revoked, or a lower
-sequence. Closing freezes the latest activated state.
+sequence. Closing preserves a presentation window for signed vouchers; only the
+claim deadline freezes the final activated state.
 
 ## Restart rules
 

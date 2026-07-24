@@ -63,8 +63,10 @@ reconciled.
 
 ### Close/refund ambiguity
 
-Inspect channel lifecycle, frozen right, refunded total, vault balance, and
-signature. Never repeat a refund based only on a missing response.
+Inspect channel lifecycle, claim deadline, final activated right, refunded
+total, vault balance, and signature. Before the deadline, refund must be zero
+because a signed voucher may still be presented. Never repeat a refund based
+only on a missing response.
 
 ## Recovery states
 

@@ -18,6 +18,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 ROOT = Path(__file__).parents[1]
 CONTRACTS = ROOT / "contracts" / "channel"
 POSITIVE = CONTRACTS / "test-vectors" / "positive" / "cumulative-channel-v1.json"
+POSITIVE_CLOSE = CONTRACTS / "test-vectors" / "positive" / "close-race-v1.json"
 NEGATIVE = CONTRACTS / "test-vectors" / "negative"
 WORK_ITEMS = ROOT / "docs" / "channels" / "work-items.yaml"
 
@@ -49,6 +50,7 @@ REQUIRED_DOCS = (
     "PRODUCT_EXPERIENCE.md",
     "OPEN_QUESTIONS.md",
     "GLOSSARY.md",
+    "SECURITY_GATES.md",
 )
 
 REQUIRED_ADRS = tuple(
@@ -242,6 +244,57 @@ def validate() -> dict[str, Any]:
         "voucher_hashes": [voucher["voucher_hash"] for voucher in vector["vouchers"]],
         "binding_hash": vector["recipient_binding"]["binding_hash"],
         "valid": positive_semantic_error is None,
+    }
+
+    close_vector = json.loads(POSITIVE_CLOSE.read_text(encoding="utf-8"))
+    closure = close_vector["closure_request"]
+    closure_validator = Draft202012Validator(
+        schemas["channel-closure.schema.json"], format_checker=format_checker
+    )
+    closure_schema_errors = list(closure_validator.iter_errors(closure))
+    errors.extend(f"close-race closure: {error.message}" for error in closure_schema_errors)
+    held = close_vector["voucher_held_at_close"]
+    during = close_vector["expected_during_claim_window"]
+    after = close_vector["expected_after_settlement_and_deadline"]
+    close_rule_checks = {
+        "deadline_matches_activation_window": (
+            closure["activation_allowed_until"] == closure["claim_deadline"]
+        ),
+        "presentation_is_inside_window": (
+            parse_time(closure["requested_at"])
+            < parse_time(held["presented_at"])
+            < parse_time(closure["claim_deadline"])
+        ),
+        "voucher_advances_snapshot": (
+            held["sequence"] > closure["latest_activated_sequence_at_request"]
+            and held["previous_activated_voucher_hash"]
+            == closure["latest_activated_voucher_hash_at_request"]
+        ),
+        "pre_deadline_refund_is_zero": (
+            closure["pre_deadline_refundable_base_units"] == "0"
+            and during["pre_deadline_refund"] == "rejected"
+            and during["pre_deadline_refundable_base_units"] == "0"
+        ),
+        "valid_voucher_activates_during_window": (
+            held["sender_signature_present"]
+            and during["activation"] == "accepted"
+            and during["activated_authorized_total_base_units"]
+            == held["cumulative_authorized_base_units"]
+        ),
+        "post_deadline_conservation": (
+            int(after["settled_total_base_units"]) + int(after["vault_balance_base_units"])
+            == 100_000_000
+            and after["post_deadline_refundable_base_units"] == after["vault_balance_base_units"]
+            and after["activation_after_deadline"] == "rejected"
+        ),
+    }
+    failed_close_rules = [name for name, passed in close_rule_checks.items() if not passed]
+    errors.extend(f"close-race rule failed: {name}" for name in failed_close_rules)
+    checks["closing_race_vector"] = {
+        "scenario": close_vector["scenario"],
+        "schema_valid": not closure_schema_errors,
+        "rules": close_rule_checks,
+        "valid": not closure_schema_errors and not failed_close_rules,
     }
 
     negative_results = []

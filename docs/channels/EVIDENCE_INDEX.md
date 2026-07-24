@@ -23,6 +23,7 @@ foundation and are not presented as evidence.
 | exactly five first work items are ready and all required items have complete contracts | [work items](work-items.yaml) | same command |
 | authority, state, link, recovery, and repository boundaries are accepted decisions | [decision register](DECISIONS.md) and five ADRs | document review |
 | required threats have preventive, detective, recovery, evidence, and residual-risk treatment | [threat model](THREAT_MODEL.md) | security design review |
+| three critical design risks are versioned as public release gates without exploit detail | [security gates](SECURITY_GATES.md) | register review |
 
 Generated run artifacts live in
 `evidence/runs/FOUNDATIONS-001/`. Their hashes are recorded in that directory's
@@ -36,5 +37,6 @@ README after the validation run.
 - mainnet readiness, external audit, or proven scale;
 - exactly-once blockchain execution;
 - external user comprehension or adoption.
+- independent external security review.
 
 These require later work items and cannot be inferred from this foundation.

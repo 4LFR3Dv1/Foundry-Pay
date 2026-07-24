@@ -35,8 +35,8 @@ independent observation.
 | Prepare settlement | activated right and requested delta | Foundry economic authority | EconomicPlan and approval |
 | Simulate/execute | exact authorized message | Solana-Agent + signer boundary | commitment, signature, technical receipt |
 | Reconcile | on-chain state and diverse observations | Foundry reconciler | L1/L2/L3 observations |
-| Close | sender request, frozen outstanding rights, policy | ChannelVault | closing state and deadlines |
-| Refund | conservation rules after reserving outstanding rights | ChannelVault | refund transfer and updated totals |
+| Close | sender request and policy | ChannelVault | closing state, activation/settlement window, and deadline |
+| Refund | claim deadline passed and conservation rules reserve final activated rights | ChannelVault | refund transfer and updated totals |
 
 ## Signatures
 

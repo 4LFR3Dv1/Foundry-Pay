@@ -1,0 +1,44 @@
+{
+  "vector_version": "1",
+  "scenario": "issued-voucher-survives-close-race",
+  "fixture_notice": "Synthetic protocol behavior vector. No ChannelVault transaction or cryptographic signature is claimed.",
+  "closure_request": {
+    "type": "channel_closure",
+    "protocol_version": "1.0.0",
+    "closure_id": "closure_foundations_001",
+    "channel_id": "channel_foundations_001",
+    "channel_account": "EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd",
+    "epoch": 0,
+    "latest_activated_sequence_at_request": 1,
+    "latest_activated_voucher_hash_at_request": "sha256:f91159c7977bed60de04241ed34002320fc1c023e5316e96cfae8a35206b3758",
+    "activated_authorized_total_at_request_base_units": "10000000",
+    "settled_total_at_request_base_units": "0",
+    "outstanding_right_at_request_base_units": "10000000",
+    "activation_allowed_until": "2026-08-01T00:15:00Z",
+    "pre_deadline_refundable_base_units": "0",
+    "requested_at": "2026-08-01T00:05:00Z",
+    "claim_deadline": "2026-08-01T00:15:00Z",
+    "state": "claim_window"
+  },
+  "voucher_held_at_close": {
+    "sequence": 3,
+    "previous_activated_voucher_hash": "sha256:f91159c7977bed60de04241ed34002320fc1c023e5316e96cfae8a35206b3758",
+    "voucher_hash": "sha256:8a3283d61a75e1bbe987941601e8f28708875913fd0dfef0fa399c6a7dd296e2",
+    "cumulative_authorized_base_units": "40000000",
+    "sender_signature_present": true,
+    "presented_at": "2026-08-01T00:10:00Z",
+    "expires_at": "2026-08-02T00:00:00Z"
+  },
+  "expected_during_claim_window": {
+    "activation": "accepted",
+    "activated_authorized_total_base_units": "40000000",
+    "pre_deadline_refund": "rejected",
+    "pre_deadline_refundable_base_units": "0"
+  },
+  "expected_after_settlement_and_deadline": {
+    "settled_total_base_units": "40000000",
+    "vault_balance_base_units": "60000000",
+    "post_deadline_refundable_base_units": "60000000",
+    "activation_after_deadline": "rejected"
+  }
+}

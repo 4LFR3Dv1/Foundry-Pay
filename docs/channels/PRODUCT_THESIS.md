@@ -88,7 +88,7 @@ unavoidable ambiguity around stale vouchers and sender revocation.
 | Several transfers cause several settlements | Increase one cumulative total |
 | Lost RPC response risks blind retry | Recover by persisted signature |
 | Hosted ledger asserts entitlement | Verify signed voucher and on-chain channel |
-| Sender closes and surprises recipient | Outstanding activated rights survive closing |
+| Sender races close against a signed voucher | Recipient can present it until the on-chain claim deadline; no refund occurs during that window |
 
 ## Consumer language
 

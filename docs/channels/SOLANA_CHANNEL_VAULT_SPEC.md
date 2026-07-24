@@ -122,14 +122,27 @@ conservation; transfer checked via PDA-signed CPI; increment settled total.
 
 Signers: sender.
 
-Effects: freeze new activation/top-up, store claim deadline and latest
-activated right, enter `closing`. It cannot reduce the right.
+Effects: stop top-up, store claim deadline and the activated snapshot at
+request time, and enter `closing`. Voucher activation and settlement remain
+allowed until the on-chain claim deadline. It cannot reduce a right.
+
+### `activate_voucher` while closing
+
+Signers/evidence: the same sender-signed voucher proof as normal activation.
+
+Effects: before `claim_deadline`, apply the normal signature, domain, program,
+channel, epoch, sequence, previous-hash, amount, funding, policy, and expiry
+checks. The program does not trust `issued_at` as proof of signature creation
+time. A valid voucher presented before the deadline may advance the activated
+total.
 
 ### `refund_excess`
 
 Signers: sender.
 
-Effects: refund only unallocated capacity during close; update refunded total.
+Effects: reject before `claim_deadline`. After the deadline, activation is
+closed and only capacity not reserved by the final activated right may be
+refunded.
 
 ### `finalize_close`
 
