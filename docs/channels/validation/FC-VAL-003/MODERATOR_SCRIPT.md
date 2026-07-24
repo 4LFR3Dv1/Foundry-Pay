@@ -7,16 +7,27 @@ moderator guardrail. Do not explain channels before Stage A is scored.
 
 ## Consent and eligibility
 
+Before this script, deliver the approved privacy notice identifying the
+controller/contact, purpose, categories, processing basis, processors/storage,
+access, retention/deletion including backups, incident route, compensation,
+withdrawal route/cutoff, and what anonymous aggregate may remain afterward.
+This script supplements that notice; it does not replace it.
+
 **Say**
 
 > Estamos avaliando se uma descrição de produto é compreensível, não você. A
 > sessão dura cerca de 15 minutos. Não use nem mostre uma wallet real, saldo,
-> transação, link privado, chave ou seed phrase. Podemos interromper ou excluir
-> suas respostas a qualquer momento. Suas respostas públicas serão apenas
-> agregadas e sem identificação. Você concorda em participar?
+> transação, link privado, chave ou seed phrase. Você pode recusar qualquer
+> pergunta, parar sem penalidade, retirar seu consentimento e pedir exclusão dos
+> seus dados pelo canal gratuito e até o prazo explicados no aviso de
+> privacidade. Você receberá a compensação informada mesmo se não responder a
+> tudo. Depois do prazo declarado, resultados já transformados em agregados
+> anônimos podem permanecer sem possibilidade de associação a você. Você
+> concorda em participar da pesquisa?
 
-Record `consent_obtained=true` privately. If the answer is no, stop. Obtain any
-recording consent separately; participation must not require recording.
+Record consent privately. If the answer is no, stop. Obtain recording consent
+through a separate optional choice; refusal cannot exclude an otherwise
+eligible participant. Use non-recorded notes instead.
 
 Ask the eligibility questions as yes/no:
 
@@ -70,11 +81,15 @@ Use only neutral probes:
 - “O que fez você pensar isso?”
 - “Existe outra interpretação possível?”
 
-Do not correct answers. Lock Stage A scoring before continuing.
+Do not correct answers. Lock the Stage A answers and primary scoring, compute
+their SHA-256 audit hash, and store them separately before continuing. Do not
+reveal Stage B until the lock succeeds.
 
-## Stage B — factual model comprehension
+## Stage B — taught factual-model comprehension
 
-Show and read:
+Show and read the following teaching text. Stage B measures comprehension and
+recall after this explanation; it does not measure what the headline
+communicated:
 
 > Alice financia um canal com 100 USDC. O canal mantém os fundos em um programa
 > Solana, não em uma conta controlada pelo serviço Foundry Pay. Alice assina

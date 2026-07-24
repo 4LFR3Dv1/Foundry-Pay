@@ -1,42 +1,38 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://foundrypay.example/schemas/research/fc-val-003-result-record-v1.json",
-  "title": "FC-VAL-003 sanitized participant result",
-  "type": "object",
-  "additionalProperties": false,
-  "required": [
-    "protocol_version",
-    "research_id",
-    "eligible",
-    "completed",
-    "stage_a",
-    "stage_b",
-    "misconceptions"
+  "$id": "https://foundrypay.example/schemas/research/fc-val-003-coded-record-v2.json",
+  "title": "FC-VAL-003 private pseudonymous coded research record",
+  "description": "Private coded research data. Instances are never public evidence.",
+  "oneOf": [
+    { "$ref": "#/$defs/eligibleComplete" },
+    { "$ref": "#/$defs/ineligible" },
+    { "$ref": "#/$defs/incomplete" },
+    { "$ref": "#/$defs/withdrawnAdministrative" }
   ],
-  "properties": {
-    "protocol_version": {
+  "$defs": {
+    "protocolVersion": {
       "const": "fc-val-003-v1"
     },
-    "research_id": {
+    "runId": {
       "type": "string",
-      "pattern": "^P[0-9]{2,3}$"
+      "pattern": "^FCVAL003-[A-HJ-NP-Z2-9]{8}$"
     },
-    "eligible": {
-      "type": "boolean"
+    "recordId": {
+      "description": "CSPRNG-generated, non-sequential, non-identifying ID.",
+      "type": "string",
+      "pattern": "^[A-HJ-NP-Z2-9]{12}$"
     },
-    "completed": {
-      "type": "boolean"
+    "stageReached": {
+      "enum": [
+        "consent",
+        "screening",
+        "stage_a",
+        "stage_b",
+        "comparison",
+        "completed"
+      ]
     },
-    "segment": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "repeat_sender": { "type": "boolean" },
-        "own_wallet_recipient": { "type": "boolean" }
-      },
-      "required": ["repeat_sender", "own_wallet_recipient"]
-    },
-    "stage_a": {
+    "unaidedScores": {
       "type": "object",
       "additionalProperties": false,
       "required": ["A1", "A2", "A3", "A4", "A5", "A6"],
@@ -49,7 +45,12 @@
         "A6": { "$ref": "#/$defs/unaidedScore" }
       }
     },
-    "stage_b": {
+    "unaidedScore": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2
+    },
+    "taughtScores": {
       "type": "object",
       "additionalProperties": false,
       "required": ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10"],
@@ -83,34 +84,186 @@
           "M10_NO_EXPIRY_OR_CLOSE_RULES",
           "M11_ISSUED_EQUALS_ACTIVATED",
           "M12_CLOSE_IMMEDIATE_REVOCATION",
-          "OTHER_SANITIZED"
+          "OTHER_ROLLED_UP"
         ]
       }
     },
-    "clarity_rating_1_to_5": {
-      "type": "integer",
-      "minimum": 1,
-      "maximum": 5
-    },
-    "reuse_intent_1_to_5": {
-      "type": "integer",
-      "minimum": 1,
-      "maximum": 5
-    },
-    "sanitized_paraphrase_categories": {
-      "type": "array",
-      "uniqueItems": true,
-      "items": {
-        "type": "string",
-        "pattern": "^[A-Z0-9_]{3,64}$"
+    "eligibleComplete": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocol_version",
+        "run_id",
+        "record_id",
+        "record_status",
+        "stage_reached",
+        "segment",
+        "stage_a",
+        "stage_b",
+        "misconceptions",
+        "ratings",
+        "scoring"
+      ],
+      "properties": {
+        "protocol_version": { "$ref": "#/$defs/protocolVersion" },
+        "run_id": { "$ref": "#/$defs/runId" },
+        "record_id": { "$ref": "#/$defs/recordId" },
+        "record_status": { "const": "eligible_complete" },
+        "stage_reached": { "const": "completed" },
+        "segment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["repeat_sender", "own_wallet_recipient"],
+          "properties": {
+            "repeat_sender": { "type": "boolean" },
+            "own_wallet_recipient": { "type": "boolean" }
+          }
+        },
+        "stage_a": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "locked_before_stage_b",
+            "locked_record_sha256",
+            "primary",
+            "secondary",
+            "adjudicated"
+          ],
+          "properties": {
+            "locked_before_stage_b": { "const": true },
+            "locked_record_sha256": {
+              "type": "string",
+              "pattern": "^sha256:[a-f0-9]{64}$"
+            },
+            "primary": { "$ref": "#/$defs/unaidedScores" },
+            "secondary": { "$ref": "#/$defs/unaidedScores" },
+            "adjudicated": { "$ref": "#/$defs/unaidedScores" }
+          }
+        },
+        "stage_b": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["primary", "secondary", "adjudicated"],
+          "properties": {
+            "primary": { "$ref": "#/$defs/taughtScores" },
+            "secondary": { "$ref": "#/$defs/taughtScores" },
+            "adjudicated": { "$ref": "#/$defs/taughtScores" }
+          }
+        },
+        "misconceptions": { "$ref": "#/$defs/misconceptions" },
+        "ratings": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["clarity_1_to_5", "reuse_intent_1_to_5"],
+          "properties": {
+            "clarity_1_to_5": { "type": "integer", "minimum": 1, "maximum": 5 },
+            "reuse_intent_1_to_5": { "type": "integer", "minimum": 1, "maximum": 5 }
+          }
+        },
+        "scoring": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "second_review_completed",
+            "disagreement_count",
+            "ambiguity_count",
+            "adjudication_count",
+            "private_audit_ref"
+          ],
+          "properties": {
+            "status": { "const": "final_adjudicated" },
+            "second_review_completed": { "const": true },
+            "disagreement_count": { "type": "integer", "minimum": 0 },
+            "ambiguity_count": { "type": "integer", "minimum": 0 },
+            "adjudication_count": { "type": "integer", "minimum": 0 },
+            "private_audit_ref": {
+              "type": "string",
+              "pattern": "^AUDIT-[A-HJ-NP-Z2-9]{10}$"
+            }
+          }
+        }
       }
-    }
-  },
-  "$defs": {
-    "unaidedScore": {
-      "type": "integer",
-      "minimum": 0,
-      "maximum": 2
+    },
+    "ineligible": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocol_version",
+        "run_id",
+        "record_status",
+        "stage_reached",
+        "exclusion_reason"
+      ],
+      "properties": {
+        "protocol_version": { "$ref": "#/$defs/protocolVersion" },
+        "run_id": { "$ref": "#/$defs/runId" },
+        "record_status": { "const": "ineligible" },
+        "stage_reached": { "enum": ["consent", "screening"] },
+        "exclusion_reason": {
+          "enum": [
+            "DECLINED_CONSENT",
+            "UNDER_18",
+            "INSUFFICIENT_STABLECOIN_EXPERIENCE",
+            "NO_SELF_CUSTODY_EXPERIENCE",
+            "PROJECT_CONFLICT",
+            "PRIOR_PROTOCOL_EXPOSURE",
+            "OTHER_ROLLED_UP"
+          ]
+        }
+      }
+    },
+    "incomplete": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocol_version",
+        "run_id",
+        "record_id",
+        "record_status",
+        "stage_reached",
+        "attrition_reason"
+      ],
+      "properties": {
+        "protocol_version": { "$ref": "#/$defs/protocolVersion" },
+        "run_id": { "$ref": "#/$defs/runId" },
+        "record_id": { "$ref": "#/$defs/recordId" },
+        "record_status": { "const": "incomplete" },
+        "stage_reached": { "$ref": "#/$defs/stageReached" },
+        "attrition_reason": {
+          "enum": [
+            "PARTICIPANT_STOPPED",
+            "MODERATOR_STOPPED",
+            "TECHNICAL_FAILURE",
+            "PRIVACY_STOP",
+            "PROTOCOL_DEVIATION",
+            "OTHER_ROLLED_UP"
+          ]
+        }
+      }
+    },
+    "withdrawnAdministrative": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocol_version",
+        "run_id",
+        "record_status",
+        "stage_reached",
+        "withdrawal_disposition"
+      ],
+      "properties": {
+        "protocol_version": { "$ref": "#/$defs/protocolVersion" },
+        "run_id": { "$ref": "#/$defs/runId" },
+        "record_status": { "const": "withdrawn" },
+        "stage_reached": { "$ref": "#/$defs/stageReached" },
+        "withdrawal_disposition": {
+          "enum": [
+            "PARTICIPANT_DATA_DELETED_BEFORE_AGGREGATION",
+            "ANONYMOUS_AGGREGATE_ALREADY_FROZEN_AFTER_DECLARED_CUTOFF"
+          ]
+        }
+      }
     }
   }
 }
