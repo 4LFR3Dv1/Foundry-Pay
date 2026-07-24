@@ -30,41 +30,8 @@
     },
     "destination_wallet_signature": {
       "$ref": "#/$defs/Signature"
-    },
-    "current_wallet_signature": {
-      "$ref": "#/$defs/Signature"
     }
   },
-  "allOf": [
-    {
-      "if": {
-        "properties": {
-          "payload": {
-            "properties": {
-              "binding_mode": {
-                "const": "rebind"
-              }
-            },
-            "required": [
-              "binding_mode"
-            ]
-          }
-        }
-      },
-      "then": {
-        "required": [
-          "current_wallet_signature"
-        ]
-      },
-      "else": {
-        "not": {
-          "required": [
-            "current_wallet_signature"
-          ]
-        }
-      }
-    }
-  ],
   "$defs": {
     "Identifier": {
       "type": "string",
@@ -102,6 +69,8 @@
         "epoch",
         "claim_id",
         "claim_pubkey",
+        "voucher_hash",
+        "mint",
         "binding_mode",
         "destination_wallet",
         "binding_nonce",
@@ -143,14 +112,14 @@
         "claim_pubkey": {
           "$ref": "#/$defs/Pubkey"
         },
-        "binding_mode": {
-          "enum": [
-            "initial",
-            "rebind"
-          ]
+        "voucher_hash": {
+          "$ref": "#/$defs/Hash"
         },
-        "current_wallet": {
+        "mint": {
           "$ref": "#/$defs/Pubkey"
+        },
+        "binding_mode": {
+          "const": "initial"
         },
         "destination_wallet": {
           "$ref": "#/$defs/Pubkey"
@@ -165,30 +134,7 @@
         "expires_at": {
           "$ref": "#/$defs/Timestamp"
         }
-      },
-      "allOf": [
-        {
-          "if": {
-            "properties": {
-              "binding_mode": {
-                "const": "rebind"
-              }
-            }
-          },
-          "then": {
-            "required": [
-              "current_wallet"
-            ]
-          },
-          "else": {
-            "not": {
-              "required": [
-                "current_wallet"
-              ]
-            }
-          }
-        }
-      ]
+      }
     }
   }
 }

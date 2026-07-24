@@ -1,0 +1,9 @@
+{
+  "case_id": "recipient-binding-voucher-substitution",
+  "target": "recipient_binding",
+  "mutation": {
+    "path": "payload.voucher_hash",
+    "value": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "expected_error": "binding_hash_mismatch"
+}
