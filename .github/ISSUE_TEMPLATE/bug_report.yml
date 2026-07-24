@@ -1,0 +1,70 @@
+name: Bug report
+description: Report a reproducible defect in the public reference implementation
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not report vulnerabilities, secrets, wallet material, or customer data here.
+        Follow SECURITY.md for private reporting.
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: Release, branch, or full commit SHA where the defect occurs.
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Surface
+      options:
+        - External Execution Protocol
+        - Python reference implementation
+        - TypeScript reference implementation
+        - Authorization or signer
+        - Reconciliation
+        - Failure or recovery lab
+        - Documentation or onboarding
+        - Other public surface
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Minimal deterministic steps, fixture, and command.
+      placeholder: |
+        1. Install...
+        2. Run...
+        3. Observe...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python/Node versions, and relevant non-secret configuration.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: This report contains no secret, private key, token, wallet material, or customer data.
+          required: true
+        - label: This is not a privately reportable security vulnerability.
+          required: true

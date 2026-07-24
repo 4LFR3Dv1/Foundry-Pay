@@ -11,6 +11,7 @@ Describe the smallest verifiable outcome.
 - [ ] No executor authority was broadened.
 - [ ] Exact-message authorization remains intact.
 - [ ] Unknown broadcast cannot trigger automatic retransmission.
+- [ ] The public/commercial boundary remains explicit.
 
 ## Verification
 
@@ -19,7 +20,13 @@ Describe the smallest verifiable outcome.
 - [ ] Evidence is attached or linked.
 - [ ] Provenance is complete.
 - [ ] Work graph and decisions are current.
+- [ ] No secret, wallet material, production data, or customer artifact is included.
 
 ## Evidence
 
 Commands, result artifacts, and immutable commit.
+
+## Licensing and provenance
+
+List reused sources, licenses, immutable revisions, notices, and modifications.
+Write `None` when the change contains no third-party material.
