@@ -1,16 +1,17 @@
 {
   "work_item": "FC-PROTO-001",
   "baseline_commit": "5573e73e2241a3ece86253aae6f1de6f60e95e48",
-  "implementation_commit": "9b8417dae614aba64e7f2b70ae6e69f643b2052b",
+  "initial_implementation_commit": "9b8417dae614aba64e7f2b70ae6e69f643b2052b",
+  "accounting_review_remediation_commit": "f76db337efc81614b103bbff9790ab49e0c5ca80",
   "scope": "offline Channel and ChannelFunding validation",
   "network_calls": 0,
   "checks": {
     "focused_python": {
-      "passed": 35,
+      "passed": 79,
       "failed": 0
     },
     "full_python": {
-      "passed": 140,
+      "passed": 184,
       "skipped": 11,
       "failed": 0
     },
@@ -24,10 +25,10 @@
   },
   "artifact_sha256": {
     "contracts/channel/test-vectors/positive/cumulative-channel-v1.json": "479145d2d8ba4a76d646e5b4e2991adfa57955c0d4cc5c1bd3f59b253adb6fce",
-    "contracts/channel/channel.schema.json": "f95bca86af8bbc174d74ce6db8fbd00153f972f3c77428d6f38e721d79ad3b69"
+    "contracts/channel/channel.schema.json": "5893b4606a809637185f89db358f325f98cf37e21469c2d5ad38ed0ffc222d82"
   },
   "accounting_review": {
-    "status": "required",
+    "status": "changes_addressed_rereview_required",
     "author_is_only_approver": true
   },
   "status": "review"

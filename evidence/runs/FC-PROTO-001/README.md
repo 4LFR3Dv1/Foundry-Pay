@@ -1,7 +1,10 @@
 # FC-PROTO-001 evidence
 
-Implementation commit:
+Initial implementation commit:
 `9b8417dae614aba64e7f2b70ae6e69f643b2052b`
+
+Accounting-review remediation commit:
+`f76db337efc81614b103bbff9790ab49e0c5ca80`
 
 Baseline:
 `5573e73e2241a3ece86253aae6f1de6f60e95e48`
@@ -12,6 +15,12 @@ Scope:
 - deterministic offline `ChannelFunding` transition validation;
 - accounting projection for `F = V + S + R` and
   `0 <= S <= A <= F - R`;
+- lifecycle-specific accounting constraints for draft, funding, active,
+  settling, closing, expired, and closed snapshots;
+- full previous/after snapshot validation for funding and top-up, including
+  immutable economic fields and permitted status transitions;
+- canonical unsigned u64 amount bounds in both the schema and Python
+  reference validator;
 - schema lifecycle constraints for closing fields;
 - no Cloud, wallet, signer, RPC, broadcast, or Solana program operation.
 
@@ -19,8 +28,8 @@ Verification:
 
 | Command | Result |
 |---|---|
-| `python -m pytest` | 140 passed, 11 skipped |
-| `python -m pytest tests/channels/test_channel.py tests/channels/test_foundation_contracts.py` | 35 passed |
+| `python -m pytest` | 184 passed, 11 skipped |
+| `python -m pytest tests/channels/test_channel.py tests/channels/test_foundation_contracts.py` | 79 passed |
 | `python -m ruff check .` | passed |
 | `python -m ruff format --check packages tests services scripts` | 41 files formatted |
 | `npm ci && npm test` in the TypeScript protocol package | 8 passed; audit found 0 vulnerabilities |
@@ -34,7 +43,7 @@ SHA256(cumulative-channel-v1.json)
 479145d2d8ba4a76d646e5b4e2991adfa57955c0d4cc5c1bd3f59b253adb6fce
 
 SHA256(channel.schema.json)
-f95bca86af8bbc174d74ce6db8fbd00153f972f3c77428d6f38e721d79ad3b69
+5893b4606a809637185f89db358f325f98cf37e21469c2d5ad38ed0ffc222d82
 ```
 
 Security statement:
@@ -44,7 +53,10 @@ Security statement:
 - lifecycle and accounting inconsistencies have stable error codes;
 - successful validation proves only internal consistency of caller-provided
   data, not on-chain origin;
-- independent accounting review remains required before money-moving work.
+- the first independent accounting review requested lifecycle and transition
+  changes; those changes are implemented in `f76db33...`;
+- a second independent accounting review remains required before merge and
+  before any money-moving work.
 
 Governance note:
 
