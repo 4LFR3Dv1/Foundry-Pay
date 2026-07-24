@@ -7,6 +7,11 @@ name = "foundry-external-execution-protocol"
 version = "0.1.0"
 description = "Protocol contracts for governed external financial execution"
 requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = [
+  "LICENSE",
+  "NOTICE",
+]
 dependencies = [
   "rfc8785>=0.1.4,<1",
 ]

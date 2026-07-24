@@ -1,0 +1,57 @@
+name: Feature request
+description: Propose a change to a public Foundry Pay surface
+title: "proposal: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What user or interoperability problem should be solved?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Smallest verifiable outcome
+      description: Describe observable acceptance criteria rather than an implementation wishlist.
+    validations:
+      required: true
+  - type: dropdown
+    id: authority
+    attributes:
+      label: Authority impact
+      options:
+        - No authority change
+        - Changes Foundry economic authority
+        - Changes external executor authority
+        - Changes signer authority
+        - Unsure
+    validations:
+      required: true
+  - type: dropdown
+    id: compatibility
+    attributes:
+      label: Protocol compatibility
+      options:
+        - No protocol change
+        - Backward-compatible protocol change
+        - Breaking protocol change
+        - Unsure
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Suggested tests or evidence
+      description: Include failure, tamper, recovery, or cross-language cases where relevant.
+  - type: checkboxes
+    id: boundary
+    attributes:
+      label: Public contribution boundary
+      options:
+        - label: The proposal belongs in the public repository boundary described in docs/PUBLIC_COMMERCIAL_BOUNDARY.md.
+          required: true
+        - label: No third-party code or material with unresolved ownership is included.
+          required: true

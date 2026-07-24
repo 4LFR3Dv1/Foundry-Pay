@@ -1,0 +1,58 @@
+work_item: FP-DOC-003
+objective: publish an explicit open-source license, public/commercial boundary, and external onboarding path
+owner: implementation-agent
+branch: agent/docs/FP-DOC-003
+allowed_paths:
+  - README.md
+  - LICENSE
+  - NOTICE
+  - CONTRIBUTING.md
+  - SECURITY.md
+  - CODE_OF_CONDUCT.md
+  - CHANGELOG.md
+  - ROADMAP.md
+  - examples/local_proof.py
+  - tests/examples/test_local_proof.py
+  - pyproject.toml
+  - packages/external-execution-protocol/typescript/package.json
+  - packages/external-execution-protocol/typescript/package-lock.json
+  - .github/ISSUE_TEMPLATE/**
+  - .github/pull_request_template.md
+  - .agents/tasks/FP-DOC-003.yaml
+  - docs/ADR/FP-ADR-002-open-source-boundary.md
+  - docs/PUBLIC_COMMERCIAL_BOUNDARY.md
+  - docs/WORK_GRAPH.md
+  - evidence/runs/FP-DOC-003/**
+  - provenance/THIRD_PARTY_NOTICES.md
+dependencies:
+  - FP-DOC-002
+invariants:
+  - Apache-2.0 applies only to content for which the licensor holds the necessary rights
+  - third-party licenses and attribution remain authoritative for third-party materials
+  - production credentials, customer data, custody infrastructure, and deployment configuration remain outside the repository
+  - public reference services are not represented as production-ready managed services
+  - no executor authority is broadened
+acceptance:
+  - the repository contains the unmodified Apache License 2.0 text
+  - NOTICE identifies Renan Melo as the copyright holder
+  - an ADR records the license decision and its consequences
+  - the public/commercial boundary is explicit and discoverable from the README
+  - a new developer can run a deterministic local proof in less than five minutes
+  - contribution, security, conduct, changelog, roadmap, and issue surfaces are public
+  - third-party attribution guidance is consistent with the repository provenance records
+verification_commands:
+  - python -m pip install -e ".[dev]"
+  - python -m pytest
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+evidence:
+  - evidence/runs/FP-DOC-003/README.md
+provenance:
+  - Apache License 2.0 canonical text from https://www.apache.org/licenses/LICENSE-2.0.txt
+stop_conditions:
+  - confirmed rights holder changes
+  - third-party material lacks a compatible license or required attribution
+  - onboarding requires a production secret or live wallet
+  - change falls outside allowed paths
