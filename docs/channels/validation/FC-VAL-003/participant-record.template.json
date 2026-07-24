@@ -1,0 +1,34 @@
+{
+  "protocol_version": "fc-val-003-v1",
+  "research_id": "P00",
+  "eligible": false,
+  "completed": false,
+  "segment": {
+    "repeat_sender": false,
+    "own_wallet_recipient": false
+  },
+  "stage_a": {
+    "A1": 0,
+    "A2": 0,
+    "A3": 0,
+    "A4": 0,
+    "A5": 0,
+    "A6": 0
+  },
+  "stage_b": {
+    "B1": false,
+    "B2": false,
+    "B3": false,
+    "B4": false,
+    "B5": false,
+    "B6": false,
+    "B7": false,
+    "B8": false,
+    "B9": false,
+    "B10": false
+  },
+  "misconceptions": [],
+  "clarity_rating_1_to_5": 1,
+  "reuse_intent_1_to_5": 1,
+  "sanitized_paraphrase_categories": []
+}

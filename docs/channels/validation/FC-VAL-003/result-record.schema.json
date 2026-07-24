@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundrypay.example/schemas/research/fc-val-003-result-record-v1.json",
+  "title": "FC-VAL-003 sanitized participant result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol_version",
+    "research_id",
+    "eligible",
+    "completed",
+    "stage_a",
+    "stage_b",
+    "misconceptions"
+  ],
+  "properties": {
+    "protocol_version": {
+      "const": "fc-val-003-v1"
+    },
+    "research_id": {
+      "type": "string",
+      "pattern": "^P[0-9]{2,3}$"
+    },
+    "eligible": {
+      "type": "boolean"
+    },
+    "completed": {
+      "type": "boolean"
+    },
+    "segment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "repeat_sender": { "type": "boolean" },
+        "own_wallet_recipient": { "type": "boolean" }
+      },
+      "required": ["repeat_sender", "own_wallet_recipient"]
+    },
+    "stage_a": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["A1", "A2", "A3", "A4", "A5", "A6"],
+      "properties": {
+        "A1": { "$ref": "#/$defs/unaidedScore" },
+        "A2": { "$ref": "#/$defs/unaidedScore" },
+        "A3": { "$ref": "#/$defs/unaidedScore" },
+        "A4": { "$ref": "#/$defs/unaidedScore" },
+        "A5": { "$ref": "#/$defs/unaidedScore" },
+        "A6": { "$ref": "#/$defs/unaidedScore" }
+      }
+    },
+    "stage_b": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10"],
+      "properties": {
+        "B1": { "type": "boolean" },
+        "B2": { "type": "boolean" },
+        "B3": { "type": "boolean" },
+        "B4": { "type": "boolean" },
+        "B5": { "type": "boolean" },
+        "B6": { "type": "boolean" },
+        "B7": { "type": "boolean" },
+        "B8": { "type": "boolean" },
+        "B9": { "type": "boolean" },
+        "B10": { "type": "boolean" }
+      }
+    },
+    "misconceptions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "M01_ONE_OFF_LINK",
+          "M02_ADDITIVE_10_25_40",
+          "M03_CLOUD_CUSTODY_REQUIRED",
+          "M04_CLOUD_CAN_AUTHORIZE",
+          "M05_RECIPIENT_NEEDS_FOUNDRY_WALLET",
+          "M06_LINK_SAFE_TO_FORWARD",
+          "M07_UNKNOWN_RESULT_RETRY",
+          "M08_STREAMING_ASSUMPTION",
+          "M09_UNFUNDED_CREDIT_ASSUMPTION",
+          "M10_NO_EXPIRY_OR_CLOSE_RULES",
+          "M11_ISSUED_EQUALS_ACTIVATED",
+          "M12_CLOSE_IMMEDIATE_REVOCATION",
+          "OTHER_SANITIZED"
+        ]
+      }
+    },
+    "clarity_rating_1_to_5": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "reuse_intent_1_to_5": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "sanitized_paraphrase_categories": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z0-9_]{3,64}$"
+      }
+    }
+  },
+  "$defs": {
+    "unaidedScore": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2
+    }
+  }
+}

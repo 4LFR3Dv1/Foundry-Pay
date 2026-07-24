@@ -1,0 +1,38 @@
+work_item: FC-VAL-003
+objective: >-
+  Publish a reproducible, privacy-preserving protocol for testing whether
+  target users understand the Foundry Channels proposition within 30 seconds.
+owner: product-researcher
+branch: agent/validation/FC-VAL-003
+repository: Foundry-Pay-public-sanitized-protocol-only
+allowed_paths:
+  - docs/channels/validation/FC-VAL-003/**
+dependencies:
+  - FOUNDATIONS-001
+invariants:
+  - research copy does not hide funding, activation, expiry, or bearer-link risk
+  - no interview, participant, or result is fabricated
+  - raw recordings, consent records, contact data, wallet addresses, and direct identifiers never enter the public repository
+  - intent is not represented as adoption
+acceptance:
+  - an independent moderator can run the same 30-second comprehension test
+  - the protocol measures whether 10 to 25 to 40 is understood as 40 rather than 75
+  - the protocol measures funded, available, received, remaining, link reuse, and recipient wallet understanding
+  - public evidence has a defined sanitized format
+verification_commands:
+  - python -m json.tool docs/channels/validation/FC-VAL-003/result-record.schema.json
+  - python -m json.tool docs/channels/validation/FC-VAL-003/sanitized-results.template.json
+evidence:
+  - public protocol and moderator script
+  - sanitized aggregate results after real research
+security_review:
+  - research-privacy-review before recruitment
+provenance:
+  - authored for FC-VAL-003; no external code or research data reused
+stop_conditions:
+  - no authorized private research system exists for consent and raw data
+  - a participant supplies a real seed phrase, private key, claim secret, or valuable claim link
+  - the moderator reveals or teaches the answer before scoring
+  - fewer than five eligible participants complete the protocol
+  - users consistently infer custody or additive value
+
