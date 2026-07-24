@@ -1,0 +1,65 @@
+{
+  "work_item": "FOUNDATIONS-001",
+  "captured_at": "2026-07-24T00:00:00Z",
+  "baselines": [
+    {
+      "repository": "4LFR3Dv1/Foundry-Pay",
+      "commit": "a8631b081f40029c18b16098508c44540efbf77f",
+      "license": "Apache-2.0",
+      "disposition": "first-party-foundation-baseline",
+      "copied_paths": []
+    },
+    {
+      "repository": "4LFR3Dv1/Solana-Agent",
+      "commit": "914eaf3c9b407f787c6f51d9886c6e86ae542335",
+      "license": "Apache-2.0",
+      "disposition": "external-integration-and-architecture-evidence",
+      "copied_paths": []
+    }
+  ],
+  "existing_capabilities": {
+    "foundry_pay": [
+      "external execution protocol",
+      "RFC 8785 canonicalization",
+      "exact-message authorization",
+      "isolated signer",
+      "fake executor",
+      "source-diverse reconciliation",
+      "failure and chaos labs",
+      "evidence formats"
+    ],
+    "solana_agent": [
+      "durable command and gateway journals",
+      "local fail-closed policy",
+      "bound approvals",
+      "Solana and SPL adapters",
+      "controlled broadcast",
+      "signature-first status and recovery",
+      "technical evidence",
+      "reproducible toolchain"
+    ]
+  },
+  "foundation_outputs": {
+    "schemas": 7,
+    "positive_vectors": 1,
+    "negative_vectors": 12,
+    "adrs": 5,
+    "work_items": 38,
+    "ready_work_items": [
+      "FC-PROTO-001",
+      "FC-PROTO-002",
+      "FC-PROTO-003",
+      "FC-SEC-003",
+      "FC-VAL-003"
+    ]
+  },
+  "explicitly_unproven": [
+    "deployed ChannelVault",
+    "live channel transaction",
+    "production or mainnet readiness",
+    "safe custody",
+    "external security audit",
+    "proven scale",
+    "exactly-once blockchain execution"
+  ]
+}
