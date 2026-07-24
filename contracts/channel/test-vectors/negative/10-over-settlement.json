@@ -1,0 +1,6 @@
+{
+  "case_id": "over-settlement",
+  "target": "settlement_request",
+  "mutation": {"path": "activated_authorized_total_base_units", "value": "39999999"},
+  "expected_error": "settlement_exceeds_authorized"
+}

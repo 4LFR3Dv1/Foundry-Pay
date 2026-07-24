@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundry.pay/schemas/channel/channel-evidence.v1.schema.json",
+  "title": "Foundry Channels evidence manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "protocol_version",
+    "evidence_id",
+    "channel_id",
+    "operation",
+    "artifact_hashes",
+    "claims",
+    "generated_at",
+    "manifest_hash"
+  ],
+  "properties": {
+    "type": {
+      "const": "channel_evidence"
+    },
+    "protocol_version": {
+      "const": "1.0.0"
+    },
+    "evidence_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "channel_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "operation": {
+      "enum": [
+        "open",
+        "top_up",
+        "activate_voucher",
+        "bind_recipient",
+        "settle",
+        "close",
+        "refund",
+        "recover"
+      ]
+    },
+    "artifact_hashes": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "propertyNames": {
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+      }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "claim",
+          "status",
+          "evidence_refs"
+        ],
+        "properties": {
+          "claim": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "status": {
+            "enum": [
+              "demonstrated",
+              "pending",
+              "disputed"
+            ]
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            }
+          }
+        }
+      }
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "manifest_hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "check": "FOUNDATIONS-001",
+  "status": "passed",
+  "checks": {
+    "schemas": {
+      "count": 7,
+      "valid": true
+    },
+    "positive_vector": {
+      "scenario": "fund-100-activate-10-25-40-bind-and-settle-40",
+      "valid": true,
+      "voucher_hashes": [
+        "sha256:f91159c7977bed60de04241ed34002320fc1c023e5316e96cfae8a35206b3758",
+        "sha256:99c1ceb64078e802721449fea57f94bb1f490f58ad2e23108cf189e8161cb325",
+        "sha256:8a3283d61a75e1bbe987941601e8f28708875913fd0dfef0fa399c6a7dd296e2"
+      ],
+      "binding_hash": "sha256:cf741629014c5627ab954c3387db5aa1089a66fc9204c10dd48c1f32fbdfdf23"
+    },
+    "closing_race_vector": {
+      "scenario": "issued-voucher-survives-close-race",
+      "schema_valid": true,
+      "valid": true,
+      "rules": {
+        "deadline_matches_activation_window": true,
+        "presentation_is_inside_window": true,
+        "voucher_advances_snapshot": true,
+        "pre_deadline_refund_is_zero": true,
+        "valid_voucher_activates_during_window": true,
+        "post_deadline_conservation": true
+      }
+    },
+    "negative_vectors": {
+      "count": 12,
+      "passed": 12,
+      "failed": 0
+    },
+    "accounting": {
+      "conservation": true,
+      "rights_bounds": true
+    },
+    "documents": {
+      "required": 23,
+      "missing": []
+    },
+    "work_graph": {
+      "required_item_count": 38,
+      "observed_item_count": 38,
+      "ready_items": [
+        "FC-PROTO-001",
+        "FC-PROTO-002",
+        "FC-PROTO-003",
+        "FC-SEC-003",
+        "FC-VAL-003"
+      ],
+      "missing_items": [],
+      "incomplete_items": {}
+    }
+  },
+  "errors": []
+}

@@ -5,6 +5,41 @@ policy:
   attribution_required: true
 
 sources:
+  - id: foundry-channels-solana-agent-baseline
+    repository: 4LFR3Dv1/Solana-Agent
+    commit: 914eaf3c9b407f787c6f51d9886c6e86ae542335
+    visibility: public
+    license: Apache-2.0
+    disposition: external-integration-and-architecture-evidence
+    candidate_assets:
+      - governed command and gateway journals
+      - local fail-closed policy and bound approvals
+      - Solana and SPL preparation, simulation, execution, status, and recovery
+      - controlled broadcast and technical evidence
+      - chaos and reproducible toolchain fixtures
+    copied_paths: []
+    foundation_evidence:
+      - docs/channels/INVENTORY.md
+      - docs/channels/REUSE_MATRIX.md
+      - docs/channels/SOLANA_AGENT_CAPABILITIES.md
+
+  - id: foundry-channels-foundry-pay-baseline
+    repository: 4LFR3Dv1/Foundry-Pay
+    commit: a8631b081f40029c18b16098508c44540efbf77f
+    visibility: public
+    license: Apache-2.0
+    disposition: first-party-foundation-baseline
+    candidate_assets:
+      - external execution contracts and cross-language canonicalization
+      - exact-message authorization and isolated signer
+      - fake executor and conformance kit
+      - source-diverse reconciliation and failure labs
+      - evidence and public governance
+    copied_paths: []
+    foundation_evidence:
+      - docs/channels/INVENTORY.md
+      - docs/channels/REUSE_MATRIX.md
+
   - id: solana-agent-sa-gw-002-evidence
     repository: 4LFR3Dv1/Solana-Agent
     commit: 6bdecfbbcbc737ce8c5009cb9dd31e8b24fa64ec

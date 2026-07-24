@@ -1,0 +1,6 @@
+{
+  "case_id": "destination-substitution",
+  "target": "recipient_binding",
+  "mutation": {"path": "payload.destination_wallet", "value": "So11111111111111111111111111111111111111112"},
+  "expected_error": "binding_hash_mismatch"
+}

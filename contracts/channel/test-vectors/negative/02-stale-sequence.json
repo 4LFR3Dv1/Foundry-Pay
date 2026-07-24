@@ -1,0 +1,6 @@
+{
+  "case_id": "stale-sequence",
+  "target": "voucher:3",
+  "mutation": {"path": "payload.sequence", "value": 2},
+  "expected_error": "sequence_not_monotonic"
+}

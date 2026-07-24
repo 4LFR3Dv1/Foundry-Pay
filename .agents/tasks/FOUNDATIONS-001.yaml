@@ -1,0 +1,67 @@
+work_item: FOUNDATIONS-001
+objective: define a coherent, testable, and implementation-ready foundation for Foundry Channels without implementing the Solana program or private cloud
+owner: lead-architect-product-systems-planner
+repository: 4LFR3Dv1/Foundry-Pay
+branch: agent/foundations/FOUNDATIONS-001
+allowed_paths:
+  - .agents/tasks/FOUNDATIONS-001.yaml
+  - README.md
+  - ROADMAP.md
+  - docs/WORK_GRAPH.md
+  - docs/channels/**
+  - contracts/channel/**
+  - scripts/check_channel_foundation.py
+  - tests/channels/**
+  - evidence/runs/FOUNDATIONS-001/**
+  - provenance/REUSE_LEDGER.yaml
+dependencies:
+  - FP-DOC-003
+invariants:
+  - Foundry Pay retains economic authority and final reconciliation authority
+  - Solana-Agent remains an independent external executor integrated only through versioned contracts
+  - the public Apache-2.0 protocol remains separate from private commercial services
+  - hosted convenience cannot fabricate vouchers, recipient rights, balances, signatures, or settlement authority
+  - unknown broadcast outcomes never authorize automatic retransmission
+  - no existing kernel is copied, absorbed, or rewritten
+  - no production, mainnet, custody, audit, scale, or exactly-once execution claim is made
+acceptance:
+  - both public repository baselines are pinned by immutable commit
+  - current contracts, journals, authorizations, signers, reconciliation, and failure tooling are inventoried
+  - a reuse and gap matrix links every current-state claim to code, test, commit, or evidence
+  - five architectural decisions resolve the channel primitive, state split, public/private boundary, link binding, and repository topology
+  - authority, state machines, cumulative vouchers, links, failure recovery, and ChannelVault are specified independently of implementation
+  - normative channel schemas and positive and negative test vectors are internally consistent
+  - the threat model covers all threats required by the mission with prevention, detection, recovery, evidence, and residual risk
+  - the smallest end-to-end MVP vertical slice is explicit and respects all non-goals
+  - the work graph contains every required epic with dependencies, gates, evidence, and five ready work items
+  - an adversarial review records unresolved questions and stop conditions
+tests:
+  - python scripts/check_channel_foundation.py
+  - python -m pytest
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - npm test --prefix packages/external-execution-protocol/typescript
+  - git diff --check
+evidence:
+  - evidence/runs/FOUNDATIONS-001/README.md
+  - evidence/runs/FOUNDATIONS-001/inventory.json
+  - evidence/runs/FOUNDATIONS-001/foundation-check.json
+security_review:
+  mode: comprehensive-design-review
+  required: true
+  scope:
+    - authority boundaries
+    - voucher replay and domain separation
+    - claim link and recipient binding
+    - concurrent settlement and ambiguous broadcast recovery
+    - outage, data loss, and self-recovery
+stop_conditions:
+  - a design broadens hosted cloud or executor authority
+  - a rights-critical state depends only on a hosted database assertion
+  - a contract cannot distinguish network, environment, channel, asset, recipient, epoch, and version
+  - a prior voucher can produce additional value after a newer valid state or corresponding settlement
+  - a close or refund can consume value that remains validly authorized and settleable
+  - a third-party asset has unresolved ownership or licensing
+  - a change requires private cloud code, production credentials, mainnet, custody, or program implementation
+  - a change falls outside allowed paths

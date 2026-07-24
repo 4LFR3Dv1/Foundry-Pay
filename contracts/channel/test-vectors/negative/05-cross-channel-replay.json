@@ -1,0 +1,6 @@
+{
+  "case_id": "cross-channel-replay",
+  "target": "voucher:3",
+  "mutation": {"path": "payload.channel_id", "value": "channel_attacker_001"},
+  "expected_error": "channel_mismatch"
+}

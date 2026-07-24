@@ -1,0 +1,6 @@
+{
+  "case_id": "wrong-network",
+  "target": "voucher:3",
+  "mutation": {"path": "payload.network", "value": "solana:mainnet"},
+  "expected_error": "network_mismatch"
+}

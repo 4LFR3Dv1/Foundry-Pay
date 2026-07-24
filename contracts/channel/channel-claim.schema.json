@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundry.pay/schemas/channel/channel-claim.v1.schema.json",
+  "title": "Foundry Channels claim reference",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "protocol_version",
+    "claim_id",
+    "channel_id",
+    "channel_account",
+    "epoch",
+    "locator_hash",
+    "claim_pubkey",
+    "voucher_hash",
+    "cumulative_authorized_base_units",
+    "state",
+    "created_at",
+    "expires_at"
+  ],
+  "properties": {
+    "type": {
+      "const": "channel_claim"
+    },
+    "protocol_version": {
+      "const": "1.0.0"
+    },
+    "claim_id": {
+      "$ref": "#/$defs/Identifier"
+    },
+    "channel_id": {
+      "$ref": "#/$defs/Identifier"
+    },
+    "channel_account": {
+      "$ref": "#/$defs/Pubkey"
+    },
+    "epoch": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "locator_hash": {
+      "$ref": "#/$defs/Hash"
+    },
+    "claim_pubkey": {
+      "$ref": "#/$defs/Pubkey"
+    },
+    "voucher_hash": {
+      "$ref": "#/$defs/Hash"
+    },
+    "cumulative_authorized_base_units": {
+      "$ref": "#/$defs/Amount"
+    },
+    "state": {
+      "enum": [
+        "created",
+        "delivered",
+        "opened",
+        "identity_verified",
+        "destination_bound",
+        "settlement_ready",
+        "settled",
+        "expired",
+        "revoked",
+        "blocked",
+        "already_claimed"
+      ]
+    },
+    "created_at": {
+      "$ref": "#/$defs/Timestamp"
+    },
+    "expires_at": {
+      "$ref": "#/$defs/Timestamp"
+    }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "Pubkey": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$"
+    },
+    "Hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "Amount": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)$"
+    },
+    "Timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    }
+  }
+}

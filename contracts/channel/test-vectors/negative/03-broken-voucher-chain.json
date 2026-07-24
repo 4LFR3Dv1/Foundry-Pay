@@ -1,0 +1,6 @@
+{
+  "case_id": "broken-voucher-chain",
+  "target": "voucher:3",
+  "mutation": {"path": "payload.previous_activated_voucher_hash", "value": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+  "expected_error": "previous_voucher_hash_mismatch"
+}

@@ -29,7 +29,8 @@ Status values: `blocked`, `ready`, `active`, `review`, `done`.
 | FP-FAIL-002 | review | FP-FAIL-001, SA-CHAOS-001 | real-process chaos proxy, recovery, and external journal root |
 | FP-DOC-001 | done | FP-E2E-001, FP-REC-001, FP-FAIL-002 | current-state README and public evidence index |
 | FP-DOC-002 | done | FP-DOC-001, FP-FAIL-002 | public visibility and honest review metadata |
-| FP-DOC-003 | review | FP-DOC-002 | open-source license, public/commercial boundary, and external onboarding |
+| FP-DOC-003 | done | FP-DOC-002 | open-source license, public/commercial boundary, and external onboarding |
+| FOUNDATIONS-001 | review | FP-DOC-003 | implementation-ready Foundry Channels architecture and initial plan |
 | FP-PROD-001 | ready | - | three operator interviews |
 | FP-PROD-002 | blocked | FP-PROD-001 | five frequent incidents |
 | FP-PROD-003 | blocked | FP-PROD-002 | sanitized incident fixture |
@@ -48,6 +49,7 @@ Status values: `blocked`, `ready`, `active`, `review`, `done`.
 | FP-FAIL-001 | failure lab, failure tests, recovery docs, evidence, task/review contracts |
 | FP-FAIL-002 | RPC chaos proxy, subprocess harness, chaos tests, CI artifact, evidence |
 | FP-DOC-003 | root community files, public/commercial boundary, licensing ADR, work graph, task contract, onboarding evidence |
+| FOUNDATIONS-001 | `.agents/tasks/FOUNDATIONS-001.yaml`, `docs/channels/**`, `contracts/channel/**`, channel evidence, reuse ledger, README and roadmap links |
 
 ## First gate
 

@@ -1,0 +1,6 @@
+{
+  "case_id": "inconsistent-settlement-total",
+  "target": "settlement_request",
+  "mutation": {"path": "settled_total_after_base_units", "value": "39999999"},
+  "expected_error": "settlement_total_mismatch"
+}
