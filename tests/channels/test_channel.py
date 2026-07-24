@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 import pytest
+from jsonschema import Draft202012Validator
 
 
 ROOT = Path(__file__).parents[2]
@@ -32,6 +33,33 @@ def assert_rejected(code: str, operation: object) -> None:
     with pytest.raises(ChannelValidationError) as caught:
         operation()
     assert caught.value.code == code
+
+
+def funding_snapshot(vector: dict[str, object]) -> dict[str, object]:
+    channel = copy.deepcopy(vector["channel_after_funding"])
+    channel["status"] = "funding"
+    channel["funded_total_base_units"] = "0"
+    channel["updated_at"] = channel["created_at"]
+    return channel
+
+
+def active_top_up_case(
+    vector: dict[str, object],
+) -> tuple[dict[str, object], dict[str, object], dict[str, object]]:
+    previous = copy.deepcopy(vector["channel_after_funding"])
+    previous["activated_authorized_total_base_units"] = "40000000"
+    previous["settled_total_base_units"] = "15000000"
+    previous["latest_activated_sequence"] = 3
+    previous["latest_activated_voucher_hash"] = vector["vouchers"][2]["voucher_hash"]
+    funding = copy.deepcopy(vector["funding"])
+    funding["funding_id"] = "top_up_001"
+    funding["amount_base_units"] = "50000000"
+    funding["funded_total_after_base_units"] = "150000000"
+    funding["observed_at"] = "2026-08-01T00:02:00Z"
+    after = copy.deepcopy(previous)
+    after["funded_total_base_units"] = "150000000"
+    after["updated_at"] = "2026-08-01T00:02:00Z"
+    return previous, funding, after
 
 
 def test_channel_after_funding_derives_conservation(vector: dict[str, object]) -> None:
@@ -78,12 +106,27 @@ def test_partial_settlement_projection(vector: dict[str, object]) -> None:
 
 def test_valid_funding_transition(vector: dict[str, object]) -> None:
     projection = validate_funding_transition(
-        previous_funded_total_base_units="0",
+        previous_channel=funding_snapshot(vector),
         funding=vector["funding"],
         channel_after=vector["channel_after_funding"],
     )
 
     assert projection.funded_total_base_units == 100_000_000
+
+
+def test_valid_active_top_up_preserves_accounting(vector: dict[str, object]) -> None:
+    previous, funding, after = active_top_up_case(vector)
+
+    projection = validate_funding_transition(
+        previous_channel=previous,
+        funding=funding,
+        channel_after=after,
+    )
+
+    assert projection.funded_total_base_units == 150_000_000
+    assert projection.activated_authorized_total_base_units == 40_000_000
+    assert projection.settled_total_base_units == 15_000_000
+    assert projection.refunded_total_base_units == 0
 
 
 @pytest.mark.parametrize(
@@ -172,6 +215,57 @@ def test_policy_must_belong_to_channel(vector: dict[str, object]) -> None:
     assert_rejected("policy_channel_mismatch", lambda: validate_channel(channel))
 
 
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("funded_total_base_units", "1"),
+        ("activated_authorized_total_base_units", "1"),
+        ("settled_total_base_units", "1"),
+        ("refunded_total_base_units", "1"),
+    ),
+)
+def test_draft_requires_zero_accounting(vector: dict[str, object], field: str, value: str) -> None:
+    channel = funding_snapshot(vector)
+    channel["status"] = "draft"
+    channel[field] = value
+    if field in {"activated_authorized_total_base_units", "settled_total_base_units"}:
+        channel["funded_total_base_units"] = "1"
+        channel["activated_authorized_total_base_units"] = "1"
+        channel["latest_activated_sequence"] = 1
+    elif field == "refunded_total_base_units":
+        channel["funded_total_base_units"] = "1"
+
+    assert_rejected("draft_accounting_nonzero", lambda: validate_channel(channel))
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("activated_authorized_total_base_units", "1"),
+        ("settled_total_base_units", "1"),
+        ("refunded_total_base_units", "1"),
+    ),
+)
+def test_funding_state_rejects_allocated_accounting(
+    vector: dict[str, object], field: str, value: str
+) -> None:
+    channel = funding_snapshot(vector)
+    channel["funded_total_base_units"] = "1"
+    channel[field] = value
+    if field in {"activated_authorized_total_base_units", "settled_total_base_units"}:
+        channel["activated_authorized_total_base_units"] = "1"
+        channel["latest_activated_sequence"] = 1
+
+    assert_rejected("funding_accounting_invalid", lambda: validate_channel(channel))
+
+
+def test_active_requires_positive_funding(vector: dict[str, object]) -> None:
+    channel = funding_snapshot(vector)
+    channel["status"] = "active"
+
+    assert_rejected("funding_required", lambda: validate_channel(channel))
+
+
 def test_closing_requires_both_timestamps(vector: dict[str, object]) -> None:
     channel = copy.deepcopy(vector["channel_after_funding"])
     channel["status"] = "closing"
@@ -185,6 +279,7 @@ def test_closing_enforces_minimum_claim_window(vector: dict[str, object]) -> Non
     channel["status"] = "closing"
     channel["close_requested_at"] = "2026-08-01T01:00:00Z"
     channel["claim_deadline"] = "2026-08-01T02:00:00Z"
+    channel["updated_at"] = "2026-08-01T01:00:00Z"
 
     assert_rejected("close_grace_too_short", lambda: validate_channel(channel))
 
@@ -204,6 +299,78 @@ def test_closed_channel_requires_close_timestamps(vector: dict[str, object]) -> 
     assert_rejected("closing_fields_required", lambda: validate_channel(channel))
 
 
+def test_closing_request_cannot_follow_snapshot_update(vector: dict[str, object]) -> None:
+    channel = copy.deepcopy(vector["channel_after_funding"])
+    channel["status"] = "closing"
+    channel["close_requested_at"] = "2026-08-01T00:02:00Z"
+    channel["claim_deadline"] = "2026-08-02T00:02:00Z"
+
+    assert_rejected("close_snapshot_order_invalid", lambda: validate_channel(channel))
+
+
+def test_closed_rejects_outstanding_right(vector: dict[str, object]) -> None:
+    channel = copy.deepcopy(vector["channel_after_funding"])
+    channel["status"] = "closed"
+    channel["activated_authorized_total_base_units"] = "40000000"
+    channel["settled_total_base_units"] = "15000000"
+    channel["refunded_total_base_units"] = "60000000"
+    channel["latest_activated_sequence"] = 3
+    channel["latest_activated_voucher_hash"] = vector["vouchers"][2]["voucher_hash"]
+    channel["close_requested_at"] = "2026-08-01T00:01:00Z"
+    channel["claim_deadline"] = "2026-08-02T00:01:00Z"
+    channel["updated_at"] = "2026-08-02T00:01:00Z"
+
+    assert_rejected("closed_outstanding_right", lambda: validate_channel(channel))
+
+
+def test_closed_rejects_nonzero_vault(vector: dict[str, object]) -> None:
+    channel = copy.deepcopy(vector["channel_after_funding"])
+    channel["status"] = "closed"
+    channel["activated_authorized_total_base_units"] = "40000000"
+    channel["settled_total_base_units"] = "40000000"
+    channel["latest_activated_sequence"] = 3
+    channel["latest_activated_voucher_hash"] = vector["vouchers"][2]["voucher_hash"]
+    channel["close_requested_at"] = "2026-08-01T00:01:00Z"
+    channel["claim_deadline"] = "2026-08-02T00:01:00Z"
+    channel["updated_at"] = "2026-08-02T00:01:00Z"
+
+    assert_rejected("closed_vault_nonzero", lambda: validate_channel(channel))
+
+
+def test_closed_finalization_cannot_precede_deadline(vector: dict[str, object]) -> None:
+    channel = copy.deepcopy(vector["channel_after_funding"])
+    channel["status"] = "closed"
+    channel["activated_authorized_total_base_units"] = "40000000"
+    channel["settled_total_base_units"] = "40000000"
+    channel["refunded_total_base_units"] = "60000000"
+    channel["latest_activated_sequence"] = 3
+    channel["latest_activated_voucher_hash"] = vector["vouchers"][2]["voucher_hash"]
+    channel["close_requested_at"] = "2026-08-01T00:01:00Z"
+    channel["claim_deadline"] = "2026-08-02T00:01:00Z"
+
+    assert_rejected("closed_before_claim_deadline", lambda: validate_channel(channel))
+
+
+def test_valid_closed_snapshot_has_zero_vault_and_no_outstanding_right(
+    vector: dict[str, object],
+) -> None:
+    channel = copy.deepcopy(vector["channel_after_funding"])
+    channel["status"] = "closed"
+    channel["activated_authorized_total_base_units"] = "40000000"
+    channel["settled_total_base_units"] = "40000000"
+    channel["refunded_total_base_units"] = "60000000"
+    channel["latest_activated_sequence"] = 3
+    channel["latest_activated_voucher_hash"] = vector["vouchers"][2]["voucher_hash"]
+    channel["close_requested_at"] = "2026-08-01T00:01:00Z"
+    channel["claim_deadline"] = "2026-08-02T00:01:00Z"
+    channel["updated_at"] = "2026-08-02T00:01:00Z"
+
+    projection = validate_channel(channel)
+
+    assert projection.vault_balance_base_units == 0
+    assert projection.outstanding_right_base_units == 0
+
+
 def test_valid_closing_snapshot_preserves_rights(vector: dict[str, object]) -> None:
     channel = copy.deepcopy(vector["channel_after_funding"])
     channel["status"] = "closing"
@@ -213,6 +380,7 @@ def test_valid_closing_snapshot_preserves_rights(vector: dict[str, object]) -> N
     channel["latest_activated_voucher_hash"] = vector["vouchers"][2]["voucher_hash"]
     channel["close_requested_at"] = "2026-08-01T01:00:00Z"
     channel["claim_deadline"] = "2026-08-02T01:00:00Z"
+    channel["updated_at"] = "2026-08-01T01:00:00Z"
 
     projection = validate_channel(channel)
 
@@ -227,7 +395,7 @@ def test_valid_closing_snapshot_preserves_rights(vector: dict[str, object]) -> N
         ({"funded_total_after_base_units": "99999999"}, "funding_total_mismatch"),
         ({"channel_id": "other_channel"}, "funding_identity_mismatch"),
         ({"mint": "11111111111111111111111111111111"}, "funding_identity_mismatch"),
-        ({"observed_at": "2026-08-01T00:02:00Z"}, "funding_observation_after_snapshot"),
+        ({"observed_at": "2026-08-01T00:02:00Z"}, "funding_time_order_invalid"),
         ({"transaction_signature": "not-base58!"}, "invalid_transaction_signature"),
     ),
 )
@@ -240,11 +408,193 @@ def test_inconsistent_funding_rejects(
     assert_rejected(
         code,
         lambda: validate_funding_transition(
-            previous_funded_total_base_units="0",
+            previous_channel=funding_snapshot(vector),
             funding=funding,
             channel_after=vector["channel_after_funding"],
         ),
     )
+
+
+@pytest.mark.parametrize("status", ("draft", "closing", "closed", "expired"))
+def test_funding_rejects_forbidden_previous_lifecycle(
+    vector: dict[str, object], status: str
+) -> None:
+    previous = copy.deepcopy(vector["channel_after_funding"])
+    if status == "draft":
+        previous = funding_snapshot(vector)
+        previous["status"] = "draft"
+    elif status == "closing":
+        previous["status"] = "closing"
+        previous["close_requested_at"] = "2026-08-01T00:01:00Z"
+        previous["claim_deadline"] = "2026-08-02T00:01:00Z"
+    elif status == "closed":
+        previous["status"] = "closed"
+        previous["activated_authorized_total_base_units"] = "40000000"
+        previous["settled_total_base_units"] = "40000000"
+        previous["refunded_total_base_units"] = "60000000"
+        previous["latest_activated_sequence"] = 3
+        previous["latest_activated_voucher_hash"] = vector["vouchers"][2]["voucher_hash"]
+        previous["close_requested_at"] = "2026-08-01T00:01:00Z"
+        previous["claim_deadline"] = "2026-08-02T00:01:00Z"
+        previous["updated_at"] = "2026-08-02T00:01:00Z"
+    else:
+        previous["status"] = "expired"
+
+    assert_rejected(
+        "funding_lifecycle_forbidden",
+        lambda: validate_funding_transition(
+            previous_channel=previous,
+            funding=vector["funding"],
+            channel_after=vector["channel_after_funding"],
+        ),
+    )
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "code"),
+    (
+        ("environment", "other", "invalid_literal"),
+        ("network", "solana:other", "invalid_literal"),
+        ("genesis_hash", "11111111111111111111111111111111", "funding_immutable_field_changed"),
+        ("program_id", "11111111111111111111111111111111", "funding_immutable_field_changed"),
+        ("channel_id", "other_channel", "policy_channel_mismatch"),
+        ("channel_account", "11111111111111111111111111111111", "funding_identity_mismatch"),
+        ("epoch", 1, "funding_immutable_field_changed"),
+        ("sender", "11111111111111111111111111111111", "funding_immutable_field_changed"),
+        (
+            "recipient_claim_pubkey",
+            "11111111111111111111111111111111",
+            "funding_immutable_field_changed",
+        ),
+        (
+            "recipient_wallet",
+            "11111111111111111111111111111111",
+            "funding_immutable_field_changed",
+        ),
+        ("mint", "11111111111111111111111111111111", "funding_identity_mismatch"),
+        ("decimals", 9, "funding_immutable_field_changed"),
+        (
+            "vault_token_account",
+            "9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb",
+            "funding_immutable_field_changed",
+        ),
+        (
+            "activated_authorized_total_base_units",
+            "41000000",
+            "funding_immutable_field_changed",
+        ),
+        ("settled_total_base_units", "16000000", "funding_immutable_field_changed"),
+        ("refunded_total_base_units", "1", "funding_immutable_field_changed"),
+        ("latest_activated_sequence", 4, "funding_immutable_field_changed"),
+        (
+            "latest_activated_voucher_hash",
+            "sha256:" + "1" * 64,
+            "funding_immutable_field_changed",
+        ),
+        ("expires_at", "2026-08-04T00:00:00Z", "funding_immutable_field_changed"),
+        ("created_at", "2026-07-31T00:00:00Z", "funding_immutable_field_changed"),
+    ),
+)
+def test_top_up_rejects_immutable_field_mutation(
+    vector: dict[str, object], field: str, value: object, code: str
+) -> None:
+    previous, funding, after = active_top_up_case(vector)
+    previous["recipient_wallet"] = vector["constants"]["recipient_wallet"]
+    after["recipient_wallet"] = vector["constants"]["recipient_wallet"]
+    after[field] = value
+
+    assert_rejected(
+        code,
+        lambda: validate_funding_transition(
+            previous_channel=previous,
+            funding=funding,
+            channel_after=after,
+        ),
+    )
+
+
+def test_top_up_rejects_policy_mutation(vector: dict[str, object]) -> None:
+    previous, funding, after = active_top_up_case(vector)
+    after["policy"]["max_cumulative_authorized_base_units"] = "150000000"
+
+    assert_rejected(
+        "funding_immutable_field_changed",
+        lambda: validate_funding_transition(
+            previous_channel=previous,
+            funding=funding,
+            channel_after=after,
+        ),
+    )
+
+
+def test_top_up_requires_prior_policy_permission(vector: dict[str, object]) -> None:
+    previous, funding, after = active_top_up_case(vector)
+    previous["policy"]["allow_top_up"] = False
+    after["policy"]["allow_top_up"] = False
+
+    assert_rejected(
+        "top_up_forbidden",
+        lambda: validate_funding_transition(
+            previous_channel=previous,
+            funding=funding,
+            channel_after=after,
+        ),
+    )
+
+
+def test_funding_transition_rejects_invalid_after_status(vector: dict[str, object]) -> None:
+    previous = funding_snapshot(vector)
+    after = copy.deepcopy(vector["channel_after_funding"])
+    after["status"] = "settling"
+
+    assert_rejected(
+        "funding_status_transition_invalid",
+        lambda: validate_funding_transition(
+            previous_channel=previous,
+            funding=vector["funding"],
+            channel_after=after,
+        ),
+    )
+
+
+def test_funding_observation_must_follow_previous_snapshot(vector: dict[str, object]) -> None:
+    previous, funding, after = active_top_up_case(vector)
+    previous["updated_at"] = "2026-08-01T00:03:00Z"
+    after["updated_at"] = "2026-08-01T00:03:00Z"
+
+    assert_rejected(
+        "funding_time_order_invalid",
+        lambda: validate_funding_transition(
+            previous_channel=previous,
+            funding=funding,
+            channel_after=after,
+        ),
+    )
+
+
+def test_u64_maximum_is_accepted_by_reference_and_schema(vector: dict[str, object]) -> None:
+    channel = funding_snapshot(vector)
+    channel["funded_total_base_units"] = str(2**64 - 1)
+    schema = json.loads(
+        (ROOT / "contracts" / "channel" / "channel.schema.json").read_text(encoding="utf-8")
+    )
+
+    projection = validate_channel(channel)
+    errors = list(Draft202012Validator(schema).iter_errors(channel))
+
+    assert projection.funded_total_base_units == 2**64 - 1
+    assert errors == []
+
+
+def test_u64_overflow_is_rejected_by_reference_and_schema(vector: dict[str, object]) -> None:
+    channel = funding_snapshot(vector)
+    channel["funded_total_base_units"] = str(2**64)
+    schema = json.loads(
+        (ROOT / "contracts" / "channel" / "channel.schema.json").read_text(encoding="utf-8")
+    )
+
+    assert_rejected("amount_out_of_range", lambda: validate_channel(channel))
+    assert list(Draft202012Validator(schema).iter_errors(channel))
 
 
 def test_validator_has_no_network_import() -> None:

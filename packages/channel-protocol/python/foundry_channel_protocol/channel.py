@@ -19,6 +19,7 @@ _IDENTIFIER = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$")
 _PUBKEY = re.compile(r"^[1-9A-HJ-NP-Za-km-z]{32,44}$")
 _SIGNATURE = re.compile(r"^[1-9A-HJ-NP-Za-km-z]{64,88}$")
 _TIMESTAMP = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
+_U64_MAX = 18_446_744_073_709_551_615
 
 _CHANNEL_FIELDS = frozenset(
     {
@@ -163,7 +164,10 @@ def _integer(value: object, *, field: str, minimum: int = 0, maximum: int | None
 def _amount(value: object, field: str) -> int:
     if not isinstance(value, str) or _AMOUNT.fullmatch(value) is None:
         _reject("invalid_amount", field, "expected an unsigned canonical decimal string")
-    return int(value)
+    parsed = int(value)
+    if parsed > _U64_MAX:
+        _reject("amount_out_of_range", field, "expected an unsigned 64-bit integer")
+    return parsed
 
 
 def _pubkey(value: object, field: str) -> str:
@@ -203,7 +207,8 @@ def _validate_policy(value: object, channel_id: str) -> int:
         "policy.max_cumulative_authorized_base_units",
     )
     _literal(policy["allow_partial_settlement"], True, "policy.allow_partial_settlement")
-    _literal(policy["allow_top_up"], True, "policy.allow_top_up")
+    if type(policy["allow_top_up"]) is not bool:
+        _reject("invalid_type", "policy.allow_top_up", "expected a boolean")
     _integer(
         policy["minimum_close_grace_seconds"],
         field="policy.minimum_close_grace_seconds",
@@ -318,7 +323,13 @@ def validate_channel(value: object) -> AccountingProjection:
         close_requested = _timestamp(channel["close_requested_at"], "close_requested_at")
         claim_deadline = _timestamp(channel["claim_deadline"], "claim_deadline")
         grace = channel["policy"]["minimum_close_grace_seconds"]
-        if close_requested < created or claim_deadline <= close_requested:
+        if close_requested < created or close_requested > updated:
+            _reject(
+                "close_snapshot_order_invalid",
+                "close_requested_at",
+                "must satisfy created_at <= close_requested_at <= updated_at",
+            )
+        if claim_deadline <= close_requested:
             _reject("close_window_invalid", "claim_deadline", "invalid close window ordering")
         if (claim_deadline - close_requested).total_seconds() < grace:
             _reject("close_grace_too_short", "claim_deadline", "below policy minimum")
@@ -326,6 +337,27 @@ def validate_channel(value: object) -> AccountingProjection:
     vault = funded - settled - refunded
     if vault < 0:
         _reject("conservation_violation", "funded_total_base_units", "F - S - R is negative")
+    if status == "draft" and any((funded, activated, settled, refunded)):
+        _reject("draft_accounting_nonzero", "status", "draft requires F = A = S = R = 0")
+    if status == "funding" and any((activated, settled, refunded)):
+        _reject("funding_accounting_invalid", "status", "funding requires A = S = R = 0")
+    if status in {"active", "settling", "closing"} and funded == 0:
+        _reject("funding_required", "status", f"{status} requires F > 0")
+    if status == "expired" and activated != settled:
+        _reject("expired_outstanding_right", "status", "expired requires A = S")
+    if status == "closed":
+        if activated != settled:
+            _reject("closed_outstanding_right", "status", "closed requires A = S")
+        if vault != 0:
+            _reject("closed_vault_nonzero", "status", "closed requires F = S + R")
+        assert has_deadline
+        claim_deadline = _timestamp(channel["claim_deadline"], "claim_deadline")
+        if updated < claim_deadline:
+            _reject(
+                "closed_before_claim_deadline",
+                "updated_at",
+                "closed finalization must not precede claim_deadline",
+            )
     return AccountingProjection(
         funded_total_base_units=funded,
         activated_authorized_total_base_units=activated,
@@ -339,13 +371,28 @@ def validate_channel(value: object) -> AccountingProjection:
 
 def validate_funding_transition(
     *,
-    previous_funded_total_base_units: str,
+    previous_channel: object,
     funding: object,
     channel_after: object,
 ) -> AccountingProjection:
     """Validate one observed funding transition against its resulting snapshot."""
 
-    previous = _amount(previous_funded_total_base_units, "previous_funded_total_base_units")
+    previous_projection = validate_channel(previous_channel)
+    if not isinstance(previous_channel, Mapping):
+        raise AssertionError("validate_channel accepted a non-mapping")
+    previous_status = previous_channel["status"]
+    if previous_status == "funding":
+        expected_after_status = "active"
+    elif previous_status == "active":
+        expected_after_status = "active"
+        if previous_channel["policy"]["allow_top_up"] is not True:
+            _reject("top_up_forbidden", "previous_channel.policy.allow_top_up", "must be true")
+    else:
+        _reject(
+            "funding_lifecycle_forbidden",
+            "previous_channel.status",
+            "funding is allowed only from funding or active",
+        )
     event = _closed_object(
         funding,
         field="funding",
@@ -365,7 +412,7 @@ def validate_funding_transition(
         event["funded_total_after_base_units"],
         "funding.funded_total_after_base_units",
     )
-    if after_total != previous + amount:
+    if after_total != previous_projection.funded_total_base_units + amount:
         _reject(
             "funding_total_mismatch",
             "funding.funded_total_after_base_units",
@@ -386,6 +433,12 @@ def validate_funding_transition(
     projection = validate_channel(channel_after)
     channel = channel_after
     assert isinstance(channel, Mapping)  # validated above
+    if channel["status"] != expected_after_status:
+        _reject(
+            "funding_status_transition_invalid",
+            "channel_after.status",
+            f"expected {previous_status} -> {expected_after_status}",
+        )
     for event_field, channel_field in (
         ("channel_id", "channel_id"),
         ("channel_account", "channel_account"),
@@ -397,18 +450,49 @@ def validate_funding_transition(
                 f"funding.{event_field}",
                 f"must equal channel.{channel_field}",
             )
+    immutable_fields = (
+        "environment",
+        "network",
+        "genesis_hash",
+        "program_id",
+        "channel_id",
+        "channel_account",
+        "epoch",
+        "sender",
+        "recipient_claim_pubkey",
+        "recipient_wallet",
+        "mint",
+        "decimals",
+        "vault_token_account",
+        "activated_authorized_total_base_units",
+        "settled_total_base_units",
+        "refunded_total_base_units",
+        "latest_activated_sequence",
+        "latest_activated_voucher_hash",
+        "expires_at",
+        "policy",
+        "created_at",
+    )
+    for field in immutable_fields:
+        if previous_channel.get(field) != channel.get(field):
+            _reject(
+                "funding_immutable_field_changed",
+                f"channel_after.{field}",
+                "must equal previous_channel",
+            )
     if after_total != projection.funded_total_base_units:
         _reject(
             "funding_snapshot_mismatch",
             "funding.funded_total_after_base_units",
             "must equal channel funded total",
         )
-    if _timestamp(event["observed_at"], "funding.observed_at") > _timestamp(
-        channel["updated_at"], "updated_at"
-    ):
+    previous_updated = _timestamp(previous_channel["updated_at"], "previous_channel.updated_at")
+    observed_at = _timestamp(event["observed_at"], "funding.observed_at")
+    after_updated = _timestamp(channel["updated_at"], "channel_after.updated_at")
+    if not (previous_updated <= observed_at <= after_updated):
         _reject(
-            "funding_observation_after_snapshot",
+            "funding_time_order_invalid",
             "funding.observed_at",
-            "must not be later than channel.updated_at",
+            "must satisfy previous.updated_at <= observed_at <= channel_after.updated_at",
         )
     return projection
