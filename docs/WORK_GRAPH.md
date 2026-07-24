@@ -29,7 +29,7 @@ Status values: `blocked`, `ready`, `active`, `review`, `done`.
 | FP-FAIL-002 | review | FP-FAIL-001, SA-CHAOS-001 | real-process chaos proxy, recovery, and external journal root |
 | FP-DOC-001 | done | FP-E2E-001, FP-REC-001, FP-FAIL-002 | current-state README and public evidence index |
 | FP-DOC-002 | done | FP-DOC-001, FP-FAIL-002 | public visibility and honest review metadata |
-| FP-DOC-003 | active | FP-DOC-002 | open-source license, public/commercial boundary, and external onboarding |
+| FP-DOC-003 | review | FP-DOC-002 | open-source license, public/commercial boundary, and external onboarding |
 | FP-PROD-001 | ready | - | three operator interviews |
 | FP-PROD-002 | blocked | FP-PROD-001 | five frequent incidents |
 | FP-PROD-003 | blocked | FP-PROD-002 | sanitized incident fixture |
