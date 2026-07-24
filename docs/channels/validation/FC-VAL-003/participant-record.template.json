@@ -1,0 +1,9 @@
+{
+  "_template_only": "Remove this field before schema validation. Never commit a completed instance.",
+  "protocol_version": "fc-val-003-v1",
+  "run_id": "REPLACE_FROM_APPROVED_RUN_MANIFEST",
+  "record_id": "REPLACE_WITH_12_CHAR_CSPRNG_ID",
+  "record_status": "incomplete",
+  "stage_reached": "consent",
+  "attrition_reason": "OTHER_ROLLED_UP"
+}

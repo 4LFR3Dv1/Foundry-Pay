@@ -1,0 +1,65 @@
+{
+  "protocol_version": "fc-val-003-v1",
+  "protocol_tag": "fc-val-003-protocol-v0.1.0",
+  "protocol_merge_commit": "REPLACE_WITH_IMMUTABLE_COMMIT",
+  "run_manifest_sha256": "REPLACE_WITH_APPROVED_MANIFEST_SHA256",
+  "run_status": "not_started",
+  "privacy_review": {
+    "status": "not_performed",
+    "public_approval_reference": null
+  },
+  "sample": {
+    "eligible_completed_total": 0,
+    "minimum_sample_met": false,
+    "segment_requirements_met": false,
+    "screened_display": "NOT_STARTED",
+    "excluded_display": "NOT_STARTED",
+    "incomplete_display": "NOT_STARTED",
+    "withdrawn_display": "NOT_STARTED"
+  },
+  "scoring_audit": {
+    "all_included_records_second_scored": false,
+    "all_disagreements_adjudicated": false,
+    "disagreement_display": "NOT_STARTED",
+    "ambiguity_display": "NOT_STARTED",
+    "adjudication_display": "NOT_STARTED"
+  },
+  "stage_a_unaided": {
+    "measurement": "unaided proposition comprehension",
+    "A1_persistent_relationship_gate": "not_evaluated",
+    "A2_reusable_link_gate": "not_evaluated",
+    "A3_repeated_address_benefit_gate": "not_evaluated",
+    "A4_recipient_destination_gate": "not_evaluated",
+    "custody_misconception_gate": "not_evaluated",
+    "headline_conclusion": "not_evaluated"
+  },
+  "stage_b_taught": {
+    "measurement": "comprehension and recall after supplied explanation",
+    "B1_cumulative_40_gate": "not_evaluated",
+    "B2_to_B10_each_80_percent_gate": "not_evaluated",
+    "taught_model_conclusion": "not_evaluated",
+    "cannot_override_stage_a": true
+  },
+  "safe_attrition_categories": [],
+  "published_misconception_categories": [],
+  "small_cell_policy": {
+    "minimum_cell": 3,
+    "suppress_when_cell_or_complement_below_minimum": true,
+    "participant_level_exports": false,
+    "cross_tabs": false,
+    "verbatim_quotes": false,
+    "rare_free_form_categories": false
+  },
+  "decision": {
+    "outcome": "insufficient_sample",
+    "message_change": null,
+    "model_explanation_change": null,
+    "unresolved_questions": []
+  },
+  "claims_not_made": [
+    "No interviews have been performed by this template.",
+    "Stage B does not measure unaided headline comprehension.",
+    "Stated intent is not adoption.",
+    "Comprehension is not production or security validation."
+  ]
+}

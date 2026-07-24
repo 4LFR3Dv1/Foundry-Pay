@@ -1,0 +1,42 @@
+{
+  "_template_only": "Do not recruit from this placeholder. Remove this field in the approved immutable manifest.",
+  "run_id": "REPLACE_WITH_CSPRNG_RUN_ID",
+  "protocol_version": "fc-val-003-v1",
+  "git_tag": "fc-val-003-protocol-v0.1.0",
+  "merge_commit": "REPLACE_WITH_40_CHAR_MERGE_COMMIT",
+  "recruitment_start": "REPLACE_WITH_APPROVED_FUTURE_RFC3339_TIMESTAMP",
+  "compensation_mode": "REPLACE_WITH_COMPENSATED_OR_UNCOMPENSATED",
+  "protocol_file_hashes": {
+    "README.md": "REPLACE_WITH_SHA256",
+    "MODERATOR_SCRIPT.md": "REPLACE_WITH_SHA256",
+    "SCORING.md": "REPLACE_WITH_SHA256",
+    "PRE_RECRUITMENT_CHECKLIST.md": "REPLACE_WITH_SHA256",
+    "HASHING.md": "REPLACE_WITH_SHA256",
+    "result-record.schema.json": "REPLACE_WITH_SHA256",
+    "run-manifest.schema.json": "REPLACE_WITH_SHA256",
+    "sanitized-results.template.json": "REPLACE_WITH_SHA256"
+  },
+  "sample_rules": {
+    "minimum_eligible_completions": 5,
+    "recommended_maximum": 8,
+    "minimum_repeat_senders": 2,
+    "minimum_own_wallet_recipients": 2
+  },
+  "thresholds": {
+    "stage_a_dimension_pass_score": 2,
+    "stage_a_required_rate": 0.8,
+    "stage_b_b1_required_rate": 1.0,
+    "stage_b_other_required_rate": 0.8,
+    "maximum_custody_inference_rate": 0.2,
+    "small_cell_minimum": 3
+  },
+  "privacy_approvals": {
+    "controller_notice_approval_id": "REQUIRED_BEFORE_RECRUITMENT",
+    "processing_basis_review_id": "REQUIRED_BEFORE_RECRUITMENT",
+    "storage_approval_id": "REQUIRED_BEFORE_RECRUITMENT",
+    "retention_deletion_approval_id": "REQUIRED_BEFORE_RECRUITMENT",
+    "privacy_review_id": "REQUIRED_BEFORE_RECRUITMENT",
+    "approved_before_recruitment": false
+  },
+  "manifest_sha256": "COMPUTE_AFTER_ALL_PLACEHOLDERS_ARE_REPLACED"
+}

@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundrypay.example/schemas/research/fc-val-003-run-manifest-v1.json",
+  "title": "FC-VAL-003 immutable preregistered run manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_id",
+    "protocol_version",
+    "git_tag",
+    "merge_commit",
+    "recruitment_start",
+    "compensation_mode",
+    "protocol_file_hashes",
+    "sample_rules",
+    "thresholds",
+    "privacy_approvals",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "pattern": "^FCVAL003-[A-HJ-NP-Z2-9]{8}$"
+    },
+    "protocol_version": {
+      "const": "fc-val-003-v1"
+    },
+    "git_tag": {
+      "const": "fc-val-003-protocol-v0.1.0"
+    },
+    "merge_commit": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "recruitment_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "compensation_mode": {
+      "enum": [
+        "compensated",
+        "uncompensated"
+      ]
+    },
+    "protocol_file_hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "README.md",
+        "MODERATOR_SCRIPT.md",
+        "SCORING.md",
+        "PRE_RECRUITMENT_CHECKLIST.md",
+        "HASHING.md",
+        "result-record.schema.json",
+        "run-manifest.schema.json",
+        "sanitized-results.template.json"
+      ],
+      "properties": {
+        "README.md": { "$ref": "#/$defs/sha256" },
+        "MODERATOR_SCRIPT.md": { "$ref": "#/$defs/sha256" },
+        "SCORING.md": { "$ref": "#/$defs/sha256" },
+        "PRE_RECRUITMENT_CHECKLIST.md": { "$ref": "#/$defs/sha256" },
+        "HASHING.md": { "$ref": "#/$defs/sha256" },
+        "result-record.schema.json": { "$ref": "#/$defs/sha256" },
+        "run-manifest.schema.json": { "$ref": "#/$defs/sha256" },
+        "sanitized-results.template.json": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "sample_rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minimum_eligible_completions",
+        "recommended_maximum",
+        "minimum_repeat_senders",
+        "minimum_own_wallet_recipients"
+      ],
+      "properties": {
+        "minimum_eligible_completions": { "const": 5 },
+        "recommended_maximum": { "const": 8 },
+        "minimum_repeat_senders": { "const": 2 },
+        "minimum_own_wallet_recipients": { "const": 2 }
+      }
+    },
+    "thresholds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stage_a_dimension_pass_score",
+        "stage_a_required_rate",
+        "stage_b_b1_required_rate",
+        "stage_b_other_required_rate",
+        "maximum_custody_inference_rate",
+        "small_cell_minimum"
+      ],
+      "properties": {
+        "stage_a_dimension_pass_score": { "const": 2 },
+        "stage_a_required_rate": { "const": 0.8 },
+        "stage_b_b1_required_rate": { "const": 1.0 },
+        "stage_b_other_required_rate": { "const": 0.8 },
+        "maximum_custody_inference_rate": { "const": 0.2 },
+        "small_cell_minimum": { "const": 3 }
+      }
+    },
+    "privacy_approvals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "controller_notice_approval_id",
+        "processing_basis_review_id",
+        "storage_approval_id",
+        "retention_deletion_approval_id",
+        "privacy_review_id",
+        "approved_before_recruitment"
+      ],
+      "properties": {
+        "controller_notice_approval_id": { "$ref": "#/$defs/approvalId" },
+        "processing_basis_review_id": { "$ref": "#/$defs/approvalId" },
+        "storage_approval_id": { "$ref": "#/$defs/approvalId" },
+        "retention_deletion_approval_id": { "$ref": "#/$defs/approvalId" },
+        "privacy_review_id": { "$ref": "#/$defs/approvalId" },
+        "approved_before_recruitment": { "const": true }
+      }
+    },
+    "manifest_sha256": {
+      "description": "Hash of canonical manifest content excluding this field.",
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "approvalId": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_-]{7,63}$"
+    }
+  }
+}
