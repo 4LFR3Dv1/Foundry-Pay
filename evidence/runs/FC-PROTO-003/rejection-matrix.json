@@ -1,0 +1,57 @@
+{
+  "work_item": "FC-PROTO-003",
+  "implementation_commit": "cf95e9c849e21dbf302a50aadad00ce8e330bfd7",
+  "derived_from": "tests/channels/test_recipient_binding.py",
+  "controls": [
+    {
+      "threat": "missing signed replay axis",
+      "mutations": ["voucher_hash omitted", "mint omitted"],
+      "result": "rejected: missing_field"
+    },
+    {
+      "threat": "payload tampering without matching hash",
+      "mutations": ["destination", "voucher", "mint", "program", "channel", "epoch"],
+      "result": "rejected: binding_hash_mismatch"
+    },
+    {
+      "threat": "cross-context replay with recomputed hash",
+      "mutations": ["program", "channel", "epoch", "voucher", "mint"],
+      "result": "rejected: context_mismatch"
+    },
+    {
+      "threat": "domain or network replay",
+      "mutations": ["domain", "network"],
+      "result": "rejected: invalid_literal"
+    },
+    {
+      "threat": "destination substitution with recomputed hash",
+      "mutations": ["destination wallet"],
+      "result": "rejected: invalid_claim_signature"
+    },
+    {
+      "threat": "missing principal authorization",
+      "mutations": ["claim-key signature", "destination-wallet signature"],
+      "result": "rejected independently for each signature"
+    },
+    {
+      "threat": "binding replay or concurrent double use",
+      "mutations": ["restart replay", "two concurrent writers"],
+      "result": "one verified record; all later effects rejected"
+    },
+    {
+      "threat": "expired or terminal claim",
+      "mutations": ["claim expiry", "binding expiry", "non-bindable claim state"],
+      "result": "rejected before persistence"
+    },
+    {
+      "threat": "rebind in V1",
+      "mutations": ["binding_mode=rebind", "unsigned Cloud destination field"],
+      "result": "rejected by runtime and closed schema"
+    },
+    {
+      "threat": "cryptographic verifier outage",
+      "mutations": ["injected verifier raises"],
+      "result": "rejected: signature_verifier_failed"
+    }
+  ]
+}
