@@ -343,8 +343,34 @@ def validate_channel(value: object) -> AccountingProjection:
         _reject("funding_accounting_invalid", "status", "funding requires A = S = R = 0")
     if status in {"active", "settling", "closing"} and funded == 0:
         _reject("funding_required", "status", f"{status} requires F > 0")
-    if status == "expired" and activated != settled:
-        _reject("expired_outstanding_right", "status", "expired requires A = S")
+    if status in {"funding", "active"} and updated >= expires:
+        _reject(
+            "channel_expiry_transition_required",
+            "status",
+            f"{status} cannot remain current at or after expires_at",
+        )
+    if status == "settling":
+        if "recipient_wallet" not in channel:
+            _reject(
+                "settlement_wallet_required",
+                "recipient_wallet",
+                "settling requires a bound recipient wallet",
+            )
+        if activated <= settled:
+            _reject(
+                "settlement_right_required",
+                "status",
+                "settling requires A - S > 0",
+            )
+    if status == "expired":
+        if updated < expires:
+            _reject(
+                "expiry_not_reached",
+                "updated_at",
+                "expired requires updated_at >= expires_at",
+            )
+        if activated != settled:
+            _reject("expired_outstanding_right", "status", "expired requires A = S")
     if status == "closed":
         if activated != settled:
             _reject("closed_outstanding_right", "status", "closed requires A = S")

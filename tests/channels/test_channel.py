@@ -266,6 +266,80 @@ def test_active_requires_positive_funding(vector: dict[str, object]) -> None:
     assert_rejected("funding_required", lambda: validate_channel(channel))
 
 
+def test_settling_requires_bound_recipient_wallet(vector: dict[str, object]) -> None:
+    channel = copy.deepcopy(vector["channel_after_funding"])
+    channel["status"] = "settling"
+    channel["activated_authorized_total_base_units"] = "40000000"
+    channel["settled_total_base_units"] = "15000000"
+    channel["latest_activated_sequence"] = 3
+    channel["latest_activated_voucher_hash"] = vector["vouchers"][2]["voucher_hash"]
+    schema = json.loads(
+        (ROOT / "contracts" / "channel" / "channel.schema.json").read_text(encoding="utf-8")
+    )
+
+    assert_rejected("settlement_wallet_required", lambda: validate_channel(channel))
+    assert list(Draft202012Validator(schema).iter_errors(channel))
+
+
+def test_settling_requires_positive_outstanding_right(vector: dict[str, object]) -> None:
+    channel = copy.deepcopy(vector["channel_after_funding"])
+    channel["status"] = "settling"
+    channel["recipient_wallet"] = vector["constants"]["recipient_wallet"]
+
+    assert_rejected("settlement_right_required", lambda: validate_channel(channel))
+
+
+def test_valid_settling_snapshot_has_wallet_and_outstanding_right(
+    vector: dict[str, object],
+) -> None:
+    channel = copy.deepcopy(vector["channel_after_funding"])
+    channel["status"] = "settling"
+    channel["recipient_wallet"] = vector["constants"]["recipient_wallet"]
+    channel["activated_authorized_total_base_units"] = "40000000"
+    channel["settled_total_base_units"] = "15000000"
+    channel["latest_activated_sequence"] = 3
+    channel["latest_activated_voucher_hash"] = vector["vouchers"][2]["voucher_hash"]
+
+    projection = validate_channel(channel)
+
+    assert projection.outstanding_right_base_units == 25_000_000
+
+
+@pytest.mark.parametrize("status", ("funding", "active"))
+def test_live_state_cannot_remain_current_at_expiry(vector: dict[str, object], status: str) -> None:
+    channel = (
+        funding_snapshot(vector)
+        if status == "funding"
+        else copy.deepcopy(vector["channel_after_funding"])
+    )
+    channel["status"] = status
+    channel["updated_at"] = channel["expires_at"]
+
+    assert_rejected(
+        "channel_expiry_transition_required",
+        lambda: validate_channel(channel),
+    )
+
+
+def test_expired_state_requires_expiry_to_be_reached(vector: dict[str, object]) -> None:
+    channel = copy.deepcopy(vector["channel_after_funding"])
+    channel["status"] = "expired"
+
+    assert_rejected("expiry_not_reached", lambda: validate_channel(channel))
+
+
+def test_valid_expired_state_has_no_outstanding_right(
+    vector: dict[str, object],
+) -> None:
+    channel = copy.deepcopy(vector["channel_after_funding"])
+    channel["status"] = "expired"
+    channel["updated_at"] = channel["expires_at"]
+
+    projection = validate_channel(channel)
+
+    assert projection.outstanding_right_base_units == 0
+
+
 def test_closing_requires_both_timestamps(vector: dict[str, object]) -> None:
     channel = copy.deepcopy(vector["channel_after_funding"])
     channel["status"] = "closing"
@@ -439,6 +513,7 @@ def test_funding_rejects_forbidden_previous_lifecycle(
         previous["updated_at"] = "2026-08-02T00:01:00Z"
     else:
         previous["status"] = "expired"
+        previous["updated_at"] = previous["expires_at"]
 
     assert_rejected(
         "funding_lifecycle_forbidden",
@@ -546,6 +621,9 @@ def test_funding_transition_rejects_invalid_after_status(vector: dict[str, objec
     previous = funding_snapshot(vector)
     after = copy.deepcopy(vector["channel_after_funding"])
     after["status"] = "settling"
+    after["recipient_wallet"] = vector["constants"]["recipient_wallet"]
+    after["activated_authorized_total_base_units"] = "1"
+    after["latest_activated_sequence"] = 1
 
     assert_rejected(
         "funding_status_transition_invalid",

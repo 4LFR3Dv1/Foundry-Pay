@@ -264,6 +264,23 @@
               ]
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "settling"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "recipient_wallet"
+            ]
+          }
         }
       ],
       "properties": {
