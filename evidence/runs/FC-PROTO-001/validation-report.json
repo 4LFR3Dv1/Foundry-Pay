@@ -1,0 +1,34 @@
+{
+  "work_item": "FC-PROTO-001",
+  "baseline_commit": "5573e73e2241a3ece86253aae6f1de6f60e95e48",
+  "implementation_commit": "9b8417dae614aba64e7f2b70ae6e69f643b2052b",
+  "scope": "offline Channel and ChannelFunding validation",
+  "network_calls": 0,
+  "checks": {
+    "focused_python": {
+      "passed": 35,
+      "failed": 0
+    },
+    "full_python": {
+      "passed": 140,
+      "skipped": 11,
+      "failed": 0
+    },
+    "typescript_regression": {
+      "passed": 8,
+      "failed": 0,
+      "npm_audit_vulnerabilities": 0
+    },
+    "ruff_check": "passed",
+    "ruff_format_check": "passed"
+  },
+  "artifact_sha256": {
+    "contracts/channel/test-vectors/positive/cumulative-channel-v1.json": "479145d2d8ba4a76d646e5b4e2991adfa57955c0d4cc5c1bd3f59b253adb6fce",
+    "contracts/channel/channel.schema.json": "f95bca86af8bbc174d74ce6db8fbd00153f972f3c77428d6f38e721d79ad3b69"
+  },
+  "accounting_review": {
+    "status": "required",
+    "author_is_only_approver": true
+  },
+  "status": "review"
+}
