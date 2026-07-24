@@ -5,6 +5,25 @@ policy:
   attribution_required: true
 
 sources:
+  - id: foundry-channels-fc-proto-001-first-party
+    repository: 4LFR3Dv1/Foundry-Pay
+    commit: 5573e73e2241a3ece86253aae6f1de6f60e95e48
+    visibility: public
+    license: Apache-2.0
+    disposition: first-party-implementation-from-foundation-contract
+    candidate_assets:
+      - offline Channel v1 closed-object validation
+      - reference accounting projection
+      - ChannelFunding transition validation
+    copied_paths: []
+    created_paths:
+      - packages/channel-protocol/python/foundry_channel_protocol
+      - tests/channels/test_channel.py
+    constraints:
+      - no Cloud, wallet, signer, RPC, or Solana program authority
+      - successful validation does not assert on-chain observation
+      - arithmetic follows docs/channels/CHANNEL_PROTOCOL.md at the pinned baseline
+
   - id: foundry-channels-solana-agent-baseline
     repository: 4LFR3Dv1/Solana-Agent
     commit: 914eaf3c9b407f787c6f51d9886c6e86ae542335

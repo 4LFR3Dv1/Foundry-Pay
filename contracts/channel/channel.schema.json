@@ -200,6 +200,71 @@
         "created_at",
         "updated_at"
       ],
+      "dependentRequired": {
+        "close_requested_at": [
+          "claim_deadline"
+        ],
+        "claim_deadline": [
+          "close_requested_at"
+        ]
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "closing",
+                  "closed"
+                ]
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "close_requested_at",
+              "claim_deadline"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "draft",
+                  "funding",
+                  "active",
+                  "settling",
+                  "expired"
+                ]
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "close_requested_at"
+                  ]
+                },
+                {
+                  "required": [
+                    "claim_deadline"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ],
       "properties": {
         "type": {
           "const": "channel"
