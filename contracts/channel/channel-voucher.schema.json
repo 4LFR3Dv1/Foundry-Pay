@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundry.pay/schemas/channel/channel-voucher.v1.schema.json",
+  "title": "Foundry Channels cumulative signed voucher",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "protocol_version",
+    "payload",
+    "voucher_hash",
+    "sender_signature"
+  ],
+  "properties": {
+    "type": {
+      "const": "channel_voucher"
+    },
+    "protocol_version": {
+      "const": "1.0.0"
+    },
+    "payload": {
+      "$ref": "#/$defs/ChannelVoucherPayload"
+    },
+    "voucher_hash": {
+      "$ref": "#/$defs/Hash"
+    },
+    "sender_signature": {
+      "$ref": "#/$defs/Signature"
+    }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "Pubkey": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$"
+    },
+    "Hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "Signature": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{64,88}$"
+    },
+    "Amount": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)$"
+    },
+    "Timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "ChannelVoucherPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "protocol_version",
+        "environment",
+        "network",
+        "genesis_hash",
+        "program_id",
+        "channel_id",
+        "channel_account",
+        "epoch",
+        "sequence",
+        "previous_activated_voucher_hash",
+        "sender",
+        "recipient_claim_pubkey",
+        "mint",
+        "cumulative_authorized_base_units",
+        "issued_at",
+        "expires_at"
+      ],
+      "properties": {
+        "domain": {
+          "const": "foundry.channels.voucher"
+        },
+        "protocol_version": {
+          "const": "1.0.0"
+        },
+        "environment": {
+          "const": "devnet"
+        },
+        "network": {
+          "const": "solana:devnet"
+        },
+        "genesis_hash": {
+          "$ref": "#/$defs/Pubkey"
+        },
+        "program_id": {
+          "$ref": "#/$defs/Pubkey"
+        },
+        "channel_id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "channel_account": {
+          "$ref": "#/$defs/Pubkey"
+        },
+        "epoch": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "previous_activated_voucher_hash": {
+          "$ref": "#/$defs/Hash"
+        },
+        "sender": {
+          "$ref": "#/$defs/Pubkey"
+        },
+        "recipient_claim_pubkey": {
+          "$ref": "#/$defs/Pubkey"
+        },
+        "mint": {
+          "$ref": "#/$defs/Pubkey"
+        },
+        "cumulative_authorized_base_units": {
+          "$ref": "#/$defs/Amount"
+        },
+        "issued_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "expires_at": {
+          "$ref": "#/$defs/Timestamp"
+        }
+      }
+    }
+  }
+}

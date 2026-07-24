@@ -1,0 +1,6 @@
+{
+  "case_id": "cumulative-decrease",
+  "target": "voucher:3",
+  "mutation": {"path": "payload.cumulative_authorized_base_units", "value": "24000000"},
+  "expected_error": "cumulative_amount_decreased"
+}

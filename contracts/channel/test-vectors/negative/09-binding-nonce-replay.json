@@ -1,0 +1,6 @@
+{
+  "case_id": "binding-nonce-replay",
+  "target": "recipient_binding",
+  "mutation": {"path": "payload.binding_nonce", "value": 0},
+  "expected_error": "binding_nonce_not_monotonic"
+}

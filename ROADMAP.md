@@ -21,6 +21,17 @@ directional until represented by an active work item in `docs/WORK_GRAPH.md`.
 - improve package-level quickstarts and executor conformance tooling;
 - obtain independent external verification of the public onboarding flow.
 
+## Foundry Channels
+
+The [Channels foundation](docs/channels/PROGRAM.md) freezes the first
+consumer-facing primitive, authority model, cumulative voucher semantics,
+public/private boundary, and smallest devnet vertical slice.
+
+The first five implementation and validation items are defined in the
+[Channels work graph](docs/channels/WORK_GRAPH.md). The first engineering PR is
+an offline Channel/ChannelFunding validator; a Solana program and hosted Cloud
+remain gated behind canonical byte, security, and conservation reviews.
+
 ## Before a production claim
 
 - complete an independent security review;

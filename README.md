@@ -17,6 +17,19 @@ The public repository is an Apache-2.0 reference implementation and
 proof-of-work. It is not a production custody system or a managed payment
 service.
 
+## Foundry Channels
+
+[Foundry Channels](docs/channels/PROGRAM.md) is the protocol-first design for
+persistent, funded stablecoin transfer relationships: open a channel, share a
+protected link, and update cumulative value without giving the hosted service
+authority to manufacture recipient rights.
+
+The current Channels deliverable is an implementation-ready architecture,
+normative schemas, test vectors, threat model, and gated
+[work graph](docs/channels/WORK_GRAPH.md). It is not a deployed program or
+payment product. Start with the [product thesis](docs/channels/PRODUCT_THESIS.md)
+and [MVP vertical slice](docs/channels/MVP_VERTICAL_SLICE.md).
+
 ## Why Foundry Pay
 
 Stablecoin operations can diverge across internal ledgers, processors, and

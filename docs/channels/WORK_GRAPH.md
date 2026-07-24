@@ -1,0 +1,176 @@
+# Foundry Channels work graph
+
+Status values: `blocked`, `ready`, `active`, `review`, `done`.
+
+`FOUNDATIONS-001` owns architectural planning. Items marked `ready` may begin
+after this foundation PR is merged without reopening accepted ADRs.
+
+## Epic A — Control and decision
+
+| Work item | Status | Depends on | Outcome |
+|---|---|---|---|
+| FC-CTRL-001 | done | FOUNDATIONS-001 | program, thesis, scope, and non-goals |
+| FC-CTRL-002 | done | FC-CTRL-001 | authority, state machines, and work graph |
+| FC-CTRL-003 | done | FC-CTRL-001 | immutable baselines for both public repositories |
+| FC-CTRL-004 | done | FC-CTRL-003 | reuse ledger and gap matrix |
+| FC-CTRL-005 | done | FC-CTRL-001 | public/private and repository boundary |
+
+## Epic B — Channel protocol
+
+| Work item | Status | Depends on | Outcome |
+|---|---|---|---|
+| FC-PROTO-001 | ready | FOUNDATIONS-001 | executable `Channel` and `ChannelFunding` validation |
+| FC-PROTO-002 | ready | FOUNDATIONS-001 | cumulative voucher verifier and monotonic reference ledger |
+| FC-PROTO-003 | ready | FOUNDATIONS-001 | claim and dual-signature recipient binding verifier |
+| FC-PROTO-004 | blocked | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | settlement and receipt implementation |
+| FC-PROTO-005 | blocked | FC-PROTO-001, FC-PROTO-002 | close, expiry, epoch, and refund implementation |
+| FC-PROTO-006 | blocked | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | normative canonicalization and hashes |
+| FC-PROTO-007 | blocked | FC-PROTO-006 | Python/TypeScript/Rust cross-language vectors |
+
+## Epic C — Security
+
+| Work item | Status | Depends on | Outcome |
+|---|---|---|---|
+| FC-SEC-001 | done | FOUNDATIONS-001 | comprehensive design threat model |
+| FC-SEC-002 | blocked | FC-PROTO-002, FC-PROTO-006 | replay and domain-separation property suite |
+| FC-SEC-003 | ready | FOUNDATIONS-001 | claim-link handling and secret non-disclosure test kit |
+| FC-SEC-004 | blocked | FC-PROTO-004, FC-SOL-004 | concurrent settlement adversarial proof |
+| FC-SEC-005 | blocked | FC-PROTO-004, SA-CHAN-004 | Cloud outage and self-recovery proof |
+
+## Epic D — Solana program
+
+| Work item | Status | Depends on | Outcome |
+|---|---|---|---|
+| FC-SOL-001 | done | FOUNDATIONS-001 | ChannelVault design specification |
+| FC-SOL-002 | blocked | FC-PROTO-001 | exact accounts and PDA layout |
+| FC-SOL-003 | blocked | FC-PROTO-002, FC-PROTO-003, FC-PROTO-004, FC-PROTO-005, FC-SOL-002 | instruction and error contract |
+| FC-SOL-004 | blocked | FC-SOL-003, FC-SEC-002 | on-chain invariants and property/formal harness |
+| FC-SOL-005 | blocked | FC-SOL-003 | upgrade, migration, and governance policy |
+
+No program implementation is authorized by `FOUNDATIONS-001`.
+
+## Epic E — Solana-Agent
+
+| Work item | Status | Depends on | Outcome |
+|---|---|---|---|
+| SA-CHAN-001 | blocked | FC-PROTO-006, FC-SOL-003 | generic channel capability discovery |
+| SA-CHAN-002 | blocked | SA-CHAN-001, FC-SOL-003 | open/top-up/activation preparation |
+| SA-CHAN-003 | blocked | SA-CHAN-001, FC-SOL-003 | settlement preparation |
+| SA-CHAN-004 | blocked | SA-CHAN-002, SA-CHAN-003 | inspect/status/recovery |
+| SA-CHAN-005 | blocked | SA-CHAN-004, FC-PROTO-007 | channel evidence and conformance |
+
+These items execute in the independent Solana-Agent repository.
+
+## Epic F — Product and experience
+
+| Work item | Status | Depends on | Outcome |
+|---|---|---|---|
+| FC-PROD-001 | blocked | FC-VAL-003 | receive-link prototype |
+| FC-PROD-002 | blocked | FC-SEC-003, FC-VAL-003 | protected claim-link prototype |
+| FC-PROD-003 | blocked | FC-PROD-001, FC-PROD-002 | persistent-channel experience |
+| FC-PROD-004 | blocked | FC-PROTO-003, FC-VAL-004 | recipient onboarding |
+| FC-PROD-005 | blocked | FC-PROTO-004, SA-CHAN-003 | settlement/recovery experience |
+| FC-PROD-006 | blocked | FC-PROTO-004 | receipts and sharing |
+
+Private product work uses the private Cloud repository. Public protocol
+fixtures and UX contracts remain in Foundry-Pay.
+
+## Epic G — Validation
+
+| Work item | Status | Depends on | Outcome |
+|---|---|---|---|
+| FC-VAL-001 | blocked | FC-VAL-003 | interviews with stablecoin senders |
+| FC-VAL-002 | blocked | FC-VAL-003 | interviews with stablecoin recipients |
+| FC-VAL-003 | ready | FOUNDATIONS-001 | 30-second proposition comprehension test |
+| FC-VAL-004 | blocked | FC-PROD-002, FC-PROD-004 | claim-link and wallet-binding usability |
+| FC-VAL-005 | blocked | FC-PROD-003 | repeated-channel reuse intent |
+
+## First five execution-ready items
+
+### 1. FC-PROTO-001 — Channel and funding validator
+
+- Repository: Foundry-Pay public
+- Reserved paths:
+  - `packages/channel-protocol/python/**`
+  - `tests/channels/test_channel.py`
+  - `contracts/channel/channel.schema.json`
+  - work-item evidence/provenance
+- Acceptance:
+  - validate schema plus conservation and lifecycle semantics;
+  - reject unknown fields, malformed amounts/addresses/time, and inconsistent
+    totals;
+  - no network, wallet, Cloud, or Solana program.
+
+### 2. FC-PROTO-002 — Cumulative voucher verifier
+
+- Repository: Foundry-Pay public
+- Reserved paths:
+  - `packages/channel-protocol/python/**`
+  - `tests/channels/test_voucher.py`
+  - voucher vectors/evidence
+- Acceptance:
+  - compute deterministic payload hash;
+  - verify sender signature through injected interface;
+  - enforce epoch, previous hash, sequence, nondecreasing total, funding, and
+    expiry;
+  - prove stale/replayed vouchers add no reference-ledger effect.
+
+### 3. FC-PROTO-003 — Claim and recipient binding verifier
+
+- Repository: Foundry-Pay public
+- Reserved paths:
+  - `packages/channel-protocol/python/**`
+  - `tests/channels/test_recipient_binding.py`
+  - claim/binding vectors/evidence
+- Acceptance:
+  - verify claim-key and destination-wallet signatures over identical bytes;
+  - reject substitution, nonce replay, wrong channel/epoch/network/program;
+  - implement initial binding only; rebind remains disabled.
+
+### 4. FC-SEC-003 — Claim-link security kit
+
+- Repository: Foundry-Pay public
+- Reserved paths:
+  - `packages/channel-protocol/typescript/**`
+  - `tests/channels/link-security/**`
+  - `docs/channels/security/claim-link/**`
+- Acceptance:
+  - prove server request/log fixtures never contain fragment or claim private
+    material;
+  - validate locator entropy and uniform not-found behavior contract;
+  - document browser/analytics/frontend residual risks without claiming human
+    identity.
+
+### 5. FC-VAL-003 — 30-second comprehension test
+
+- Repository: private product research; sanitized result in Foundry-Pay public
+- Reserved public paths:
+  - `docs/channels/validation/FC-VAL-003/**`
+  - sanitized evidence only
+- Acceptance:
+  - at least five target users explain the proposition;
+  - measure whether 10→25→40 is understood as 40, not 75;
+  - measure understanding of funded, available, received, and remaining;
+  - publish sanitized findings and decision changes.
+
+## Gates
+
+| Gate | Required before |
+|---|---|
+| schema + semantic validation | any reference implementation |
+| canonical bytes + signature vectors | program or SDK signature verification |
+| replay/domain property tests | settlement implementation |
+| account/instruction contract | ChannelVault code |
+| independent security review | devnet public pilot with meaningful funds |
+| Cloud-free recovery proof | external adoption claim |
+| upgrade governance and formal conservation assurance | any mainnet discussion |
+
+## Unit of progress
+
+```text
+reviewed PR
++ green tests
++ generated evidence
++ recorded decision
++ preserved provenance
+```

@@ -1,0 +1,535 @@
+version: 1
+program: foundry-channels
+status_values: [blocked, ready, active, review, done]
+work_items:
+  - id: FC-CTRL-001
+    status: done
+    objective: register the Foundry Channels program, thesis, MVP, and non-goals
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [docs/channels/PROGRAM.md, docs/channels/PRODUCT_THESIS.md]
+    dependencies: [FOUNDATIONS-001]
+    invariants: [consumer simplicity does not weaken protocol authority]
+    acceptance: [scope and non-goals are explicit, first proof is end-to-end]
+    tests: [foundation document validator]
+    evidence: [docs/channels/PROGRAM.md]
+    security_review: design-boundary-review
+    stop_conditions: [mainnet or production scope enters the MVP]
+
+  - id: FC-CTRL-002
+    status: done
+    objective: define operational authority, state machines, and the work graph
+    owner: lead-architect
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [docs/channels/AUTHORITY_MODEL.md, docs/channels/STATE_MACHINES.md, docs/channels/WORK_GRAPH.md]
+    dependencies: [FC-CTRL-001]
+    invariants: [Cloud and executor authority remain bounded]
+    acceptance: [every material transition has an owner and guard]
+    tests: [foundation document validator]
+    evidence: [docs/channels/AUTHORITY_MODEL.md, docs/channels/STATE_MACHINES.md]
+    security_review: authority-review
+    stop_conditions: [two components claim final authority for one decision]
+
+  - id: FC-CTRL-003
+    status: done
+    objective: pin immutable Solana-Agent and Foundry-Pay baselines
+    owner: provenance-maintainer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [docs/channels/INVENTORY.md, provenance/REUSE_LEDGER.yaml]
+    dependencies: [FC-CTRL-001]
+    invariants: [all current-state claims identify immutable commits]
+    acceptance: [both baseline SHAs resolve and are recorded]
+    tests: [baseline SHA validation]
+    evidence: [docs/channels/INVENTORY.md]
+    security_review: provenance-review
+    stop_conditions: [a baseline cannot be reproduced]
+
+  - id: FC-CTRL-004
+    status: done
+    objective: classify reuse, extension, generalization, and new-build gaps
+    owner: lead-architect
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [docs/channels/REUSE_MATRIX.md, provenance/REUSE_LEDGER.yaml]
+    dependencies: [FC-CTRL-003]
+    invariants: [no kernel is copied or rewritten without demonstrated need]
+    acceptance: [every required component has origin, decision, risk, and evidence]
+    tests: [reuse-matrix completeness check]
+    evidence: [docs/channels/REUSE_MATRIX.md]
+    security_review: supply-chain-review
+    stop_conditions: [ownership or license is unresolved]
+
+  - id: FC-CTRL-005
+    status: done
+    objective: fix public, private, and repository boundaries
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [docs/channels/REPO_BOUNDARIES.md, docs/channels/ADR/FC-ADR-003-public-private-boundary.md, docs/channels/ADR/FC-ADR-005-repository-topology.md]
+    dependencies: [FC-CTRL-001]
+    invariants: [public Apache-2.0 protocol remains independently useful]
+    acceptance: [public, private, and Solana-Agent responsibilities are disjoint]
+    tests: [foundation document validator]
+    evidence: [docs/channels/REPO_BOUNDARIES.md]
+    security_review: IP-and-authority-review
+    stop_conditions: [private customer or custody material enters the public repository]
+
+  - id: FC-PROTO-001
+    status: ready
+    objective: implement Channel and ChannelFunding validation and reference conservation
+    owner: protocol-engineer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [packages/channel-protocol/python/**, tests/channels/test_channel.py, contracts/channel/channel.schema.json, evidence/runs/FC-PROTO-001/**, provenance/REUSE_LEDGER.yaml]
+    dependencies: [FOUNDATIONS-001]
+    invariants: [funded_total equals vault plus settled plus refunded, settled is not above activated total]
+    acceptance: [positive fixtures validate, malformed and inconsistent states reject, no network dependency]
+    tests: [pytest channel validation and conservation cases]
+    evidence: [generated validation report and fixture hashes]
+    security_review: accounting-invariant-review
+    stop_conditions: [arithmetic or lifecycle ambiguity remains]
+
+  - id: FC-PROTO-002
+    status: ready
+    objective: implement cumulative voucher hashing, signature verification, and monotonic reference ledger
+    owner: protocol-engineer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [packages/channel-protocol/python/**, tests/channels/test_voucher.py, contracts/channel/channel-voucher.schema.json, contracts/channel/test-vectors/**, evidence/runs/FC-PROTO-002/**]
+    dependencies: [FOUNDATIONS-001]
+    invariants: [cumulative total never decreases, stale sequence produces no additional effect]
+    acceptance: [hash and injected signature verify, domain replay and stale/decreasing/funding violations reject]
+    tests: [positive, tamper, replay, funding, expiry, restart, and concurrency tests]
+    evidence: [voucher vector hashes and reference-ledger report]
+    security_review: mandatory-independent-protocol-review
+    stop_conditions: [an off-chain assertion is treated as latest activated state]
+
+  - id: FC-PROTO-003
+    status: ready
+    objective: implement ChannelClaim and dual-signature RecipientBinding verification
+    owner: protocol-engineer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [packages/channel-protocol/python/**, tests/channels/test_recipient_binding.py, contracts/channel/recipient-binding.schema.json, contracts/channel/channel-claim.schema.json, contracts/channel/test-vectors/**, evidence/runs/FC-PROTO-003/**]
+    dependencies: [FOUNDATIONS-001]
+    invariants: [claim and destination signatures bind identical bytes, binding nonce is one-use]
+    acceptance: [initial binding validates, substitution and replay reject, rebind remains disabled]
+    tests: [dual-signature, tamper, nonce, expiry, wrong-domain, and restart tests]
+    evidence: [binding vector hashes and rejection matrix]
+    security_review: mandatory-independent-binding-review
+    stop_conditions: [claim locator or Cloud database can select destination]
+
+  - id: FC-PROTO-004
+    status: blocked
+    objective: implement settlement request, execution correlation, and reconciled receipt contracts
+    owner: protocol-engineer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [packages/channel-protocol/**, tests/channels/test_settlement.py, contracts/channel/settlement.schema.json, evidence/runs/FC-PROTO-004/**]
+    dependencies: [FC-PROTO-001, FC-PROTO-002, FC-PROTO-003]
+    invariants: [settlement delta cannot exceed activated remaining right or vault balance]
+    acceptance: [partial and total settlement state transitions validate and correlate exact execution evidence]
+    tests: [partial, total, over-settlement, duplicate, unknown-outcome, and reconciliation tests]
+    evidence: [settlement state and receipt matrix]
+    security_review: mandatory-money-movement-review
+    stop_conditions: [executor receipt is accepted as final business success]
+
+  - id: FC-PROTO-005
+    status: blocked
+    objective: implement close, expiry, epoch, and refund reference semantics
+    owner: protocol-engineer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [packages/channel-protocol/**, tests/channels/test_closure.py, contracts/channel/channel-closure.schema.json, evidence/runs/FC-PROTO-005/**]
+    dependencies: [FC-PROTO-001, FC-PROTO-002]
+    invariants: [closing preserves unexpired outstanding rights, refund preserves conservation]
+    acceptance: [excess and final refunds are distinguished and rights remain reserved through grace]
+    tests: [close races, expiry boundaries, refund bounds, and epoch reset tests]
+    evidence: [closure/refund transition matrix]
+    security_review: mandatory-money-movement-review
+    stop_conditions: [sender can refund value still owed to recipient]
+
+  - id: FC-PROTO-006
+    status: blocked
+    objective: freeze normative channel canonicalization, domain separation, and hash functions
+    owner: protocol-engineer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [packages/channel-protocol/**, contracts/channel/**, tests/channels/test_canonicalization.py, evidence/runs/FC-PROTO-006/**]
+    dependencies: [FC-PROTO-001, FC-PROTO-002, FC-PROTO-003]
+    invariants: [every signed object binds version, environment, network, program, channel, epoch, recipient, and asset]
+    acceptance: [closed normalization and canonical bytes are published for every signed object]
+    tests: [ordering, Unicode, unsafe number, unknown field, domain mutation, and exact-byte tests]
+    evidence: [normative canonical byte and hash manifest]
+    security_review: cryptographic-protocol-review
+    stop_conditions: [Rust and JSON domains cannot map byte-for-byte]
+
+  - id: FC-PROTO-007
+    status: blocked
+    objective: publish cross-language Python, TypeScript, and Rust conformance vectors
+    owner: conformance-engineer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [packages/channel-protocol/**, contracts/channel/test-vectors/**, tests/channels/conformance/**, evidence/runs/FC-PROTO-007/**]
+    dependencies: [FC-PROTO-006]
+    invariants: [all implementations produce identical bytes and hashes]
+    acceptance: [positive and all shared negative vectors agree in three implementations]
+    tests: [cross-language conformance suite]
+    evidence: [implementation versions and vector result manifest]
+    security_review: independent-conformance-review
+    stop_conditions: [any implementation silently normalizes differently]
+
+  - id: FC-SEC-001
+    status: done
+    objective: produce the comprehensive Foundry Channels design threat model
+    owner: security-architect
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [docs/channels/THREAT_MODEL.md]
+    dependencies: [FOUNDATIONS-001]
+    invariants: [design gaps are not represented as deployed vulnerabilities]
+    acceptance: [all mission threats include prevention, detection, recovery, evidence, and residual risk]
+    tests: [threat-register completeness check]
+    evidence: [docs/channels/THREAT_MODEL.md]
+    security_review: comprehensive-design-review
+    stop_conditions: [critical right or authority has no modeled threat]
+
+  - id: FC-SEC-002
+    status: blocked
+    objective: prove replay resistance and domain separation with properties and negative vectors
+    owner: security-engineer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [packages/channel-protocol/**, tests/channels/security/replay/**, contracts/channel/test-vectors/negative/**, evidence/runs/FC-SEC-002/**]
+    dependencies: [FC-PROTO-002, FC-PROTO-006]
+    invariants: [signatures are unusable across every domain dimension]
+    acceptance: [mutation of each domain field invalidates verification and creates no effect]
+    tests: [property-based domain mutation and replay suite]
+    evidence: [mutation coverage report]
+    security_review: mandatory-independent-security-review
+    stop_conditions: [any signed field is semantically material but not cryptographically bound]
+
+  - id: FC-SEC-003
+    status: ready
+    objective: create claim-link security contracts and secret non-disclosure tests
+    owner: application-security-engineer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [packages/channel-protocol/typescript/**, tests/channels/link-security/**, docs/channels/security/claim-link/**, evidence/runs/FC-SEC-003/**]
+    dependencies: [FOUNDATIONS-001]
+    invariants: [claim private material never reaches server requests, logs, analytics, or evidence]
+    acceptance: [fragment handling, locator entropy, uniform errors, and redaction are testable]
+    tests: [browser URL, logging, analytics, enumeration, clipboard, and evidence fixtures]
+    evidence: [secret-flow test report]
+    security_review: mandatory-frontend-security-review
+    stop_conditions: [frontend stack or analytics requires claim secret transmission]
+
+  - id: FC-SEC-004
+    status: blocked
+    objective: prove safety under concurrent settlements and lifecycle races
+    owner: security-engineer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [tests/channels/security/concurrency/**, services/failure_lab/**, evidence/runs/FC-SEC-004/**]
+    dependencies: [FC-PROTO-004, FC-SOL-004]
+    invariants: [aggregate settled total never exceeds activated right]
+    acceptance: [two-process and two-transaction races preserve conservation]
+    tests: [concurrent partial, full, close, top-up, activation, and restart tests]
+    evidence: [race matrix and account snapshots]
+    security_review: mandatory-independent-security-review
+    stop_conditions: [test-only locking differs materially from Solana account locking]
+
+  - id: FC-SEC-005
+    status: blocked
+    objective: demonstrate Cloud outage, database loss, and self-recovery
+    owner: reliability-security-engineer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [tests/channels/security/outage/**, services/failure_lab/**, examples/channel-recovery/**, evidence/runs/FC-SEC-005/**]
+    dependencies: [FC-PROTO-004, SA-CHAN-004]
+    invariants: [activated right remains inspectable and settleable without Cloud]
+    acceptance: [Cloud and database can be removed while public tools recover the exact state]
+    tests: [service outage, lost index, lost response, source divergence, and artifact restore]
+    evidence: [Cloud-free recovery bundle and video]
+    security_review: mandatory-independent-recovery-review
+    stop_conditions: [recovery needs a Cloud-only assertion or secret]
+
+  - id: FC-SOL-001
+    status: done
+    objective: specify ChannelVault accounts, instructions, errors, and governance gates without implementation
+    owner: solana-program-architect
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [docs/channels/SOLANA_CHANNEL_VAULT_SPEC.md]
+    dependencies: [FOUNDATIONS-001]
+    invariants: [program enforces conservation and never resolves human identity]
+    acceptance: [account, instruction, error, concurrency, and upgrade surfaces are specified]
+    tests: [foundation document validator]
+    evidence: [docs/channels/SOLANA_CHANNEL_VAULT_SPEC.md]
+    security_review: solana-design-review
+    stop_conditions: [program implementation begins in the foundation work item]
+
+  - id: FC-SOL-002
+    status: blocked
+    objective: freeze ChannelVault account layout, PDA seeds, space, rent, and token accounts
+    owner: solana-program-engineer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [programs/foundry-channel-vault/**, docs/channels/solana/accounts/**, tests/channels/solana/accounts/**, evidence/runs/FC-SOL-002/**]
+    dependencies: [FC-PROTO-001]
+    invariants: [random channel nonce reduces pre-disclosure enumeration, fixed mint and PDA authority are checked]
+    acceptance: [account version and byte layout have golden vectors and migration reservation]
+    tests: [PDA, account size, discriminator, owner, mint, and malformed-account tests]
+    evidence: [account layout and PDA vector manifest]
+    security_review: mandatory-solana-account-review
+    stop_conditions: [PDA collisions or unversioned mutable layout]
+
+  - id: FC-SOL-003
+    status: blocked
+    objective: freeze ChannelVault instruction, signature-precompile, event, and error contracts
+    owner: solana-program-engineer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [programs/foundry-channel-vault/**, docs/channels/solana/instructions/**, tests/channels/solana/instructions/**, evidence/runs/FC-SOL-003/**]
+    dependencies: [FC-PROTO-002, FC-PROTO-003, FC-PROTO-004, FC-PROTO-005, FC-SOL-002]
+    invariants: [every mutation maps to closed signed authority and checked accounts]
+    acceptance: [open, fund, activate, bind, settle, close, and refund instruction contracts are complete]
+    tests: [instruction serialization and negative account/signature vectors]
+    evidence: [IDL and instruction vector hashes]
+    security_review: mandatory-solana-instruction-review
+    stop_conditions: [Ed25519 instruction offsets or message mapping are ambiguous]
+
+  - id: FC-SOL-004
+    status: blocked
+    objective: implement property and formal harnesses for ChannelVault invariants
+    owner: formal-methods-engineer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [programs/foundry-channel-vault/**, tests/channels/solana/invariants/**, formal/**, evidence/runs/FC-SOL-004/**]
+    dependencies: [FC-SOL-003, FC-SEC-002]
+    invariants: [conservation, monotonicity, one-use binding, and lifecycle safety hold for all transitions]
+    acceptance: [property tests cover arbitrary sequences and formal review closes material uncertainty]
+    tests: [proptest, model-based transition suite, and selected formal proofs]
+    evidence: [property seeds, counterexample archive, and proof artifacts]
+    security_review: independent-formal-review
+    stop_conditions: [testing alone leaves material conservation or replay uncertainty]
+
+  - id: FC-SOL-005
+    status: blocked
+    objective: define upgrade authority, migration, verification, and governance policy
+    owner: protocol-governance-owner
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [docs/channels/solana/governance/**, programs/foundry-channel-vault/**, evidence/runs/FC-SOL-005/**]
+    dependencies: [FC-SOL-003]
+    invariants: [users can identify program version and authority before signing]
+    acceptance: [devnet authority, production multisig/timelock or immutability, migrations, and rollback limits are explicit]
+    tests: [program-data and incompatible-upgrade fixtures]
+    evidence: [program authority and verified-build report]
+    security_review: mandatory-governance-review
+    stop_conditions: [mainnet discussion without approved upgrade policy]
+
+  - id: SA-CHAN-001
+    status: blocked
+    objective: add generic capability discovery for supported channel operations
+    owner: solana-agent-maintainer
+    repository: 4LFR3Dv1/Solana-Agent
+    allowed_paths: [gateway/**, contracts/capabilities/**, tests/channel_gateway/**, docs/**]
+    dependencies: [FC-PROTO-006, FC-SOL-003]
+    invariants: [capability discovery describes support but grants no authority]
+    acceptance: [descriptor binds network, genesis, program, IDL, account/instruction versions, and recovery support]
+    tests: [closed descriptor, unsupported version, mismatch, and default-deny tests]
+    evidence: [immutable Solana-Agent PR and conformance result]
+    security_review: local-policy-boundary-review
+    stop_conditions: [Foundry business logic enters Solana-Agent]
+
+  - id: SA-CHAN-002
+    status: blocked
+    objective: prepare and simulate channel open, top-up, activation, and binding
+    owner: solana-agent-maintainer
+    repository: 4LFR3Dv1/Solana-Agent
+    allowed_paths: [gateway/**, tests/channel_gateway/**, docs/**]
+    dependencies: [SA-CHAN-001, FC-SOL-003]
+    invariants: [executor cannot change channel, mint, participant, voucher, or amount]
+    acceptance: [exact messages and simulations match public vectors and fail closed]
+    tests: [account substitution, wrong program/mint/network, fee, expiry, and simulation failures]
+    evidence: [prepared messages, hashes, simulations, and policy decisions]
+    security_review: mandatory-network-execution-review
+    stop_conditions: [adapter must infer economic intent]
+
+  - id: SA-CHAN-003
+    status: blocked
+    objective: prepare and simulate exact partial and total ChannelVault settlements
+    owner: solana-agent-maintainer
+    repository: 4LFR3Dv1/Solana-Agent
+    allowed_paths: [gateway/**, tests/channel_gateway/**, docs/**]
+    dependencies: [SA-CHAN-001, FC-SOL-003]
+    invariants: [destination and delta equal the Foundry obligation and bound state]
+    acceptance: [prepared settlement matches exact expected pre/post totals and program accounts]
+    tests: [partial, total, over-limit, stale state, destination substitution, and concurrent preparation]
+    evidence: [settlement preparation conformance bundle]
+    security_review: mandatory-money-movement-review
+    stop_conditions: [executor chooses recipient or settlement amount]
+
+  - id: SA-CHAN-004
+    status: blocked
+    objective: add channel inspect, status, and signature-based recovery observations
+    owner: solana-agent-maintainer
+    repository: 4LFR3Dv1/Solana-Agent
+    allowed_paths: [gateway/**, tests/channel_gateway/**, docs/**]
+    dependencies: [SA-CHAN-002, SA-CHAN-003]
+    invariants: [unknown outcome never triggers redispatch or rematerialization]
+    acceptance: [recovery reports channel/vault/recipient state tied to persisted signature]
+    tests: [lost response, expiry, provider outage/divergence, restart, and no-second-broadcast]
+    evidence: [chaos journal and account observation bundle]
+    security_review: mandatory-recovery-review
+    stop_conditions: [not-found observation alone authorizes a new transaction]
+
+  - id: SA-CHAN-005
+    status: blocked
+    objective: publish channel technical evidence and cross-repository conformance
+    owner: solana-agent-maintainer
+    repository: 4LFR3Dv1/Solana-Agent
+    allowed_paths: [gateway/**, tests/channel_gateway/**, docs/evidence/**]
+    dependencies: [SA-CHAN-004, FC-PROTO-007]
+    invariants: [technical receipt never declares Foundry business success]
+    acceptance: [evidence includes exact artifacts, account observations, hashes, and limitations]
+    tests: [evidence schema, tamper, redaction, and manifest verification]
+    evidence: [public Solana-Agent evidence release]
+    security_review: evidence-and-redaction-review
+    stop_conditions: [claim secret, private key, credential, or customer data enters evidence]
+
+  - id: FC-PROD-001
+    status: blocked
+    objective: prototype public receive-link discovery and signed resolution
+    owner: product-engineer
+    repository: private/foundry-pay-platform
+    allowed_paths: [apps/consumer/**, services/identity-resolver/**, packages/domain/**]
+    dependencies: [FC-VAL-003]
+    invariants: [receive link grants no value and resolution changes are explicit]
+    acceptance: [user verifies recipient, network, mint, and resolution version before open]
+    tests: [stale, changed, spoofed, unavailable, and ambiguous resolution]
+    evidence: [sanitized usability and threat-flow report]
+    security_review: application-security-review
+    stop_conditions: [human handle silently changes economic destination]
+
+  - id: FC-PROD-002
+    status: blocked
+    objective: prototype protected claim-link delivery without server-visible claim secret
+    owner: product-engineer
+    repository: private/foundry-pay-platform
+    allowed_paths: [apps/consumer/**, services/voucher-relay/**, packages/domain/**]
+    dependencies: [FC-SEC-003, FC-VAL-003]
+    invariants: [locator is non-authoritative and claim private material stays client-side]
+    acceptance: [protected link opens, explains bearer risk, and produces exact binding payload]
+    tests: [forwarding, logging, preview, compromised-session, revoke-before-right, and outage flows]
+    evidence: [sanitized product test and client build hash]
+    security_review: mandatory-frontend-and-link-review
+    stop_conditions: [analytics or support captures the fragment]
+
+  - id: FC-PROD-003
+    status: blocked
+    objective: prototype persistent relationship view and cumulative value updates
+    owner: product-engineer
+    repository: private/foundry-pay-platform
+    allowed_paths: [apps/consumer/**, services/channel-registry/**, packages/domain/**]
+    dependencies: [FC-PROD-001, FC-PROD-002]
+    invariants: [10 to 25 to 40 displays 40, never 75]
+    acceptance: [funded, pending activation, available, settled, reserved, and refundable are distinct]
+    tests: [cumulative updates, partial settlement, top-up, close, and stale index]
+    evidence: [usability recording and state-to-copy matrix]
+    security_review: product-logic-review
+    stop_conditions: [Cloud index is presented as economic authority]
+
+  - id: FC-PROD-004
+    status: blocked
+    objective: implement recipient onboarding and exact wallet binding experience
+    owner: product-engineer
+    repository: private/foundry-pay-platform
+    allowed_paths: [apps/consumer/**, services/identity-resolver/**, packages/domain/**]
+    dependencies: [FC-PROTO-003, FC-VAL-004]
+    invariants: [user signs exact wallet/channel binding and sees the wallet]
+    acceptance: [initial bind works and substitution/replay/rebind-disabled states are clear]
+    tests: [wallet mismatch, rejected signature, expired claim, already bound, and outage]
+    evidence: [sanitized binding UX and signed test artifact hashes]
+    security_review: mandatory-wallet-binding-review
+    stop_conditions: [server selects wallet without both signatures]
+
+  - id: FC-PROD-005
+    status: blocked
+    objective: implement settlement and truthful recovery experience
+    owner: product-engineer
+    repository: private/foundry-pay-platform
+    allowed_paths: [apps/consumer/**, services/settlement-orchestrator/**, packages/domain/**]
+    dependencies: [FC-PROTO-004, SA-CHAN-003]
+    invariants: [unknown outcome shows recovering and never offers blind retry]
+    acceptance: [partial/full settlement and recovery map exactly to protocol states]
+    tests: [response loss, RPC outage, rejection, expiry, reconciliation dispute, and completion]
+    evidence: [state-copy map and recovery demo]
+    security_review: mandatory-money-movement-UX-review
+    stop_conditions: [UI can cause second broadcast under ambiguity]
+
+  - id: FC-PROD-006
+    status: blocked
+    objective: implement receipts and safe sharing of non-secret evidence
+    owner: product-engineer
+    repository: private/foundry-pay-platform
+    allowed_paths: [apps/consumer/**, services/notification-service/**, packages/domain/**]
+    dependencies: [FC-PROTO-004]
+    invariants: [receipt distinguishes technical confirmation from reconciled business result]
+    acceptance: [shared receipt includes verifiable public identifiers and no private claim material]
+    tests: [redaction, pending/disputed state, tamper, and inaccessible-provider cases]
+    evidence: [receipt fixtures and redaction report]
+    security_review: privacy-and-evidence-review
+    stop_conditions: [receipt leaks relationship secret or overstates finality]
+
+  - id: FC-VAL-001
+    status: blocked
+    objective: interview people who send stablecoins repeatedly
+    owner: product-researcher
+    repository: private/product-research
+    allowed_paths: [research/FC-VAL-001/**, docs/channels/validation/FC-VAL-001/**]
+    dependencies: [FC-VAL-003]
+    invariants: [public evidence is sanitized and consented]
+    acceptance: [at least five relevant senders identify current workflow and repeat frequency]
+    tests: [research protocol and consent checklist]
+    evidence: [sanitized themes and decision log]
+    security_review: privacy-review
+    stop_conditions: [PII or wallet activity is published]
+
+  - id: FC-VAL-002
+    status: blocked
+    objective: interview people who receive stablecoins repeatedly
+    owner: product-researcher
+    repository: private/product-research
+    allowed_paths: [research/FC-VAL-002/**, docs/channels/validation/FC-VAL-002/**]
+    dependencies: [FC-VAL-003]
+    invariants: [public evidence is sanitized and consented]
+    acceptance: [at least five recipients describe wallet-selection, trust, and settlement needs]
+    tests: [research protocol and consent checklist]
+    evidence: [sanitized themes and decision log]
+    security_review: privacy-review
+    stop_conditions: [PII or wallet activity is published]
+
+  - id: FC-VAL-003
+    status: ready
+    objective: test whether target users understand the proposition in 30 seconds
+    owner: product-researcher
+    repository: private/product-research
+    allowed_paths: [research/FC-VAL-003/**, docs/channels/validation/FC-VAL-003/**]
+    dependencies: [FOUNDATIONS-001]
+    invariants: [research copy does not hide funding, activation, expiry, or bearer-link risk]
+    acceptance: [five users explain the concept and interpret 10 to 25 to 40 as 40]
+    tests: [scripted comprehension and terminology test]
+    evidence: [sanitized scorecard and resulting decisions]
+    security_review: research-privacy-review
+    stop_conditions: [users consistently infer custody or additive value]
+
+  - id: FC-VAL-004
+    status: blocked
+    objective: validate claim-link opening and wallet binding usability
+    owner: product-researcher
+    repository: private/product-research
+    allowed_paths: [research/FC-VAL-004/**, docs/channels/validation/FC-VAL-004/**]
+    dependencies: [FC-PROD-002, FC-PROD-004]
+    invariants: [test participants use synthetic fixtures and no real secrets]
+    acceptance: [users identify sensitive link, verify wallet, and recover from common errors]
+    tests: [moderated task protocol and threat comprehension]
+    evidence: [sanitized completion/error metrics]
+    security_review: research-and-link-security-review
+    stop_conditions: [test leaks real wallet secret or valuable claim]
+
+  - id: FC-VAL-005
+    status: blocked
+    objective: measure intent to reuse a persistent channel
+    owner: product-researcher
+    repository: private/product-research
+    allowed_paths: [research/FC-VAL-005/**, docs/channels/validation/FC-VAL-005/**]
+    dependencies: [FC-PROD-003]
+    invariants: [intent is not represented as adoption]
+    acceptance: [users compare channel reuse against current repeated wallet-address flow]
+    tests: [structured comparison and follow-up intent measure]
+    evidence: [sanitized reuse-intent report]
+    security_review: research-privacy-review
+    stop_conditions: [sample has no repeated stablecoin use case]

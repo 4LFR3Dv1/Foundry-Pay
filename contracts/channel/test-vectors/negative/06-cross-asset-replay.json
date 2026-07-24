@@ -1,0 +1,6 @@
+{
+  "case_id": "cross-asset-replay",
+  "target": "voucher:3",
+  "mutation": {"path": "payload.mint", "value": "So11111111111111111111111111111111111111112"},
+  "expected_error": "mint_mismatch"
+}

@@ -1,0 +1,6 @@
+{
+  "case_id": "overfunded-authorization",
+  "target": "voucher:3",
+  "mutation": {"path": "payload.cumulative_authorized_base_units", "value": "100000001"},
+  "expected_error": "authorization_exceeds_funding"
+}

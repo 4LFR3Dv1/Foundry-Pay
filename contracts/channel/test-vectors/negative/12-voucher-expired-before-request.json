@@ -1,0 +1,6 @@
+{
+  "case_id": "voucher-expired-before-request",
+  "target": "voucher:3",
+  "mutation": {"path": "payload.expires_at", "value": "2026-08-01T00:05:59Z"},
+  "expected_error": "voucher_expired"
+}
