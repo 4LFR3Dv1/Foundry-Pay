@@ -16,6 +16,19 @@
       ],
       "binding_hash": "sha256:cf741629014c5627ab954c3387db5aa1089a66fc9204c10dd48c1f32fbdfdf23"
     },
+    "closing_race_vector": {
+      "scenario": "issued-voucher-survives-close-race",
+      "schema_valid": true,
+      "valid": true,
+      "rules": {
+        "deadline_matches_activation_window": true,
+        "presentation_is_inside_window": true,
+        "voucher_advances_snapshot": true,
+        "pre_deadline_refund_is_zero": true,
+        "valid_voucher_activates_during_window": true,
+        "post_deadline_conservation": true
+      }
+    },
     "negative_vectors": {
       "count": 12,
       "passed": 12,
@@ -26,7 +39,7 @@
       "rights_bounds": true
     },
     "documents": {
-      "required": 22,
+      "required": 23,
       "missing": []
     },
     "work_graph": {

@@ -41,10 +41,11 @@
   },
   "foundation_outputs": {
     "schemas": 7,
-    "positive_vectors": 1,
+    "positive_vectors": 2,
     "negative_vectors": 12,
     "adrs": 5,
     "work_items": 38,
+    "versioned_critical_security_gates": 3,
     "ready_work_items": [
       "FC-PROTO-001",
       "FC-PROTO-002",
@@ -58,7 +59,7 @@
     "live channel transaction",
     "production or mainnet readiness",
     "safe custody",
-    "external security audit",
+    "independent external security review",
     "proven scale",
     "exactly-once blockchain execution"
   ]
