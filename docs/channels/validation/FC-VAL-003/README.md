@@ -54,8 +54,9 @@ location, wallet address, transaction signature, income, balances, or identity.
 5. [Pre-recruitment privacy checklist](PRE_RECRUITMENT_CHECKLIST.md)
 6. [Run-manifest schema](run-manifest.schema.json)
 7. [Run-manifest template](RUN_MANIFEST.template.json)
-8. [Sanitized aggregate template](sanitized-results.template.json)
-9. [Decision template](DECISION.template.md)
+8. [Normative hashing procedure](HASHING.md)
+9. [Sanitized aggregate template](sanitized-results.template.json)
+10. [Decision template](DECISION.template.md)
 
 No prototype, live wallet, real claim link, valuable asset, or production
 account is required. If examples are shown, they must be synthetic.
@@ -65,7 +66,8 @@ account is required. If examples are shown, they must be synthetic.
 1. Complete and independently approve every item in the pre-recruitment
    checklist.
 2. Merge and tag the reviewed protocol, hash every artifact, and freeze an
-   approved immutable run manifest before recruitment starts.
+   approved immutable run manifest before recruitment starts. Select its
+   compensated or uncompensated script variant at this point.
 3. Obtain informed consent outside the public repository.
 4. Assign a 12-character, cryptographically random, non-sequential ID using
    alphabet `A-HJ-NP-Z2-9`; verify uniqueness within the run.
@@ -77,7 +79,8 @@ account is required. If examples are shown, they must be synthetic.
 8. Read the neutral introduction in the moderator script.
 9. Show only the proposition for exactly 30 seconds.
 10. Hide it and ask spontaneous questions without correction or prompting.
-11. Lock and hash Stage A before displaying Stage B. Later reviews create
+11. Lock and hash Stage A with the normative domain-separated procedure before
+    displaying Stage B. Independently recompute it. Later reviews create
     separate fields and never overwrite the locked record.
 12. Show Stage B and ask the taught-model questions.
 13. Ask comparison and usefulness questions last.

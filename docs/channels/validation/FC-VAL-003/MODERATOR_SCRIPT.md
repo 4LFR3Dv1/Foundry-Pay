@@ -13,7 +13,10 @@ access, retention/deletion including backups, incident route, compensation,
 withdrawal route/cutoff, and what anonymous aggregate may remain afterward.
 This script supplements that notice; it does not replace it.
 
-**Say**
+The immutable run manifest selects exactly one `compensation_mode`. Read the
+matching block verbatim. Never improvise or combine the variants.
+
+**Say — compensated run only**
 
 > Estamos avaliando se uma descrição de produto é compreensível, não você. A
 > sessão dura cerca de 15 minutos. Não use nem mostre uma wallet real, saldo,
@@ -24,6 +27,18 @@ This script supplements that notice; it does not replace it.
 > tudo. Depois do prazo declarado, resultados já transformados em agregados
 > anônimos podem permanecer sem possibilidade de associação a você. Você
 > concorda em participar da pesquisa?
+
+**Say — uncompensated run only**
+
+> Estamos avaliando se uma descrição de produto é compreensível, não você. A
+> sessão dura cerca de 15 minutos. Não use nem mostre uma wallet real, saldo,
+> transação, link privado, chave ou seed phrase. Você pode recusar qualquer
+> pergunta, parar sem penalidade, retirar seu consentimento e pedir exclusão dos
+> seus dados pelo canal gratuito e até o prazo explicados no aviso de
+> privacidade. Não haverá compensação por esta sessão. Depois do prazo
+> declarado, resultados já transformados em agregados anônimos podem permanecer
+> sem possibilidade de associação a você. Você concorda em participar da
+> pesquisa?
 
 Record consent privately. If the answer is no, stop. Obtain recording consent
 through a separate optional choice; refusal cannot exclude an otherwise
@@ -81,9 +96,10 @@ Use only neutral probes:
 - “O que fez você pensar isso?”
 - “Existe outra interpretação possível?”
 
-Do not correct answers. Lock the Stage A answers and primary scoring, compute
-their SHA-256 audit hash, and store them separately before continuing. Do not
-reveal Stage B until the lock succeeds.
+Do not correct answers. Lock the Stage A answers and primary scoring using the
+normative preimage and hash procedure in `HASHING.md`, then store the private
+preimage separately before continuing. Do not reveal Stage B until independent
+recomputation matches the stored hash.
 
 ## Stage B — taught factual-model comprehension
 

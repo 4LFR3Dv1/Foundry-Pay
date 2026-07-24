@@ -2,13 +2,31 @@
 
 from __future__ import annotations
 
+import copy
+import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any
 
+import rfc8785
 from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).parent
+MANIFEST_DOMAIN = b"foundry.channels.research.run-manifest.v1\x00"
+STAGE_A_DOMAIN = b"foundry.channels.research.stage-a-lock.v1\x00"
+RUN_ID = re.compile(r"^FCVAL003-[A-HJ-NP-Z2-9]{8}$")
+RECORD_ID = re.compile(r"^[A-HJ-NP-Z2-9]{12}$")
+PROTOCOL_FILES = {
+    "README.md",
+    "MODERATOR_SCRIPT.md",
+    "SCORING.md",
+    "PRE_RECRUITMENT_CHECKLIST.md",
+    "HASHING.md",
+    "result-record.schema.json",
+    "run-manifest.schema.json",
+    "sanitized-results.template.json",
+}
 
 
 def load_json(name: str) -> dict[str, Any]:
@@ -21,6 +39,80 @@ def scores_a(value: int = 2) -> dict[str, int]:
 
 def scores_b(value: bool = True) -> dict[str, bool]:
     return {f"B{index}": value for index in range(1, 11)}
+
+
+def digest(domain: bytes, value: dict[str, Any]) -> str:
+    return "sha256:" + hashlib.sha256(domain + rfc8785.dumps(value)).hexdigest()
+
+
+def manifest_hash(manifest: dict[str, Any], validator: Draft202012Validator) -> str:
+    assert_valid(validator, manifest)
+    preimage = copy.deepcopy(manifest)
+    del preimage["manifest_sha256"]
+    return digest(MANIFEST_DOMAIN, preimage)
+
+
+def stage_a_hash(lock: dict[str, Any]) -> str:
+    assert set(lock) == {
+        "protocol_version",
+        "run_id",
+        "record_id",
+        "responses",
+        "primary_scores",
+    }
+    assert lock["protocol_version"] == "fc-val-003-v1"
+    assert isinstance(lock["run_id"], str) and RUN_ID.fullmatch(lock["run_id"])
+    assert isinstance(lock["record_id"], str) and RECORD_ID.fullmatch(lock["record_id"])
+    assert set(lock["responses"]) == {f"Q{index}" for index in range(1, 7)}
+    assert all(isinstance(value, str) for value in lock["responses"].values())
+    assert set(lock["primary_scores"]) == {f"A{index}" for index in range(1, 7)}
+    assert all(type(value) is int and 0 <= value <= 2 for value in lock["primary_scores"].values())
+    return digest(STAGE_A_DOMAIN, lock)
+
+
+def valid_manifest() -> dict[str, Any]:
+    return {
+        "run_id": "FCVAL003-7KQ9M2WX",
+        "protocol_version": "fc-val-003-v1",
+        "git_tag": "fc-val-003-protocol-v0.1.0",
+        "merge_commit": "a" * 40,
+        "recruitment_start": "2026-08-10T12:00:00Z",
+        "compensation_mode": "uncompensated",
+        "protocol_file_hashes": {name: f"sha256:{'a' * 64}" for name in sorted(PROTOCOL_FILES)},
+        "sample_rules": {
+            "minimum_eligible_completions": 5,
+            "recommended_maximum": 8,
+            "minimum_repeat_senders": 2,
+            "minimum_own_wallet_recipients": 2,
+        },
+        "thresholds": {
+            "stage_a_dimension_pass_score": 2,
+            "stage_a_required_rate": 0.8,
+            "stage_b_b1_required_rate": 1.0,
+            "stage_b_other_required_rate": 0.8,
+            "maximum_custody_inference_rate": 0.2,
+            "small_cell_minimum": 3,
+        },
+        "privacy_approvals": {
+            "controller_notice_approval_id": "NOTICE_001",
+            "processing_basis_review_id": "BASIS_001",
+            "storage_approval_id": "STORAGE_001",
+            "retention_deletion_approval_id": "RETENTION_001",
+            "privacy_review_id": "PRIVACY_001",
+            "approved_before_recruitment": True,
+        },
+        "manifest_sha256": f"sha256:{'0' * 64}",
+    }
+
+
+def valid_stage_a_lock() -> dict[str, Any]:
+    return {
+        "protocol_version": "fc-val-003-v1",
+        "run_id": "FCVAL003-7KQ9M2WX",
+        "record_id": "7KQ9M2WX4RTY",
+        "responses": {f"Q{index}": f"resposta {index}" for index in range(1, 7)},
+        "primary_scores": scores_a(),
+    }
 
 
 def valid_eligible() -> dict[str, Any]:
@@ -71,6 +163,7 @@ def main() -> None:
     Draft202012Validator.check_schema(result_schema)
     Draft202012Validator.check_schema(manifest_schema)
     validator = Draft202012Validator(result_schema)
+    manifest_validator = Draft202012Validator(manifest_schema)
 
     eligible = valid_eligible()
     assert_valid(validator, eligible)
@@ -154,7 +247,52 @@ def main() -> None:
     manifest_template = load_json("RUN_MANIFEST.template.json")
     assert "_template_only" in manifest_template
     assert manifest_template["privacy_approvals"]["approved_before_recruitment"] is False
-    assert list(Draft202012Validator(manifest_schema).iter_errors(manifest_template))
+    assert list(manifest_validator.iter_errors(manifest_template))
+
+    manifest = valid_manifest()
+    assert_valid(manifest_validator, manifest)
+    assert set(manifest["protocol_file_hashes"]) == PROTOCOL_FILES
+    missing_file = copy.deepcopy(manifest)
+    del missing_file["protocol_file_hashes"]["HASHING.md"]
+    assert_invalid(manifest_validator, missing_file)
+    extra_file = copy.deepcopy(manifest)
+    extra_file["protocol_file_hashes"]["UNFROZEN.md"] = f"sha256:{'b' * 64}"
+    assert_invalid(manifest_validator, extra_file)
+    invalid_compensation = copy.deepcopy(manifest)
+    invalid_compensation["compensation_mode"] = "maybe"
+    assert_invalid(manifest_validator, invalid_compensation)
+
+    original_manifest_hash = manifest_hash(manifest, manifest_validator)
+    assert (
+        original_manifest_hash
+        == "sha256:95c5c0e5fe42a83526995e56fd3ee42d329ef09812879c69d1b12297a657d1d1"
+    )
+    mutated_manifest = copy.deepcopy(manifest)
+    mutated_manifest["compensation_mode"] = "compensated"
+    assert manifest_hash(mutated_manifest, manifest_validator) != original_manifest_hash
+
+    stage_a_lock = valid_stage_a_lock()
+    original_stage_a_hash = stage_a_hash(stage_a_lock)
+    assert (
+        original_stage_a_hash
+        == "sha256:4a64f705ed0c6dbc6b8068518634217d79d8ac386ad0afc1fae33ffc6c7da80b"
+    )
+    mutated_stage_a = copy.deepcopy(stage_a_lock)
+    mutated_stage_a["responses"]["Q1"] += "!"
+    assert stage_a_hash(mutated_stage_a) != original_stage_a_hash
+    unicode_mutation = copy.deepcopy(stage_a_lock)
+    unicode_mutation["responses"]["Q1"] = "e\u0301"
+    composed_unicode = copy.deepcopy(stage_a_lock)
+    composed_unicode["responses"]["Q1"] = "\u00e9"
+    assert stage_a_hash(unicode_mutation) != stage_a_hash(composed_unicode)
+    stage_a_extra = copy.deepcopy(stage_a_lock)
+    stage_a_extra["stage_b"] = {}
+    try:
+        stage_a_hash(stage_a_extra)
+    except AssertionError:
+        pass
+    else:
+        raise AssertionError("Stage A lock accepted an unknown field")
 
     required_privacy_terms = [
         "controller_name:",
@@ -170,6 +308,7 @@ def main() -> None:
 
     print(
         "schemas=2 valid_status_cases=4 rejected_unsafe_cases=6 "
+        "manifest_files=8 hash_domains=2 compensation_modes=2 "
         "privacy_template=blocked aggregate_template=empty"
     )
 

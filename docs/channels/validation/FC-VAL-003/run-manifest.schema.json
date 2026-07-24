@@ -10,6 +10,7 @@
     "git_tag",
     "merge_commit",
     "recruitment_start",
+    "compensation_mode",
     "protocol_file_hashes",
     "sample_rules",
     "thresholds",
@@ -35,12 +36,34 @@
       "type": "string",
       "format": "date-time"
     },
+    "compensation_mode": {
+      "enum": [
+        "compensated",
+        "uncompensated"
+      ]
+    },
     "protocol_file_hashes": {
       "type": "object",
-      "minProperties": 8,
-      "additionalProperties": {
-        "type": "string",
-        "pattern": "^sha256:[a-f0-9]{64}$"
+      "additionalProperties": false,
+      "required": [
+        "README.md",
+        "MODERATOR_SCRIPT.md",
+        "SCORING.md",
+        "PRE_RECRUITMENT_CHECKLIST.md",
+        "HASHING.md",
+        "result-record.schema.json",
+        "run-manifest.schema.json",
+        "sanitized-results.template.json"
+      ],
+      "properties": {
+        "README.md": { "$ref": "#/$defs/sha256" },
+        "MODERATOR_SCRIPT.md": { "$ref": "#/$defs/sha256" },
+        "SCORING.md": { "$ref": "#/$defs/sha256" },
+        "PRE_RECRUITMENT_CHECKLIST.md": { "$ref": "#/$defs/sha256" },
+        "HASHING.md": { "$ref": "#/$defs/sha256" },
+        "result-record.schema.json": { "$ref": "#/$defs/sha256" },
+        "run-manifest.schema.json": { "$ref": "#/$defs/sha256" },
+        "sanitized-results.template.json": { "$ref": "#/$defs/sha256" }
       }
     },
     "sample_rules": {
@@ -106,10 +129,13 @@
     }
   },
   "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
     "approvalId": {
       "type": "string",
       "pattern": "^[A-Z][A-Z0-9_-]{7,63}$"
     }
   }
 }
-

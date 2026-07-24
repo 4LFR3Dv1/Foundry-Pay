@@ -5,15 +5,16 @@
   "git_tag": "fc-val-003-protocol-v0.1.0",
   "merge_commit": "REPLACE_WITH_40_CHAR_MERGE_COMMIT",
   "recruitment_start": "REPLACE_WITH_APPROVED_FUTURE_RFC3339_TIMESTAMP",
+  "compensation_mode": "REPLACE_WITH_COMPENSATED_OR_UNCOMPENSATED",
   "protocol_file_hashes": {
     "README.md": "REPLACE_WITH_SHA256",
     "MODERATOR_SCRIPT.md": "REPLACE_WITH_SHA256",
     "SCORING.md": "REPLACE_WITH_SHA256",
     "PRE_RECRUITMENT_CHECKLIST.md": "REPLACE_WITH_SHA256",
+    "HASHING.md": "REPLACE_WITH_SHA256",
     "result-record.schema.json": "REPLACE_WITH_SHA256",
     "run-manifest.schema.json": "REPLACE_WITH_SHA256",
-    "sanitized-results.template.json": "REPLACE_WITH_SHA256",
-    "DECISION.template.md": "REPLACE_WITH_SHA256"
+    "sanitized-results.template.json": "REPLACE_WITH_SHA256"
   },
   "sample_rules": {
     "minimum_eligible_completions": 5,
@@ -39,4 +40,3 @@
   },
   "manifest_sha256": "COMPUTE_AFTER_ALL_PLACEHOLDERS_ARE_REPLACED"
 }
-
