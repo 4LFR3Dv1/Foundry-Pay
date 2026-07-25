@@ -2,9 +2,11 @@
   "work_item": "FC-PROTO-003",
   "title": "Offline ChannelClaim and dual-signature RecipientBinding verifier",
   "base_commit": "c9f66437c055143cf48e7de0f06443377737b024",
+  "integrated_main_commit": "a27a0e3daf0ecf2d0f11471d3055283cf6859db7",
+  "integration_merge_commit": "e169e64160ae1ef96d2f58e32d6aa41862e6ad79",
   "implementation_commit": "cf95e9c849e21dbf302a50aadad00ce8e330bfd7",
   "review_remediation_commit": "9c1c582b688191205243dd7a598e3fee89069e32",
-  "status": "remediated_pending_independent_re_review",
+  "status": "integrated_with_fc_proto_002_pending_independent_re_review",
   "scope": {
     "network_access": false,
     "wallet_access": false,
@@ -36,11 +38,12 @@
     "shared_vector_change": "recipient_binding block only; binding hash recalculated"
   },
   "verification": {
-    "focused_with_resource_warnings_as_errors": "49 passed",
-    "python_full": "239 passed, 11 skipped",
+    "binding_with_resource_warnings_as_errors": "49 passed",
+    "combined_channel_voucher_binding_focused": "178 passed",
+    "python_full": "283 passed, 11 skipped",
     "typescript_conformance": "8 passed",
     "ruff": "passed",
-    "secret_guard": "224 files scanned at remediation evidence head; passed"
+    "secret_guard": "231 files scanned at integrated evidence head; passed"
   },
   "residual_gates": [
     "mandatory independent recipient-binding security re-review",

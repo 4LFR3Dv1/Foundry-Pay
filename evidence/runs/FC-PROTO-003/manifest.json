@@ -1,6 +1,8 @@
 {
   "work_item": "FC-PROTO-003",
   "base_commit": "c9f66437c055143cf48e7de0f06443377737b024",
+  "integrated_main_commit": "a27a0e3daf0ecf2d0f11471d3055283cf6859db7",
+  "integration_merge_commit": "e169e64160ae1ef96d2f58e32d6aa41862e6ad79",
   "implementation_commit": "cf95e9c849e21dbf302a50aadad00ce8e330bfd7",
   "review_remediation_commit": "9c1c582b688191205243dd7a598e3fee89069e32",
   "artifacts": {
@@ -22,6 +24,7 @@
     "reviewed_head": "4f81a6215dfd4543acaafa2bad8a0f680d48b6fc",
     "decision": "request_changes",
     "comment": "https://github.com/4LFR3Dv1/Foundry-Pay/pull/18#issuecomment-5075716651",
-    "re_review": "pending"
+    "remediation_head": "53293578ed7ea36c4292622b80355940996269e8",
+    "re_review": "pending_after_main_integration"
   }
 }
