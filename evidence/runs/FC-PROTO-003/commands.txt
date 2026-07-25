@@ -1,0 +1,26 @@
+implementation_commit=cf95e9c849e21dbf302a50aadad00ce8e330bfd7
+review_remediation_commit=9c1c582b688191205243dd7a598e3fee89069e32
+base_commit=c9f66437c055143cf48e7de0f06443377737b024
+integrated_main_commit=a27a0e3daf0ecf2d0f11471d3055283cf6859db7
+integration_merge_commit=e169e64160ae1ef96d2f58e32d6aa41862e6ad79
+
+PYTHONWARNINGS=error::ResourceWarning python -m pytest tests\channels\test_recipient_binding.py tests\channels\test_foundation_contracts.py --basetemp C:\tmp\fc-proto-003-resource-warnings
+result=49 passed in 0.42s; no ResourceWarning
+
+python -m pytest tests\channels\test_recipient_binding.py tests\channels\test_voucher.py tests\channels\test_channel.py tests\channels\test_foundation_contracts.py --basetemp C:\tmp\fc-proto-003-integrated-focused
+result=178 passed in 1.11s
+
+python -m pytest --basetemp C:\tmp\fc-proto-003-integrated-full
+result=283 passed, 11 skipped in 4.89s
+
+python -m ruff format --check .
+result=47 files already formatted
+
+python -m ruff check .
+result=All checks passed
+
+python scripts\check_secrets.py
+result=Secret guard passed (231 files scanned at integrated evidence head)
+
+npm test --prefix packages\external-execution-protocol\typescript
+result=8 passed, 0 failed

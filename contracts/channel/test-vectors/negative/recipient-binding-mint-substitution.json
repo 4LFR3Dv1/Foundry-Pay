@@ -1,0 +1,9 @@
+{
+  "case_id": "recipient-binding-mint-substitution",
+  "target": "recipient_binding",
+  "mutation": {
+    "path": "payload.mint",
+    "value": "SysvarRent111111111111111111111111111111111"
+  },
+  "expected_error": "binding_hash_mismatch"
+}

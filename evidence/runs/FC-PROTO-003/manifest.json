@@ -1,0 +1,30 @@
+{
+  "work_item": "FC-PROTO-003",
+  "base_commit": "c9f66437c055143cf48e7de0f06443377737b024",
+  "integrated_main_commit": "a27a0e3daf0ecf2d0f11471d3055283cf6859db7",
+  "integration_merge_commit": "e169e64160ae1ef96d2f58e32d6aa41862e6ad79",
+  "implementation_commit": "cf95e9c849e21dbf302a50aadad00ce8e330bfd7",
+  "review_remediation_commit": "9c1c582b688191205243dd7a598e3fee89069e32",
+  "artifacts": {
+    "contracts/channel/recipient-binding.schema.json": "sha256:a0f9138d3854661029892e37f335b2191e047e716ae22cae9ad9039dcf561db3",
+    "contracts/channel/channel-claim.schema.json": "sha256:68b4c3a3b9d84f7e36a609f1a794f82d17d49a7611279f9c915de3d55713e9c9",
+    "contracts/channel/test-vectors/positive/cumulative-channel-v1.json": "sha256:c66ecb408d9206e6548c1843814a553b0c67d65f3c18a7ba1c214027bd6af5ed",
+    "contracts/channel/test-vectors/positive/recipient-binding-initial-v1.json": "sha256:65a2befdcaff17a21639dc94cb8a30104696d24f2baa822a66995ff68dbca2e9",
+    "contracts/channel/test-vectors/negative/recipient-binding-mint-substitution.json": "sha256:7dd90b9f750e429453f5c41e95c3b70007e58ef4fbd1e652100ded512130f0d9",
+    "contracts/channel/test-vectors/negative/recipient-binding-voucher-substitution.json": "sha256:5801d40d4903bf152c05f378e5b8a18b73a100e36eae4dbbeca3698115ce176e",
+    "packages/channel-protocol/python/foundry_channel_protocol/recipient_binding.py": "sha256:84904ebd5b11ee55fbed7916aec5c62c626cf2b4bd17d5e645df6cef1c3c2dec",
+    "tests/channels/test_recipient_binding.py": "sha256:41230c0854333e63e7d667d654c1455a1dd50aa221d635b0f53a15c59bb61260"
+  },
+  "binding_vector": {
+    "canonical_payload_sha256": "sha256:5ffc2a2ac51ebcbeb23d2cffa013251ce2680747eec9cbb570d5ee793a535192",
+    "journal_domain_sha256": "sha256:5bd6ada78f4d36b91a347fd39a793bfefc3ebcf1dba815814dc91941e11e3959",
+    "claim_signature_input_equals_wallet_signature_input": true
+  },
+  "independent_security_review": {
+    "reviewed_head": "4f81a6215dfd4543acaafa2bad8a0f680d48b6fc",
+    "decision": "request_changes",
+    "comment": "https://github.com/4LFR3Dv1/Foundry-Pay/pull/18#issuecomment-5075716651",
+    "remediation_head": "53293578ed7ea36c4292622b80355940996269e8",
+    "re_review": "pending_after_main_integration"
+  }
+}
