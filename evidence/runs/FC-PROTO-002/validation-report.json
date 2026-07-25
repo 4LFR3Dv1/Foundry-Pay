@@ -1,7 +1,8 @@
 {
   "work_item": "FC-PROTO-002",
   "baseline_commit": "c9f66437c055143cf48e7de0f06443377737b024",
-  "implementation_commit": "dbf044a12f18741cdcdfbedd958ff03a405d6d8a",
+  "initial_implementation_commit": "dbf044a12f18741cdcdfbedd958ff03a405d6d8a",
+  "review_remediation_commit": "d3f30f433838067549f6a9892a15bb8630351270",
   "scope": "offline cumulative voucher verification and monotonic reference ledger",
   "network_calls": 0,
   "authoritative_activation": false,
@@ -13,11 +14,11 @@
   ],
   "checks": {
     "focused_python": {
-      "passed": 118,
+      "passed": 127,
       "failed": 0
     },
     "full_python": {
-      "passed": 223,
+      "passed": 232,
       "skipped": 11,
       "failed": 0
     },
@@ -46,7 +47,7 @@
     "contracts/channel/test-vectors/negative/07-overfunded-authorization.json": "5edb03ffbc3d572fb0e1fcf732ee017dce9cd201a8c03841a777b9b69ee43aae"
   },
   "independent_protocol_review": {
-    "status": "required",
+    "status": "changes_addressed_final_approval_required",
     "author_is_only_approver": true
   },
   "status": "review"
