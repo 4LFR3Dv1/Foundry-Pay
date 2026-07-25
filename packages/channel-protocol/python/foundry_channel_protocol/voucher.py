@@ -359,12 +359,6 @@ def verify_voucher(
         payload["cumulative_authorized_base_units"],
         "payload.cumulative_authorized_base_units",
     )
-    if total == 0:
-        _reject(
-            "zero_cumulative_authorization",
-            "payload.cumulative_authorized_base_units",
-            "a sequenced voucher must authorize a positive cumulative total",
-        )
     minimum_sequence = context.latest_activated_sequence
     minimum_total = context.latest_activated_total_base_units
     if latest_issued_sequence is not None:
@@ -378,6 +372,12 @@ def verify_voucher(
             "cumulative_amount_decreased",
             "payload.cumulative_authorized_base_units",
             "must be nondecreasing",
+        )
+    if total == 0:
+        _reject(
+            "zero_cumulative_authorization",
+            "payload.cumulative_authorized_base_units",
+            "a sequenced voucher must authorize a positive cumulative total",
         )
     available = context.funded_total_base_units - context.refunded_total_base_units
     if total > available:
@@ -722,6 +722,7 @@ class ReferenceVoucherLedger:
         *,
         context: VoucherContext,
         observed_at: datetime,
+        signature_verifier: SignatureVerifier,
     ) -> VoucherRecord:
         timestamp = self._time(observed_at)
         with self._connection() as connection:
@@ -766,7 +767,7 @@ class ReferenceVoucherLedger:
                     voucher,
                     context=context,
                     now=observed_at,
-                    signature_verifier=lambda _key, _message, _signature: True,
+                    signature_verifier=signature_verifier,
                 )
                 if current.voucher_hash != row["voucher_hash"]:
                     _reject(
@@ -775,6 +776,25 @@ class ReferenceVoucherLedger:
                         "verified record no longer matches persisted voucher",
                     )
             except VoucherValidationError as error:
+                if error.code == "signature_verifier_failed":
+                    connection.execute(
+                        """
+                        UPDATE voucher_submissions
+                        SET state = 'verified', error_code = ?, updated_at = ?
+                        WHERE submission_id = ?
+                        """,
+                        (error.code, timestamp, submission_id),
+                    )
+                    connection.execute(
+                        """
+                        INSERT INTO voucher_events (
+                            submission_id, state, error_code, observed_at
+                        ) VALUES (?, 'verified', ?, ?)
+                        """,
+                        (submission_id, error.code, timestamp),
+                    )
+                    connection.commit()
+                    raise
                 connection.execute(
                     """
                     UPDATE voucher_submissions
@@ -796,7 +816,7 @@ class ReferenceVoucherLedger:
             connection.execute(
                 """
                 UPDATE voucher_submissions
-                SET state = 'activation_requested', updated_at = ?
+                SET state = 'activation_requested', error_code = NULL, updated_at = ?
                 WHERE submission_id = ?
                 """,
                 (timestamp, submission_id),

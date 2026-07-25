@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import sqlite3
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
@@ -256,7 +257,7 @@ def test_signed_object_domain_is_explicit_and_not_reusable(
     )
 
 
-@pytest.mark.parametrize("case_number", range(1, 8))
+@pytest.mark.parametrize("case_number", (*range(1, 8), 13))
 def test_shared_negative_voucher_vectors_have_stable_errors(
     voucher: dict[str, Any],
     context: VoucherContext,
@@ -387,7 +388,11 @@ def test_first_sequenced_voucher_cannot_authorize_zero(
     voucher["payload"]["previous_activated_voucher_hash"] = "sha256:" + ("0" * 64)
     voucher["payload"]["cumulative_authorized_base_units"] = "0"
     rehash(voucher)
+    schema = json.loads(
+        (ROOT / "contracts" / "channel" / "channel-voucher.schema.json").read_text(encoding="utf-8")
+    )
 
+    assert list(Draft202012Validator(schema).iter_errors(voucher))
     assert_rejected(
         "zero_cumulative_authorization",
         lambda: verify_voucher(
@@ -452,6 +457,7 @@ def test_ledger_persists_only_non_authoritative_states(
         "submission_003",
         context=context,
         observed_at=LATER,
+        signature_verifier=RecordingVerifier(),
     )
 
     assert issued.state == "issued"
@@ -542,6 +548,7 @@ def test_activation_request_revalidates_expiry_and_current_context(
             "expiring",
             context=context,
             observed_at=datetime(2026, 8, 2, tzinfo=timezone.utc),
+            signature_verifier=RecordingVerifier(),
         ),
     )
     assert ledger.get("expiring").state == "rejected"
@@ -567,9 +574,102 @@ def test_activation_request_rejects_changed_authoritative_context(
             "changed_context",
             context=changed,
             observed_at=LATER,
+            signature_verifier=RecordingVerifier(),
         ),
     )
     assert ledger.get("changed_context").state == "rejected"
+
+
+def test_activation_request_reverifies_persisted_sender_signature(
+    tmp_path: Path, voucher: dict[str, Any], context: VoucherContext
+) -> None:
+    path = tmp_path / "voucher.sqlite3"
+    expected_signature = voucher["sender_signature"]
+
+    def exact_signature(_public_key: str, _message: bytes, signature: str) -> bool:
+        return signature == expected_signature
+
+    ledger = ReferenceVoucherLedger(path)
+    ledger.record_issued("tampered_signature", voucher, observed_at=NOW)
+    ledger.verify_issued(
+        "tampered_signature",
+        context=context,
+        now=NOW,
+        signature_verifier=exact_signature,
+    )
+    connection = sqlite3.connect(path)
+    try:
+        row = connection.execute(
+            "SELECT voucher_json FROM voucher_submissions WHERE submission_id = ?",
+            ("tampered_signature",),
+        ).fetchone()
+        assert row is not None
+        persisted = json.loads(row[0])
+        persisted["sender_signature"] = "1" * 64
+        connection.execute(
+            "UPDATE voucher_submissions SET voucher_json = ? WHERE submission_id = ?",
+            (
+                json.dumps(
+                    persisted,
+                    ensure_ascii=False,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ),
+                "tampered_signature",
+            ),
+        )
+        connection.commit()
+    finally:
+        connection.close()
+
+    assert_rejected(
+        "invalid_sender_signature",
+        lambda: ledger.request_activation(
+            "tampered_signature",
+            context=context,
+            observed_at=LATER,
+            signature_verifier=exact_signature,
+        ),
+    )
+    assert ledger.get("tampered_signature").state == "rejected"
+
+
+def test_activation_signature_provider_failure_is_retryable(
+    tmp_path: Path, voucher: dict[str, Any], context: VoucherContext
+) -> None:
+    ledger = ReferenceVoucherLedger(tmp_path / "voucher.sqlite3")
+    ledger.record_issued("activation_provider", voucher, observed_at=NOW)
+    ledger.verify_issued(
+        "activation_provider",
+        context=context,
+        now=NOW,
+        signature_verifier=RecordingVerifier(),
+    )
+
+    def unavailable(_public_key: str, _message: bytes, _signature: str) -> bool:
+        raise RuntimeError("provider unavailable")
+
+    assert_rejected(
+        "signature_verifier_failed",
+        lambda: ledger.request_activation(
+            "activation_provider",
+            context=context,
+            observed_at=LATER,
+            signature_verifier=unavailable,
+        ),
+    )
+    assert ledger.get("activation_provider").state == "verified"
+    assert ledger.get("activation_provider").error_code == "signature_verifier_failed"
+
+    requested = ledger.request_activation(
+        "activation_provider",
+        context=context,
+        observed_at=datetime(2026, 8, 1, 0, 8, tzinfo=timezone.utc),
+        signature_verifier=RecordingVerifier(),
+    )
+
+    assert requested.state == "activation_requested"
+    assert requested.error_code is None
 
 
 def test_journal_time_never_regresses(
@@ -601,6 +701,7 @@ def test_journal_time_never_regresses(
             "time_guard",
             context=context,
             observed_at=NOW,
+            signature_verifier=RecordingVerifier(),
         ),
     )
     assert ledger.get("time_guard").state == "verified"
@@ -728,6 +829,7 @@ def test_activation_request_requires_verified_state(
             "submission_003",
             context=context,
             observed_at=NOW,
+            signature_verifier=RecordingVerifier(),
         ),
     )
 
