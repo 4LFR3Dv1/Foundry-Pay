@@ -39,4 +39,3 @@ stop_conditions:
   - an off-chain assertion is treated as latest activated state
   - a signed domain dimension is not checked
   - restart or concurrency can regress monotonic state
-

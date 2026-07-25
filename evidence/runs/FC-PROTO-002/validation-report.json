@@ -3,6 +3,7 @@
   "baseline_commit": "c9f66437c055143cf48e7de0f06443377737b024",
   "initial_implementation_commit": "dbf044a12f18741cdcdfbedd958ff03a405d6d8a",
   "review_remediation_commit": "d3f30f433838067549f6a9892a15bb8630351270",
+  "second_review_remediation_commit": "7405a6ddff135c36d6341daf8c275fc62eef778d",
   "scope": "offline cumulative voucher verification and monotonic reference ledger",
   "network_calls": 0,
   "authoritative_activation": false,
@@ -14,16 +15,16 @@
   ],
   "checks": {
     "focused_python": {
-      "passed": 127,
+      "passed": 130,
       "failed": 0
     },
     "full_python": {
-      "passed": 232,
+      "passed": 235,
       "skipped": 11,
       "failed": 0
     },
     "shared_negative_voucher_vectors": {
-      "passed": 7,
+      "passed": 8,
       "failed": 0
     },
     "typescript_regression": {
@@ -36,7 +37,7 @@
     "secret_guard": "passed"
   },
   "artifact_sha256": {
-    "contracts/channel/channel-voucher.schema.json": "2aa21987519117713d6f191c1014b73ff3c5f89d8bf7f1750c21bac3b7d3696a",
+    "contracts/channel/channel-voucher.schema.json": "c5784f38ddda598f4ddf0286991a756e5e0356a1e8db36a9d39d9f8bdb5647cf",
     "contracts/channel/test-vectors/positive/cumulative-channel-v1.json": "479145d2d8ba4a76d646e5b4e2991adfa57955c0d4cc5c1bd3f59b253adb6fce",
     "contracts/channel/test-vectors/negative/01-cumulative-decrease.json": "f3d0f52c0cdb3ad50f252c6ebddc2ff650a187c06e7205df27ebceee56a02e5c",
     "contracts/channel/test-vectors/negative/02-stale-sequence.json": "47578bb62d96855f398448de71bccffaf538c5573d2e271f2d325a0d1cac1925",
@@ -44,7 +45,8 @@
     "contracts/channel/test-vectors/negative/04-wrong-network.json": "7a7a554ba83cd0239a983c8d73ab7cd48521d165090de7fb366d565c6c4afaa4",
     "contracts/channel/test-vectors/negative/05-cross-channel-replay.json": "12a803bf6e9f918fec3dbbf9d635fc558f39e65aad4b78b57e25bbd47b57a32e",
     "contracts/channel/test-vectors/negative/06-cross-asset-replay.json": "9abc778e8ca373e5a3ca4b5b0aab6d8f3064258e3acdb021e6ccc2012534b96d",
-    "contracts/channel/test-vectors/negative/07-overfunded-authorization.json": "5edb03ffbc3d572fb0e1fcf732ee017dce9cd201a8c03841a777b9b69ee43aae"
+    "contracts/channel/test-vectors/negative/07-overfunded-authorization.json": "5edb03ffbc3d572fb0e1fcf732ee017dce9cd201a8c03841a777b9b69ee43aae",
+    "contracts/channel/test-vectors/negative/13-zero-cumulative-authorization.json": "57488d4a27c4cddb6dd6e210d2a264d704975b74be1ea3d543f7eeb48e6193ec"
   },
   "independent_protocol_review": {
     "status": "changes_addressed_final_approval_required",
