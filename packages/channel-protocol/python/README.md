@@ -36,9 +36,15 @@ technical executor acceptance
 ```
 
 An unknown technical result enters `needs_recovery`. Repeated recovery never
-submits again, and a reconciled receipt is created only when the supplied
-channel, epoch, mint, destination, settled-total delta, vault delta, and
-recipient delta all match.
+submits again. Recovery accepts status only from the executor bound by the
+execution commitment, validates the closed response contract, and persists the
+exact response hash. Ambiguous `needs_review` and `disputed` records continue
+to reserve their economic amount.
+
+A reconciled receipt is created only when every observation passes an injected
+source-specific verifier and the supplied channel, epoch, mint, destination,
+settled-total delta, vault delta, and recipient delta all match. `source_id` is
+never accepted as self-authenticating evidence.
 
 This is a controlled offline model. It does not provide RPC, wallet, signer,
 ChannelVault, Cloud, custody, consumer, or exactly-once blockchain behavior.

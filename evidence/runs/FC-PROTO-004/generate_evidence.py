@@ -126,7 +126,7 @@ def main() -> None:
             "foundation_validator": "passed",
             "ruff_check": "passed",
             "ruff_format": "passed",
-            "secret_guard_files": 262,
+            "secret_guard_files": 261,
             "git_diff_check": "passed",
             "external_execution_typescript": {"passed": 8, "failed": 0},
             "channel_protocol_typescript": {"passed": 18, "failed": 0},
@@ -136,6 +136,9 @@ def main() -> None:
             "controlled_submit_attempts": "at-most-one within tested reference runtime",
             "technical_receipt_is_economic_completion": False,
             "unknown_allows_automatic_resubmit": False,
+            "recovery_status_correlated_to_committed_executor": True,
+            "observation_source_id_is_self_authenticating": False,
+            "disputed_settlement_releases_reservation": False,
             "solana_execution_proven": False,
             "exactly_once_blockchain_execution_proven": False,
         },
@@ -171,6 +174,7 @@ def main() -> None:
             keywords=(
                 "lost_response",
                 "unknown_and_repeated_recovery",
+                "recovery_rejects",
                 "provider_divergence",
                 "restart_before_submission",
                 "expired_authorization",
@@ -187,6 +191,7 @@ def main() -> None:
                 "two_process",
                 "concurrent_partial",
                 "full_and_partial_concurrent",
+                "disputed_settlement_keeps",
             ),
             invariant="aggregate reservations never exceed activated right or observed vault",
         ),
@@ -209,6 +214,8 @@ def main() -> None:
 
     artifacts = [
         Path("contracts/channel/settlement.schema.json"),
+        Path("packages/channel-protocol/python/README.md"),
+        Path("packages/channel-protocol/python/foundry_channel_protocol/__init__.py"),
         Path("packages/channel-protocol/python/foundry_channel_protocol/settlement.py"),
         Path("tests/channels/test_settlement.py"),
         Path("provenance/REUSE_LEDGER.yaml"),
@@ -265,15 +272,18 @@ npm test --prefix packages/channel-protocol/typescript
 - external execution TypeScript: 8 passed;
 - channel protocol TypeScript: 18 passed;
 - npm audit: zero high-severity vulnerabilities in both packages;
-- secret guard: 262 files passed.
+- secret guard: 261 files passed.
 
 ## Claim boundary
 
 The evidence supports only at-most-one submission attempt by the controlled
-offline reference runtime in the tested model. It does not prove exactly-once
-blockchain execution, Solana execution, ChannelVault behavior, on-chain origin
-of snapshots or observations, Cloud behavior, consumer demand, or production
-readiness.
+offline reference runtime in the tested model. Recovery is correlated to the
+committed executor and exact status-response hash. Economic completion requires
+an injected source-specific observation verifier; a self-asserted source ID is
+insufficient. Disputed settlements retain their reservation. This does not
+prove exactly-once blockchain execution, Solana execution, ChannelVault
+behavior, on-chain origin of snapshots or observations, Cloud behavior,
+consumer demand, or production readiness.
 """
     (EVIDENCE / "README.md").write_text(readme, encoding="utf-8", newline="\n")
 

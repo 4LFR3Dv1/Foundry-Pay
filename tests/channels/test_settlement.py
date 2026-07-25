@@ -7,6 +7,7 @@ import ast
 import json
 import sqlite3
 import sys
+from collections.abc import Mapping
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -271,6 +272,23 @@ def observation(
         **unsigned,
         "observation_hash": sha256_digest(canonicalize(unsigned)),
     }
+
+
+class ExactObservationVerifier:
+    """Test-only independent boundary pinned to one exact provider artifact."""
+
+    def __init__(self, value: dict) -> None:
+        self.source_id = value["source_id"]
+        self.expected_hash = value["observation_hash"]
+
+    def verify(self, value: Mapping[str, object]) -> bool:
+        return (
+            value["source_id"] == self.source_id and value["observation_hash"] == self.expected_hash
+        )
+
+
+def observation_verifiers(*values: dict) -> dict[str, ExactObservationVerifier]:
+    return {value["source_id"]: ExactObservationVerifier(value) for value in values}
 
 
 def assert_error(code: str, function, *args, **kwargs) -> SettlementError:
@@ -632,11 +650,19 @@ def test_lost_response_restart_recovers_signature_without_second_submit(
     assert recovered.submit_intent_count == 1
     assert recovered.automatic_second_submission_count == 0
     assert recovered.transaction_signature
+    assert recovered.executor_id == executor.executor_id
+    expected_status = executor.recover(
+        settlement_request["execution_request_id"],
+        observed_at=NOW + timedelta(seconds=20),
+    )
+    assert recovered.status_response_hash == sha256_digest(canonicalize(expected_status))
     assert restarted.get(settlement_request["settlement_id"]).state == "reconciling"
 
+    supplied = observation(settlement_request, recovered.transaction_signature)
     receipt = restarted.reconcile(
         settlement_request["settlement_id"],
-        [observation(settlement_request, recovered.transaction_signature)],
+        [supplied],
+        observation_verifiers=observation_verifiers(supplied),
         now=NOW + timedelta(seconds=30),
     )
     assert receipt is not None
@@ -660,6 +686,28 @@ class UnknownRecoveryExecutor:
             "may_rematerialize": False,
             "observed_at": observed_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
         }
+
+
+class FabricatedRecoveryExecutor:
+    executor_id = "fake-solana-executor"
+
+    def __init__(self, *, execution_request_id: str) -> None:
+        self.execution_request_id = execution_request_id
+
+    def recover(self, execution_request_id, *, observed_at):
+        return {
+            "type": "recovery_result",
+            "protocol_version": "1.0.0",
+            "execution_request_id": self.execution_request_id,
+            "outcome": "confirmed",
+            "may_rematerialize": False,
+            "observed_at": observed_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "transaction_signature": "fabricated_signature",
+        }
+
+
+class WrongExecutorIdentity(FabricatedRecoveryExecutor):
+    executor_id = "different-executor"
 
 
 def test_unknown_and_repeated_recovery_remain_blocked(tmp_path: Path) -> None:
@@ -689,6 +737,52 @@ def test_unknown_and_repeated_recovery_remain_blocked(tmp_path: Path) -> None:
     )
 
 
+def test_recovery_rejects_executor_not_bound_by_commitment(tmp_path: Path) -> None:
+    runtime, executor, _, _, settlement_request, _ = prepared_flow(tmp_path)
+    runtime.submit(
+        settlement_request["settlement_id"],
+        executor=executor,
+        now=NOW,
+        fault="after_commit_before_response",
+    )
+    attacker = WrongExecutorIdentity(
+        execution_request_id=settlement_request["execution_request_id"],
+    )
+    assert_error(
+        "executor_mismatch",
+        runtime.recover,
+        settlement_request["settlement_id"],
+        executor=attacker,
+        now=NOW + timedelta(seconds=1),
+    )
+    assert runtime.get(settlement_request["settlement_id"]).state == "needs_recovery"
+
+
+def test_recovery_rejects_uncorrelated_status_response(tmp_path: Path) -> None:
+    runtime, executor, _, _, settlement_request, _ = prepared_flow(tmp_path)
+    runtime.submit(
+        settlement_request["settlement_id"],
+        executor=executor,
+        now=NOW,
+        fault="after_commit_before_response",
+    )
+    attacker = FabricatedRecoveryExecutor(execution_request_id="execution_other")
+    assert_error(
+        "recovery_request_mismatch",
+        runtime.recover,
+        settlement_request["settlement_id"],
+        executor=attacker,
+        now=NOW + timedelta(seconds=1),
+    )
+    record = runtime.recovery_records(settlement_request["settlement_id"])[-1]
+    assert record.outcome == "invalid_status_response"
+    assert record.detail == {
+        "validation_code": "recovery_request_mismatch",
+        "validation_field": "recovery_result.execution_request_id",
+    }
+    assert runtime.get(settlement_request["settlement_id"]).state == "needs_review"
+
+
 def test_provider_divergence_is_disputed(tmp_path: Path) -> None:
     runtime, executor, _, _, settlement_request, _ = prepared_flow(tmp_path)
     runtime.submit(settlement_request["settlement_id"], executor=executor, now=NOW)
@@ -698,7 +792,71 @@ def test_provider_divergence_is_disputed(tmp_path: Path) -> None:
         now=NOW + timedelta(seconds=1),
     )
     assert recovery.outcome == "provider_divergence"
+    assert recovery.detail == {"provider_ids": ["provider_a", "provider_b"]}
+    serialized = recovery.to_dict()
+    recovery_hash = serialized.pop("recovery_hash")
+    assert sha256_digest(canonicalize(serialized)) == recovery_hash
     assert runtime.get(settlement_request["settlement_id"]).state == "disputed"
+
+
+def test_disputed_settlement_keeps_economic_reservation(tmp_path: Path) -> None:
+    runtime, executor, _, channel, settlement_request, _ = prepared_flow(tmp_path)
+    runtime.submit(settlement_request["settlement_id"], executor=executor, now=NOW)
+    runtime.record_provider_divergence(
+        settlement_request["settlement_id"],
+        provider_ids=["provider_a", "provider_b"],
+        now=NOW + timedelta(seconds=1),
+    )
+    competing = request(channel, requested=20_000_000, suffix="competing")
+    assert_error(
+        "concurrent_over_settlement",
+        runtime.register_request,
+        competing,
+        channel_snapshot=channel,
+        now=NOW + timedelta(seconds=2),
+    )
+
+
+def test_reconciliation_requires_explicit_independent_verifier(tmp_path: Path) -> None:
+    runtime, executor, _, _, settlement_request, _ = prepared_flow(tmp_path)
+    technical = runtime.submit(
+        settlement_request["settlement_id"],
+        executor=executor,
+        now=NOW,
+    )
+    supplied = observation(settlement_request, technical.transaction_signature)
+    assert_error(
+        "observation_verifier_missing",
+        runtime.reconcile,
+        settlement_request["settlement_id"],
+        [supplied],
+        observation_verifiers={},
+        now=NOW + timedelta(seconds=1),
+    )
+    independently_rejected = observation(
+        settlement_request,
+        technical.transaction_signature,
+        recipient_delta=19_999_999,
+    )
+    assert_error(
+        "observation_unverified",
+        runtime.reconcile,
+        settlement_request["settlement_id"],
+        [supplied],
+        observation_verifiers=observation_verifiers(independently_rejected),
+        now=NOW + timedelta(seconds=1),
+    )
+    forged = copy.deepcopy(supplied)
+    forged["observation_hash"] = "sha256:" + ("f" * 64)
+    assert_error(
+        "observation_tampering",
+        runtime.reconcile,
+        settlement_request["settlement_id"],
+        [forged],
+        observation_verifiers=observation_verifiers(forged),
+        now=NOW + timedelta(seconds=1),
+    )
+    assert runtime.get(settlement_request["settlement_id"]).state == "reconciling"
 
 
 @pytest.mark.parametrize(
@@ -720,9 +878,11 @@ def test_reconciliation_mismatch_never_completes(
         executor=executor,
         now=NOW,
     )
+    supplied = observation(settlement_request, technical.transaction_signature, **changes)
     result = runtime.reconcile(
         settlement_request["settlement_id"],
-        [observation(settlement_request, technical.transaction_signature, **changes)],
+        [supplied],
+        observation_verifiers=observation_verifiers(supplied),
         now=NOW + timedelta(seconds=1),
     )
     assert result is None
@@ -751,6 +911,7 @@ def test_two_observation_providers_must_agree(tmp_path: Path) -> None:
         runtime.reconcile(
             settlement_request["settlement_id"],
             [first, second],
+            observation_verifiers=observation_verifiers(first, second),
             now=NOW + timedelta(seconds=1),
         )
         is None
@@ -779,6 +940,7 @@ def test_two_matching_observation_providers_can_reconcile(tmp_path: Path) -> Non
     receipt = runtime.reconcile(
         settlement_request["settlement_id"],
         supplied,
+        observation_verifiers=observation_verifiers(*supplied),
         now=NOW + timedelta(seconds=1),
     )
     assert receipt is not None
@@ -813,6 +975,7 @@ def test_reconciliation_context_substitution_never_completes(
         runtime.reconcile(
             settlement_request["settlement_id"],
             [supplied],
+            observation_verifiers=observation_verifiers(supplied),
             now=NOW + timedelta(seconds=1),
         )
         is None
@@ -831,11 +994,13 @@ def test_successful_reconciliation_is_idempotent_and_hashed(tmp_path: Path) -> N
     first = runtime.reconcile(
         settlement_request["settlement_id"],
         [supplied],
+        observation_verifiers=observation_verifiers(supplied),
         now=NOW + timedelta(seconds=1),
     )
     repeated = runtime.reconcile(
         settlement_request["settlement_id"],
         [supplied],
+        observation_verifiers=observation_verifiers(supplied),
         now=NOW + timedelta(seconds=2),
     )
     assert first == repeated
@@ -885,9 +1050,11 @@ def test_stale_snapshot_after_completed_settlement_rejects(tmp_path: Path) -> No
         executor=executor,
         now=NOW,
     )
+    supplied = observation(settlement_request, technical.transaction_signature)
     runtime.reconcile(
         settlement_request["settlement_id"],
-        [observation(settlement_request, technical.transaction_signature)],
+        [supplied],
+        observation_verifiers=observation_verifiers(supplied),
         now=NOW + timedelta(seconds=1),
     )
     stale = request(channel, requested=1, suffix="stale")
@@ -914,6 +1081,7 @@ def test_observation_hash_tampering_rejects(tmp_path: Path) -> None:
         runtime.reconcile,
         settlement_request["settlement_id"],
         [supplied],
+        observation_verifiers=observation_verifiers(supplied),
         now=NOW,
     )
 
@@ -939,6 +1107,7 @@ def test_draft_schema_accepts_all_reference_runtime_objects(tmp_path: Path) -> N
     receipt = runtime.reconcile(
         settlement_request["settlement_id"],
         [supplied],
+        observation_verifiers=observation_verifiers(supplied),
         now=NOW + timedelta(seconds=1),
     )
     assert receipt is not None

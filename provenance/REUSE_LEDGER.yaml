@@ -29,6 +29,9 @@ sources:
       - no kernel was copied or absorbed
       - fake execution is deterministic offline conformance, not Solana execution
       - executor receipts remain technical evidence only
+      - recovery status is accepted only from the committed executor and is hashed exactly
+      - observation source identity requires an injected verifier; source_id is not self-authenticating
+      - disputed and review-required settlements retain their economic reservation
       - caller-supplied snapshots and observations do not assert on-chain provenance
       - settlement canonical vectors remain draft until FC-PROTO-006
 

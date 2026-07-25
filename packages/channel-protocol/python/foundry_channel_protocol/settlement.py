@@ -131,9 +131,7 @@ _OBSERVATION_FIELDS = frozenset(
         "observation_hash",
     }
 )
-_TERMINAL_RESERVATION_STATES = frozenset(
-    {"rejected", "failed_before_submission", "completed", "disputed"}
-)
+_TERMINAL_RESERVATION_STATES = frozenset({"rejected", "failed_before_submission", "completed"})
 _STATES = frozenset(
     {
         "requested",
@@ -175,6 +173,14 @@ class AuthorizationVerifier(Protocol):
     """Injected verification boundary for an execution authorization."""
 
     def verify(self, authorization: Mapping[str, Any]) -> bool: ...
+
+
+class ObservationVerifier(Protocol):
+    """Injected trust boundary for an independently sourced observation."""
+
+    source_id: str
+
+    def verify(self, observation: Mapping[str, Any]) -> bool: ...
 
 
 class ExecutorPort(Protocol):
@@ -337,10 +343,13 @@ class SettlementRecoveryRecord:
     settlement_id: str
     attempt: int
     outcome: str
+    executor_id: str | None
+    status_response_hash: str | None
     transaction_signature: str | None
     submit_intent_count: int
     automatic_second_submission_count: int
     observed_at: str
+    detail: Mapping[str, Any] | None
     recovery_hash: str
 
     def to_dict(self) -> dict[str, Any]:
@@ -1258,10 +1267,37 @@ class SettlementRuntime:
             _reject("recovery_not_required", "settlement.state", "already completed")
         if row["state"] not in {"needs_recovery", "reconciling", "needs_review", "disputed"}:
             _reject("invalid_state", "settlement.state", "recovery is not allowed")
+        commitment = json.loads(row["commitment_json"])
+        if executor.executor_id != commitment["executor_id"]:
+            _reject("executor_mismatch", "executor.executor_id", "not committed executor")
         try:
-            result = executor.recover(row["execution_request_id"], observed_at=now)
+            raw_result = executor.recover(row["execution_request_id"], observed_at=now)
         except Exception:
-            result = {"outcome": "unknown"}
+            return self._record_recovery(
+                settlement_id,
+                outcome="unknown",
+                executor_id=executor.executor_id,
+                status_response_hash=None,
+                transaction_signature=None,
+                target_state="needs_recovery",
+                now=now,
+                extra={"reason": "executor_status_unavailable"},
+            )
+        try:
+            result = self._normalize_recovery_result(row, raw_result)
+        except SettlementError as error:
+            self._record_recovery(
+                settlement_id,
+                outcome="invalid_status_response",
+                executor_id=executor.executor_id,
+                status_response_hash=None,
+                transaction_signature=None,
+                target_state="needs_review",
+                now=now,
+                extra={"validation_code": error.code, "validation_field": error.field},
+            )
+            raise
+        status_response_hash = _canonical_hash(result)
         outcome = result.get("outcome")
         signature = result.get("transaction_signature")
         if outcome == "confirmed" and isinstance(signature, str) and signature:
@@ -1276,6 +1312,8 @@ class SettlementRuntime:
         return self._record_recovery(
             settlement_id,
             outcome=str(outcome),
+            executor_id=executor.executor_id,
+            status_response_hash=status_response_hash,
             transaction_signature=signature,
             target_state=target_state,
             now=now,
@@ -1300,10 +1338,12 @@ class SettlementRuntime:
         return self._record_recovery(
             settlement_id,
             outcome="provider_divergence",
+            executor_id=None,
+            status_response_hash=None,
             transaction_signature=None,
             target_state="disputed",
             now=now,
-            extra={"provider_ids": sorted(provider_ids)},
+            extra={"provider_ids": sorted(set(provider_ids))},
         )
 
     def reconcile(
@@ -1311,6 +1351,7 @@ class SettlementRuntime:
         settlement_id: str,
         observations: Sequence[Mapping[str, Any]],
         *,
+        observation_verifiers: Mapping[str, ObservationVerifier],
         now: datetime,
     ) -> ReconciledSettlementReceipt | None:
         """Complete only when independent observations prove the exact effect."""
@@ -1322,6 +1363,31 @@ class SettlementRuntime:
         sources = [value["source_id"] for value in normalized]
         if len(set(sources)) != len(sources):
             _reject("duplicate_observation_source", "observations", "source_id must be unique")
+        for observation in normalized:
+            source_id = observation["source_id"]
+            verifier = observation_verifiers.get(source_id)
+            if verifier is None:
+                _reject(
+                    "observation_verifier_missing",
+                    "observation.source_id",
+                    "no independent verifier configured for source",
+                )
+            if verifier.source_id != source_id:
+                _reject(
+                    "observation_verifier_mismatch",
+                    "observation.source_id",
+                    "verifier is bound to a different source",
+                )
+            try:
+                verified = verifier.verify(observation)
+            except Exception:
+                verified = False
+            if not verified:
+                _reject(
+                    "observation_unverified",
+                    "observation.observation_hash",
+                    "independent source verification failed",
+                )
         fingerprints = {
             _canonical_hash(
                 {
@@ -1789,6 +1855,8 @@ class SettlementRuntime:
         settlement_id: str,
         *,
         outcome: str,
+        executor_id: str | None,
+        status_response_hash: str | None,
         transaction_signature: str | None,
         target_state: str,
         now: datetime,
@@ -1817,6 +1885,8 @@ class SettlementRuntime:
                     + 1
                 )
                 unsigned: dict[str, Any] = {
+                    "type": "settlement_recovery_record",
+                    "protocol_version": PROTOCOL_VERSION,
                     "settlement_id": settlement_id,
                     "attempt": attempt,
                     "outcome": outcome,
@@ -1824,19 +1894,26 @@ class SettlementRuntime:
                     "automatic_second_submission_count": 0,
                     "observed_at": timestamp,
                 }
+                if executor_id is not None:
+                    unsigned["executor_id"] = executor_id
+                if status_response_hash is not None:
+                    unsigned["status_response_hash"] = status_response_hash
                 if transaction_signature is not None:
                     unsigned["transaction_signature"] = transaction_signature
                 if extra:
                     unsigned["detail"] = dict(extra)
                 recovery_hash = _canonical_hash(unsigned)
-                persisted = {
-                    key: value
-                    for key, value in unsigned.items()
-                    if key not in {"detail", "transaction_signature"}
-                }
                 record = SettlementRecoveryRecord(
-                    **persisted,
+                    settlement_id=settlement_id,
+                    attempt=attempt,
+                    outcome=outcome,
+                    executor_id=executor_id,
+                    status_response_hash=status_response_hash,
                     transaction_signature=transaction_signature,
+                    submit_intent_count=submit_count,
+                    automatic_second_submission_count=0,
+                    observed_at=timestamp,
+                    detail=dict(extra) if extra else None,
                     recovery_hash=recovery_hash,
                 )
                 connection.execute(
@@ -1869,6 +1946,11 @@ class SettlementRuntime:
                         "outcome": outcome,
                         "recovery_hash": recovery_hash,
                         "submit_intent_count": submit_count,
+                        **(
+                            {"status_response_hash": status_response_hash}
+                            if status_response_hash is not None
+                            else {}
+                        ),
                         **(dict(extra) if extra else {}),
                     },
                     recorded_at=timestamp,
@@ -1878,6 +1960,73 @@ class SettlementRuntime:
             except SettlementError:
                 connection.rollback()
                 raise
+
+    def _normalize_recovery_result(
+        self,
+        row: sqlite3.Row,
+        value: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        if not isinstance(value, Mapping):
+            _reject("invalid_recovery_result", "recovery_result", "expected object")
+        required = {
+            "type",
+            "protocol_version",
+            "execution_request_id",
+            "outcome",
+            "may_rematerialize",
+            "observed_at",
+        }
+        if value.get("outcome") == "confirmed":
+            required.add("transaction_signature")
+        result = _closed(value, field="recovery_result", required=frozenset(required))
+        _literal(result["type"], "recovery_result", "recovery_result.type")
+        _literal(
+            result["protocol_version"],
+            PROTOCOL_VERSION,
+            "recovery_result.protocol_version",
+        )
+        if result["execution_request_id"] != row["execution_request_id"]:
+            _reject(
+                "recovery_request_mismatch",
+                "recovery_result.execution_request_id",
+                "does not match committed execution",
+            )
+        outcome = result["outcome"]
+        if outcome not in {"confirmed", "failed_before_broadcast", "unknown"}:
+            _reject(
+                "invalid_recovery_outcome",
+                "recovery_result.outcome",
+                "unsupported outcome",
+            )
+        may_rematerialize = result["may_rematerialize"]
+        if not isinstance(may_rematerialize, bool):
+            _reject(
+                "invalid_recovery_result",
+                "recovery_result.may_rematerialize",
+                "expected boolean",
+            )
+        if outcome == "failed_before_broadcast" and not may_rematerialize:
+            _reject(
+                "invalid_recovery_result",
+                "recovery_result.may_rematerialize",
+                "failed-before-broadcast must be explicit",
+            )
+        if outcome != "failed_before_broadcast" and may_rematerialize:
+            _reject(
+                "unsafe_recovery_result",
+                "recovery_result.may_rematerialize",
+                "ambiguous or confirmed result cannot permit rematerialization",
+            )
+        if outcome == "confirmed":
+            signature = result["transaction_signature"]
+            if not isinstance(signature, str) or not signature:
+                _reject(
+                    "invalid_signature",
+                    "recovery_result.transaction_signature",
+                    "required for confirmed result",
+                )
+        _time(result["observed_at"], "recovery_result.observed_at")
+        return dict(result)
 
     def _normalize_observation(self, value: Mapping[str, Any]) -> dict[str, Any]:
         observation = _closed(
@@ -2106,9 +2255,12 @@ class SettlementRuntime:
             settlement_id=value["settlement_id"],
             attempt=value["attempt"],
             outcome=value["outcome"],
+            executor_id=value.get("executor_id"),
+            status_response_hash=value.get("status_response_hash"),
             transaction_signature=value.get("transaction_signature"),
             submit_intent_count=value["submit_intent_count"],
             automatic_second_submission_count=value["automatic_second_submission_count"],
             observed_at=value["observed_at"],
+            detail=value.get("detail"),
             recovery_hash=value["recovery_hash"],
         )

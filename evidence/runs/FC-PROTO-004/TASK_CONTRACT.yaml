@@ -19,13 +19,18 @@ invariants:
   - exact prepared bytes, simulation, commitment, and authorization are independently rebound
   - executor receipt never declares economic completion
   - unknown outcome permits no automatic second submission or rematerialization
-  - completed requires matching independent economic observations
+  - recovery status must correlate to the committed executor and closed response contract
+  - completed requires source-verified matching independent economic observations
+  - disputed and review-required outcomes retain their economic reservation
   - controlled runtime submit intent count never exceeds one
 acceptance:
   - partial and total settlement validate
   - idempotency and two-process races preserve aggregate bounds
   - request, commitment, authorization, receipt, and observation tampering reject
   - lost response survives restart and recovers a signature without another submit
+  - a different executor or uncorrelated recovery response is rejected
+  - source_id without an injected verifier cannot complete reconciliation
+  - a disputed settlement cannot free capacity for aggregate over-settlement
   - matching observations produce one hashed reconciled receipt
   - mismatching or divergent observations never complete
 verification_commands:

@@ -588,9 +588,12 @@
             "confirmed",
             "failed_before_broadcast",
             "unknown",
-            "provider_divergence"
+            "provider_divergence",
+            "invalid_status_response"
           ]
         },
+        "executor_id": {"$ref": "#/$defs/Identifier"},
+        "status_response_hash": {"$ref": "#/$defs/Hash"},
         "transaction_signature": {
           "type": "string",
           "minLength": 1,
@@ -599,6 +602,21 @@
         "submit_intent_count": {"const": 1},
         "automatic_second_submission_count": {"const": 0},
         "observed_at": {"$ref": "#/$defs/Timestamp"},
+        "detail": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "oneOf": [
+              {"type": "string", "minLength": 1, "maxLength": 256},
+              {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {"$ref": "#/$defs/Identifier"}
+              }
+            ]
+          }
+        },
         "recovery_hash": {"$ref": "#/$defs/Hash"}
       }
     }
