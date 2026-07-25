@@ -164,6 +164,12 @@ remain unchanged.
 ### FC-PROTO-004 — Settlement and receipt reference runtime
 
 - Repository: Foundry-Pay public
+- Reserved paths:
+  - `packages/channel-protocol/**`
+  - `tests/channels/test_settlement.py`
+  - `contracts/channel/settlement.schema.json`
+  - `evidence/runs/FC-PROTO-004/**`
+  - `provenance/REUSE_LEDGER.yaml`
 - Scope: offline economic validation, exact execution correlation, durable
   recovery, and independently reconciled receipts.
 - Explicitly unproven: Solana execution, ChannelVault behavior, consumer
