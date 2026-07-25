@@ -33,11 +33,21 @@ export function redactUnknown<T>(value: T, secrets: readonly string[] = []): T {
       return input;
     }
     if (input instanceof Error) {
-      return Object.freeze({
+      if (seen.has(input)) {
+        return "[Circular]";
+      }
+      const result: Record<string, unknown> = {
         name: redactString(input.name, secrets),
         message: redactString(input.message, secrets),
-        stack: input.stack === undefined ? undefined : redactString(input.stack, secrets),
-      });
+      };
+      seen.set(input, result);
+      if (input.stack !== undefined) {
+        result.stack = redactString(input.stack, secrets);
+      }
+      if ("cause" in input && input.cause !== undefined) {
+        result.cause = visit(input.cause);
+      }
+      return Object.freeze(result);
     }
     if (Array.isArray(input)) {
       if (seen.has(input)) {

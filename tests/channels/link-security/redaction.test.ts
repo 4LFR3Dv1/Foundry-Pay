@@ -48,3 +48,28 @@ test("telemetry, logs, crash reports, and evidence use the same redaction bounda
   assertSecretAbsent(safeTelemetryPayload(unsafe, [SECRET]));
   assertSecretAbsent(safeEvidencePayload(unsafe, [SECRET]));
 });
+
+test("preserves and recursively redacts nested Error.cause structure", () => {
+  const root = new Error(`root ${URL}`);
+  const middle = new Error(`middle ${SECRET}`, { cause: root });
+  const outer = new Error("outer", { cause: middle });
+  const output = redactUnknown(outer, [SECRET]) as unknown as Record<string, unknown>;
+
+  assertSecretAbsent(output);
+  assert.equal(output.name, "Error");
+  const sanitizedMiddle = output.cause as Record<string, unknown>;
+  assert.match(String(sanitizedMiddle.message), /REDACTED_CLAIM_SECRET/u);
+  const sanitizedRoot = sanitizedMiddle.cause as Record<string, unknown>;
+  assert.match(String(sanitizedRoot.message), /REDACTED_CLAIM_SECRET/u);
+});
+
+test("preserves cyclic Error.cause safely without leaking", () => {
+  const cyclic = new Error(`cycle ${SECRET}`);
+  Object.defineProperty(cyclic, "cause", {
+    value: cyclic,
+    configurable: true,
+  });
+  const output = redactUnknown(cyclic, [SECRET]) as unknown as Record<string, unknown>;
+  assertSecretAbsent(output);
+  assert.equal(output.cause, "[Circular]");
+});

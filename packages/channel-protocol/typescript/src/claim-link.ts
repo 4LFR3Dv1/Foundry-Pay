@@ -1,9 +1,7 @@
-const BASE64URL = /^[A-Za-z0-9_-]+$/u;
+const BASE64URL = /^[A-Za-z0-9_-]{43}$/u;
 const CLAIM_PATH = /^\/claim\/([A-Za-z0-9_-]+)$/u;
 
 export const DEFAULT_CLAIM_ORIGIN = "https://foundry.pay";
-export const MIN_LOCATOR_CHARACTERS = 43;
-export const MIN_SECRET_CHARACTERS = 43;
 export const OPAQUE_TOKEN_BYTES = 32;
 
 export class ClaimLinkError extends Error {
@@ -16,14 +14,14 @@ export class ClaimLinkError extends Error {
   }
 }
 
-export interface ParsedClaimLink {
+interface ParsedClaimLink {
   readonly locator: string;
   readonly safeReplacementUrl: string;
   readonly secretBytes: Uint8Array;
 }
 
-function assertOpaqueValue(value: string, minimum: number, code: string): void {
-  if (value.length < minimum || value.length > 128 || !BASE64URL.test(value)) {
+function assertOpaqueValue(value: string, code: string): void {
+  if (!BASE64URL.test(value)) {
     throw new ClaimLinkError(code);
   }
 }
@@ -31,12 +29,21 @@ function assertOpaqueValue(value: string, minimum: number, code: string): void {
 function decodeBase64Url(value: string): Uint8Array {
   const normalized = value.replaceAll("-", "+").replaceAll("_", "/");
   const padding = "=".repeat((4 - (normalized.length % 4)) % 4);
-  return Uint8Array.from(Buffer.from(normalized + padding, "base64"));
+  let decoded: string;
+  try {
+    decoded = atob(normalized + padding);
+  } catch {
+    throw new ClaimLinkError("invalid_base64url");
+  }
+  return Uint8Array.from(decoded, (character) => character.charCodeAt(0));
 }
 
 function encodeBase64Url(value: Uint8Array): string {
-  return Buffer.from(value)
-    .toString("base64")
+  let binary = "";
+  for (const byte of value) {
+    binary += String.fromCharCode(byte);
+  }
+  return btoa(binary)
     .replaceAll("+", "-")
     .replaceAll("/", "_")
     .replaceAll("=", "");
@@ -54,14 +61,18 @@ export function generateOpaqueToken(random: SecureRandom = crypto.getRandomValue
 }
 
 export function validateLocator(locator: string): string {
-  assertOpaqueValue(locator, MIN_LOCATOR_CHARACTERS, "invalid_claim_locator");
-  if (decodeBase64Url(locator).byteLength < 32) {
+  assertOpaqueValue(locator, "invalid_claim_locator");
+  const decoded = decodeBase64Url(locator);
+  if (
+    decoded.byteLength !== OPAQUE_TOKEN_BYTES ||
+    encodeBase64Url(decoded) !== locator
+  ) {
     throw new ClaimLinkError("invalid_claim_locator");
   }
   return locator;
 }
 
-export function parseClaimLink(
+function parseClaimLink(
   rawUrl: string,
   expectedOrigin = DEFAULT_CLAIM_ORIGIN,
 ): ParsedClaimLink {
@@ -106,9 +117,12 @@ export function parseClaimLink(
   } catch {
     throw new ClaimLinkError("invalid_claim_secret");
   }
-  assertOpaqueValue(secret, MIN_SECRET_CHARACTERS, "invalid_claim_secret");
+  assertOpaqueValue(secret, "invalid_claim_secret");
   const secretBytes = decodeBase64Url(secret);
-  if (secretBytes.byteLength < 32) {
+  if (
+    secretBytes.byteLength !== OPAQUE_TOKEN_BYTES ||
+    encodeBase64Url(secretBytes) !== secret
+  ) {
     throw new ClaimLinkError("invalid_claim_secret");
   }
 

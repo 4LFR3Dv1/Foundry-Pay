@@ -18,6 +18,8 @@ party scripts.
 The reference TypeScript package therefore provides:
 
 - exact origin/path/locator/secret validation;
+- browser-safe base64url processing through Web APIs and `Uint8Array`, with no
+  Node runtime dependency;
 - immediate `history.replaceState` removal of the fragment;
 - an ephemeral consume-once secret session with best-effort byte zeroization;
 - locator-only resolver requests with `referrerPolicy: "no-referrer"`;
@@ -27,6 +29,10 @@ The reference TypeScript package therefore provides:
 - safe fragment-free sharing output;
 - injected local transport tests that exercise browser HTTP semantics without
   network access.
+
+Raw parsing is intentionally private to the module. The public API cannot
+return secret bytes without successful synchronous fragment removal and the
+consume-once session boundary.
 
 The kit does not:
 

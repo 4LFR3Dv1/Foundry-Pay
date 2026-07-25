@@ -11,6 +11,9 @@
 | Repeated client consumption | State flips before callback; buffer zeroized | Double-consume and retained-buffer tests | Require new authorized flow | Multiple tabs/devices are authoritative protocol concerns |
 | Encoded secret evades sanitizer | Raw, URL, percent and double-percent redaction | Encoded fixture tests | Rotate/revoke and purge sink | Arbitrary transformations cannot all be recognized |
 | Malicious origin/path substitution | Exact HTTPS origin and path grammar | Negative parser suite | Reject locally | DNS/TLS/platform compromise is outside kit |
+| Node-only primitive fails before strip | Browser-safe Web APIs only; raw parser private | Build plus no-`Buffer` browser probe | Block release | Actual bundler/bootstrap still requires independent review |
+| Base64url alias bypass | Exact 32-byte decode and canonical re-encode | Alias and generation tests | Reject locally | Producer randomness cannot be inferred from token text |
+| Secret escapes through raw parser | No parser or secret-byte export; strip-first session only | Compile and runtime export-surface tests | Block incompatible API change | Calling callback can still copy secret bytes |
 | Secret persistence | No storage, cookie, DB, or filesystem adapter exists | Source/path review | Remove integration and rotate/revoke | Calling application can add unsafe persistence |
 
 ## Mandatory review gate
