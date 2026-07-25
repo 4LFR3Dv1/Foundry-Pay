@@ -1,5 +1,5 @@
 {
-  "case_count": 4,
+  "case_count": 5,
   "executed_cases": [
     {
       "classname": "tests.channels.test_settlement",
@@ -19,6 +19,11 @@
     {
       "classname": "tests.channels.test_settlement",
       "name": "test_full_and_partial_concurrent_reservations_preserve_aggregate_bound",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_disputed_settlement_keeps_economic_reservation",
       "status": "passed"
     }
   ],

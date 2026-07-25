@@ -2,31 +2,39 @@
   "artifacts": [
     {
       "path": "contracts/channel/settlement.schema.json",
-      "sha256": "f8281e65bd68ac5c8670b77f3ad9f752bbf606336dc50ef22747c1439cc361d5"
+      "sha256": "dc921c211df61b2b34073a95bfa801b850a764a728870b3a2036214deaaa2072"
+    },
+    {
+      "path": "packages/channel-protocol/python/README.md",
+      "sha256": "27b4027757d760cc1e430184f5020309e5b80682ff49d59dd5d817cfa72c99b9"
+    },
+    {
+      "path": "packages/channel-protocol/python/foundry_channel_protocol/__init__.py",
+      "sha256": "935697fa85442117f8bce20775a094ed25673d8203551423d6542488fea2f37e"
     },
     {
       "path": "packages/channel-protocol/python/foundry_channel_protocol/settlement.py",
-      "sha256": "0e824ddd88029aaa5bac32e3396eda1a6f557b432b495b1529a6914878ca0a7a"
+      "sha256": "2ec362c0738ccb6bac458b3eb5e2aa2c930c3097659e3fccbd6bfa97773584b6"
     },
     {
       "path": "tests/channels/test_settlement.py",
-      "sha256": "cfdfeaddbafc48ab4772c6f7de8b7fc53c824180ffac3ba6671efbeb4108c94b"
+      "sha256": "ec75596b8a4d2a2fb0954234789ccf8949d59c231c44fee0665ea6bcff3a84e8"
     },
     {
       "path": "provenance/REUSE_LEDGER.yaml",
-      "sha256": "b126a1b722539fd3497c95b4642c3617399b1925edab0d73d2e3d1a22f1a3471"
+      "sha256": "46a639c7acbdb266b5631f161555cb470a0142bd1ce56852e596303ae69a15b7"
     },
     {
       "path": "evidence/runs/FC-PROTO-004/TASK_CONTRACT.yaml",
-      "sha256": "bef716d407e165ba6786025da807280472c6e1393ea076329ff0e7e6e1326b4d"
+      "sha256": "b2444896f66b0163516956940527c9369d47ae994886d499641a45a5e7964c8a"
     },
     {
       "path": "evidence/runs/FC-PROTO-004/generate_evidence.py",
-      "sha256": "a49fcf657319162a199d55206dd60847d63151d082c65597dd9572c3e5209ad1"
+      "sha256": "44dee98d5ac9c0a324be54ac83cd9d675007e56916aea6f92e3ee30351b0325c"
     },
     {
       "path": "evidence/runs/FC-PROTO-004/validation-report.json",
-      "sha256": "be7801e33bb48e38410689921d569a27bbe5f86b193cb9f4e17b9506b01a4281"
+      "sha256": "b739cc6d8d71a3bebf6d8057558bea3e1e7cf3fb75d7de61ba66733851d22a4e"
     },
     {
       "path": "evidence/runs/FC-PROTO-004/settlement-matrix.json",
@@ -34,24 +42,24 @@
     },
     {
       "path": "evidence/runs/FC-PROTO-004/recovery-matrix.json",
-      "sha256": "50cdf51bd3dbd8ec28a5792e62a5999fdab2f65d2a54648f393607e9f03cbfd0"
+      "sha256": "684bc198463d3bb9bebe98738f0e67c0771a99fda4e13fed626f1d2de7ebea18"
     },
     {
       "path": "evidence/runs/FC-PROTO-004/concurrency-report.json",
-      "sha256": "320ca1985b6e8763fe469dfd1abadfbc7e728f8a07a8bd6ae4204d11840f6d49"
+      "sha256": "6a34ff236e27bf4dbdc46af7a2bebe8cfe371e469929d5cb9a6ee5b6b4a5d297"
     },
     {
       "path": "evidence/runs/FC-PROTO-004/reconciliation-report.json",
-      "sha256": "02f7a5025b9947105287e02788f66a45d3fe0c32cdc55341f4296668ab351db9"
+      "sha256": "721c108ab9df4167e4ed8bb1b690fb8e39e8fb7681b963bd8d35cbc603420d75"
     },
     {
       "path": "evidence/runs/FC-PROTO-004/pytest-full.xml",
-      "sha256": "0ba3c80cd8ac367422ed214c6a1c4cc51229775817d90994e854f05ff96f5772"
+      "sha256": "5bea9a56fb29d3553b7faf2a9f100ed48e8f088c9e822a63c804e2c0a632b5a7"
     }
   ],
   "baseline_commit": "b20fa0203089eff242998e47485377921b1c10b4",
-  "generated_at": "2026-07-25T13:55:28Z",
-  "implementation_commit": "369c52527cfd4b3d4603a9ab4dd36df822db350f",
+  "generated_at": "2026-07-25T14:50:19Z",
+  "implementation_commit": "79fc80c37e973457b8f23422b4e18b7d0deeec47",
   "reviewed_head": null,
   "work_item": "FC-PROTO-004"
 }

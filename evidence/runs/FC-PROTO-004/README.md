@@ -6,7 +6,7 @@ economic reconciliation reference runtime.
 ## Immutable references
 
 - baseline: `b20fa0203089eff242998e47485377921b1c10b4`
-- implementation: `369c52527cfd4b3d4603a9ab4dd36df822db350f`
+- implementation: `79fc80c37e973457b8f23422b4e18b7d0deeec47`
 - reviewed head: assigned only after the evidence commit is independently reviewed
 
 ## Reproduction
@@ -24,18 +24,21 @@ npm test --prefix packages/channel-protocol/typescript
 
 ## Result
 
-- focused settlement cases: 43 passed;
-- full pytest: 326 passed, 11 expected skips,
+- focused settlement cases: 47 passed;
+- full pytest: 330 passed, 11 expected skips,
   0 failures, 0 errors;
 - external execution TypeScript: 8 passed;
 - channel protocol TypeScript: 18 passed;
 - npm audit: zero high-severity vulnerabilities in both packages;
-- secret guard: 262 files passed.
+- secret guard: 261 files passed.
 
 ## Claim boundary
 
 The evidence supports only at-most-one submission attempt by the controlled
-offline reference runtime in the tested model. It does not prove exactly-once
-blockchain execution, Solana execution, ChannelVault behavior, on-chain origin
-of snapshots or observations, Cloud behavior, consumer demand, or production
-readiness.
+offline reference runtime in the tested model. Recovery is correlated to the
+committed executor and exact status-response hash. Economic completion requires
+an injected source-specific observation verifier; a self-asserted source ID is
+insufficient. Disputed settlements retain their reservation. This does not
+prove exactly-once blockchain execution, Solana execution, ChannelVault
+behavior, on-chain origin of snapshots or observations, Cloud behavior,
+consumer demand, or production readiness.
