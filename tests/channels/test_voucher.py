@@ -209,6 +209,7 @@ def test_invalid_signature_rejects(voucher: dict[str, Any], context: VoucherCont
 @pytest.mark.parametrize(
     ("field", "value"),
     (
+        ("environment", "mainnet"),
         ("network", "solana:mainnet"),
         ("genesis_hash", "11111111111111111111111111111111"),
         ("program_id", "11111111111111111111111111111111"),
@@ -236,6 +237,23 @@ def test_replay_across_every_context_dimension_rejects(
             now=NOW,
             signature_verifier=RecordingVerifier(),
         )
+
+
+def test_signed_object_domain_is_explicit_and_not_reusable(
+    voucher: dict[str, Any], context: VoucherContext
+) -> None:
+    voucher["payload"]["domain"] = "foundry.channels.recipient-binding"
+    rehash_untrusted(voucher)
+
+    assert_rejected(
+        "domain_mismatch",
+        lambda: verify_voucher(
+            voucher,
+            context=context,
+            now=NOW,
+            signature_verifier=RecordingVerifier(),
+        ),
+    )
 
 
 @pytest.mark.parametrize("case_number", range(1, 8))
@@ -329,6 +347,58 @@ def test_equal_cumulative_total_is_non_decreasing(
     assert verified.cumulative_authorized_base_units == 25_000_000
 
 
+def test_context_activated_hash_must_match_zero_or_nonzero_state(
+    voucher: dict[str, Any], context: VoucherContext
+) -> None:
+    invalid_contexts = (
+        replace(
+            context,
+            latest_activated_sequence=0,
+            latest_activated_total_base_units=0,
+        ),
+        replace(
+            context,
+            latest_activated_voucher_hash="sha256:" + ("0" * 64),
+        ),
+    )
+
+    for invalid_context in invalid_contexts:
+        assert_rejected(
+            "invalid_context_accounting",
+            lambda invalid_context=invalid_context: verify_voucher(
+                voucher,
+                context=invalid_context,
+                now=NOW,
+                signature_verifier=RecordingVerifier(),
+            ),
+        )
+
+
+def test_first_sequenced_voucher_cannot_authorize_zero(
+    voucher: dict[str, Any], context: VoucherContext
+) -> None:
+    empty_context = replace(
+        context,
+        latest_activated_sequence=0,
+        latest_activated_total_base_units=0,
+        latest_activated_voucher_hash="sha256:" + ("0" * 64),
+    )
+    voucher["payload"]["sequence"] = 1
+    voucher["payload"]["previous_activated_voucher_hash"] = "sha256:" + ("0" * 64)
+    voucher["payload"]["cumulative_authorized_base_units"] = "0"
+    rehash(voucher)
+
+    assert_rejected(
+        "zero_cumulative_authorization",
+        lambda: verify_voucher(
+            voucher,
+            context=empty_context,
+            now=NOW,
+            signature_verifier=RecordingVerifier(),
+        ),
+    )
+
+
 def test_funding_policy_and_expiry_guards(voucher: dict[str, Any], context: VoucherContext) -> None:
     overfunded = copy.deepcopy(voucher)
     overfunded["payload"]["cumulative_authorized_base_units"] = "100000001"
@@ -378,7 +448,11 @@ def test_ledger_persists_only_non_authoritative_states(
         now=NOW,
         signature_verifier=RecordingVerifier(),
     )
-    requested = ledger.request_activation("submission_003", observed_at=LATER)
+    requested = ledger.request_activation(
+        "submission_003",
+        context=context,
+        observed_at=LATER,
+    )
 
     assert issued.state == "issued"
     assert verified.state == "verified"
@@ -416,6 +490,120 @@ def test_rejection_is_durable_and_has_no_monotonic_effect(
     assert ledger.get("stale_002").state == "rejected"
     assert ledger.get("stale_002").error_code == "sequence_not_monotonic"
     assert ledger.events("stale_002")[-1]["state"] == "rejected"
+
+
+def test_signature_verifier_failure_is_retryable_not_terminal(
+    tmp_path: Path, voucher: dict[str, Any], context: VoucherContext
+) -> None:
+    ledger = ReferenceVoucherLedger(tmp_path / "voucher.sqlite3")
+    ledger.record_issued("transient_signature", voucher, observed_at=NOW)
+
+    def unavailable(_public_key: str, _message: bytes, _signature: str) -> bool:
+        raise RuntimeError("provider unavailable")
+
+    assert_rejected(
+        "signature_verifier_failed",
+        lambda: ledger.verify_issued(
+            "transient_signature",
+            context=context,
+            now=NOW,
+            signature_verifier=unavailable,
+        ),
+    )
+    assert ledger.get("transient_signature").state == "issued"
+    assert ledger.get("transient_signature").error_code == "signature_verifier_failed"
+
+    retried = ledger.verify_issued(
+        "transient_signature",
+        context=context,
+        now=LATER,
+        signature_verifier=RecordingVerifier(),
+    )
+
+    assert retried.state == "verified"
+    assert retried.error_code is None
+
+
+def test_activation_request_revalidates_expiry_and_current_context(
+    tmp_path: Path, voucher: dict[str, Any], context: VoucherContext
+) -> None:
+    ledger = ReferenceVoucherLedger(tmp_path / "voucher.sqlite3")
+    ledger.record_issued("expiring", voucher, observed_at=NOW)
+    ledger.verify_issued(
+        "expiring",
+        context=context,
+        now=NOW,
+        signature_verifier=RecordingVerifier(),
+    )
+
+    assert_rejected(
+        "voucher_expired",
+        lambda: ledger.request_activation(
+            "expiring",
+            context=context,
+            observed_at=datetime(2026, 8, 2, tzinfo=timezone.utc),
+        ),
+    )
+    assert ledger.get("expiring").state == "rejected"
+    assert ledger.get("expiring").error_code == "voucher_expired"
+
+
+def test_activation_request_rejects_changed_authoritative_context(
+    tmp_path: Path, voucher: dict[str, Any], context: VoucherContext
+) -> None:
+    ledger = ReferenceVoucherLedger(tmp_path / "voucher.sqlite3")
+    ledger.record_issued("changed_context", voucher, observed_at=NOW)
+    ledger.verify_issued(
+        "changed_context",
+        context=context,
+        now=NOW,
+        signature_verifier=RecordingVerifier(),
+    )
+    changed = replace(context, program_id="11111111111111111111111111111111")
+
+    assert_rejected(
+        "activation_context_changed",
+        lambda: ledger.request_activation(
+            "changed_context",
+            context=changed,
+            observed_at=LATER,
+        ),
+    )
+    assert ledger.get("changed_context").state == "rejected"
+
+
+def test_journal_time_never_regresses(
+    tmp_path: Path, voucher: dict[str, Any], context: VoucherContext
+) -> None:
+    ledger = ReferenceVoucherLedger(tmp_path / "voucher.sqlite3")
+    ledger.record_issued("time_guard", voucher, observed_at=LATER)
+
+    assert_rejected(
+        "journal_time_regressed",
+        lambda: ledger.verify_issued(
+            "time_guard",
+            context=context,
+            now=NOW,
+            signature_verifier=RecordingVerifier(),
+        ),
+    )
+    assert ledger.get("time_guard").state == "issued"
+
+    ledger.verify_issued(
+        "time_guard",
+        context=context,
+        now=LATER,
+        signature_verifier=RecordingVerifier(),
+    )
+    assert_rejected(
+        "journal_time_regressed",
+        lambda: ledger.request_activation(
+            "time_guard",
+            context=context,
+            observed_at=NOW,
+        ),
+    )
+    assert ledger.get("time_guard").state == "verified"
 
 
 def test_ledger_enforces_monotonic_issued_sequence_and_total(
@@ -529,12 +717,30 @@ def test_concurrent_verification_never_regresses_latest_issued_state(
 
 
 def test_activation_request_requires_verified_state(
-    tmp_path: Path, voucher: dict[str, Any]
+    tmp_path: Path, voucher: dict[str, Any], context: VoucherContext
 ) -> None:
     ledger = ReferenceVoucherLedger(tmp_path / "voucher.sqlite3")
     ledger.record_issued("submission_003", voucher, observed_at=NOW)
 
     assert_rejected(
         "activation_request_forbidden",
-        lambda: ledger.request_activation("submission_003", observed_at=NOW),
+        lambda: ledger.request_activation(
+            "submission_003",
+            context=context,
+            observed_at=NOW,
+        ),
     )
+
+
+def test_sqlite_connections_close_deterministically(
+    tmp_path: Path, voucher: dict[str, Any]
+) -> None:
+    path = tmp_path / "voucher.sqlite3"
+    ledger = ReferenceVoucherLedger(path)
+    ledger.record_issued("close_handles", voucher, observed_at=NOW)
+    ledger.get("close_handles")
+    ledger.events("close_handles")
+
+    path.unlink()
+
+    assert not path.exists()

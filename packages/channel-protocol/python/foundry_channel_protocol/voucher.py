@@ -7,6 +7,7 @@ import json
 import re
 import sqlite3
 from collections.abc import Callable, Mapping
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -260,6 +261,19 @@ class VoucherContext:
             _HASH,
             "expected hash",
         )
+        if self.latest_activated_sequence == 0:
+            if self.latest_activated_voucher_hash != _ZERO_HASH:
+                _reject(
+                    "invalid_context_accounting",
+                    "context.latest_activated_voucher_hash",
+                    "zero activated state requires the zero hash",
+                )
+        elif self.latest_activated_voucher_hash == _ZERO_HASH:
+            _reject(
+                "invalid_context_accounting",
+                "context.latest_activated_voucher_hash",
+                "non-zero activated state requires a non-zero hash",
+            )
         _utc(self.channel_expires_at, "context.channel_expires_at")
 
 
@@ -345,6 +359,12 @@ def verify_voucher(
         payload["cumulative_authorized_base_units"],
         "payload.cumulative_authorized_base_units",
     )
+    if total == 0:
+        _reject(
+            "zero_cumulative_authorization",
+            "payload.cumulative_authorized_base_units",
+            "a sequenced voucher must authorize a positive cumulative total",
+        )
     minimum_sequence = context.latest_activated_sequence
     minimum_total = context.latest_activated_total_base_units
     if latest_issued_sequence is not None:
@@ -420,8 +440,16 @@ class ReferenceVoucherLedger:
         connection.execute("PRAGMA journal_mode = WAL")
         return connection
 
+    @contextmanager
+    def _connection(self) -> Any:
+        connection = self._connect()
+        try:
+            yield connection
+        finally:
+            connection.close()
+
     def _initialize(self) -> None:
-        with self._connect() as connection:
+        with self._connection() as connection:
             connection.executescript(
                 """
                 CREATE TABLE IF NOT EXISTS voucher_submissions (
@@ -436,6 +464,7 @@ class ReferenceVoucherLedger:
                     epoch INTEGER,
                     sequence INTEGER,
                     cumulative_total TEXT,
+                    expires_at TEXT,
                     error_code TEXT,
                     created_at TEXT NOT NULL,
                     updated_at TEXT NOT NULL
@@ -510,7 +539,7 @@ class ReferenceVoucherLedger:
         except (TypeError, ValueError) as error:
             _reject("invalid_json", "voucher", str(error))
         timestamp = self._time(observed_at)
-        with self._connect() as connection:
+        with self._connection() as connection:
             connection.execute("BEGIN IMMEDIATE")
             existing = connection.execute(
                 "SELECT * FROM voucher_submissions WHERE submission_id = ?",
@@ -558,7 +587,7 @@ class ReferenceVoucherLedger:
         signature_verifier: SignatureVerifier,
     ) -> VoucherRecord:
         timestamp = self._time(now)
-        with self._connect() as connection:
+        with self._connection() as connection:
             connection.execute("BEGIN IMMEDIATE")
             row = connection.execute(
                 "SELECT * FROM voucher_submissions WHERE submission_id = ?",
@@ -580,6 +609,12 @@ class ReferenceVoucherLedger:
                 )
             voucher = json.loads(str(row["voucher_json"]))
             try:
+                if _timestamp(row["updated_at"], "persisted.updated_at") > _utc(now, "now"):
+                    _reject(
+                        "journal_time_regressed",
+                        "now",
+                        "verification time precedes the latest journal event",
+                    )
                 context.validate()
                 domain_key = self._domain_key(context)
                 latest = connection.execute(
@@ -605,6 +640,28 @@ class ReferenceVoucherLedger:
                     ),
                 )
             except VoucherValidationError as error:
+                if error.code == "journal_time_regressed":
+                    connection.rollback()
+                    raise
+                if error.code == "signature_verifier_failed":
+                    connection.execute(
+                        """
+                        UPDATE voucher_submissions
+                        SET state = 'issued', error_code = ?, updated_at = ?
+                        WHERE submission_id = ?
+                        """,
+                        (error.code, timestamp, submission_id),
+                    )
+                    connection.execute(
+                        """
+                        INSERT INTO voucher_events (
+                            submission_id, state, error_code, observed_at
+                        ) VALUES (?, 'issued', ?, ?)
+                        """,
+                        (submission_id, error.code, timestamp),
+                    )
+                    connection.commit()
+                    raise
                 connection.execute(
                     """
                     UPDATE voucher_submissions
@@ -629,7 +686,7 @@ class ReferenceVoucherLedger:
                 UPDATE voucher_submissions
                 SET state = 'verified', voucher_hash = ?, domain_key = ?,
                     channel_id = ?, epoch = ?, sequence = ?, cumulative_total = ?,
-                    error_code = NULL, updated_at = ?
+                    expires_at = ?, error_code = NULL, updated_at = ?
                 WHERE submission_id = ?
                 """,
                 (
@@ -639,6 +696,7 @@ class ReferenceVoucherLedger:
                     payload["epoch"],
                     verified.sequence,
                     str(verified.cumulative_authorized_base_units),
+                    verified.expires_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
                     timestamp,
                     submission_id,
                 ),
@@ -658,9 +716,15 @@ class ReferenceVoucherLedger:
             assert updated is not None
             return self._record(updated)
 
-    def request_activation(self, submission_id: str, *, observed_at: datetime) -> VoucherRecord:
+    def request_activation(
+        self,
+        submission_id: str,
+        *,
+        context: VoucherContext,
+        observed_at: datetime,
+    ) -> VoucherRecord:
         timestamp = self._time(observed_at)
-        with self._connect() as connection:
+        with self._connection() as connection:
             connection.execute("BEGIN IMMEDIATE")
             row = connection.execute(
                 "SELECT * FROM voucher_submissions WHERE submission_id = ?",
@@ -680,6 +744,55 @@ class ReferenceVoucherLedger:
                     "state",
                     "only verified vouchers may request activation",
                 )
+            if _timestamp(row["updated_at"], "persisted.updated_at") > _utc(
+                observed_at, "observed_at"
+            ):
+                connection.rollback()
+                _reject(
+                    "journal_time_regressed",
+                    "observed_at",
+                    "activation request precedes the latest journal event",
+                )
+            voucher = json.loads(str(row["voucher_json"]))
+            try:
+                context.validate()
+                if self._domain_key(context) != row["domain_key"]:
+                    _reject(
+                        "activation_context_changed",
+                        "context",
+                        "current context does not match verified voucher domain",
+                    )
+                current = verify_voucher(
+                    voucher,
+                    context=context,
+                    now=observed_at,
+                    signature_verifier=lambda _key, _message, _signature: True,
+                )
+                if current.voucher_hash != row["voucher_hash"]:
+                    _reject(
+                        "persisted_voucher_mismatch",
+                        "voucher_hash",
+                        "verified record no longer matches persisted voucher",
+                    )
+            except VoucherValidationError as error:
+                connection.execute(
+                    """
+                    UPDATE voucher_submissions
+                    SET state = 'rejected', error_code = ?, updated_at = ?
+                    WHERE submission_id = ?
+                    """,
+                    (error.code, timestamp, submission_id),
+                )
+                connection.execute(
+                    """
+                    INSERT INTO voucher_events (
+                        submission_id, state, error_code, observed_at
+                    ) VALUES (?, 'rejected', ?, ?)
+                    """,
+                    (submission_id, error.code, timestamp),
+                )
+                connection.commit()
+                raise
             connection.execute(
                 """
                 UPDATE voucher_submissions
@@ -704,7 +817,7 @@ class ReferenceVoucherLedger:
             return self._record(updated)
 
     def get(self, submission_id: str) -> VoucherRecord:
-        with self._connect() as connection:
+        with self._connection() as connection:
             row = connection.execute(
                 "SELECT * FROM voucher_submissions WHERE submission_id = ?",
                 (submission_id,),
@@ -714,7 +827,7 @@ class ReferenceVoucherLedger:
         return self._record(row)
 
     def events(self, submission_id: str) -> list[dict[str, str | None]]:
-        with self._connect() as connection:
+        with self._connection() as connection:
             rows = connection.execute(
                 """
                 SELECT state, error_code, observed_at
