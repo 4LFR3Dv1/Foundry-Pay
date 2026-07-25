@@ -1,0 +1,9 @@
+{
+  "case_id": "zero-cumulative-authorization",
+  "target": "voucher:3",
+  "mutation": {
+    "path": "payload.cumulative_authorized_base_units",
+    "value": "0"
+  },
+  "expected_error": "cumulative_amount_decreased"
+}
