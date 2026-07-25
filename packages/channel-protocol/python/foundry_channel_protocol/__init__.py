@@ -17,6 +17,23 @@ from .voucher import (
     verify_voucher,
     voucher_payload_hash,
 )
+from .settlement import (
+    AuthorizationVerifier,
+    DefinitiveExecutorRejection,
+    ExecutorPort,
+    ReconciledSettlementReceipt,
+    SettlementError,
+    SettlementExecutionCommitment,
+    SettlementJournalEntry,
+    SettlementObservation,
+    SettlementRecord,
+    SettlementRecoveryRecord,
+    SettlementRequest,
+    SettlementRuntime,
+    TechnicalExecutionReceipt,
+    channel_snapshot_hash,
+    validate_settlement_request,
+)
 
 __all__ = [
     "AccountingProjection",
@@ -32,4 +49,19 @@ __all__ = [
     "canonical_voucher_payload",
     "verify_voucher",
     "voucher_payload_hash",
+    "AuthorizationVerifier",
+    "DefinitiveExecutorRejection",
+    "ExecutorPort",
+    "ReconciledSettlementReceipt",
+    "SettlementError",
+    "SettlementExecutionCommitment",
+    "SettlementJournalEntry",
+    "SettlementObservation",
+    "SettlementRecord",
+    "SettlementRecoveryRecord",
+    "SettlementRequest",
+    "SettlementRuntime",
+    "TechnicalExecutionReceipt",
+    "channel_snapshot_hash",
+    "validate_settlement_request",
 ]

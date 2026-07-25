@@ -5,6 +5,33 @@ policy:
   attribution_required: true
 
 sources:
+  - id: foundry-channels-fc-proto-004-first-party-reuse
+    repository: 4LFR3Dv1/Foundry-Pay
+    commit: b20fa0203089eff242998e47485377921b1c10b4
+    visibility: public
+    license: Apache-2.0
+    disposition: first-party-reuse-by-import-and-extension
+    candidate_assets:
+      - RFC 8785 canonicalization and SHA-256 helpers
+      - external execution plan, message, simulation, and commitment hashes
+      - persistent fake executor and fake authorization verifier
+      - offline Channel snapshot validation and accounting projection
+      - SQLite journaling and independent reconciliation design patterns
+    copied_paths: []
+    reused_by_import:
+      - packages/external-execution-protocol/python/foundry_external_execution_protocol/canonicalization.py
+      - packages/external-execution-protocol/python/foundry_external_execution_protocol/fake_executor.py
+      - packages/channel-protocol/python/foundry_channel_protocol/channel.py
+    created_paths:
+      - packages/channel-protocol/python/foundry_channel_protocol/settlement.py
+      - tests/channels/test_settlement.py
+    constraints:
+      - no kernel was copied or absorbed
+      - fake execution is deterministic offline conformance, not Solana execution
+      - executor receipts remain technical evidence only
+      - caller-supplied snapshots and observations do not assert on-chain provenance
+      - settlement canonical vectors remain draft until FC-PROTO-006
+
   - id: foundry-channels-fc-proto-001-first-party
     repository: 4LFR3Dv1/Foundry-Pay
     commit: 5573e73e2241a3ece86253aae6f1de6f60e95e48

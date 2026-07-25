@@ -1,0 +1,56 @@
+work_item: FC-PROTO-004
+objective: implement an offline reference runtime for settlement, exact execution correlation, recovery, and independent economic reconciliation
+owner: protocol-engineer
+branch: agent/protocol/FC-PROTO-004
+baseline: b20fa0203089eff242998e47485377921b1c10b4
+allowed_paths:
+  - packages/channel-protocol/**
+  - tests/channels/test_settlement.py
+  - contracts/channel/settlement.schema.json
+  - evidence/runs/FC-PROTO-004/**
+  - provenance/REUSE_LEDGER.yaml
+dependencies:
+  - FC-PROTO-001
+  - FC-PROTO-002
+  - FC-PROTO-003
+invariants:
+  - settlement is bounded by activated remaining right and observed vault balance
+  - activation comes only from the externally supplied validated Channel snapshot
+  - exact prepared bytes, simulation, commitment, and authorization are independently rebound
+  - executor receipt never declares economic completion
+  - unknown outcome permits no automatic second submission or rematerialization
+  - completed requires matching independent economic observations
+  - controlled runtime submit intent count never exceeds one
+acceptance:
+  - partial and total settlement validate
+  - idempotency and two-process races preserve aggregate bounds
+  - request, commitment, authorization, receipt, and observation tampering reject
+  - lost response survives restart and recovers a signature without another submit
+  - matching observations produce one hashed reconciled receipt
+  - mismatching or divergent observations never complete
+verification_commands:
+  - python -m pytest tests/channels/test_settlement.py -q
+  - python -m pytest -q
+  - python scripts/check_channel_foundation.py
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+evidence:
+  - evidence/runs/FC-PROTO-004/README.md
+  - evidence/runs/FC-PROTO-004/validation-report.json
+  - evidence/runs/FC-PROTO-004/settlement-matrix.json
+  - evidence/runs/FC-PROTO-004/recovery-matrix.json
+  - evidence/runs/FC-PROTO-004/concurrency-report.json
+  - evidence/runs/FC-PROTO-004/reconciliation-report.json
+  - evidence/runs/FC-PROTO-004/artifact-manifest.json
+  - evidence/runs/FC-PROTO-004/pytest-full.xml
+provenance:
+  - provenance/REUSE_LEDGER.yaml#foundry-channels-fc-proto-004-first-party-reuse
+stop_conditions:
+  - voucher ledger is treated as activation authority
+  - technical receipt is treated as economic completion
+  - unknown outcome permits a second submit
+  - concurrent reservations can exceed activated total or observed vault
+  - runtime requires RPC, wallet, signer implementation, Cloud, or ChannelVault
+  - incompatible canonicalization or exactly-once claim is introduced

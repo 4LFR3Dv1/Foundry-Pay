@@ -1,7 +1,8 @@
 # Foundry Channel Protocol — Python reference
 
-This package provides deterministic, offline validation for `Channel` and
-`ChannelFunding` v1 objects. It validates caller-provided snapshots and derives:
+This package provides deterministic, offline reference validation for channel,
+funding, voucher, recipient-binding, and settlement objects. It validates
+caller-provided snapshots and derives:
 
 ```text
 F = V + S + R
@@ -19,3 +20,25 @@ from foundry_channel_protocol import validate_channel
 projection = validate_channel(channel)
 assert projection.vault_balance_base_units == 60_000_000
 ```
+
+## Offline settlement runtime
+
+`SettlementRuntime` persists the economic request, exact prepared-execution
+commitment, authorization, single submit intent, technical receipt, recovery
+observations, and final reconciled receipt in SQLite.
+
+The runtime deliberately separates:
+
+```text
+technical executor acceptance
+!= independent economic observation
+!= reconciled completion
+```
+
+An unknown technical result enters `needs_recovery`. Repeated recovery never
+submits again, and a reconciled receipt is created only when the supplied
+channel, epoch, mint, destination, settled-total delta, vault delta, and
+recipient delta all match.
+
+This is a controlled offline model. It does not provide RPC, wallet, signer,
+ChannelVault, Cloud, custody, consumer, or exactly-once blockchain behavior.
