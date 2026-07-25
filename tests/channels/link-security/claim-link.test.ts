@@ -1,0 +1,175 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+
+import {
+  ClaimLinkError,
+  ClaimLinkSession,
+  generateOpaqueToken,
+  safeClaimUrl,
+  validateLocator,
+} from "../../../packages/channel-protocol/typescript/src/index.js";
+import * as publicApi from "../../../packages/channel-protocol/typescript/src/index.js";
+
+const LOCATOR = Buffer.alloc(32, 0x4c).toString("base64url");
+const SECRET = Buffer.alloc(32, 0x53).toString("base64url");
+const CLAIM_URL = `https://foundry.pay/claim/${LOCATOR}#${SECRET}`;
+
+test("opens an exact claim URL only through strip-first consume-once API", () => {
+  const replacements: string[] = [];
+  const session = ClaimLinkSession.open(CLAIM_URL, {
+    replaceState: (_data, _unused, url) => replacements.push(String(url)),
+  });
+  let secretLength = 0;
+  session.consume((secret) => {
+    secretLength = secret.byteLength;
+  });
+  assert.equal(session.locator, LOCATOR);
+  assert.deepEqual(replacements, [`https://foundry.pay/claim/${LOCATOR}`]);
+  assert.equal(secretLength, 32);
+  assert.ok(!session.safeReplacementUrl.includes(SECRET));
+});
+
+test("rejects unsafe origins, paths, query strings, locators, and secrets", () => {
+  const invalid = [
+    `http://foundry.pay/claim/${LOCATOR}#${SECRET}`,
+    `https://evil.example/claim/${LOCATOR}#${SECRET}`,
+    `https://foundry.pay/other/${LOCATOR}#${SECRET}`,
+    `https://foundry.pay/claim/${LOCATOR}/extra#${SECRET}`,
+    `https://foundry.pay/claim/${LOCATOR}?track=1#${SECRET}`,
+    `https://foundry.pay/claim/short#${SECRET}`,
+    `https://foundry.pay/claim/${LOCATOR}`,
+    `https://foundry.pay/claim/${LOCATOR}#short`,
+    `https://user:password@foundry.pay/claim/${LOCATOR}#${SECRET}`,
+  ];
+  for (const candidate of invalid) {
+    const replacements: string[] = [];
+    assert.throws(
+      () =>
+        ClaimLinkSession.open(candidate, {
+          replaceState: (_data, _unused, url) => replacements.push(String(url)),
+        }),
+      ClaimLinkError,
+    );
+    assert.deepEqual(replacements, []);
+  }
+});
+
+test("public API has no raw parser or direct secret-byte escape hatch", () => {
+  assert.equal(Object.hasOwn(publicApi, "parseClaimLink"), false);
+  assert.deepEqual(
+    Object.keys(publicApi).filter((name) => /parse.*claim|secret.*bytes/iu.test(name)),
+    [],
+  );
+});
+
+test("opens by stripping the fragment before exposing a consumable session", () => {
+  const replacements: string[] = [];
+  const session = ClaimLinkSession.open(CLAIM_URL, {
+    replaceState: (_data, _unused, url) => replacements.push(String(url)),
+  });
+
+  assert.deepEqual(replacements, [`https://foundry.pay/claim/${LOCATOR}`]);
+  assert.equal(session.consumed, false);
+  let observed = "";
+  session.consume((secret) => {
+    observed = Buffer.from(secret).toString("base64url");
+  });
+  assert.equal(observed, SECRET);
+  assert.equal(session.consumed, true);
+  assert.throws(() => session.consume(() => undefined), /claim_secret_already_consumed/u);
+});
+
+test("zeroizes the ephemeral secret buffer after consume", () => {
+  const session = ClaimLinkSession.open(CLAIM_URL, { replaceState: () => undefined });
+  let retained: Uint8Array | undefined;
+  session.consume((secret) => {
+    retained = secret;
+  });
+  assert.ok(retained);
+  assert.ok(retained.every((byte) => byte === 0));
+});
+
+test("fails closed when the fragment cannot be removed", () => {
+  assert.throws(
+    () =>
+      ClaimLinkSession.open(CLAIM_URL, {
+        replaceState: () => {
+          throw new Error(`unsafe browser error: ${CLAIM_URL}`);
+        },
+      }),
+    (error: unknown) =>
+      error instanceof ClaimLinkError &&
+      error.code === "fragment_removal_failed" &&
+      !error.message.includes(SECRET),
+  );
+});
+
+test("browser-like runtime without Buffer strips fragment before returning session", () => {
+  const priorBuffer = Object.getOwnPropertyDescriptor(globalThis, "Buffer");
+  const replacements: string[] = [];
+  let opened = false;
+  let consumedBytes = 0;
+  try {
+    Object.defineProperty(globalThis, "Buffer", {
+      value: undefined,
+      configurable: true,
+      writable: true,
+    });
+    const session = ClaimLinkSession.open(CLAIM_URL, {
+      replaceState: (_data, _unused, url) => replacements.push(String(url)),
+    });
+    opened = true;
+    session.consume((secret) => {
+      consumedBytes = secret.byteLength;
+    });
+  } finally {
+    if (priorBuffer === undefined) {
+      Reflect.deleteProperty(globalThis, "Buffer");
+    } else {
+      Object.defineProperty(globalThis, "Buffer", priorBuffer);
+    }
+  }
+  assert.equal(opened, true);
+  assert.equal(consumedBytes, 32);
+  assert.deepEqual(replacements, [`https://foundry.pay/claim/${LOCATOR}`]);
+  assert.ok(!replacements[0]?.includes("#"));
+  assert.ok(!replacements[0]?.includes(SECRET));
+});
+
+test("safe share/clipboard output contains locator but never fragment secret", () => {
+  const output = safeClaimUrl(LOCATOR);
+  assert.equal(output, `https://foundry.pay/claim/${LOCATOR}`);
+  assert.ok(!output.includes("#"));
+  assert.ok(!output.includes(SECRET));
+});
+
+test("opaque token generation requires 32 random bytes and yields 256-bit identifiers", () => {
+  let counter = 0;
+  const first = generateOpaqueToken((target) => {
+    target.fill(counter++);
+    return target;
+  });
+  const second = generateOpaqueToken((target) => {
+    target.fill(counter++);
+    return target;
+  });
+  assert.equal(Buffer.from(first, "base64url").byteLength, 32);
+  assert.equal(Buffer.from(second, "base64url").byteLength, 32);
+  assert.notEqual(first, second);
+  assert.equal(validateLocator(first), first);
+});
+
+test("rejects non-canonical 256-bit base64url aliases for locator and secret", () => {
+  const alias = "_".repeat(43);
+  assert.throws(() => validateLocator(alias), /invalid_claim_locator/u);
+
+  const replacements: string[] = [];
+  assert.throws(
+    () =>
+      ClaimLinkSession.open(`https://foundry.pay/claim/${LOCATOR}#${alias}`, {
+        replaceState: (_data, _unused, url) => replacements.push(String(url)),
+      }),
+    /invalid_claim_secret/u,
+  );
+  assert.deepEqual(replacements, []);
+});
