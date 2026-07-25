@@ -1,0 +1,14 @@
+{
+  "algorithm": "sha256",
+  "implementation_commit": "0718f507b06f043551ccd6bf6c93af57de885c43",
+  "artifacts": {
+    "packages/channel-protocol/typescript/src/claim-link.ts": "ba318d9763d556e4651239cb899d4d30d1eee381a037522ab7bc9ea0717654ba",
+    "packages/channel-protocol/typescript/src/index.ts": "f16405b85943403b9faf2eaed41d4f70d2511195cb3008fab88753a7a5a7a497",
+    "packages/channel-protocol/typescript/src/redaction.ts": "e3ba81b503fc68d6bfc14087bf6518b1183e2d74a1bb83bf83c3361fab18cef4",
+    "packages/channel-protocol/typescript/src/resolver.ts": "419ff6e9156d97c184a1b6e0801ba83a8f40d962cb1eda5b8e558d4f30d80516",
+    "docs/channels/security/claim-link/INTEGRATION.md": "4da0084f4969ddf8f871198af67b9a91dc1ad3c57e5a32b8415858c646765a96",
+    "docs/channels/security/claim-link/README.md": "7fdbedb4b451544e9aa694d8a4cc01092169384a4f6205880a50f773cb03e8e4",
+    "docs/channels/security/claim-link/SECURITY_CONTRACT.md": "7a8f54e10fd12ba36cee74f7d9ee9d8b301a6c5be671724799438c55ab81e38d",
+    "docs/channels/security/claim-link/THREAT_MODEL.md": "8dc2ea0edc5563ba38486bfaf04a42b918e8294d5232c823a87c9e8fd9cb446e"
+  }
+}

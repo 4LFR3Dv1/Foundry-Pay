@@ -1,0 +1,70 @@
+{
+  "schema_version": "foundry-pay-evidence-summary/1",
+  "work_item": "FC-SEC-003",
+  "title": "Claim-link security kit",
+  "baseline_commit": "2a5a7f8392c5af96e59d19585a83578761c2606b",
+  "implementation_commit": "0718f507b06f043551ccd6bf6c93af57de885c43",
+  "fixture_policy": "all synthetic claim material is generated at runtime; no literal token-like fixture",
+  "scope": "offline framework-agnostic TypeScript reference kit",
+  "authority_limits": [
+    "does not persist locator or claim secret",
+    "does not call or implement Cloud services",
+    "does not assert identity, recipient binding, activation, or settlement",
+    "does not implement a consumer UI"
+  ],
+  "verified_properties": [
+    "exact HTTPS origin and claim path validation fail closed",
+    "locator and secret have at least 256-bit encoded material",
+    "fragment is synchronously replaced before session use",
+    "secret session is consume-once with best-effort byte zeroization",
+    "resolver request contains locator path and never fragment or secret",
+    "request requires no-referrer and no-store behavior",
+    "public resolver failures collapse to claim_unavailable",
+    "redaction covers URLs, encoded forms, nested values, errors, telemetry, and evidence",
+    "clipboard/share output and post-consumption URL contain no secret"
+  ],
+  "tests": {
+    "focused_typescript": {
+      "command": "npm test --prefix packages/channel-protocol/typescript",
+      "result": "passed",
+      "passed": 13,
+      "failed": 0
+    },
+    "python_repository": {
+      "command": "python -m pytest --basetemp C:\\tmp\\fc-sec-003-full-tests",
+      "result": "passed",
+      "passed": 283,
+      "skipped": 11,
+      "failed": 0
+    },
+    "external_execution_typescript": {
+      "command": "npm test --prefix packages/external-execution-protocol/typescript",
+      "result": "passed",
+      "passed": 8,
+      "failed": 0
+    },
+    "ruff_format": {
+      "command": "python -m ruff format --check .",
+      "result": "passed",
+      "files_unchanged": 47
+    },
+    "ruff_check": {
+      "command": "python -m ruff check .",
+      "result": "passed"
+    },
+    "secret_guard": {
+      "command": "python scripts/check_secrets.py",
+      "result": "passed",
+      "files_scanned": 247
+    }
+  },
+  "synthetic_fixtures_only": true,
+  "network_used_by_security_tests": false,
+  "security_review": {
+    "mandatory_frontend_security_review": "not_performed",
+    "blocks": [
+      "consumer claim frontend deployment",
+      "claims that fragment secrecy is proven in a deployed application"
+    ]
+  }
+}
