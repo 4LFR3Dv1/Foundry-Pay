@@ -3,7 +3,8 @@
   "title": "Offline ChannelClaim and dual-signature RecipientBinding verifier",
   "base_commit": "c9f66437c055143cf48e7de0f06443377737b024",
   "implementation_commit": "cf95e9c849e21dbf302a50aadad00ce8e330bfd7",
-  "status": "implemented_pending_independent_review",
+  "review_remediation_commit": "9c1c582b688191205243dd7a598e3fee89069e32",
+  "status": "remediated_pending_independent_re_review",
   "scope": {
     "network_access": false,
     "wallet_access": false,
@@ -20,6 +21,11 @@
     "nonce_one_use": true,
     "restart_safe": true,
     "concurrent_double_effect_prevented": true,
+    "sqlite_connections_explicitly_closed": true,
+    "windows_handle_regression": true,
+    "json_safe_integer_maximum": 9007199254740991,
+    "full_signed_domain_journal_hash": true,
+    "cross_program_and_genesis_isolation": true,
     "rebind_disabled": true,
     "ledger_states": ["verified"]
   },
@@ -30,14 +36,14 @@
     "shared_vector_change": "recipient_binding block only; binding hash recalculated"
   },
   "verification": {
-    "focused": "38 passed",
-    "python_full": "228 passed, 11 skipped",
+    "focused_with_resource_warnings_as_errors": "49 passed",
+    "python_full": "239 passed, 11 skipped",
     "typescript_conformance": "8 passed",
     "ruff": "passed",
-    "secret_guard": "222 files scanned; passed"
+    "secret_guard": "224 files scanned at remediation evidence head; passed"
   },
   "residual_gates": [
-    "mandatory independent recipient-binding security review",
+    "mandatory independent recipient-binding security re-review",
     "FC-PROTO-006 cross-language canonical bytes",
     "FC-SEC-003 browser and claim-link security",
     "ChannelVault remains unauthorized"

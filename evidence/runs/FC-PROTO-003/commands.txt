@@ -1,11 +1,12 @@
 implementation_commit=cf95e9c849e21dbf302a50aadad00ce8e330bfd7
+review_remediation_commit=9c1c582b688191205243dd7a598e3fee89069e32
 base_commit=c9f66437c055143cf48e7de0f06443377737b024
 
-python -m pytest tests\channels\test_recipient_binding.py tests\channels\test_foundation_contracts.py --basetemp C:\tmp\fc-proto-003-tests-final
-result=38 passed in 0.32s
+PYTHONWARNINGS=error::ResourceWarning python -m pytest tests\channels\test_recipient_binding.py tests\channels\test_foundation_contracts.py --basetemp C:\tmp\fc-proto-003-resource-warnings
+result=49 passed in 0.49s; no ResourceWarning
 
-python -m pytest --basetemp C:\tmp\fc-proto-003-evidence-tests
-result=228 passed, 11 skipped in 4.24s
+python -m pytest --basetemp C:\tmp\fc-proto-003-remediation-full
+result=239 passed, 11 skipped in 4.43s
 
 python -m ruff format --check .
 result=45 files already formatted
@@ -14,7 +15,7 @@ python -m ruff check .
 result=All checks passed
 
 python scripts\check_secrets.py
-result=Secret guard passed (222 files scanned)
+result=Secret guard passed (224 files scanned at remediation evidence head)
 
 npm test --prefix packages\external-execution-protocol\typescript
 result=8 passed, 0 failed

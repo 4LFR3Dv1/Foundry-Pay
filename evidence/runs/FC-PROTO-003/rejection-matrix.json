@@ -1,6 +1,7 @@
 {
   "work_item": "FC-PROTO-003",
   "implementation_commit": "cf95e9c849e21dbf302a50aadad00ce8e330bfd7",
+  "review_remediation_commit": "9c1c582b688191205243dd7a598e3fee89069e32",
   "derived_from": "tests/channels/test_recipient_binding.py",
   "controls": [
     {
@@ -15,7 +16,17 @@
     },
     {
       "threat": "cross-context replay with recomputed hash",
-      "mutations": ["program", "channel", "epoch", "voucher", "mint"],
+      "mutations": [
+        "genesis hash",
+        "program",
+        "channel ID",
+        "channel account",
+        "epoch",
+        "claim ID",
+        "claim public key",
+        "voucher",
+        "mint"
+      ],
       "result": "rejected: context_mismatch"
     },
     {
@@ -35,8 +46,30 @@
     },
     {
       "threat": "binding replay or concurrent double use",
-      "mutations": ["restart replay", "two concurrent writers"],
+      "mutations": [
+        "restart replay",
+        "same candidate from two concurrent writers",
+        "different nonce/destination candidates in one full signed domain"
+      ],
       "result": "one verified record; all later effects rejected"
+    },
+    {
+      "threat": "cross-program or cross-genesis journal alias",
+      "mutations": ["same human IDs and nonce under distinct program and genesis domains"],
+      "result": "independent journal_domain_hash values and independent records"
+    },
+    {
+      "threat": "non-interoperable RFC 8785 integer",
+      "mutations": [
+        "epoch = 9007199254740992",
+        "binding_nonce = 9007199254740992"
+      ],
+      "result": "rejected by JSON Schema and runtime; 9007199254740991 accepted and persisted"
+    },
+    {
+      "threat": "SQLite resource/Windows handle leak",
+      "mutations": ["success", "read", "transactional replay rejection"],
+      "result": "every connection explicitly closed; database unlink succeeds"
     },
     {
       "threat": "expired or terminal claim",
