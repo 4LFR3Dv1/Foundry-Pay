@@ -5,5 +5,17 @@
     "path": "payload.voucher_hash",
     "value": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
   },
-  "expected_error": "binding_hash_mismatch"
+  "expected_error": "binding_hash_mismatch",
+  "runtime_boundary_cases": [
+    {
+      "path": "payload.epoch",
+      "value": 9007199254740992,
+      "expected_code": "invalid_integer"
+    },
+    {
+      "path": "payload.binding_nonce",
+      "value": 9007199254740992,
+      "expected_code": "invalid_integer"
+    }
+  ]
 }

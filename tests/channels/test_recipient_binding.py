@@ -6,11 +6,13 @@ import copy
 import json
 import sys
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import replace
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 import pytest
+import rfc8785
 from jsonschema import Draft202012Validator, FormatChecker
 
 
@@ -22,6 +24,7 @@ from foundry_channel_protocol.recipient_binding import (  # noqa: E402
     RecipientBindingLedger,
     RecipientBindingValidationError,
     canonical_recipient_binding_payload,
+    recipient_binding_domain_hash,
     validate_channel_claim,
     verify_recipient_binding,
 )
@@ -66,7 +69,7 @@ class ExactVerifier:
                 binding["destination_wallet_signature"],
             ),
         }
-        self.expected_payload = bytes.fromhex(vector["expected"]["canonical_payload_hex"])
+        self.expected_payload = rfc8785.dumps(binding["payload"])
         self.payloads: list[bytes] = []
 
     def verify(self, public_key: str, payload: bytes, signature: str) -> bool:
@@ -136,6 +139,7 @@ def test_dual_signatures_receive_identical_canonical_bytes(vector: dict[str, Any
     assert result.state == "verified"
     assert "activated" not in result.to_dict().values()
     assert result.binding_hash == vector["expected"]["binding_hash"]
+    assert result.journal_domain_hash == vector["expected"]["journal_domain_hash"]
     assert verifier.payloads[0] is verifier.payloads[1]
     assert verifier.payloads[0].hex() == vector["expected"]["canonical_payload_hex"]
 
@@ -230,8 +234,12 @@ def test_binding_mutations_fail_closed(
     ("field", "value"),
     [
         ("program_id", "SysvarRent111111111111111111111111111111111"),
+        ("genesis_hash", "SysvarRent111111111111111111111111111111111"),
         ("channel_id", "channel_other"),
+        ("channel_account", "SysvarRent111111111111111111111111111111111"),
         ("epoch", 1),
+        ("claim_id", "claim_other"),
+        ("claim_pubkey", "SysvarRent111111111111111111111111111111111"),
         ("voucher_hash", "sha256:" + "b" * 64),
         ("mint", "SysvarRent111111111111111111111111111111111"),
     ],
@@ -383,14 +391,7 @@ def test_ledger_persists_across_restart_and_nonce_is_one_use(
     )
 
     reopened = RecipientBindingLedger(path)
-    assert (
-        reopened.get(
-            channel_id=result.channel_id,
-            epoch=result.epoch,
-            claim_id=result.claim_id,
-        )
-        == result
-    )
+    assert reopened.get(context=context(vector)) == result
     assert_rejected(
         "binding_already_recorded",
         lambda: reopened.verify_and_record(
@@ -426,6 +427,224 @@ def test_concurrent_initial_binding_has_exactly_one_effect(
         outcomes = list(pool.map(lambda _: attempt(), range(2)))
 
     assert sorted(outcomes) == ["binding_already_recorded", "verified"]
+
+
+def test_full_signed_domains_do_not_alias_in_persistent_journal(
+    vector: dict[str, Any], tmp_path: Path
+) -> None:
+    first = copy.deepcopy(vector)
+    second = copy.deepcopy(vector)
+    second_program = "SysvarRent111111111111111111111111111111111"
+    second_genesis = "SysvarC1ock11111111111111111111111111111111"
+    second["context"]["program_id"] = second_program
+    second["context"]["genesis_hash"] = second_genesis
+    second["binding"]["payload"]["program_id"] = second_program
+    second["binding"]["payload"]["genesis_hash"] = second_genesis
+    refresh_hash(second["binding"], second)
+
+    ledger = RecipientBindingLedger(tmp_path / "domain-isolation.sqlite3")
+    first_result = ledger.verify_and_record(
+        first["claim"],
+        first["binding"],
+        context=context(first),
+        signature_verifier=ExactVerifier(first),
+        now=at(first),
+    )
+    second_result = ledger.verify_and_record(
+        second["claim"],
+        second["binding"],
+        context=context(second),
+        signature_verifier=ExactVerifier(second),
+        now=at(second),
+    )
+
+    assert first_result.journal_domain_hash != second_result.journal_domain_hash
+    assert ledger.get(context=context(first)) == first_result
+    assert ledger.get(context=context(second)) == second_result
+
+
+def test_concurrent_distinct_candidates_in_same_full_domain_have_one_effect(
+    vector: dict[str, Any], tmp_path: Path
+) -> None:
+    first = copy.deepcopy(vector)
+    second = copy.deepcopy(vector)
+    second["binding"]["payload"]["binding_nonce"] = 2
+    second["binding"]["payload"]["destination_wallet"] = (
+        "SysvarRent111111111111111111111111111111111"
+    )
+    refresh_hash(second["binding"], second)
+    path = tmp_path / "same-domain-race.sqlite3"
+    RecipientBindingLedger(path)
+
+    def attempt(candidate: dict[str, Any]) -> str:
+        try:
+            RecipientBindingLedger(path).verify_and_record(
+                candidate["claim"],
+                candidate["binding"],
+                context=context(candidate),
+                signature_verifier=ExactVerifier(candidate),
+                now=at(candidate),
+            )
+        except RecipientBindingValidationError as error:
+            return error.code
+        return "verified"
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        outcomes = list(pool.map(attempt, (first, second)))
+
+    assert sorted(outcomes) == ["binding_already_recorded", "verified"]
+    persisted = RecipientBindingLedger(path).get(context=context(vector))
+    assert persisted is not None
+    assert persisted.binding_nonce in {1, 2}
+
+
+@pytest.mark.parametrize("field", ["epoch", "binding_nonce"])
+def test_json_safe_integer_maximum_is_schema_runtime_and_storage_valid(
+    vector: dict[str, Any], tmp_path: Path, field: str
+) -> None:
+    maximum = vector["expected"]["json_safe_unsigned_integer_maximum"]
+    candidate = copy.deepcopy(vector)
+    candidate["binding"]["payload"][field] = maximum
+    if field == "epoch":
+        candidate["context"]["epoch"] = maximum
+        candidate["claim"]["epoch"] = maximum
+    refresh_hash(candidate["binding"], candidate)
+
+    schema = json.loads(
+        (ROOT / "contracts" / "channel" / "recipient-binding.schema.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert list(Draft202012Validator(schema).iter_errors(candidate["binding"])) == []
+    ledger = RecipientBindingLedger(tmp_path / f"{field}-maximum.sqlite3")
+    result = ledger.verify_and_record(
+        candidate["claim"],
+        candidate["binding"],
+        context=context(candidate),
+        signature_verifier=ExactVerifier(candidate),
+        now=at(candidate),
+    )
+    assert getattr(result, field) == maximum
+    assert ledger.get(context=context(candidate)) == result
+
+
+def test_published_non_json_safe_integer_vectors_are_schema_and_runtime_rejected(
+    vector: dict[str, Any],
+) -> None:
+    schema = json.loads(
+        (ROOT / "contracts" / "channel" / "recipient-binding.schema.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    negative = json.loads(
+        (
+            ROOT
+            / "contracts"
+            / "channel"
+            / "test-vectors"
+            / "negative"
+            / "recipient-binding-voucher-substitution.json"
+        ).read_text(encoding="utf-8")
+    )
+    for case in negative["runtime_boundary_cases"]:
+        candidate = copy.deepcopy(vector)
+        field = case["path"].removeprefix("payload.")
+        candidate["binding"]["payload"][field] = case["value"]
+        if field == "epoch":
+            candidate["context"]["epoch"] = case["value"]
+            candidate["claim"]["epoch"] = case["value"]
+
+        assert list(Draft202012Validator(schema).iter_errors(candidate["binding"]))
+        assert_rejected(
+            case["expected_code"],
+            lambda candidate=candidate: verify_recipient_binding(
+                candidate["claim"],
+                candidate["binding"],
+                context=context(candidate),
+                signature_verifier=ExactVerifier(vector),
+                now=at(candidate),
+            ),
+        )
+
+
+class ConnectionProbe:
+    def __init__(self, connection: Any) -> None:
+        self.connection = connection
+        self.closed = False
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self.connection, name)
+
+    def close(self) -> None:
+        self.connection.close()
+        self.closed = True
+
+
+def test_connections_close_after_success_rejection_read_and_windows_unlink(
+    vector: dict[str, Any], tmp_path: Path
+) -> None:
+    path = tmp_path / "closed-handles.sqlite3"
+    ledger = RecipientBindingLedger(path)
+    original_connect = ledger._connect
+    probes: list[ConnectionProbe] = []
+
+    def tracked_connect() -> ConnectionProbe:
+        probe = ConnectionProbe(original_connect())
+        probes.append(probe)
+        return probe
+
+    ledger._connect = tracked_connect  # type: ignore[method-assign]
+    ledger.verify_and_record(
+        vector["claim"],
+        vector["binding"],
+        context=context(vector),
+        signature_verifier=ExactVerifier(vector),
+        now=at(vector),
+    )
+    assert ledger.get(context=context(vector)) is not None
+    assert_rejected(
+        "binding_already_recorded",
+        lambda: ledger.verify_and_record(
+            vector["claim"],
+            vector["binding"],
+            context=context(vector),
+            signature_verifier=ExactVerifier(vector),
+            now=at(vector),
+        ),
+    )
+
+    assert len(probes) == 3
+    assert all(probe.closed for probe in probes)
+    path.unlink()
+    for suffix in ("-wal", "-shm"):
+        sidecar = Path(f"{path}{suffix}")
+        if sidecar.exists():
+            sidecar.unlink()
+
+
+def test_domain_hash_covers_complete_signed_authority_context(vector: dict[str, Any]) -> None:
+    base = context(vector)
+    base_hash = recipient_binding_domain_hash(base)
+    for field, value in (
+        ("genesis_hash", "SysvarRent111111111111111111111111111111111"),
+        ("program_id", "SysvarRent111111111111111111111111111111111"),
+        ("channel_id", "channel_other"),
+        ("channel_account", "SysvarRent111111111111111111111111111111111"),
+        ("epoch", 1),
+        ("claim_id", "claim_other"),
+        ("claim_pubkey", "SysvarRent111111111111111111111111111111111"),
+        ("voucher_hash", "sha256:" + "b" * 64),
+        ("mint", "SysvarRent111111111111111111111111111111111"),
+    ):
+        assert recipient_binding_domain_hash(replace(base, **{field: value})) != base_hash
+
+    for field, value in (("environment", "test"), ("network", "solana:testnet")):
+        assert_rejected(
+            "invalid_literal",
+            lambda field=field, value=value: recipient_binding_domain_hash(
+                replace(base, **{field: value})
+            ),
+        )
 
 
 def test_schema_rejects_rebind_and_unsigned_extension(vector: dict[str, Any]) -> None:

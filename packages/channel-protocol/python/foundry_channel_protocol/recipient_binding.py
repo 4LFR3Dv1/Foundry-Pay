@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import re
 import sqlite3
+from contextlib import closing
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -24,6 +25,7 @@ _IDENTIFIER = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$")
 _PUBKEY = re.compile(r"^[1-9A-HJ-NP-Za-km-z]{32,44}$")
 _SIGNATURE = re.compile(r"^[1-9A-HJ-NP-Za-km-z]{64,88}$")
 _TIMESTAMP = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
+_JSON_SAFE_UNSIGNED_MAX = 9_007_199_254_740_991
 _U64_MAX = 18_446_744_073_709_551_615
 
 _CLAIM_FIELDS = frozenset(
@@ -131,7 +133,13 @@ class RecipientBindingContext:
 class VerifiedRecipientBinding:
     """A locally verified binding, not an on-chain activation declaration."""
 
+    journal_domain_hash: str
+    environment: str
+    network: str
+    genesis_hash: str
+    program_id: str
     channel_id: str
+    channel_account: str
     epoch: int
     claim_id: str
     claim_pubkey: str
@@ -198,8 +206,12 @@ def _signature(value: object, field: str) -> str:
 
 
 def _integer(value: object, field: str, *, minimum: int = 0) -> int:
-    if type(value) is not int or value < minimum or value > _U64_MAX:
-        _reject("invalid_integer", field, f"expected integer {minimum}..{_U64_MAX}")
+    if type(value) is not int or value < minimum or value > _JSON_SAFE_UNSIGNED_MAX:
+        _reject(
+            "invalid_integer",
+            field,
+            f"expected JSON-safe integer {minimum}..{_JSON_SAFE_UNSIGNED_MAX}",
+        )
     return value
 
 
@@ -245,6 +257,32 @@ def _validate_context(context: RecipientBindingContext) -> None:
     _pubkey(context.claim_pubkey, "context.claim_pubkey")
     _hash(context.voucher_hash, "context.voucher_hash")
     _pubkey(context.mint, "context.mint")
+
+
+def recipient_binding_domain_hash(context: RecipientBindingContext) -> str:
+    """Hash the complete authority domain used to scope one-use persistence."""
+
+    _validate_context(context)
+    domain = {
+        "domain": "foundry.channels.recipient-binding-journal",
+        "protocol_version": "1.0.0",
+        "environment": context.environment,
+        "network": context.network,
+        "genesis_hash": context.genesis_hash,
+        "program_id": context.program_id,
+        "channel_id": context.channel_id,
+        "channel_account": context.channel_account,
+        "epoch": context.epoch,
+        "claim_id": context.claim_id,
+        "claim_pubkey": context.claim_pubkey,
+        "voucher_hash": context.voucher_hash,
+        "mint": context.mint,
+    }
+    try:
+        canonical = rfc8785.dumps(domain)
+    except (rfc8785.CanonicalizationError, rfc8785.FloatDomainError) as error:
+        _reject("canonicalization_failed", "context", str(error))
+    return f"sha256:{hashlib.sha256(canonical).hexdigest()}"
 
 
 def validate_channel_claim(
@@ -438,7 +476,13 @@ def verify_recipient_binding(
 
     verified_at = _now(now).strftime("%Y-%m-%dT%H:%M:%SZ")
     return VerifiedRecipientBinding(
+        journal_domain_hash=recipient_binding_domain_hash(context),
+        environment=context.environment,
+        network=context.network,
+        genesis_hash=context.genesis_hash,
+        program_id=context.program_id,
         channel_id=context.channel_id,
+        channel_account=context.channel_account,
         epoch=context.epoch,
         claim_id=context.claim_id,
         claim_pubkey=context.claim_pubkey,
@@ -461,18 +505,28 @@ class RecipientBindingLedger:
 
     def _connect(self) -> sqlite3.Connection:
         connection = sqlite3.connect(self.path, timeout=30.0, isolation_level=None)
-        connection.row_factory = sqlite3.Row
-        connection.execute("PRAGMA busy_timeout = 30000")
+        try:
+            connection.row_factory = sqlite3.Row
+            connection.execute("PRAGMA busy_timeout = 30000")
+        except Exception:
+            connection.close()
+            raise
         return connection
 
     def _initialize(self) -> None:
-        with self._connect() as connection:
+        with closing(self._connect()) as connection:
             connection.execute("PRAGMA journal_mode = WAL")
             connection.execute(
                 """
                 CREATE TABLE IF NOT EXISTS recipient_bindings (
+                    journal_domain_hash TEXT NOT NULL PRIMARY KEY,
+                    environment TEXT NOT NULL,
+                    network TEXT NOT NULL,
+                    genesis_hash TEXT NOT NULL,
+                    program_id TEXT NOT NULL,
                     channel_id TEXT NOT NULL,
-                    epoch TEXT NOT NULL,
+                    channel_account TEXT NOT NULL,
+                    epoch INTEGER NOT NULL,
                     claim_id TEXT NOT NULL,
                     claim_pubkey TEXT NOT NULL,
                     voucher_hash TEXT NOT NULL,
@@ -482,12 +536,11 @@ class RecipientBindingLedger:
                     binding_hash TEXT NOT NULL,
                     verified_at TEXT NOT NULL,
                     state TEXT NOT NULL CHECK (state = 'verified'),
-                    PRIMARY KEY (channel_id, epoch, claim_id),
-                    UNIQUE (channel_id, epoch, claim_id, binding_nonce),
                     UNIQUE (binding_hash)
                 )
                 """
             )
+            connection.commit()
 
     def verify_and_record(
         self,
@@ -507,16 +560,16 @@ class RecipientBindingLedger:
             signature_verifier=signature_verifier,
             now=now,
         )
-        with self._connect() as connection:
+        with closing(self._connect()) as connection:
             try:
                 connection.execute("BEGIN IMMEDIATE")
                 existing = connection.execute(
                     """
                     SELECT binding_hash, binding_nonce
                     FROM recipient_bindings
-                    WHERE channel_id = ? AND epoch = ? AND claim_id = ?
+                    WHERE journal_domain_hash = ?
                     """,
-                    (result.channel_id, str(result.epoch), result.claim_id),
+                    (result.journal_domain_hash,),
                 ).fetchone()
                 if existing is not None:
                     _reject(
@@ -527,13 +580,21 @@ class RecipientBindingLedger:
                 connection.execute(
                     """
                     INSERT INTO recipient_bindings (
-                        channel_id, epoch, claim_id, claim_pubkey, voucher_hash, mint,
-                        destination_wallet, binding_nonce, binding_hash, verified_at, state
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        journal_domain_hash, environment, network, genesis_hash, program_id,
+                        channel_id, channel_account, epoch, claim_id, claim_pubkey,
+                        voucher_hash, mint, destination_wallet, binding_nonce, binding_hash,
+                        verified_at, state
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
+                        result.journal_domain_hash,
+                        result.environment,
+                        result.network,
+                        result.genesis_hash,
+                        result.program_id,
                         result.channel_id,
-                        str(result.epoch),
+                        result.channel_account,
+                        result.epoch,
                         result.claim_id,
                         result.claim_pubkey,
                         result.voucher_hash,
@@ -561,24 +622,23 @@ class RecipientBindingLedger:
     def get(
         self,
         *,
-        channel_id: str,
-        epoch: int,
-        claim_id: str,
+        context: RecipientBindingContext,
     ) -> VerifiedRecipientBinding | None:
         """Read a persisted verified record; no activation state is inferred."""
 
-        with self._connect() as connection:
+        domain_hash = recipient_binding_domain_hash(context)
+        with closing(self._connect()) as connection:
             row = connection.execute(
                 """
-                SELECT channel_id, epoch, claim_id, claim_pubkey, voucher_hash, mint,
-                       destination_wallet, binding_nonce, binding_hash, verified_at, state
+                SELECT journal_domain_hash, environment, network, genesis_hash, program_id,
+                       channel_id, channel_account, epoch, claim_id, claim_pubkey,
+                       voucher_hash, mint, destination_wallet, binding_nonce, binding_hash,
+                       verified_at, state
                 FROM recipient_bindings
-                WHERE channel_id = ? AND epoch = ? AND claim_id = ?
+                WHERE journal_domain_hash = ?
                 """,
-                (channel_id, str(epoch), claim_id),
+                (domain_hash,),
             ).fetchone()
         if row is None:
             return None
-        values = dict(row)
-        values["epoch"] = int(values["epoch"])
-        return VerifiedRecipientBinding(**values)
+        return VerifiedRecipientBinding(**dict(row))
