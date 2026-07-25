@@ -3,7 +3,12 @@
   "work_item": "FC-SEC-003",
   "title": "Claim-link security kit",
   "baseline_commit": "2a5a7f8392c5af96e59d19585a83578761c2606b",
-  "implementation_commit": "0718f507b06f043551ccd6bf6c93af57de885c43",
+  "implementation_commit": "16dece96edec2aad17834a1dfbb5ce4a69a77836",
+  "review_remediation": {
+    "reviewed_head": "33df6fdcbf7cbdef6094257770f03e99f8c6fc31",
+    "review_comment": "https://github.com/4LFR3Dv1/Foundry-Pay/pull/19#issuecomment-5075946720",
+    "blocking_findings_addressed": 5
+  },
   "fixture_policy": "all synthetic claim material is generated at runtime; no literal token-like fixture",
   "scope": "offline framework-agnostic TypeScript reference kit",
   "authority_limits": [
@@ -14,24 +19,26 @@
   ],
   "verified_properties": [
     "exact HTTPS origin and claim path validation fail closed",
-    "locator and secret have at least 256-bit encoded material",
+    "locator and secret are canonical unpadded base64url encodings of exactly 256 bits",
+    "browser runtime uses Web APIs and succeeds with global Buffer absent",
     "fragment is synchronously replaced before session use",
+    "public API exposes no raw parser or pre-strip secret byte path",
     "secret session is consume-once with best-effort byte zeroization",
     "resolver request contains locator path and never fragment or secret",
     "request requires no-referrer and no-store behavior",
     "public resolver failures collapse to claim_unavailable",
-    "redaction covers URLs, encoded forms, nested values, errors, telemetry, and evidence",
+    "redaction covers URLs, encoded forms, nested values, Error cause cycles, telemetry, and evidence",
     "clipboard/share output and post-consumption URL contain no secret"
   ],
   "tests": {
     "focused_typescript": {
       "command": "npm test --prefix packages/channel-protocol/typescript",
       "result": "passed",
-      "passed": 13,
+      "passed": 18,
       "failed": 0
     },
     "python_repository": {
-      "command": "python -m pytest --basetemp C:\\tmp\\fc-sec-003-full-tests",
+      "command": "python -m pytest --basetemp C:\\tmp\\fc-sec-003-remediation-full",
       "result": "passed",
       "passed": 283,
       "skipped": 11,
@@ -55,13 +62,26 @@
     "secret_guard": {
       "command": "python scripts/check_secrets.py",
       "result": "passed",
-      "files_scanned": 247
+      "files_scanned": 248
+    },
+    "dependency_audit": {
+      "command": "npm audit --audit-level=high (both TypeScript packages)",
+      "result": "passed",
+      "vulnerabilities": 0
+    },
+    "browser_source_runtime_probe": {
+      "command": "reject Buffer or node: references under packages/channel-protocol/typescript/src",
+      "result": "passed"
+    },
+    "ci_coverage": {
+      "workflow": ".github/workflows/ci.yml",
+      "result": "new channel-protocol package is installed, built, and tested"
     }
   },
   "synthetic_fixtures_only": true,
   "network_used_by_security_tests": false,
   "security_review": {
-    "mandatory_frontend_security_review": "not_performed",
+    "mandatory_frontend_security_review": "remediation_pending_independent_rereview",
     "blocks": [
       "consumer claim frontend deployment",
       "claims that fragment secrecy is proven in a deployed application"
