@@ -14,17 +14,18 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-CTRL-003 | done | FC-CTRL-001 | immutable baselines for both public repositories |
 | FC-CTRL-004 | done | FC-CTRL-003 | reuse ledger and gap matrix |
 | FC-CTRL-005 | done | FC-CTRL-001 | public/private and repository boundary |
+| FC-CTRL-006 | done | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003, FC-SEC-003 | reconcile integrated gates and unlock only satisfied offline work |
 
 ## Epic B — Channel protocol
 
 | Work item | Status | Depends on | Outcome |
 |---|---|---|---|
-| FC-PROTO-001 | ready | FOUNDATIONS-001 | executable `Channel` and `ChannelFunding` validation |
-| FC-PROTO-002 | ready | FOUNDATIONS-001 | cumulative voucher verifier and monotonic reference ledger |
-| FC-PROTO-003 | ready | FOUNDATIONS-001 | claim and dual-signature recipient binding verifier |
-| FC-PROTO-004 | blocked | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | settlement and receipt implementation |
-| FC-PROTO-005 | blocked | FC-PROTO-001, FC-PROTO-002 | close, expiry, epoch, and refund implementation |
-| FC-PROTO-006 | blocked | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | normative canonicalization and hashes |
+| FC-PROTO-001 | done | FOUNDATIONS-001 | executable `Channel` and `ChannelFunding` validation |
+| FC-PROTO-002 | done | FOUNDATIONS-001 | cumulative voucher verifier and monotonic reference ledger |
+| FC-PROTO-003 | done | FOUNDATIONS-001 | claim and dual-signature recipient binding verifier |
+| FC-PROTO-004 | ready | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | settlement and receipt implementation |
+| FC-PROTO-005 | ready | FC-PROTO-001, FC-PROTO-002 | close, expiry, epoch, and refund implementation |
+| FC-PROTO-006 | ready | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | normative canonicalization and hashes |
 | FC-PROTO-007 | blocked | FC-PROTO-006 | Python/TypeScript/Rust cross-language vectors |
 
 ## Epic C — Security
@@ -33,7 +34,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 |---|---|---|---|
 | FC-SEC-001 | done | FOUNDATIONS-001 | comprehensive design threat model |
 | FC-SEC-002 | blocked | FC-PROTO-002, FC-PROTO-006 | replay and domain-separation property suite |
-| FC-SEC-003 | ready | FOUNDATIONS-001 | claim-link handling and secret non-disclosure test kit |
+| FC-SEC-003 | done | FOUNDATIONS-001 | claim-link handling and secret non-disclosure test kit |
 | FC-SEC-004 | blocked | FC-PROTO-004, FC-SOL-004 | concurrent settlement adversarial proof |
 | FC-SEC-005 | blocked | FC-PROTO-004, SA-CHAN-004 | Cloud outage and self-recovery proof |
 
@@ -53,13 +54,20 @@ No program implementation is authorized by `FOUNDATIONS-001`.
 
 | Work item | Status | Depends on | Outcome |
 |---|---|---|---|
+| SA-CHAN-000 | blocked | FC-PROTO-007 + independent cryptographic review | draft capability contracts and fake conformance adapter; no ChannelVault compatibility claim |
 | SA-CHAN-001 | blocked | FC-PROTO-006, FC-SOL-003 | generic channel capability discovery |
 | SA-CHAN-002 | blocked | SA-CHAN-001, FC-SOL-003 | open/top-up/activation preparation |
 | SA-CHAN-003 | blocked | SA-CHAN-001, FC-SOL-003 | settlement preparation |
 | SA-CHAN-004 | blocked | SA-CHAN-002, SA-CHAN-003 | inspect/status/recovery |
 | SA-CHAN-005 | blocked | SA-CHAN-004, FC-PROTO-007 | channel evidence and conformance |
 
-These items execute in the independent Solana-Agent repository.
+`SA-CHAN-001` through `SA-CHAN-005` execute in the independent Solana-Agent
+repository.
+
+`SA-CHAN-000` is deliberately a public-protocol/fake-adapter precursor in
+Foundry-Pay. It cannot complete or rename `SA-CHAN-001`; the real capability
+discovery gate remains blocked until the ChannelVault instruction contracts
+exist.
 
 ## Epic F — Product and experience
 
@@ -85,9 +93,19 @@ fixtures and UX contracts remain in Foundry-Pay.
 | FC-VAL-004 | blocked | FC-PROD-002, FC-PROD-004 | claim-link and wallet-binding usability |
 | FC-VAL-005 | blocked | FC-PROD-003 | repeated-channel reuse intent |
 
-## First five execution-ready items
+## Epic H — Offline failure validation
 
-### 1. FC-PROTO-001 — Channel and funding validator
+| Work item | Status | Depends on | Outcome |
+|---|---|---|---|
+| FC-FAIL-003 | blocked | FC-PROTO-004, FC-PROTO-005, SA-CHAN-000 | offline settlement/lifecycle failure lab without on-chain claims |
+
+`FC-FAIL-003` validates only the controlled reference model. It cannot satisfy
+`FC-SEC-004` or `FC-SEC-005`, whose on-chain and real-executor dependencies
+remain unchanged.
+
+## Initially completed foundation items
+
+### FC-PROTO-001 — Channel and funding validator
 
 - Repository: Foundry-Pay public
 - Reserved paths:
@@ -101,7 +119,7 @@ fixtures and UX contracts remain in Foundry-Pay.
     totals;
   - no network, wallet, Cloud, or Solana program.
 
-### 2. FC-PROTO-002 — Cumulative voucher verifier
+### FC-PROTO-002 — Cumulative voucher verifier
 
 - Repository: Foundry-Pay public
 - Reserved paths:
@@ -115,7 +133,7 @@ fixtures and UX contracts remain in Foundry-Pay.
     expiry;
   - prove stale/replayed vouchers add no reference-ledger effect.
 
-### 3. FC-PROTO-003 — Claim and recipient binding verifier
+### FC-PROTO-003 — Claim and recipient binding verifier
 
 - Repository: Foundry-Pay public
 - Reserved paths:
@@ -127,7 +145,7 @@ fixtures and UX contracts remain in Foundry-Pay.
   - reject substitution, nonce replay, wrong channel/epoch/network/program;
   - implement initial binding only; rebind remains disabled.
 
-### 4. FC-SEC-003 — Claim-link security kit
+### FC-SEC-003 — Claim-link security kit
 
 - Repository: Foundry-Pay public
 - Reserved paths:
@@ -141,7 +159,28 @@ fixtures and UX contracts remain in Foundry-Pay.
   - document browser/analytics/frontend residual risks without claiming human
     identity.
 
-### 5. FC-VAL-003 — 30-second comprehension test
+## Current ready items
+
+### FC-PROTO-004 — Settlement and receipt reference runtime
+
+- Repository: Foundry-Pay public
+- Scope: offline economic validation, exact execution correlation, durable
+  recovery, and independently reconciled receipts.
+- Explicitly unproven: Solana execution, ChannelVault behavior, consumer
+  demand, and exactly-once blockchain execution.
+
+### FC-PROTO-005 — Close, expiry, epoch, and refund semantics
+
+- Repository: Foundry-Pay public
+- Scope: preserve unexpired rights during close and conservation during refund.
+
+### FC-PROTO-006 — Normative canonicalization
+
+- Repository: Foundry-Pay public
+- Scope: freeze signed-object domains only after the draft settlement objects
+  exist.
+
+### FC-VAL-003 — 30-second comprehension test
 
 - Repository: private product research; sanitized result in Foundry-Pay public
 - Reserved public paths:
