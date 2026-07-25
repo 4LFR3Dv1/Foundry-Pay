@@ -1,0 +1,85 @@
+{
+  "case_count": 15,
+  "executed_cases": [
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_partial_and_full_settlement_requests_validate",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_request_tampering_and_bounds_reject[mutation0-zero_settlement]",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_request_tampering_and_bounds_reject[mutation1-over_settlement]",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_request_tampering_and_bounds_reject[mutation2-snapshot_context_mismatch]",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_request_tampering_and_bounds_reject[mutation3-snapshot_context_mismatch]",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_request_tampering_and_bounds_reject[mutation4-snapshot_context_mismatch]",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_request_tampering_and_bounds_reject[mutation5-snapshot_context_mismatch]",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_request_tampering_and_bounds_reject[mutation6-request_expired]",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_request_tampering_and_bounds_reject[mutation7-request_outlives_channel]",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_request_tampering_and_bounds_reject[mutation8-snapshot_tampering]",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_settlement_above_vault_rejects_even_with_larger_activated_total",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_commitment_tampering_and_wrong_signer_reject",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_technical_confirmation_is_not_economic_completion",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_definitive_executor_rejection_is_not_unknown",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_draft_schema_accepts_all_reference_runtime_objects",
+      "status": "passed"
+    }
+  ],
+  "invariant": "0 < requested <= activated - settled and requested <= observed vault",
+  "report": "settlement-matrix",
+  "source": "pytest-full.xml",
+  "status": "passed",
+  "work_item": "FC-PROTO-004"
+}

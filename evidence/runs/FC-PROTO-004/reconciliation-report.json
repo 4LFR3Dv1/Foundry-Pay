@@ -1,0 +1,75 @@
+{
+  "case_count": 13,
+  "executed_cases": [
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_reconciliation_mismatch_never_completes[changes0]",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_reconciliation_mismatch_never_completes[changes1]",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_reconciliation_mismatch_never_completes[changes2]",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_reconciliation_mismatch_never_completes[changes3]",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_two_observation_providers_must_agree",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_two_matching_observation_providers_can_reconcile",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_reconciliation_context_substitution_never_completes[channel_id-other_channel]",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_reconciliation_context_substitution_never_completes[epoch-1]",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_reconciliation_context_substitution_never_completes[mint-9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb]",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_reconciliation_context_substitution_never_completes[transaction_signature-different_signature]",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_successful_reconciliation_is_idempotent_and_hashed",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_stale_snapshot_after_completed_settlement_rejects",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_observation_hash_tampering_rejects",
+      "status": "passed"
+    }
+  ],
+  "invariant": "technical confirmation becomes completed only after exact economic observation",
+  "report": "reconciliation-report",
+  "source": "pytest-full.xml",
+  "status": "passed",
+  "work_item": "FC-PROTO-004"
+}

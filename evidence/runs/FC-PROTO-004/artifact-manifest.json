@@ -1,0 +1,57 @@
+{
+  "artifacts": [
+    {
+      "path": "contracts/channel/settlement.schema.json",
+      "sha256": "f8281e65bd68ac5c8670b77f3ad9f752bbf606336dc50ef22747c1439cc361d5"
+    },
+    {
+      "path": "packages/channel-protocol/python/foundry_channel_protocol/settlement.py",
+      "sha256": "0e824ddd88029aaa5bac32e3396eda1a6f557b432b495b1529a6914878ca0a7a"
+    },
+    {
+      "path": "tests/channels/test_settlement.py",
+      "sha256": "cfdfeaddbafc48ab4772c6f7de8b7fc53c824180ffac3ba6671efbeb4108c94b"
+    },
+    {
+      "path": "provenance/REUSE_LEDGER.yaml",
+      "sha256": "b126a1b722539fd3497c95b4642c3617399b1925edab0d73d2e3d1a22f1a3471"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-004/TASK_CONTRACT.yaml",
+      "sha256": "bef716d407e165ba6786025da807280472c6e1393ea076329ff0e7e6e1326b4d"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-004/generate_evidence.py",
+      "sha256": "a49fcf657319162a199d55206dd60847d63151d082c65597dd9572c3e5209ad1"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-004/validation-report.json",
+      "sha256": "be7801e33bb48e38410689921d569a27bbe5f86b193cb9f4e17b9506b01a4281"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-004/settlement-matrix.json",
+      "sha256": "1cf6585a4dd6dfc23ac8b3f220ec184d40651ad39a4f3820f8ba2dc8e642442f"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-004/recovery-matrix.json",
+      "sha256": "50cdf51bd3dbd8ec28a5792e62a5999fdab2f65d2a54648f393607e9f03cbfd0"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-004/concurrency-report.json",
+      "sha256": "320ca1985b6e8763fe469dfd1abadfbc7e728f8a07a8bd6ae4204d11840f6d49"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-004/reconciliation-report.json",
+      "sha256": "02f7a5025b9947105287e02788f66a45d3fe0c32cdc55341f4296668ab351db9"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-004/pytest-full.xml",
+      "sha256": "0ba3c80cd8ac367422ed214c6a1c4cc51229775817d90994e854f05ff96f5772"
+    }
+  ],
+  "baseline_commit": "b20fa0203089eff242998e47485377921b1c10b4",
+  "generated_at": "2026-07-25T13:55:28Z",
+  "implementation_commit": "369c52527cfd4b3d4603a9ab4dd36df822db350f",
+  "reviewed_head": null,
+  "work_item": "FC-PROTO-004"
+}

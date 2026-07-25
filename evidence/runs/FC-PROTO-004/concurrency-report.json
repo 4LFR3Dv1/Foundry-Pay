@@ -1,0 +1,30 @@
+{
+  "case_count": 4,
+  "executed_cases": [
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_two_process_same_request_create_one_logical_record",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_two_process_same_key_different_requests_conflict",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_concurrent_partial_reservations_cannot_exceed_activated_right",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_full_and_partial_concurrent_reservations_preserve_aggregate_bound",
+      "status": "passed"
+    }
+  ],
+  "invariant": "aggregate reservations never exceed activated right or observed vault",
+  "report": "concurrency-report",
+  "source": "pytest-full.xml",
+  "status": "passed",
+  "work_item": "FC-PROTO-004"
+}

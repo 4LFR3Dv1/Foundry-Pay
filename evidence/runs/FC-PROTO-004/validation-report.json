@@ -1,0 +1,49 @@
+{
+  "baseline_commit": "b20fa0203089eff242998e47485377921b1c10b4",
+  "claims": {
+    "controlled_submit_attempts": "at-most-one within tested reference runtime",
+    "exactly_once_blockchain_execution_proven": false,
+    "solana_execution_proven": false,
+    "technical_receipt_is_economic_completion": false,
+    "unknown_allows_automatic_resubmit": false
+  },
+  "executed_gates": {
+    "channel_protocol_typescript": {
+      "failed": 0,
+      "passed": 18
+    },
+    "external_execution_typescript": {
+      "failed": 0,
+      "passed": 8
+    },
+    "foundation_validator": "passed",
+    "git_diff_check": "passed",
+    "npm_audit_high": {
+      "packages": 2,
+      "vulnerabilities": 0
+    },
+    "ruff_check": "passed",
+    "ruff_format": "passed",
+    "secret_guard_files": 262
+  },
+  "generated_at": "2026-07-25T13:55:28Z",
+  "implementation_commit": "369c52527cfd4b3d4603a9ab4dd36df822db350f",
+  "limitations": [
+    "eleven optional SA-CHAOS-001 tests were skipped because the pinned checkout was unavailable locally",
+    "settlement signed-object vectors remain draft until FC-PROTO-006",
+    "caller-supplied snapshots and observations do not assert on-chain provenance"
+  ],
+  "pytest": {
+    "errors": 0,
+    "failures": 0,
+    "focused_settlement_cases": 43,
+    "focused_settlement_passed": 43,
+    "passed": 326,
+    "seconds": 8.106,
+    "skipped": 11,
+    "tests": 337
+  },
+  "reviewed_head": null,
+  "status": "passed",
+  "work_item": "FC-PROTO-004"
+}
