@@ -133,7 +133,7 @@ work_items:
     objective: implement settlement request, execution correlation, and reconciled receipt contracts
     owner: protocol-engineer
     repository: 4LFR3Dv1/Foundry-Pay
-    allowed_paths: [packages/channel-protocol/**, tests/channels/test_settlement.py, contracts/channel/settlement.schema.json, evidence/runs/FC-PROTO-004/**]
+    allowed_paths: [packages/channel-protocol/**, tests/channels/test_settlement.py, contracts/channel/settlement.schema.json, evidence/runs/FC-PROTO-004/**, provenance/REUSE_LEDGER.yaml]
     dependencies: [FC-PROTO-001, FC-PROTO-002, FC-PROTO-003]
     invariants: [settlement delta cannot exceed activated remaining right or vault balance]
     acceptance: [partial and total settlement state transitions validate and correlate exact execution evidence]
