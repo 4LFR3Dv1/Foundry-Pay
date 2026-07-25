@@ -72,8 +72,22 @@ work_items:
     security_review: IP-and-authority-review
     stop_conditions: [private customer or custody material enters the public repository]
 
+  - id: FC-CTRL-006
+    status: done
+    objective: reconcile the work graph with independently reviewed and integrated offline protocol gates
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [docs/channels/WORK_GRAPH.md, docs/channels/work-items.yaml, docs/channels/EVIDENCE_INDEX.md, scripts/check_channel_foundation.py, tests/channels/test_foundation_contracts.py, evidence/runs/FC-CTRL-006/**]
+    dependencies: [FC-PROTO-001, FC-PROTO-002, FC-PROTO-003, FC-SEC-003]
+    invariants: [work-item status is backed by immutable merge and review evidence]
+    acceptance: [completed gates are done, newly satisfied offline gates are ready, future on-chain gates remain blocked]
+    tests: [foundation work-graph validator and full regression suite]
+    evidence: [merge SHAs, validation report, and artifact hashes]
+    security_review: program-governance-review
+    stop_conditions: [a ready item has an incomplete dependency or an on-chain gate is anticipated]
+
   - id: FC-PROTO-001
-    status: ready
+    status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
     owner: protocol-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -87,7 +101,7 @@ work_items:
     stop_conditions: [arithmetic or lifecycle ambiguity remains]
 
   - id: FC-PROTO-002
-    status: ready
+    status: done
     objective: implement cumulative voucher hashing, signature verification, and monotonic reference ledger
     owner: protocol-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -101,7 +115,7 @@ work_items:
     stop_conditions: [an off-chain assertion is treated as latest activated state]
 
   - id: FC-PROTO-003
-    status: ready
+    status: done
     objective: implement ChannelClaim and dual-signature RecipientBinding verification
     owner: protocol-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -115,7 +129,7 @@ work_items:
     stop_conditions: [claim locator or Cloud database can select destination]
 
   - id: FC-PROTO-004
-    status: blocked
+    status: ready
     objective: implement settlement request, execution correlation, and reconciled receipt contracts
     owner: protocol-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -129,7 +143,7 @@ work_items:
     stop_conditions: [executor receipt is accepted as final business success]
 
   - id: FC-PROTO-005
-    status: blocked
+    status: ready
     objective: implement close, expiry, epoch, and refund reference semantics
     owner: protocol-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -143,7 +157,7 @@ work_items:
     stop_conditions: [sender can refund value still owed to recipient]
 
   - id: FC-PROTO-006
-    status: blocked
+    status: ready
     objective: freeze normative channel canonicalization, domain separation, and hash functions
     owner: protocol-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -199,7 +213,7 @@ work_items:
     stop_conditions: [any signed field is semantically material but not cryptographically bound]
 
   - id: FC-SEC-003
-    status: ready
+    status: done
     objective: create claim-link security contracts and secret non-disclosure tests
     owner: application-security-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -310,6 +324,20 @@ work_items:
     security_review: mandatory-governance-review
     stop_conditions: [mainnet discussion without approved upgrade policy]
 
+  - id: SA-CHAN-000
+    status: blocked
+    objective: draft transport-independent channel capability contracts and a fake conformance adapter
+    owner: protocol-integration-engineer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [packages/channel-protocol/**, services/fake-executor/**, contracts/channel/capabilities/**, tests/channels/conformance/fake-adapter/**, evidence/runs/SA-CHAN-000/**]
+    dependencies: [FC-PROTO-007]
+    invariants: [draft capabilities grant no authority and do not claim compatibility with unimplemented ChannelVault instructions]
+    acceptance: [closed draft descriptors and fake adapter exercise public protocol contracts without Solana, RPC, wallet, or signer]
+    tests: [unsupported capability, version mismatch, exact commitment, fake recovery, and authority-boundary cases]
+    evidence: [draft capability manifest and fake conformance report]
+    security_review: independent-cryptographic-and-authority-review
+    stop_conditions: [draft contract is represented as SA-CHAN-001 or as compatible with real ChannelVault instructions]
+
   - id: SA-CHAN-001
     status: blocked
     objective: add generic capability discovery for supported channel operations
@@ -379,6 +407,20 @@ work_items:
     evidence: [public Solana-Agent evidence release]
     security_review: evidence-and-redaction-review
     stop_conditions: [claim secret, private key, credential, or customer data enters evidence]
+
+  - id: FC-FAIL-003
+    status: blocked
+    objective: exercise offline channel settlement, lifecycle, ambiguity, and recovery failures against reference runtimes
+    owner: reliability-protocol-engineer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [services/failure_lab/**, tests/channels/failure-lab/**, examples/channel-recovery/**, evidence/runs/FC-FAIL-003/**]
+    dependencies: [FC-PROTO-004, FC-PROTO-005, SA-CHAN-000]
+    invariants: [offline failure evidence never claims Solana execution, on-chain concurrency, or Cloud-free production recovery]
+    acceptance: [reference settlement and lifecycle ambiguity recover without automatic second submission in the controlled model]
+    tests: [lost response, restart, provider divergence, concurrent request, closure race, and repeated recovery]
+    evidence: [offline failure matrix and deterministic recovery journals]
+    security_review: independent-offline-failure-review
+    stop_conditions: [FC-SEC-004, FC-SEC-005, or any on-chain guarantee is claimed from offline simulation]
 
   - id: FC-PROD-001
     status: blocked

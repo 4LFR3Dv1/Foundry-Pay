@@ -65,13 +65,15 @@ REQUIRED_ADRS = tuple(
 )
 
 REQUIRED_WORK_ITEMS = {
-    *(f"FC-CTRL-{number:03d}" for number in range(1, 6)),
+    *(f"FC-CTRL-{number:03d}" for number in range(1, 7)),
     *(f"FC-PROTO-{number:03d}" for number in range(1, 8)),
     *(f"FC-SEC-{number:03d}" for number in range(1, 6)),
     *(f"FC-SOL-{number:03d}" for number in range(1, 6)),
     *(f"SA-CHAN-{number:03d}" for number in range(1, 6)),
     *(f"FC-PROD-{number:03d}" for number in range(1, 7)),
     *(f"FC-VAL-{number:03d}" for number in range(1, 6)),
+    "SA-CHAN-000",
+    "FC-FAIL-003",
 }
 
 WORK_ITEM_FIELDS = {
@@ -339,18 +341,46 @@ def validate() -> dict[str, Any]:
     ready_items = sorted(
         item_id for item_id, fields in work_items.items() if fields.get("status") == "ready"
     )
+    done_items = {
+        item_id for item_id, fields in work_items.items() if fields.get("status") == "done"
+    }
+    invalid_statuses = {
+        item_id: fields.get("status")
+        for item_id, fields in work_items.items()
+        if fields.get("status") not in {"blocked", "ready", "active", "review", "done"}
+    }
+    ready_with_incomplete_dependencies: dict[str, list[str]] = {}
+    for item_id in ready_items:
+        dependencies = work_items[item_id].get("dependencies", "")
+        dependency_ids = [
+            value.strip()
+            for value in dependencies.removeprefix("[").removesuffix("]").split(",")
+            if value.strip() and value.strip() != "FOUNDATIONS-001"
+        ]
+        incomplete = sorted(
+            dependency for dependency in dependency_ids if dependency not in done_items
+        )
+        if incomplete:
+            ready_with_incomplete_dependencies[item_id] = incomplete
     if missing_items:
         errors.append(f"missing work items: {', '.join(missing_items)}")
     if incomplete_items:
         errors.append(f"incomplete work items: {json.dumps(incomplete_items, sort_keys=True)}")
-    if len(ready_items) != 5:
-        errors.append(f"expected exactly five ready work items, got {len(ready_items)}")
+    if invalid_statuses:
+        errors.append(f"invalid work-item statuses: {json.dumps(invalid_statuses, sort_keys=True)}")
+    if ready_with_incomplete_dependencies:
+        errors.append(
+            "ready work items have incomplete dependencies: "
+            + json.dumps(ready_with_incomplete_dependencies, sort_keys=True)
+        )
     checks["work_graph"] = {
         "required_item_count": len(REQUIRED_WORK_ITEMS),
         "observed_item_count": len(work_items),
         "missing_items": missing_items,
         "incomplete_items": incomplete_items,
         "ready_items": ready_items,
+        "invalid_statuses": invalid_statuses,
+        "ready_with_incomplete_dependencies": ready_with_incomplete_dependencies,
     }
 
     final = vector["expected_final_state"]

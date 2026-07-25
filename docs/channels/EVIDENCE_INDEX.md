@@ -20,7 +20,7 @@ foundation and are not presented as evidence.
 | cumulative vouchers hash deterministically and form an activation chain | [positive vector](../../contracts/channel/test-vectors/positive/cumulative-channel-v1.json) | same command |
 | required replay, monotonicity, funding, binding, expiry, and settlement mutations reject | [negative vectors](../../contracts/channel/test-vectors/negative/) | same command |
 | accounting satisfies `F = V + S + R` and `0 <= S <= A <= F - R` | positive vector and `foundation-check.json` | same command |
-| exactly five first work items are ready and all required items have complete contracts | [work items](work-items.yaml) | same command |
+| every required work item has a complete contract and every `ready` item has completed dependencies | [work items](work-items.yaml) | same command |
 | authority, state, link, recovery, and repository boundaries are accepted decisions | [decision register](DECISIONS.md) and five ADRs | document review |
 | required threats have preventive, detective, recovery, evidence, and residual-risk treatment | [threat model](THREAT_MODEL.md) | security design review |
 | three critical design risks are versioned as public release gates without exploit detail | [security gates](SECURITY_GATES.md) | register review |
@@ -28,6 +28,18 @@ foundation and are not presented as evidence.
 Generated run artifacts live in
 `evidence/runs/FOUNDATIONS-001/`. Their hashes are recorded in that directory's
 README after the validation run.
+
+## Integrated offline gates
+
+| Work item | Merge commit | Evidence |
+|---|---|---|
+| FC-PROTO-001 | `0911bb9d5128c4dc9dccf82437a0dce0c0b53896` | `evidence/runs/FC-PROTO-001/` |
+| FC-PROTO-002 | `a27a0e3daf0ecf2d0f11471d3055283cf6859db7` | `evidence/runs/FC-PROTO-002/` |
+| FC-PROTO-003 | `2a5a7f8392c5af96e59d19585a83578761c2606b` | `evidence/runs/FC-PROTO-003/` |
+| FC-SEC-003 | `ec8db6ba213d40718b3d9e5593826021d36e0e77` | `evidence/runs/FC-SEC-003/` |
+
+These merges authorize the next offline protocol work only. They do not prove
+ChannelVault, Solana execution, a deployed consumer frontend, or product demand.
 
 ## Explicitly unproven
 
