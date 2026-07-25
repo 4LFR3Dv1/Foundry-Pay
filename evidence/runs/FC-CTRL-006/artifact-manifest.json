@@ -1,0 +1,50 @@
+{
+  "work_item": "FC-CTRL-006",
+  "baseline_commit": "ec8db6ba213d40718b3d9e5593826021d36e0e77",
+  "implementation_commit": "20f9895a160a2482f4d55775e607684e0e710441",
+  "reviewed_head": null,
+  "artifacts": [
+    {
+      "path": "docs/channels/work-items.yaml",
+      "sha256": "bac8e64fc620e8310337b052ecbd85a6847f36ee83cc14307a5b0f8bb79b85ba"
+    },
+    {
+      "path": "docs/channels/WORK_GRAPH.md",
+      "sha256": "9f0627bb80b2e3ace326fbe9074ed1210b75f88def8e49ac30fed643c4555274"
+    },
+    {
+      "path": "docs/channels/EVIDENCE_INDEX.md",
+      "sha256": "40a329dee9e85b9562de3337dba1daafc2c3bdda586f4b854397b1d2890facaa"
+    },
+    {
+      "path": "scripts/check_channel_foundation.py",
+      "sha256": "f2d14f0f3d7f410c4b7ae018a8d155f514ac869361cf87187cba5ff73e0de1fa"
+    },
+    {
+      "path": "tests/channels/test_foundation_contracts.py",
+      "sha256": "c548b204c18fc423df83c6512f65faead6192d5434ad3aeb9db806b702893404"
+    },
+    {
+      "path": "evidence/runs/FC-CTRL-006/validation-report.json",
+      "sha256": "f4c27db98224002161c59a5e79490bd4a415b27c300d970a3f13c3387515302d"
+    },
+    {
+      "path": "evidence/runs/FC-CTRL-006/pytest-full.xml",
+      "sha256": "d951ac8fad69f04a7a229e9403a9f005879d1c5d779096499c5da2bcfe5fa96a"
+    }
+  ],
+  "result": {
+    "foundation_validator": "passed",
+    "pytest_collected": 294,
+    "pytest_passed": 283,
+    "pytest_skipped": 11,
+    "pytest_failed": 0,
+    "ready_with_incomplete_dependencies": 0,
+    "secret_guard_files": 248
+  },
+  "limitations": [
+    "reviewed_head is assigned only after the evidence commit is reviewed",
+    "optional SA-CHAOS-001 tests were skipped because the pinned checkout was unavailable",
+    "offline coordination does not prove Solana, ChannelVault, consumer, or demand behavior"
+  ]
+}

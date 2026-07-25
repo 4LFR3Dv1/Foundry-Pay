@@ -1,0 +1,151 @@
+{
+  "check": "FOUNDATIONS-001",
+  "checks": {
+    "accounting": {
+      "conservation": true,
+      "rights_bounds": true
+    },
+    "closing_race_vector": {
+      "rules": {
+        "deadline_matches_activation_window": true,
+        "post_deadline_conservation": true,
+        "pre_deadline_refund_is_zero": true,
+        "presentation_is_inside_window": true,
+        "valid_voucher_activates_during_window": true,
+        "voucher_advances_snapshot": true
+      },
+      "scenario": "issued-voucher-survives-close-race",
+      "schema_valid": true,
+      "valid": true
+    },
+    "documents": {
+      "missing": [],
+      "required": 23
+    },
+    "negative_vectors": {
+      "count": 15,
+      "results": [
+        {
+          "case_id": "cumulative-decrease",
+          "expected_error": "cumulative_amount_decreased",
+          "observed_error": "cumulative_amount_decreased",
+          "passed": true
+        },
+        {
+          "case_id": "stale-sequence",
+          "expected_error": "sequence_not_monotonic",
+          "observed_error": "sequence_not_monotonic",
+          "passed": true
+        },
+        {
+          "case_id": "broken-voucher-chain",
+          "expected_error": "previous_voucher_hash_mismatch",
+          "observed_error": "previous_voucher_hash_mismatch",
+          "passed": true
+        },
+        {
+          "case_id": "wrong-network",
+          "expected_error": "network_mismatch",
+          "observed_error": "network_mismatch",
+          "passed": true
+        },
+        {
+          "case_id": "cross-channel-replay",
+          "expected_error": "channel_mismatch",
+          "observed_error": "channel_mismatch",
+          "passed": true
+        },
+        {
+          "case_id": "cross-asset-replay",
+          "expected_error": "mint_mismatch",
+          "observed_error": "mint_mismatch",
+          "passed": true
+        },
+        {
+          "case_id": "overfunded-authorization",
+          "expected_error": "authorization_exceeds_funding",
+          "observed_error": "authorization_exceeds_funding",
+          "passed": true
+        },
+        {
+          "case_id": "destination-substitution",
+          "expected_error": "binding_hash_mismatch",
+          "observed_error": "binding_hash_mismatch",
+          "passed": true
+        },
+        {
+          "case_id": "binding-nonce-replay",
+          "expected_error": "binding_nonce_not_monotonic",
+          "observed_error": "binding_nonce_not_monotonic",
+          "passed": true
+        },
+        {
+          "case_id": "over-settlement",
+          "expected_error": "settlement_exceeds_authorized",
+          "observed_error": "settlement_exceeds_authorized",
+          "passed": true
+        },
+        {
+          "case_id": "inconsistent-settlement-total",
+          "expected_error": "settlement_total_mismatch",
+          "observed_error": "settlement_total_mismatch",
+          "passed": true
+        },
+        {
+          "case_id": "voucher-expired-before-request",
+          "expected_error": "voucher_expired",
+          "observed_error": "voucher_expired",
+          "passed": true
+        },
+        {
+          "case_id": "zero-cumulative-authorization",
+          "expected_error": "cumulative_amount_decreased",
+          "observed_error": "cumulative_amount_decreased",
+          "passed": true
+        },
+        {
+          "case_id": "recipient-binding-mint-substitution",
+          "expected_error": "binding_hash_mismatch",
+          "observed_error": "binding_hash_mismatch",
+          "passed": true
+        },
+        {
+          "case_id": "recipient-binding-voucher-substitution",
+          "expected_error": "binding_hash_mismatch",
+          "observed_error": "binding_hash_mismatch",
+          "passed": true
+        }
+      ]
+    },
+    "positive_vector": {
+      "binding_hash": "sha256:5ffc2a2ac51ebcbeb23d2cffa013251ce2680747eec9cbb570d5ee793a535192",
+      "scenario": "fund-100-activate-10-25-40-bind-and-settle-40",
+      "valid": true,
+      "voucher_hashes": [
+        "sha256:f91159c7977bed60de04241ed34002320fc1c023e5316e96cfae8a35206b3758",
+        "sha256:99c1ceb64078e802721449fea57f94bb1f490f58ad2e23108cf189e8161cb325",
+        "sha256:8a3283d61a75e1bbe987941601e8f28708875913fd0dfef0fa399c6a7dd296e2"
+      ]
+    },
+    "schemas": {
+      "count": 7,
+      "valid": true
+    },
+    "work_graph": {
+      "incomplete_items": {},
+      "invalid_statuses": {},
+      "missing_items": [],
+      "observed_item_count": 41,
+      "ready_items": [
+        "FC-PROTO-004",
+        "FC-PROTO-005",
+        "FC-PROTO-006",
+        "FC-VAL-003"
+      ],
+      "ready_with_incomplete_dependencies": {},
+      "required_item_count": 41
+    }
+  },
+  "errors": [],
+  "status": "passed"
+}
