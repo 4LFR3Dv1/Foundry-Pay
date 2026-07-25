@@ -1,0 +1,45 @@
+{
+  "case_count": 7,
+  "executed_cases": [
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_lost_response_restart_recovers_signature_without_second_submit",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_unknown_and_repeated_recovery_remain_blocked",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_recovery_rejects_executor_not_bound_by_commitment",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_recovery_rejects_uncorrelated_status_response",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_provider_divergence_is_disputed",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_restart_before_submission_preserves_authorization_and_zero_intents",
+      "status": "passed"
+    },
+    {
+      "classname": "tests.channels.test_settlement",
+      "name": "test_expired_authorization_fails_before_submit_intent",
+      "status": "passed"
+    }
+  ],
+  "invariant": "unknown never completes or creates a second controlled submit",
+  "report": "recovery-matrix",
+  "source": "pytest-full.xml",
+  "status": "passed",
+  "work_item": "FC-PROTO-004"
+}

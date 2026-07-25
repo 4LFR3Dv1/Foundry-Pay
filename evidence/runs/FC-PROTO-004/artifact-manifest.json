@@ -1,0 +1,65 @@
+{
+  "artifacts": [
+    {
+      "path": "contracts/channel/settlement.schema.json",
+      "sha256": "dc921c211df61b2b34073a95bfa801b850a764a728870b3a2036214deaaa2072"
+    },
+    {
+      "path": "packages/channel-protocol/python/README.md",
+      "sha256": "27b4027757d760cc1e430184f5020309e5b80682ff49d59dd5d817cfa72c99b9"
+    },
+    {
+      "path": "packages/channel-protocol/python/foundry_channel_protocol/__init__.py",
+      "sha256": "935697fa85442117f8bce20775a094ed25673d8203551423d6542488fea2f37e"
+    },
+    {
+      "path": "packages/channel-protocol/python/foundry_channel_protocol/settlement.py",
+      "sha256": "2ec362c0738ccb6bac458b3eb5e2aa2c930c3097659e3fccbd6bfa97773584b6"
+    },
+    {
+      "path": "tests/channels/test_settlement.py",
+      "sha256": "ec75596b8a4d2a2fb0954234789ccf8949d59c231c44fee0665ea6bcff3a84e8"
+    },
+    {
+      "path": "provenance/REUSE_LEDGER.yaml",
+      "sha256": "46a639c7acbdb266b5631f161555cb470a0142bd1ce56852e596303ae69a15b7"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-004/TASK_CONTRACT.yaml",
+      "sha256": "b2444896f66b0163516956940527c9369d47ae994886d499641a45a5e7964c8a"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-004/generate_evidence.py",
+      "sha256": "44dee98d5ac9c0a324be54ac83cd9d675007e56916aea6f92e3ee30351b0325c"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-004/validation-report.json",
+      "sha256": "b739cc6d8d71a3bebf6d8057558bea3e1e7cf3fb75d7de61ba66733851d22a4e"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-004/settlement-matrix.json",
+      "sha256": "1cf6585a4dd6dfc23ac8b3f220ec184d40651ad39a4f3820f8ba2dc8e642442f"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-004/recovery-matrix.json",
+      "sha256": "684bc198463d3bb9bebe98738f0e67c0771a99fda4e13fed626f1d2de7ebea18"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-004/concurrency-report.json",
+      "sha256": "6a34ff236e27bf4dbdc46af7a2bebe8cfe371e469929d5cb9a6ee5b6b4a5d297"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-004/reconciliation-report.json",
+      "sha256": "721c108ab9df4167e4ed8bb1b690fb8e39e8fb7681b963bd8d35cbc603420d75"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-004/pytest-full.xml",
+      "sha256": "5bea9a56fb29d3553b7faf2a9f100ed48e8f088c9e822a63c804e2c0a632b5a7"
+    }
+  ],
+  "baseline_commit": "b20fa0203089eff242998e47485377921b1c10b4",
+  "generated_at": "2026-07-25T14:50:19Z",
+  "implementation_commit": "79fc80c37e973457b8f23422b4e18b7d0deeec47",
+  "reviewed_head": null,
+  "work_item": "FC-PROTO-004"
+}
