@@ -15,6 +15,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-CTRL-004 | done | FC-CTRL-003 | reuse ledger and gap matrix |
 | FC-CTRL-005 | done | FC-CTRL-001 | public/private and repository boundary |
 | FC-CTRL-006 | done | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003, FC-SEC-003 | reconcile integrated gates and unlock only satisfied offline work |
+| FC-CTRL-007 | done | FC-PROTO-004 | record reviewed settlement integration and authorize FC-PROTO-005 paths |
 
 ## Epic B — Channel protocol
 
@@ -23,7 +24,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-PROTO-001 | done | FOUNDATIONS-001 | executable `Channel` and `ChannelFunding` validation |
 | FC-PROTO-002 | done | FOUNDATIONS-001 | cumulative voucher verifier and monotonic reference ledger |
 | FC-PROTO-003 | done | FOUNDATIONS-001 | claim and dual-signature recipient binding verifier |
-| FC-PROTO-004 | ready | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | settlement and receipt implementation |
+| FC-PROTO-004 | done | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | settlement and receipt implementation |
 | FC-PROTO-005 | ready | FC-PROTO-001, FC-PROTO-002 | close, expiry, epoch, and refund implementation |
 | FC-PROTO-006 | ready | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | normative canonicalization and hashes |
 | FC-PROTO-007 | blocked | FC-PROTO-006 | Python/TypeScript/Rust cross-language vectors |
@@ -159,9 +160,9 @@ remain unchanged.
   - document browser/analytics/frontend residual risks without claiming human
     identity.
 
-## Current ready items
+## Current protocol state
 
-### FC-PROTO-004 — Settlement and receipt reference runtime
+### FC-PROTO-004 — Settlement and receipt reference runtime (done)
 
 - Repository: Foundry-Pay public
 - Reserved paths:
@@ -174,11 +175,21 @@ remain unchanged.
   recovery, and independently reconciled receipts.
 - Explicitly unproven: Solana execution, ChannelVault behavior, consumer
   demand, and exactly-once blockchain execution.
+- Reviewed head: `47a5c9f9160e5f0562058fd3e18936f24c222ab3`.
+- Merge commit: `74359f6ac81e75d595f934ed3e03428a45a2dafa`.
 
 ### FC-PROTO-005 — Close, expiry, epoch, and refund semantics
 
 - Repository: Foundry-Pay public
 - Scope: preserve unexpired rights during close and conservation during refund.
+- Baseline must contain `74359f6ac81e75d595f934ed3e03428a45a2dafa`.
+- Reserved paths:
+  - `packages/channel-protocol/**`
+  - `tests/channels/test_closure.py`
+  - `contracts/channel/channel-closure.schema.json`
+  - `docs/channels/ADR/FC-ADR-006-activated-right-expiry-v1.md`
+  - `evidence/runs/FC-PROTO-005/**`
+  - `provenance/REUSE_LEDGER.yaml`
 
 ### FC-PROTO-006 — Normative canonicalization
 

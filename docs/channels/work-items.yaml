@@ -86,6 +86,20 @@ work_items:
     security_review: program-governance-review
     stop_conditions: [a ready item has an incomplete dependency or an on-chain gate is anticipated]
 
+  - id: FC-CTRL-007
+    status: done
+    objective: record the reviewed FC-PROTO-004 integration and authorize the exact FC-PROTO-005 decision paths
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [docs/channels/WORK_GRAPH.md, docs/channels/work-items.yaml, tests/channels/test_foundation_contracts.py, evidence/runs/FC-CTRL-007/**]
+    dependencies: [FC-PROTO-004]
+    invariants: [implementation status and authorized paths are backed by immutable merge evidence]
+    acceptance: [FC-PROTO-004 is done and FC-PROTO-005 is ready against a baseline containing its merge]
+    tests: [foundation work-graph validator and full regression suite]
+    evidence: [PR 22 reviewed head and merge commit, evidence/runs/FC-CTRL-007/**]
+    security_review: program-governance-review
+    stop_conditions: [runtime work begins against a stale graph or unauthorized path]
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -129,7 +143,7 @@ work_items:
     stop_conditions: [claim locator or Cloud database can select destination]
 
   - id: FC-PROTO-004
-    status: ready
+    status: done
     objective: implement settlement request, execution correlation, and reconciled receipt contracts
     owner: protocol-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -141,13 +155,17 @@ work_items:
     evidence: [settlement state and receipt matrix]
     security_review: mandatory-money-movement-review
     stop_conditions: [executor receipt is accepted as final business success]
+    implementation:
+      pr: 22
+      reviewed_head: 47a5c9f9160e5f0562058fd3e18936f24c222ab3
+      merge_commit: 74359f6ac81e75d595f934ed3e03428a45a2dafa
 
   - id: FC-PROTO-005
     status: ready
     objective: implement close, expiry, epoch, and refund reference semantics
     owner: protocol-engineer
     repository: 4LFR3Dv1/Foundry-Pay
-    allowed_paths: [packages/channel-protocol/**, tests/channels/test_closure.py, contracts/channel/channel-closure.schema.json, evidence/runs/FC-PROTO-005/**]
+    allowed_paths: [packages/channel-protocol/**, tests/channels/test_closure.py, contracts/channel/channel-closure.schema.json, docs/channels/ADR/FC-ADR-006-activated-right-expiry-v1.md, evidence/runs/FC-PROTO-005/**, provenance/REUSE_LEDGER.yaml]
     dependencies: [FC-PROTO-001, FC-PROTO-002]
     invariants: [closing preserves unexpired outstanding rights, refund preserves conservation]
     acceptance: [excess and final refunds are distinguished and rights remain reserved through grace]
@@ -155,6 +173,8 @@ work_items:
     evidence: [closure/refund transition matrix]
     security_review: mandatory-money-movement-review
     stop_conditions: [sender can refund value still owed to recipient]
+    baseline_contains:
+      - 74359f6ac81e75d595f934ed3e03428a45a2dafa
 
   - id: FC-PROTO-006
     status: ready
