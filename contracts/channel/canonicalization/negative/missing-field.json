@@ -1,0 +1,9 @@
+{
+  "expected_acceptance": false,
+  "expected_rejection_code": "missing_field",
+  "input": {
+    "domain": "foundry.channels.voucher"
+  },
+  "rejection_stage": "schema",
+  "vector_id": "missing-field"
+}

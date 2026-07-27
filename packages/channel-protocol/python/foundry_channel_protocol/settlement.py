@@ -21,14 +21,13 @@ from pathlib import Path
 from typing import Any, NoReturn, Protocol
 
 from foundry_external_execution_protocol import (
-    canonicalize,
     economic_plan_hash,
     execution_commitment_hash,
     prepared_message_hash,
-    sha256_digest,
     simulation_attestation_hash,
 )
 
+from .canonical import sha256_canonical_json
 from .channel import validate_channel
 
 
@@ -458,7 +457,7 @@ def _json(value: Mapping[str, Any]) -> str:
 
 
 def _canonical_hash(value: Mapping[str, Any]) -> str:
-    return sha256_digest(canonicalize(value))
+    return sha256_canonical_json(value)
 
 
 def channel_snapshot_hash(channel_snapshot: Mapping[str, Any]) -> str:

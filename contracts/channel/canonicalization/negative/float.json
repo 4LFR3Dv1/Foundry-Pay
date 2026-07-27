@@ -1,0 +1,7 @@
+{
+  "expected_acceptance": false,
+  "expected_rejection_code": "float_forbidden",
+  "input": "{\"a\":1.5}",
+  "rejection_stage": "parse",
+  "vector_id": "float"
+}

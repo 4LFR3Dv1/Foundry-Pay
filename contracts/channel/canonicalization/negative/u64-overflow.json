@@ -1,0 +1,7 @@
+{
+  "expected_acceptance": false,
+  "expected_rejection_code": "amount_out_of_range",
+  "input": "18446744073709551616",
+  "rejection_stage": "schema",
+  "vector_id": "u64-overflow"
+}

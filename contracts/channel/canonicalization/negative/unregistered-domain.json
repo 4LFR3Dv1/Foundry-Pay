@@ -1,0 +1,7 @@
+{
+  "expected_acceptance": false,
+  "expected_rejection_code": "domain_unregistered",
+  "input": "foundry.channels.unknown",
+  "rejection_stage": "domain_verification",
+  "vector_id": "unregistered-domain"
+}

@@ -1,0 +1,7 @@
+{
+  "expected_acceptance": false,
+  "expected_rejection_code": "duplicate_key",
+  "input": "{\"a\":1,\"a\":2}",
+  "rejection_stage": "parse",
+  "vector_id": "duplicate-keys"
+}

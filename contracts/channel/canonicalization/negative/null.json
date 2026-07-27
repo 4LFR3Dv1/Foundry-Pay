@@ -1,0 +1,7 @@
+{
+  "expected_acceptance": false,
+  "expected_rejection_code": "null_forbidden",
+  "input": "{\"a\":null}",
+  "rejection_stage": "projection",
+  "vector_id": "null"
+}

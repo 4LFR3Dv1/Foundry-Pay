@@ -1,0 +1,14 @@
+{
+  "byte_length": 71,
+  "canonical_utf8_base64": null,
+  "canonical_utf8_hex": null,
+  "domain": "foundry.channels.evidence",
+  "economic_authority": false,
+  "excluded_fields": [],
+  "expected_acceptance": true,
+  "expected_sha256": "sha256:57de1c9eb259d8b14f18cd2775b359c171690a1cc74ba829b857f839ae9558a9",
+  "object_type": "evidence_file",
+  "profile_id": "evidence-artifact-v1",
+  "source_bytes_hex": "7b226172746966616374223a227079746573742d66756c6c2e786d6c222c226e616d657370616365223a22666f756e6472792e6368616e6e656c732e65766964656e6365227d0a",
+  "vector_id": "evidence-artifact-v1"
+}

@@ -1,0 +1,7 @@
+{
+  "expected_acceptance": false,
+  "expected_rejection_code": "non_finite_number",
+  "input": "{\"a\":NaN}",
+  "rejection_stage": "parse",
+  "vector_id": "nan"
+}

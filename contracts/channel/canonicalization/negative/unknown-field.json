@@ -1,0 +1,10 @@
+{
+  "expected_acceptance": false,
+  "expected_rejection_code": "unknown_field",
+  "input": {
+    "domain": "foundry.channels.voucher",
+    "unknown": true
+  },
+  "rejection_stage": "schema",
+  "vector_id": "unknown-field"
+}

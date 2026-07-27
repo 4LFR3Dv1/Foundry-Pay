@@ -18,8 +18,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, NoReturn, Protocol
 
-from foundry_external_execution_protocol import canonicalize, sha256_digest
-
+from .canonical import sha256_canonical_json
 from .channel import AccountingProjection, validate_channel
 
 
@@ -248,7 +247,7 @@ def _closed(
 
 
 def _canonical_hash(value: Mapping[str, Any]) -> str:
-    return sha256_digest(canonicalize(dict(value)))
+    return sha256_canonical_json(dict(value))
 
 
 def _with_hash(value: Mapping[str, Any], field: str) -> dict[str, Any]:

@@ -1,0 +1,7 @@
+{
+  "expected_acceptance": false,
+  "expected_rejection_code": "invalid_integer",
+  "input": true,
+  "rejection_stage": "schema",
+  "vector_id": "bool-as-integer"
+}

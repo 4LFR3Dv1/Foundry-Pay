@@ -1,0 +1,7 @@
+{
+  "expected_acceptance": false,
+  "expected_rejection_code": "lone_surrogate",
+  "input": "\\ud800",
+  "rejection_stage": "canonicalization",
+  "vector_id": "lone-surrogate"
+}

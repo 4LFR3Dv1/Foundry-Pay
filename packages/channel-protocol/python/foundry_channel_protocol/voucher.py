@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import re
 import sqlite3
@@ -13,8 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import rfc8785
-
+from .canonical import CanonicalizationError, canonical_json_bytes, sha256_raw_bytes
 
 _HASH = re.compile(r"^sha256:[0-9a-f]{64}$")
 _IDENTIFIER = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$")
@@ -179,15 +177,15 @@ def canonical_voucher_payload(payload: object) -> bytes:
     if expires <= issued:
         _reject("voucher_time_order_invalid", "payload.expires_at", "must follow issued_at")
     try:
-        return rfc8785.dumps(dict(normalized))
-    except (rfc8785.CanonicalizationError, rfc8785.FloatDomainError) as error:
+        return canonical_json_bytes(dict(normalized))
+    except CanonicalizationError as error:
         _reject("canonicalization_failed", "payload", str(error))
 
 
 def voucher_payload_hash(payload: object) -> str:
     """Hash exact canonical bytes; the closed payload domain separates the object."""
 
-    return "sha256:" + hashlib.sha256(canonical_voucher_payload(payload)).hexdigest()
+    return sha256_raw_bytes(canonical_voucher_payload(payload))
 
 
 @dataclass(frozen=True)
@@ -304,7 +302,7 @@ def verify_voucher(
     _literal(envelope["protocol_version"], "1.0.0", "voucher.protocol_version")
     payload = _closed_object(envelope["payload"], field="payload", required=_PAYLOAD_FIELDS)
     canonical = canonical_voucher_payload(payload)
-    expected_hash = "sha256:" + hashlib.sha256(canonical).hexdigest()
+    expected_hash = sha256_raw_bytes(canonical)
     supplied_hash = _string(
         envelope["voucher_hash"],
         "voucher.voucher_hash",
@@ -499,7 +497,7 @@ class ReferenceVoucherLedger:
             "recipient_claim_pubkey": context.recipient_claim_pubkey,
             "mint": context.mint,
         }
-        return hashlib.sha256(rfc8785.dumps(identity)).hexdigest()
+        return sha256_raw_bytes(canonical_json_bytes(identity)).removeprefix("sha256:")
 
     @staticmethod
     def _time(value: datetime) -> str:

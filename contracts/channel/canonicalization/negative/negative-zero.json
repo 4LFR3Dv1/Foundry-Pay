@@ -1,0 +1,7 @@
+{
+  "expected_acceptance": false,
+  "expected_rejection_code": "negative_zero",
+  "input": "{\"a\":-0}",
+  "rejection_stage": "parse",
+  "vector_id": "negative-zero"
+}
