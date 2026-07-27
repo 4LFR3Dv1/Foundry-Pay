@@ -1,0 +1,35 @@
+work_item: FP-DOC-004
+objective: synchronize public onboarding with the implemented external-execution and Channels protocol state
+owner: implementation-agent
+branch: agent/docs/FP-DOC-004
+allowed_paths:
+  - README.md
+  - docs/WORK_GRAPH.md
+  - .agents/tasks/FP-DOC-004.yaml
+  - evidence/runs/FP-DOC-004/**
+dependencies:
+  - FP-DOC-003
+  - FC-CTRL-013
+invariants:
+  - external execution and Foundry Channels remain separate public tracks
+  - offline reference validation is not represented as blockchain observation
+  - the voucher ledger cannot declare an economic right activated
+  - ChannelVault, Cloud, consumer product, custody, mainnet, and production remain unclaimed
+acceptance:
+  - the README describes FC-PROTO-001 through FC-PROTO-006 as implemented offline work
+  - the README identifies FC-PROTO-007 and independent review as remaining gates
+  - a new developer can locate and run the external execution and Channels proofs independently
+  - public links and documented verification commands are valid
+verification_commands:
+  - python -m pytest tests/channels
+  - npm ci --prefix packages/channel-protocol/typescript
+  - npm test --prefix packages/channel-protocol/typescript
+  - git diff --check
+evidence:
+  - evidence/runs/FP-DOC-004/README.md
+provenance: []
+stop_conditions:
+  - README implies on-chain ChannelVault implementation
+  - README treats issued voucher state as activated authority
+  - README claims completed user validation or production readiness
+  - change falls outside allowed paths
