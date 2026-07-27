@@ -1,0 +1,163 @@
+{
+  "adjacent_external_execution_hashes": [
+    "economic_plan_hash",
+    "prepared_message_hash",
+    "simulation_attestation_hash",
+    "execution_commitment_hash",
+    "external_execution_receipt.receipt_hash",
+    "recovery_status_response_hash"
+  ],
+  "adjacent_external_execution_profile": "foundry-pay-domain-v1 and exact raw bytes; owned by External Execution Protocol",
+  "baseline_commit": "ac10151b74cdfb33638d3c28fb3607a134234057",
+  "hash_locations": [
+    {
+      "module": "voucher.py",
+      "object": "voucher_payload",
+      "profile": "signed-payload-v1"
+    },
+    {
+      "module": "voucher.py",
+      "object": "voucher_ledger_scope",
+      "profile": "canonical-record-v1"
+    },
+    {
+      "module": "recipient_binding.py",
+      "object": "recipient_binding_payload",
+      "profile": "signed-payload-v1"
+    },
+    {
+      "module": "recipient_binding.py",
+      "object": "recipient_binding_journal_scope",
+      "profile": "canonical-record-v1"
+    },
+    {
+      "module": "settlement.py",
+      "object": "channel_snapshot",
+      "profile": "canonical-record-v1"
+    },
+    {
+      "module": "settlement.py",
+      "object": "settlement_request",
+      "profile": "canonical-record-v1"
+    },
+    {
+      "module": "settlement.py",
+      "object": "settlement_execution_commitment",
+      "profile": "canonical-record-v1"
+    },
+    {
+      "module": "settlement.py",
+      "object": "execution_authorization",
+      "profile": "canonical-record-v1"
+    },
+    {
+      "module": "settlement.py",
+      "object": "settlement_observation",
+      "profile": "self-hashed-record-v1"
+    },
+    {
+      "module": "settlement.py",
+      "object": "reconciled_settlement_receipt",
+      "profile": "self-hashed-record-v1"
+    },
+    {
+      "module": "settlement.py",
+      "object": "settlement_recovery_record",
+      "profile": "self-hashed-record-v1"
+    },
+    {
+      "module": "settlement.py",
+      "object": "settlement_journal_entry",
+      "profile": "journal-chain-v1"
+    },
+    {
+      "module": "closure.py",
+      "object": "channel_snapshot",
+      "profile": "canonical-record-v1"
+    },
+    {
+      "module": "closure.py",
+      "object": "channel_closure_request",
+      "profile": "self-hashed-record-v1"
+    },
+    {
+      "module": "closure.py",
+      "object": "closure_snapshot_at_request",
+      "profile": "self-hashed-record-v1"
+    },
+    {
+      "module": "closure.py",
+      "object": "closure_snapshot_at_freeze",
+      "profile": "self-hashed-record-v1"
+    },
+    {
+      "module": "closure.py",
+      "object": "refund_request",
+      "profile": "self-hashed-record-v1"
+    },
+    {
+      "module": "closure.py",
+      "object": "refund_projection",
+      "profile": "self-hashed-record-v1"
+    },
+    {
+      "module": "closure.py",
+      "object": "refund_execution_commitment",
+      "profile": "canonical-record-v1"
+    },
+    {
+      "module": "closure.py",
+      "object": "technical_refund_receipt",
+      "profile": "self-hashed-record-v1"
+    },
+    {
+      "module": "closure.py",
+      "object": "channel_refund_observation",
+      "profile": "self-hashed-record-v1"
+    },
+    {
+      "module": "closure.py",
+      "object": "reconciled_channel_refund",
+      "profile": "self-hashed-record-v1"
+    },
+    {
+      "module": "closure.py",
+      "object": "epoch_transition_eligibility",
+      "profile": "self-hashed-record-v1"
+    },
+    {
+      "module": "closure.py",
+      "object": "refund_journal_entry",
+      "profile": "journal-chain-v1"
+    }
+  ],
+  "known_channel_domains": 23,
+  "modules_analyzed": [
+    "packages/channel-protocol/python/foundry_channel_protocol/voucher.py",
+    "packages/channel-protocol/python/foundry_channel_protocol/recipient_binding.py",
+    "packages/channel-protocol/python/foundry_channel_protocol/settlement.py",
+    "packages/channel-protocol/python/foundry_channel_protocol/closure.py",
+    "packages/external-execution-protocol/python/foundry_external_execution_protocol/canonicalization.py"
+  ],
+  "required_merges": {
+    "FC-CTRL-010": "8117ef0c4237222edba93922307d8b652f82858d",
+    "FC-PROTO-005": "59f37870475df0f0ee9d7619be9d3eff7f5a16bd"
+  },
+  "result": "all known channel hash object types have a registered profile",
+  "runtime": {
+    "hashlib_sha256": "sha256",
+    "openssl": "OpenSSL 3.0.20 7 Apr 2026",
+    "python": "3.14.5",
+    "rfc8785": "0.1.4"
+  },
+  "schemas_analyzed": [
+    "contracts/channel/channel-claim.schema.json",
+    "contracts/channel/channel-closure.schema.json",
+    "contracts/channel/channel-evidence.schema.json",
+    "contracts/channel/channel-voucher.schema.json",
+    "contracts/channel/channel.schema.json",
+    "contracts/channel/recipient-binding.schema.json",
+    "contracts/channel/settlement.schema.json"
+  ],
+  "work_item": "FC-PROTO-006"
+}

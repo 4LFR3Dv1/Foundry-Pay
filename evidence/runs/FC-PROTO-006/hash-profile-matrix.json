@@ -1,0 +1,248 @@
+{
+  "objects": [
+    {
+      "domain": "foundry.channels.voucher",
+      "excluded_fields": [
+        "voucher_hash",
+        "sender_signature"
+      ],
+      "object_type": "channel_voucher",
+      "profile_id": "signed-payload-v1",
+      "result_hash_field": "voucher_hash"
+    },
+    {
+      "domain": "foundry.channels.recipient-binding",
+      "excluded_fields": [
+        "binding_hash",
+        "claim_key_signature",
+        "destination_wallet_signature"
+      ],
+      "object_type": "recipient_binding",
+      "profile_id": "signed-payload-v1",
+      "result_hash_field": "binding_hash"
+    },
+    {
+      "domain": "foundry.channels.recipient-binding-journal",
+      "excluded_fields": [],
+      "object_type": "recipient_binding_journal_scope",
+      "profile_id": "canonical-record-v1",
+      "result_hash_field": "journal_domain_hash"
+    },
+    {
+      "domain": "foundry.channels.voucher-ledger-scope",
+      "excluded_fields": [],
+      "object_type": "voucher_ledger_scope",
+      "profile_id": "canonical-record-v1",
+      "result_hash_field": "domain_key"
+    },
+    {
+      "domain": "foundry.channels.channel-snapshot",
+      "excluded_fields": [],
+      "object_type": "channel",
+      "profile_id": "canonical-record-v1",
+      "result_hash_field": "channel_snapshot_hash"
+    },
+    {
+      "domain": "foundry.channels.settlement-request",
+      "excluded_fields": [],
+      "object_type": "settlement_request",
+      "profile_id": "canonical-record-v1",
+      "result_hash_field": "request_hash"
+    },
+    {
+      "domain": "foundry.channels.settlement-execution-commitment",
+      "excluded_fields": [],
+      "object_type": "settlement_execution_commitment",
+      "profile_id": "canonical-record-v1",
+      "result_hash_field": "commitment_hash"
+    },
+    {
+      "domain": "foundry.channels.settlement-authorization",
+      "excluded_fields": [],
+      "object_type": "execution_authorization",
+      "profile_id": "canonical-record-v1",
+      "result_hash_field": "authorization_hash"
+    },
+    {
+      "domain": "foundry.channels.settlement-observation",
+      "excluded_fields": [
+        "observation_hash"
+      ],
+      "object_type": "settlement_observation",
+      "profile_id": "self-hashed-record-v1",
+      "result_hash_field": "observation_hash"
+    },
+    {
+      "domain": "foundry.channels.reconciled-settlement-receipt",
+      "excluded_fields": [
+        "receipt_hash"
+      ],
+      "object_type": "reconciled_settlement_receipt",
+      "profile_id": "self-hashed-record-v1",
+      "result_hash_field": "receipt_hash"
+    },
+    {
+      "domain": "foundry.channels.recovery-record",
+      "excluded_fields": [
+        "recovery_hash"
+      ],
+      "object_type": "settlement_recovery_record",
+      "profile_id": "self-hashed-record-v1",
+      "result_hash_field": "recovery_hash"
+    },
+    {
+      "domain": "foundry.channels.settlement-journal-entry",
+      "excluded_fields": [
+        "event_hash"
+      ],
+      "object_type": "settlement_journal_entry",
+      "profile_id": "journal-chain-v1",
+      "result_hash_field": "event_hash"
+    },
+    {
+      "domain": "foundry.channels.closure-request",
+      "excluded_fields": [
+        "request_hash"
+      ],
+      "object_type": "channel_closure_request",
+      "profile_id": "self-hashed-record-v1",
+      "result_hash_field": "request_hash"
+    },
+    {
+      "domain": "foundry.channels.closure-request-snapshot",
+      "excluded_fields": [
+        "request_snapshot_hash"
+      ],
+      "object_type": "closure_snapshot_at_request",
+      "profile_id": "self-hashed-record-v1",
+      "result_hash_field": "request_snapshot_hash"
+    },
+    {
+      "domain": "foundry.channels.closure-freeze",
+      "excluded_fields": [
+        "freeze_snapshot_hash"
+      ],
+      "object_type": "closure_snapshot_at_freeze",
+      "profile_id": "self-hashed-record-v1",
+      "result_hash_field": "freeze_snapshot_hash"
+    },
+    {
+      "domain": "foundry.channels.refund-request",
+      "excluded_fields": [
+        "request_hash"
+      ],
+      "object_type": "refund_request",
+      "profile_id": "self-hashed-record-v1",
+      "result_hash_field": "request_hash"
+    },
+    {
+      "domain": "foundry.channels.refund-projection",
+      "excluded_fields": [
+        "projection_hash"
+      ],
+      "object_type": "refund_projection",
+      "profile_id": "self-hashed-record-v1",
+      "result_hash_field": "projection_hash"
+    },
+    {
+      "domain": "foundry.channels.refund-execution-commitment",
+      "excluded_fields": [],
+      "object_type": "refund_execution_commitment",
+      "profile_id": "canonical-record-v1",
+      "result_hash_field": "commitment_hash"
+    },
+    {
+      "domain": "foundry.channels.technical-refund-receipt",
+      "excluded_fields": [
+        "receipt_hash"
+      ],
+      "object_type": "technical_refund_receipt",
+      "profile_id": "self-hashed-record-v1",
+      "result_hash_field": "receipt_hash"
+    },
+    {
+      "domain": "foundry.channels.refund-observation",
+      "excluded_fields": [
+        "observation_hash"
+      ],
+      "object_type": "channel_refund_observation",
+      "profile_id": "self-hashed-record-v1",
+      "result_hash_field": "observation_hash"
+    },
+    {
+      "domain": "foundry.channels.reconciled-refund",
+      "excluded_fields": [
+        "receipt_hash"
+      ],
+      "object_type": "reconciled_channel_refund",
+      "profile_id": "self-hashed-record-v1",
+      "result_hash_field": "receipt_hash"
+    },
+    {
+      "domain": "foundry.channels.epoch-transition-eligibility",
+      "excluded_fields": [
+        "eligibility_hash"
+      ],
+      "object_type": "epoch_transition_eligibility",
+      "profile_id": "self-hashed-record-v1",
+      "result_hash_field": "eligibility_hash"
+    },
+    {
+      "domain": "foundry.channels.refund-journal-entry",
+      "excluded_fields": [
+        "event_hash"
+      ],
+      "object_type": "refund_journal_entry",
+      "profile_id": "journal-chain-v1",
+      "result_hash_field": "event_hash"
+    }
+  ],
+  "profiles": [
+    {
+      "canonicalization": "RFC8785-JCS",
+      "digest": "SHA-256",
+      "excluded_fields": "registry-defined envelope fields only",
+      "input": "validated closed JSON payload",
+      "profile_id": "signed-payload-v1"
+    },
+    {
+      "canonicalization": "RFC8785-JCS",
+      "digest": "SHA-256",
+      "excluded_fields": [],
+      "input": "validated closed JSON record",
+      "profile_id": "canonical-record-v1"
+    },
+    {
+      "canonicalization": "RFC8785-JCS",
+      "digest": "SHA-256",
+      "excluded_fields": "exactly the registered own_hash_field",
+      "input": "validated closed JSON record",
+      "profile_id": "self-hashed-record-v1"
+    },
+    {
+      "canonicalization": "RFC8785-JCS",
+      "digest": "SHA-256",
+      "excluded_fields": [
+        "event_hash"
+      ],
+      "input": "validated closed journal event",
+      "profile_id": "journal-chain-v1"
+    },
+    {
+      "canonicalization": "none",
+      "digest": "SHA-256",
+      "excluded_fields": [],
+      "input": "exact bytes",
+      "profile_id": "raw-bytes-commitment-v1"
+    },
+    {
+      "canonicalization": "none",
+      "digest": "SHA-256",
+      "economic_authority": false,
+      "excluded_fields": [],
+      "input": "exact file bytes",
+      "namespace": "foundry.channels.evidence",
+      "profile_id": "evidence-artifact-v1"
+    }
+  ]
+}

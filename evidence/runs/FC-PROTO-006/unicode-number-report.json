@@ -1,0 +1,17 @@
+{
+  "numbers": {
+    "first_rejected_integer": 9007199254740992,
+    "first_rejected_u64_text": "18446744073709551616",
+    "floats": "rejected",
+    "json_safe_unsigned_max": 9007199254740991,
+    "negative_zero": "rejected",
+    "u64_max_text": "18446744073709551615"
+  },
+  "unicode": {
+    "hashes_differ": true,
+    "lone_surrogate": "rejected",
+    "nfc_hex": "7b22646f6d61696e223a22666f756e6472792e6368616e6e656c732e766f7563686572222c226c6162656c223a22c3a9227d",
+    "nfd_hex": "7b22646f6d61696e223a22666f756e6472792e6368616e6e656c732e766f7563686572222c226c6162656c223a2265cc81227d",
+    "normalization_performed": false
+  }
+}
