@@ -21,6 +21,20 @@
     "recipient_claim_pubkey": "9LAfXjiLxADaSQw2ipGQq5kPyzCy8F2hZhnP4YLBEReV",
     "sender": "9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb"
   },
+  "parsed_source": {
+    "channel_account": "EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd",
+    "channel_id": "channel_foundations_001",
+    "domain": "foundry.channels.voucher-ledger-scope",
+    "environment": "devnet",
+    "epoch": 0,
+    "genesis_hash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+    "mint": "2tUzxADKHWxwTpihHuuzwfoGhYBY7735s2QXEuUcNX3k",
+    "network": "solana:devnet",
+    "program_id": "BPFLoaderUpgradeab1e11111111111111111111111",
+    "protocol_version": "1.0.0",
+    "recipient_claim_pubkey": "9LAfXjiLxADaSQw2ipGQq5kPyzCy8F2hZhnP4YLBEReV",
+    "sender": "9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb"
+  },
   "profile_id": "canonical-record-v1",
   "source_json": "{\"domain\": \"foundry.channels.voucher-ledger-scope\", \"protocol_version\": \"1.0.0\", \"environment\": \"devnet\", \"network\": \"solana:devnet\", \"genesis_hash\": \"EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG\", \"program_id\": \"BPFLoaderUpgradeab1e11111111111111111111111\", \"channel_id\": \"channel_foundations_001\", \"channel_account\": \"EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd\", \"epoch\": 0, \"sender\": \"9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb\", \"recipient_claim_pubkey\": \"9LAfXjiLxADaSQw2ipGQq5kPyzCy8F2hZhnP4YLBEReV\", \"mint\": \"2tUzxADKHWxwTpihHuuzwfoGhYBY7735s2QXEuUcNX3k\"}",
   "vector_id": "voucher-ledger-scope-v1"

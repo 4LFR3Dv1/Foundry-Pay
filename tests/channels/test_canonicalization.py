@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 import pytest
+from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "packages/channel-protocol/python"))
@@ -47,13 +48,43 @@ def test_positive_vectors_publish_exact_bytes_and_hashes(path: Path) -> None:
         assert len(payload) == vector["byte_length"]
         assert sha256_raw_bytes(payload) == vector["expected_sha256"]
         return
-    parsed = parse_strict_json(vector["source_json"])
-    assert parsed == vector["parsed_projection"]
-    canonical = canonical_json_bytes(parsed)
+    parsed_source = parse_strict_json(vector["source_json"])
+    assert parsed_source == vector["parsed_source"]
+    if vector["profile_id"] == "signed-payload-v1":
+        derived_projection = parsed_source["payload"]
+    else:
+        derived_projection = {
+            key: value
+            for key, value in parsed_source.items()
+            if key not in vector["excluded_fields"]
+        }
+    assert derived_projection == vector["parsed_projection"]
+    canonical = canonical_json_bytes(derived_projection)
     assert canonical.hex() == vector["canonical_utf8_hex"]
     assert base64.b64encode(canonical).decode("ascii") == vector["canonical_utf8_base64"]
     assert len(canonical) == vector["byte_length"]
     assert sha256_raw_bytes(canonical) == vector["expected_sha256"]
+
+
+@pytest.mark.parametrize("path", sorted((CANON / "positive").glob("*.json")))
+def test_positive_vector_source_objects_match_registered_schemas(path: Path) -> None:
+    vector = load(path)
+    if "source_bytes_hex" in vector:
+        return
+    domains = load(CANON / "domains.v1.json")["domains"]
+    entry = next(item for item in domains if item["domain"] == vector["domain"])
+    schema_path, _, fragment = entry["schema"].partition("#")
+    schema_root = load((CANON / schema_path).resolve())
+    validator = Draft202012Validator(schema_root)
+    if fragment:
+        target = schema_root
+        for part in fragment.removeprefix("/").split("/"):
+            target = target[part]
+        validator = validator.evolve(schema=target)
+    errors = sorted(
+        validator.iter_errors(vector["parsed_source"]), key=lambda item: list(item.path)
+    )
+    assert errors == [], [error.message for error in errors]
 
 
 def test_same_json_meaning_produces_same_bytes_and_hash() -> None:
@@ -284,6 +315,21 @@ def test_profile_and_domain_registries_are_closed_and_consistent() -> None:
     assert all(item["profile_id"] in profile_ids for item in domains["domains"])
     assert all(item["version"] == "1.0.0" for item in domains["domains"])
     assert all(item["excluded_fields"] is not None for item in domains["domains"])
+
+
+def test_every_registered_schema_and_fragment_exists() -> None:
+    domains = load(CANON / "domains.v1.json")["domains"]
+    for entry in domains:
+        schema_path, _, fragment = entry["schema"].partition("#")
+        resolved = (CANON / schema_path).resolve()
+        assert resolved.is_file(), (entry["domain"], resolved)
+        schema = load(resolved)
+        if fragment:
+            target = schema
+            for part in fragment.removeprefix("/").split("/"):
+                assert part in target, (entry["domain"], part)
+                target = target[part]
+            assert isinstance(target, dict)
 
 
 def test_manifest_lists_every_vector_once() -> None:

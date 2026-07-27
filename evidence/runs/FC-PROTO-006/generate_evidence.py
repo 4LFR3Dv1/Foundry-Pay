@@ -58,8 +58,10 @@ def positive_json_vector(
     object_type: str,
     projection: dict[str, Any],
     excluded_fields: list[str],
+    source_object: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    source_json = json.dumps(projection, ensure_ascii=False, separators=(", ", ": "))
+    source = projection if source_object is None else source_object
+    source_json = json.dumps(source, ensure_ascii=False, separators=(", ", ": "))
     canonical = canonical_json_bytes(projection)
     return {
         "vector_id": vector_id,
@@ -67,6 +69,7 @@ def positive_json_vector(
         "domain": domain,
         "object_type": object_type,
         "source_json": source_json,
+        "parsed_source": source,
         "parsed_projection": projection,
         "canonical_utf8_hex": canonical.hex(),
         "canonical_utf8_base64": base64.b64encode(canonical).decode("ascii"),
@@ -111,6 +114,7 @@ def generate_vectors() -> list[dict[str, Any]]:
     }
     observation_projection = unsigned_record_projection(observation, "observation_hash")
 
+    journal_payload = {"request_hash": "sha256:" + "1" * 64}
     journal_projection = {
         "type": "settlement_journal_entry",
         "protocol_version": "1.0.0",
@@ -118,10 +122,12 @@ def generate_vectors() -> list[dict[str, Any]]:
         "sequence": 1,
         "state": "requested",
         "event_type": "request_validated",
-        "payload": {"request_hash": "sha256:" + "1" * 64},
+        "payload": journal_payload,
+        "payload_hash": sha256_canonical_json(journal_payload),
         "previous_event_hash": "sha256:" + "0" * 64,
         "recorded_at": "2026-08-01T00:07:00Z",
     }
+    refund_journal_payload = {"request_hash": "sha256:" + "2" * 64}
     refund_journal_projection = {
         "type": "refund_journal_entry",
         "protocol_version": "1.0.0",
@@ -129,7 +135,8 @@ def generate_vectors() -> list[dict[str, Any]]:
         "sequence": 1,
         "state": "validated",
         "event_type": "validated",
-        "payload": {"request_hash": "sha256:" + "2" * 64},
+        "payload": refund_journal_payload,
+        "payload_hash": sha256_canonical_json(refund_journal_payload),
         "previous_event_hash": "sha256:" + "0" * 64,
         "recorded_at": "2026-08-02T00:00:00Z",
     }
@@ -155,6 +162,7 @@ def generate_vectors() -> list[dict[str, Any]]:
             object_type="channel_voucher",
             projection=voucher["payload"],
             excluded_fields=["voucher_hash", "sender_signature"],
+            source_object=voucher,
         ),
         positive_json_vector(
             vector_id="recipient-binding-payload-v1",
@@ -167,6 +175,7 @@ def generate_vectors() -> list[dict[str, Any]]:
                 "claim_key_signature",
                 "destination_wallet_signature",
             ],
+            source_object=binding,
         ),
         positive_json_vector(
             vector_id="settlement-observation-v1",
@@ -175,6 +184,7 @@ def generate_vectors() -> list[dict[str, Any]]:
             object_type="settlement_observation",
             projection=observation_projection,
             excluded_fields=["observation_hash"],
+            source_object=observation,
         ),
         positive_json_vector(
             vector_id="settlement-journal-entry-v1",
@@ -183,6 +193,10 @@ def generate_vectors() -> list[dict[str, Any]]:
             object_type="settlement_journal_entry",
             projection=journal_projection,
             excluded_fields=["event_hash"],
+            source_object={
+                **journal_projection,
+                "event_hash": sha256_canonical_json(journal_projection),
+            },
         ),
         positive_json_vector(
             vector_id="refund-journal-entry-v1",
@@ -191,6 +205,10 @@ def generate_vectors() -> list[dict[str, Any]]:
             object_type="refund_journal_entry",
             projection=refund_journal_projection,
             excluded_fields=["event_hash"],
+            source_object={
+                **refund_journal_projection,
+                "event_hash": sha256_canonical_json(refund_journal_projection),
+            },
         ),
         positive_json_vector(
             vector_id="voucher-ledger-scope-v1",

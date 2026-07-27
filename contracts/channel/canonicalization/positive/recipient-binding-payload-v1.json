@@ -31,7 +31,34 @@
     "protocol_version": "1.0.0",
     "voucher_hash": "sha256:8a3283d61a75e1bbe987941601e8f28708875913fd0dfef0fa399c6a7dd296e2"
   },
+  "parsed_source": {
+    "binding_hash": "sha256:5ffc2a2ac51ebcbeb23d2cffa013251ce2680747eec9cbb570d5ee793a535192",
+    "claim_key_signature": "uPx1o4L2CsXSntCxAHuXUGd5ac8xG7jXPPncm9fFkSwEsKteTf29tkLPUHXUZV5Tjnet7RbMCHHGPYHqYdKbM3D",
+    "destination_wallet_signature": "RzgQYATtgFZNG7eDgktPAaKh3R922BEjYNLRnvM7u96eFjsnSe4aFYQAtgaP4Hi7kyn91itF1eTEeo498NJ8uS4",
+    "payload": {
+      "binding_mode": "initial",
+      "binding_nonce": 1,
+      "channel_account": "EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd",
+      "channel_id": "channel_foundations_001",
+      "claim_id": "claim_foundations_001",
+      "claim_pubkey": "9LAfXjiLxADaSQw2ipGQq5kPyzCy8F2hZhnP4YLBEReV",
+      "destination_wallet": "6dz2u59pmn9JnSMQMeB16Mq2iMDzx3Jz1Xa2dTdbxAiE",
+      "domain": "foundry.channels.recipient-binding",
+      "environment": "devnet",
+      "epoch": 0,
+      "expires_at": "2026-08-01T00:10:00Z",
+      "genesis_hash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+      "issued_at": "2026-08-01T00:05:00Z",
+      "mint": "2tUzxADKHWxwTpihHuuzwfoGhYBY7735s2QXEuUcNX3k",
+      "network": "solana:devnet",
+      "program_id": "BPFLoaderUpgradeab1e11111111111111111111111",
+      "protocol_version": "1.0.0",
+      "voucher_hash": "sha256:8a3283d61a75e1bbe987941601e8f28708875913fd0dfef0fa399c6a7dd296e2"
+    },
+    "protocol_version": "1.0.0",
+    "type": "recipient_binding"
+  },
   "profile_id": "signed-payload-v1",
-  "source_json": "{\"domain\": \"foundry.channels.recipient-binding\", \"protocol_version\": \"1.0.0\", \"environment\": \"devnet\", \"network\": \"solana:devnet\", \"genesis_hash\": \"EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG\", \"program_id\": \"BPFLoaderUpgradeab1e11111111111111111111111\", \"channel_id\": \"channel_foundations_001\", \"channel_account\": \"EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd\", \"epoch\": 0, \"claim_id\": \"claim_foundations_001\", \"claim_pubkey\": \"9LAfXjiLxADaSQw2ipGQq5kPyzCy8F2hZhnP4YLBEReV\", \"voucher_hash\": \"sha256:8a3283d61a75e1bbe987941601e8f28708875913fd0dfef0fa399c6a7dd296e2\", \"mint\": \"2tUzxADKHWxwTpihHuuzwfoGhYBY7735s2QXEuUcNX3k\", \"binding_mode\": \"initial\", \"destination_wallet\": \"6dz2u59pmn9JnSMQMeB16Mq2iMDzx3Jz1Xa2dTdbxAiE\", \"binding_nonce\": 1, \"issued_at\": \"2026-08-01T00:05:00Z\", \"expires_at\": \"2026-08-01T00:10:00Z\"}",
+  "source_json": "{\"type\": \"recipient_binding\", \"protocol_version\": \"1.0.0\", \"payload\": {\"domain\": \"foundry.channels.recipient-binding\", \"protocol_version\": \"1.0.0\", \"environment\": \"devnet\", \"network\": \"solana:devnet\", \"genesis_hash\": \"EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG\", \"program_id\": \"BPFLoaderUpgradeab1e11111111111111111111111\", \"channel_id\": \"channel_foundations_001\", \"channel_account\": \"EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd\", \"epoch\": 0, \"claim_id\": \"claim_foundations_001\", \"claim_pubkey\": \"9LAfXjiLxADaSQw2ipGQq5kPyzCy8F2hZhnP4YLBEReV\", \"voucher_hash\": \"sha256:8a3283d61a75e1bbe987941601e8f28708875913fd0dfef0fa399c6a7dd296e2\", \"mint\": \"2tUzxADKHWxwTpihHuuzwfoGhYBY7735s2QXEuUcNX3k\", \"binding_mode\": \"initial\", \"destination_wallet\": \"6dz2u59pmn9JnSMQMeB16Mq2iMDzx3Jz1Xa2dTdbxAiE\", \"binding_nonce\": 1, \"issued_at\": \"2026-08-01T00:05:00Z\", \"expires_at\": \"2026-08-01T00:10:00Z\"}, \"binding_hash\": \"sha256:5ffc2a2ac51ebcbeb23d2cffa013251ce2680747eec9cbb570d5ee793a535192\", \"claim_key_signature\": \"uPx1o4L2CsXSntCxAHuXUGd5ac8xG7jXPPncm9fFkSwEsKteTf29tkLPUHXUZV5Tjnet7RbMCHHGPYHqYdKbM3D\", \"destination_wallet_signature\": \"RzgQYATtgFZNG7eDgktPAaKh3R922BEjYNLRnvM7u96eFjsnSe4aFYQAtgaP4Hi7kyn91itF1eTEeo498NJ8uS4\"}",
   "vector_id": "recipient-binding-payload-v1"
 }

@@ -2123,6 +2123,7 @@ class SettlementRuntime:
         ).fetchone()
         sequence = 1 if previous is None else int(previous["sequence"]) + 1
         previous_hash = _ZERO_HASH if previous is None else str(previous["event_hash"])
+        event_payload = dict(payload)
         event = {
             "type": "settlement_journal_entry",
             "protocol_version": PROTOCOL_VERSION,
@@ -2130,7 +2131,8 @@ class SettlementRuntime:
             "sequence": sequence,
             "state": state,
             "event_type": event_type,
-            "payload": dict(payload),
+            "payload": event_payload,
+            "payload_hash": _canonical_hash(event_payload),
             "previous_event_hash": previous_hash,
             "recorded_at": recorded_at,
         }

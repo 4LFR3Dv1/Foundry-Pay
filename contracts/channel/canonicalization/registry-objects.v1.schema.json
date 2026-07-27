@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundry.pay/schemas/channel/canonicalization/registry-objects.v1.schema.json",
+  "title": "Foundry Channels canonicalization-only registry objects",
+  "oneOf": [
+    {"$ref": "#/$defs/VoucherLedgerScope"},
+    {"$ref": "#/$defs/RecipientBindingJournalScope"}
+  ],
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "Pubkey": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$"
+    },
+    "VoucherLedgerScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "protocol_version",
+        "environment",
+        "network",
+        "genesis_hash",
+        "program_id",
+        "channel_id",
+        "channel_account",
+        "epoch",
+        "sender",
+        "recipient_claim_pubkey",
+        "mint"
+      ],
+      "properties": {
+        "domain": {"const": "foundry.channels.voucher-ledger-scope"},
+        "protocol_version": {"const": "1.0.0"},
+        "environment": {"const": "devnet"},
+        "network": {"const": "solana:devnet"},
+        "genesis_hash": {"$ref": "#/$defs/Pubkey"},
+        "program_id": {"$ref": "#/$defs/Pubkey"},
+        "channel_id": {"$ref": "#/$defs/Identifier"},
+        "channel_account": {"$ref": "#/$defs/Pubkey"},
+        "epoch": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "sender": {"$ref": "#/$defs/Pubkey"},
+        "recipient_claim_pubkey": {"$ref": "#/$defs/Pubkey"},
+        "mint": {"$ref": "#/$defs/Pubkey"}
+      }
+    },
+    "RecipientBindingJournalScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "protocol_version",
+        "environment",
+        "network",
+        "genesis_hash",
+        "program_id",
+        "channel_id",
+        "channel_account",
+        "epoch",
+        "claim_id",
+        "claim_pubkey",
+        "voucher_hash",
+        "mint"
+      ],
+      "properties": {
+        "domain": {"const": "foundry.channels.recipient-binding-journal"},
+        "protocol_version": {"const": "1.0.0"},
+        "environment": {"const": "devnet"},
+        "network": {"const": "solana:devnet"},
+        "genesis_hash": {"$ref": "#/$defs/Pubkey"},
+        "program_id": {"$ref": "#/$defs/Pubkey"},
+        "channel_id": {"$ref": "#/$defs/Identifier"},
+        "channel_account": {"$ref": "#/$defs/Pubkey"},
+        "epoch": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "claim_id": {"$ref": "#/$defs/Identifier"},
+        "claim_pubkey": {"$ref": "#/$defs/Pubkey"},
+        "voucher_hash": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "mint": {"$ref": "#/$defs/Pubkey"}
+      }
+    }
+  }
+}

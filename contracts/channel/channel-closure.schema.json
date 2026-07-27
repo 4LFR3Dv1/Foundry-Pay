@@ -12,6 +12,7 @@
     {"$ref": "#/$defs/TechnicalRefundReceipt"},
     {"$ref": "#/$defs/ChannelRefundObservation"},
     {"$ref": "#/$defs/ReconciledChannelRefund"},
+    {"$ref": "#/$defs/RefundJournalEntry"},
     {"$ref": "#/$defs/EpochTransitionEligibility"}
   ],
   "$defs": {
@@ -562,6 +563,40 @@
         "reconciliation_status": {"const": "reference_observation_matched"},
         "completed_at": {"$ref": "#/$defs/Timestamp"},
         "receipt_hash": {"$ref": "#/$defs/Hash"}
+      }
+    },
+    "RefundJournalEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "protocol_version",
+        "refund_id",
+        "sequence",
+        "state",
+        "event_type",
+        "payload",
+        "payload_hash",
+        "previous_event_hash",
+        "event_hash",
+        "recorded_at"
+      ],
+      "properties": {
+        "type": {"const": "refund_journal_entry"},
+        "protocol_version": {"const": "1.0.0"},
+        "refund_id": {"$ref": "#/$defs/Identifier"},
+        "sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "state": {"$ref": "#/$defs/Identifier"},
+        "event_type": {"$ref": "#/$defs/Identifier"},
+        "payload": {"type": "object"},
+        "payload_hash": {"$ref": "#/$defs/Hash"},
+        "previous_event_hash": {"$ref": "#/$defs/Hash"},
+        "event_hash": {"$ref": "#/$defs/Hash"},
+        "recorded_at": {"$ref": "#/$defs/Timestamp"}
       }
     },
     "EpochTransitionEligibility": {

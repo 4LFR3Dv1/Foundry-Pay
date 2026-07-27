@@ -27,7 +27,26 @@
     "vault_balance_after": "60000000",
     "vault_balance_before": "85000000"
   },
+  "parsed_source": {
+    "channel_account": "EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd",
+    "channel_id": "channel_foundations_001",
+    "destination": "6dz2u59pmn9JnSMQMeB16Mq2iMDzx3Jz1Xa2dTdbxAiE",
+    "epoch": 0,
+    "mint": "2tUzxADKHWxwTpihHuuzwfoGhYBY7735s2QXEuUcNX3k",
+    "observation_hash": "sha256:9c0aaf5ef7864f62245e535f9e1adf1d6af563b9ac5df4eb66475d5392e0345e",
+    "observed_at": "2026-08-01T00:08:00Z",
+    "protocol_version": "1.0.0",
+    "recipient_balance_after": "25000000",
+    "recipient_balance_before": "0",
+    "settled_total_after": "40000000",
+    "settled_total_before": "15000000",
+    "source_id": "provider_a",
+    "transaction_signature": "RzgQYATtgFZNG7eDgktPAaKh3R922BEjYNLRnvM7u96eFjsnSe4aFYQAtgaP4Hi7kyn91itF1eTEeo498NJ8uS4",
+    "type": "settlement_observation",
+    "vault_balance_after": "60000000",
+    "vault_balance_before": "85000000"
+  },
   "profile_id": "self-hashed-record-v1",
-  "source_json": "{\"type\": \"settlement_observation\", \"protocol_version\": \"1.0.0\", \"source_id\": \"provider_a\", \"channel_id\": \"channel_foundations_001\", \"channel_account\": \"EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd\", \"epoch\": 0, \"mint\": \"2tUzxADKHWxwTpihHuuzwfoGhYBY7735s2QXEuUcNX3k\", \"destination\": \"6dz2u59pmn9JnSMQMeB16Mq2iMDzx3Jz1Xa2dTdbxAiE\", \"transaction_signature\": \"RzgQYATtgFZNG7eDgktPAaKh3R922BEjYNLRnvM7u96eFjsnSe4aFYQAtgaP4Hi7kyn91itF1eTEeo498NJ8uS4\", \"settled_total_before\": \"15000000\", \"settled_total_after\": \"40000000\", \"vault_balance_before\": \"85000000\", \"vault_balance_after\": \"60000000\", \"recipient_balance_before\": \"0\", \"recipient_balance_after\": \"25000000\", \"observed_at\": \"2026-08-01T00:08:00Z\"}",
+  "source_json": "{\"type\": \"settlement_observation\", \"protocol_version\": \"1.0.0\", \"source_id\": \"provider_a\", \"channel_id\": \"channel_foundations_001\", \"channel_account\": \"EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd\", \"epoch\": 0, \"mint\": \"2tUzxADKHWxwTpihHuuzwfoGhYBY7735s2QXEuUcNX3k\", \"destination\": \"6dz2u59pmn9JnSMQMeB16Mq2iMDzx3Jz1Xa2dTdbxAiE\", \"transaction_signature\": \"RzgQYATtgFZNG7eDgktPAaKh3R922BEjYNLRnvM7u96eFjsnSe4aFYQAtgaP4Hi7kyn91itF1eTEeo498NJ8uS4\", \"settled_total_before\": \"15000000\", \"settled_total_after\": \"40000000\", \"vault_balance_before\": \"85000000\", \"vault_balance_after\": \"60000000\", \"recipient_balance_before\": \"0\", \"recipient_balance_after\": \"25000000\", \"observed_at\": \"2026-08-01T00:08:00Z\", \"observation_hash\": \"sha256:9c0aaf5ef7864f62245e535f9e1adf1d6af563b9ac5df4eb66475d5392e0345e\"}",
   "vector_id": "settlement-observation-v1"
 }
