@@ -41,6 +41,28 @@ README after the validation run.
 These merges authorize the next offline protocol work only. They do not prove
 ChannelVault, Solana execution, a deployed consumer frontend, or product demand.
 
+## Evidence maturity and authorization
+
+Evidence maturity and operational authorization are independent records under
+[FC-ADR-009](ADR/FC-ADR-009-evidence-maturity-and-deployment-authorization.md)
+and the executable
+[component maturity schema](../../contracts/governance/component-maturity.schema.json).
+
+The model distinguishes:
+
+```text
+work item delivered
+self-validation passed
+external review passed for an exact commit
+deployment authorized for an exact artifact and environment
+```
+
+FC-GOV-001 does not assert an external review of FC-PROTO-007 and does not
+authorize ChannelVault, devnet, mainnet, or real-value execution. After this
+policy is integrated, PR #34 must incorporate the governance baseline and
+regenerate its own exact-head evidence before it can be merged as
+self-validated.
+
 ## Explicitly unproven
 
 - a deployed ChannelVault program;
@@ -48,7 +70,7 @@ ChannelVault, Solana execution, a deployed consumer frontend, or product demand.
 - safe production custody or hosted operations;
 - mainnet readiness, external audit, or proven scale;
 - exactly-once blockchain execution;
-- external user comprehension or adoption.
+- external user comprehension or adoption;
 - independent external security review.
 
 These require later work items and cannot be inferred from this foundation.

@@ -1,0 +1,51 @@
+work_item: FC-GOV-001
+objective: introduce a version-bound evidence maturity and deployment authorization model
+owner: program-integrator
+branch: agent/governance/FC-GOV-001
+allowed_paths:
+  - .agents/tasks/FC-GOV-001.yaml
+  - docs/channels/MATURITY_AND_AUTHORIZATION.md
+  - docs/channels/ADR/FC-ADR-009-evidence-maturity-and-deployment-authorization.md
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - docs/channels/EVIDENCE_INDEX.md
+  - contracts/governance/component-maturity.schema.json
+  - contracts/governance/examples/**
+  - scripts/check_maturity_authorization.py
+  - scripts/check_channel_foundation.py
+  - tests/channels/test_maturity_authorization.py
+  - evidence/runs/FC-GOV-001/**
+dependencies:
+  - FC-CTRL-014
+invariants:
+  - work-item completion does not imply external review or deployment authorization
+  - every review and authorization is bound to an immutable artifact version
+  - no external review is inferred for FC-PROTO-007
+  - mainnet and real-value use remain blocked without exact-version external review
+  - the policy applies program-wide and is not a one-off exception for PR 34
+acceptance:
+  - maturity, review, and deployment authorization are independent schema fields
+  - stale review and authorization states are representable and semantically validated
+  - local experimental work can proceed without claiming production safety
+  - prior FC-PROTO-007 review-before-merge policy is explicitly superseded prospectively
+  - FC-PROTO-007 remains unmerged and unchanged in this governance PR
+verification_commands:
+  - python -m pytest tests/channels/test_maturity_authorization.py
+  - python scripts/check_maturity_authorization.py contracts/governance/examples/fc-proto-007-self-validated.json
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python -m pytest
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+evidence:
+  - evidence/runs/FC-GOV-001/README.md
+  - evidence/runs/FC-GOV-001/validation-report.json
+  - evidence/runs/FC-GOV-001/artifact-manifest.json
+provenance:
+  - first-party governance model; no external code or text copied
+stop_conditions:
+  - an external review is represented as performed without a report and reviewed commit
+  - mainnet or real-value authorization can be granted without passed exact-version review
+  - the PR modifies FC-PROTO-007 implementation or evidence
+  - the policy silently removes a previously recorded gate
