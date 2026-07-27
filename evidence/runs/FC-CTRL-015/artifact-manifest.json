@@ -1,0 +1,56 @@
+{
+  "algorithm": "sha256",
+  "artifacts": [
+    {
+      "bytes": 1645,
+      "path": ".agents/tasks/FC-CTRL-015.yaml",
+      "sha256": "sha256:d7b9b52efc0dffc2d8aba2a207fb168a6cc89de38f5306fe51920ba3d2cb8e3c"
+    },
+    {
+      "bytes": 48494,
+      "path": "docs/channels/work-items.yaml",
+      "sha256": "sha256:24b8876643dc0966b50007bbc284c0055a7abebfa0619d10341e6288e7d2bde1"
+    },
+    {
+      "bytes": 12376,
+      "path": "docs/channels/WORK_GRAPH.md",
+      "sha256": "sha256:c88c894fd815f68a8211a641a35b8246536fe4f76f6b1f9e8b182bf0f5dbec97"
+    },
+    {
+      "bytes": 1721,
+      "path": "evidence/runs/FC-CTRL-015/fc-proto-007-maturity.json",
+      "sha256": "sha256:5236459874ef16697bf498eee219d85028fc0c0184888cc9ec7d50d2d4a22c63"
+    },
+    {
+      "bytes": 4879,
+      "path": "evidence/runs/FC-CTRL-015/generate_evidence.py",
+      "sha256": "sha256:35f3b1895d1b626d48a45c438db9b95f36599eb6eab7c6c44bf3e417baa7d789"
+    },
+    {
+      "bytes": 72743,
+      "path": "evidence/runs/FC-CTRL-015/pytest-full.xml",
+      "sha256": "sha256:51980c3d3bdbff63efd0adf2a10d85aa1039fc59313ed7c5fcc07fa1b5db00bc"
+    },
+    {
+      "bytes": 810,
+      "path": "evidence/runs/FC-CTRL-015/README.md",
+      "sha256": "sha256:7dc909e7a80fbcae4ae160111f1a16c213a3cccd4f9e8d34ef65a65036fd160b"
+    },
+    {
+      "bytes": 593,
+      "path": "evidence/runs/FC-CTRL-015/TASK_CONTRACT.yaml",
+      "sha256": "sha256:43b3985ce5c18d93150493f36c03e7eaa7053f76d43f739e9d6fd60e38cf08e6"
+    },
+    {
+      "bytes": 1191,
+      "path": "evidence/runs/FC-CTRL-015/validation-report.json",
+      "sha256": "sha256:366aabb3e9a0d11268970c20a90845628415ff7efece0a9595250d5eaa802e58"
+    },
+    {
+      "bytes": 2676,
+      "path": "tests/channels/test_foundation_contracts.py",
+      "sha256": "sha256:e5885faecba553b9c544a8176c258dda3c1bd78990e15d190e053faaec07c23a"
+    }
+  ],
+  "schema_version": 1
+}

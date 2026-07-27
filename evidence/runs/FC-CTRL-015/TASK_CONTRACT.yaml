@@ -1,0 +1,19 @@
+work_item: FC-CTRL-015
+baseline_commit: 63da85549bcd247a0510e8af18cddc30d8c53bb2
+implementation_commit: e464d4c03f873683aeca65b5d44297c2561b7077
+objective: record governed FC-PROTO-007 integration and reconcile the next security gate
+acceptance:
+  fc_proto_007_status: done
+  external_review: not_performed
+  fc_sec_002_status: ready
+  sa_chan_000_status: blocked
+  deployment_authorization:
+    local_validator: allowed
+    devnet_fixture: blocked
+    mainnet: blocked
+    real_value: blocked
+non_goals:
+  - protocol changes
+  - runner changes
+  - vector changes
+  - deployment authorization

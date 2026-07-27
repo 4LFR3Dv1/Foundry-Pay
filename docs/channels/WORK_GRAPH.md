@@ -24,6 +24,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-CTRL-013 | done | FC-PROTO-006 | record reviewed canonicalization integration and reconcile the graph |
 | FC-CTRL-014 | done | FC-CTRL-013 | freeze FC-PROTO-007 toolchains, runner contract, rejection matrix, independence, and paths |
 | FC-GOV-001 | done | FC-CTRL-014 | separate work completion, evidence maturity, external review, and deployment authorization |
+| FC-CTRL-015 | active | FC-PROTO-007, FC-GOV-001 | record governed conformance integration and reconcile the next security gate |
 
 ## Epic B — Channel protocol
 
@@ -35,7 +36,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-PROTO-004 | done | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | settlement and receipt implementation |
 | FC-PROTO-005 | done | FC-PROTO-001, FC-PROTO-002 | close, expiry, epoch, and refund implementation |
 | FC-PROTO-006 | done | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | normative canonicalization and hashes |
-| FC-PROTO-007 | review | FC-PROTO-006, FC-CTRL-014, FC-GOV-001 | self-validated Python/TypeScript/Rust cross-language conformance |
+| FC-PROTO-007 | done | FC-PROTO-006, FC-CTRL-014, FC-GOV-001 | self-validated Python/TypeScript/Rust cross-language conformance |
 
 ## Epic C — Security
 

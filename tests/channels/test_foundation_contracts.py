@@ -6,6 +6,8 @@ import importlib.util
 from pathlib import Path
 from types import ModuleType
 
+import yaml
+
 
 ROOT = Path(__file__).parents[2]
 
@@ -45,3 +47,33 @@ def test_foundation_contracts_and_gates_pass() -> None:
         "conservation": True,
         "rights_bounds": True,
     }
+
+
+def test_fc_proto_007_integration_uses_governed_self_validation() -> None:
+    work_items = yaml.safe_load(
+        (ROOT / "docs/channels/work-items.yaml").read_text(encoding="utf-8")
+    )["work_items"]
+    by_id = {item["id"]: item for item in work_items}
+
+    conformance = by_id["FC-PROTO-007"]
+    assert conformance["status"] == "done"
+    assert conformance["implementation"] == {
+        "pr": 34,
+        "functional_head": "ef9a99949bae3d2088a7b51cd55ef4efb14124c7",
+        "evidence_head": "5e4f7fff521f99c93a2e6b99bd8db8c9a8041649",
+        "merge_commit": "63da85549bcd247a0510e8af18cddc30d8c53bb2",
+        "main_ci_run": 30286605271,
+    }
+    assert conformance["maturity"] == {
+        "implementation": "complete",
+        "self_validation": "passed",
+        "external_review": "not_performed",
+        "local_validator": "allowed",
+        "devnet_fixture": "blocked",
+        "mainnet": "blocked",
+        "real_value": "blocked",
+    }
+
+    assert by_id["FC-SEC-002"]["status"] == "ready"
+    assert by_id["SA-CHAN-000"]["status"] == "blocked"
+    assert by_id["SA-CHAN-000"]["dependencies"] == ["FC-PROTO-007", "FC-SEC-002"]

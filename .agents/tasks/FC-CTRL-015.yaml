@@ -1,0 +1,43 @@
+work_item: FC-CTRL-015
+objective: record governed FC-PROTO-007 integration and reconcile the next security gate
+owner: program-integrator
+branch: agent/control/FC-CTRL-015
+allowed_paths:
+  - .agents/tasks/FC-CTRL-015.yaml
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - docs/channels/EVIDENCE_INDEX.md
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-015/**
+dependencies:
+  - FC-PROTO-007
+  - FC-GOV-001
+invariants:
+  - done records delivery and does not infer external review
+  - FC-PROTO-007 remains externally unreviewed
+  - devnet, mainnet, and real-value authorization remain blocked
+  - SA-CHAN-000 remains blocked until FC-SEC-002 is done
+acceptance:
+  - PR 34 functional, evidence, merge, and main CI SHAs are immutable
+  - FC-PROTO-007 is done under the FC-ADR-009 maturity model
+  - FC-SEC-002 is the next ready technical gate
+  - no protocol, runner, vector, or authorization behavior changes
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python -m pytest
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+evidence:
+  - evidence/runs/FC-CTRL-015/README.md
+  - evidence/runs/FC-CTRL-015/validation-report.json
+  - evidence/runs/FC-CTRL-015/fc-proto-007-maturity.json
+  - evidence/runs/FC-CTRL-015/artifact-manifest.json
+provenance:
+  - first-party merge and CI metadata only
+stop_conditions:
+  - external review is represented as performed
+  - a deployment authorization is broadened
+  - SA-CHAN-000 becomes ready before FC-SEC-002 is done
+  - implementation paths change
