@@ -1,0 +1,54 @@
+{
+  "artifacts": [
+    {
+      "bytes": 2242,
+      "path": ".agents/tasks/FC-CTRL-014.yaml",
+      "sha256": "sha256:c9f689d5af7eca1b0c73f047dd2815187f970b6a0565b9e0c2a11a5cd6324550"
+    },
+    {
+      "bytes": 2079,
+      "path": "contracts/channel/conformance/rejection-codes.v1.json",
+      "sha256": "sha256:d3d9e18981d493517cafa9c8c2263f4351169ab043d0b0714324177f1e1fb212"
+    },
+    {
+      "bytes": 3379,
+      "path": "contracts/channel/conformance/runner-result.v1.schema.json",
+      "sha256": "sha256:fa7bee68cabc0fe0d2877d84f4d70f1c41b21f4cf69a5f8af1dcbbcfceb51b0f"
+    },
+    {
+      "bytes": 1392,
+      "path": "contracts/channel/conformance/toolchains.v1.json",
+      "sha256": "sha256:731422155cc8d91aaaa2ea02d48e7197f68dc633ab8f2c69bbda2b6ced93fd77"
+    },
+    {
+      "bytes": 3188,
+      "path": "docs/channels/ADR/FC-ADR-008-cross-language-conformance-boundary.md",
+      "sha256": "sha256:b8e0761fca4e3006ddaf8d8b64f86b7548256d24b77c8c8faa9ac642eecae98a"
+    },
+    {
+      "bytes": 3907,
+      "path": "docs/channels/conformance/FC-PROTO-007-COORDINATION.md",
+      "sha256": "sha256:c699fbb945138a42ee991b4df56cb3b1a0d0485a330e9efaafb91eaa5e19159c"
+    },
+    {
+      "bytes": 12117,
+      "path": "docs/channels/WORK_GRAPH.md",
+      "sha256": "sha256:59c83d415a102abc80f9225d755227913382c4c76b727502673157158362397b"
+    },
+    {
+      "bytes": 43370,
+      "path": "docs/channels/work-items.yaml",
+      "sha256": "sha256:92c7494cb7da37368f47d98313a13c88931cb451416ef120e12ae53539232958"
+    },
+    {
+      "bytes": 1511,
+      "path": "tests/channels/test_foundation_contracts.py",
+      "sha256": "sha256:0b11a580e3d82d186545d2349613d0a17fb33facffeb800fa1528e80cce0e827"
+    }
+  ],
+  "artifact_count": 9,
+  "baseline_commit": "17b656cbdd6ae53cece9cebb9123058c03e67b82",
+  "implementation_commit": "daedc93ac617066bb360e02db50dae43f0385ac2",
+  "schema_version": 1,
+  "work_item": "FC-CTRL-014"
+}

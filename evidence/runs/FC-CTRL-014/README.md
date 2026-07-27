@@ -42,6 +42,16 @@ integrated. The functional PR must add exact lockfiles, record dependency
 provenance, run all three implementations, and publish independently reviewed
 evidence.
 
+## Implementation identity
+
+```text
+implementation commit:
+daedc93ac617066bb360e02db50dae43f0385ac2
+
+artifact manifest:
+evidence/runs/FC-CTRL-014/artifact-manifest.json
+```
+
 ## Validation
 
 ```text
