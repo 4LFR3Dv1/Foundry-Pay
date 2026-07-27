@@ -114,6 +114,20 @@ work_items:
     security_review: program-governance-review
     stop_conditions: [unrelated channel vectors or runtime paths are broadened]
 
+  - id: FC-CTRL-009
+    status: done
+    objective: authorize migration of the foundation close-race checker from the legacy single closure snapshot
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [docs/channels/WORK_GRAPH.md, docs/channels/work-items.yaml, evidence/runs/FC-CTRL-009/**]
+    dependencies: [FC-CTRL-008]
+    invariants: [the foundation gate validates distinct request and freeze snapshots with an exclusive deadline]
+    acceptance: [only the foundation checker and its direct contract test are added to FC-PROTO-005 ownership]
+    tests: [foundation work-graph validator]
+    evidence: [legacy checker field access demonstrated by the FC-PROTO-005 schema gate]
+    security_review: program-governance-review
+    stop_conditions: [unrelated scripts or test suites are broadened]
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -179,7 +193,7 @@ work_items:
     objective: implement close, expiry, epoch, and refund reference semantics
     owner: protocol-engineer
     repository: 4LFR3Dv1/Foundry-Pay
-    allowed_paths: [packages/channel-protocol/**, tests/channels/test_closure.py, contracts/channel/channel-closure.schema.json, contracts/channel/test-vectors/positive/close-race-v1.json, docs/channels/ADR/FC-ADR-006-activated-right-expiry-v1.md, evidence/runs/FC-PROTO-005/**, provenance/REUSE_LEDGER.yaml]
+    allowed_paths: [packages/channel-protocol/**, tests/channels/test_closure.py, tests/channels/test_foundation_contracts.py, scripts/check_channel_foundation.py, contracts/channel/channel-closure.schema.json, contracts/channel/test-vectors/positive/close-race-v1.json, docs/channels/ADR/FC-ADR-006-activated-right-expiry-v1.md, evidence/runs/FC-PROTO-005/**, provenance/REUSE_LEDGER.yaml]
     dependencies: [FC-PROTO-001, FC-PROTO-002]
     invariants: [closing preserves unexpired outstanding rights, refund preserves conservation]
     acceptance: [excess and final refunds are distinguished and rights remain reserved through grace]

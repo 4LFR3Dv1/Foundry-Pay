@@ -1,0 +1,15 @@
+{
+  "work_item": "FC-CTRL-009",
+  "status": "passed",
+  "baseline_commit": "ee1dea6010756d8ee9adcce08d433dfc79de0415",
+  "authorized_paths": [
+    "scripts/check_channel_foundation.py",
+    "tests/channels/test_foundation_contracts.py"
+  ],
+  "reason": "the legacy checker directly reads activation_allowed_until and a single request-time activated snapshot",
+  "claims": {
+    "checker_migrated": false,
+    "runtime_implemented": false,
+    "unrelated_paths_authorized": false
+  }
+}
