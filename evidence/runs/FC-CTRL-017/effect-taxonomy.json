@@ -1,0 +1,16 @@
+{
+  "audit_effect_confers_authority": false,
+  "forbidden_effects": [
+    "economic_effect",
+    "verified",
+    "activation_requested",
+    "authorized",
+    "completed"
+  ],
+  "permitted_audit_effects": [
+    "issued",
+    "rejected",
+    "rejection_event"
+  ],
+  "schema_version": 1
+}

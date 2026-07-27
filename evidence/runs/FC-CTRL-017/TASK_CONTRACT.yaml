@@ -1,0 +1,11 @@
+work_item: FC-CTRL-017
+baseline_commit: c73ab47bb80364392d601f1f5ed9e00aa217f3b8
+implementation_commit: 0ee8db60c73dce4a916fe129f28b86d3287d8005
+objective: distinguish forbidden economic or authority effects from permitted rejection audit effects
+claims:
+  - rejected authority advances no verified, activation-requested, authorized, or completed state
+  - durable rejection audit records remain permitted and observable
+limitations:
+  - external review was not performed
+  - no ChannelVault or Solana execution is implemented
+  - devnet, mainnet, and real-value use remain blocked
