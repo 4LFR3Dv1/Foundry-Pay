@@ -342,6 +342,16 @@ recorded_at"""
     assert all(entry["excluded_fields"] == ["event_hash"] for entry in journal_domains)
 
 
+def test_evidence_artifact_manifest_matches_exact_repository_bytes() -> None:
+    manifest = load(ROOT / "evidence/runs/FC-PROTO-006/artifact-manifest.json")
+    assert manifest["artifact_count"] == len(manifest["artifacts"])
+    for artifact in manifest["artifacts"]:
+        payload = (ROOT / artifact["path"]).read_bytes()
+        assert b"\r" not in payload, artifact["path"]
+        assert artifact["bytes"] == len(payload), artifact["path"]
+        assert artifact["sha256"] == sha256_raw_bytes(payload), artifact["path"]
+
+
 def test_every_registered_schema_and_fragment_exists() -> None:
     domains = load(CANON / "domains.v1.json")["domains"]
     for entry in domains:

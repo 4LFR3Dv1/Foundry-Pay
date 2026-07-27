@@ -10,8 +10,8 @@ The machine-readable authority is
 | --- | --- | --- | --- | --- |
 | `foundry.channels.voucher` | ChannelVoucher payload | signed payload | channel-voucher | sender |
 | `foundry.channels.recipient-binding` | RecipientBinding payload | signed payload | recipient-binding | claim key + destination wallet |
-| `foundry.channels.recipient-binding-journal` | binding journal scope | canonical record | recipient-binding | reference journal |
-| `foundry.channels.voucher-ledger-scope` | voucher ledger scope | canonical record | channel-voucher | reference journal |
+| `foundry.channels.recipient-binding-journal` | binding journal scope | canonical record | registry-objects `RecipientBindingJournalScope` | reference journal |
+| `foundry.channels.voucher-ledger-scope` | voucher ledger scope | canonical record | registry-objects `VoucherLedgerScope` | reference journal |
 
 ## Operational domains
 

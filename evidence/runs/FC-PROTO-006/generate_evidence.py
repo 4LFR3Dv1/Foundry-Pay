@@ -40,14 +40,22 @@ REQUIRED_MERGES = {
 
 def dump(path: Path, value: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
+    path.write_bytes(
+        (json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode("utf-8")
     )
 
 
 def load(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def repository_text_bytes(path: Path) -> bytes:
+    """Return and persist the exact LF bytes published by the repository."""
+    payload = path.read_bytes().replace(b"\r\n", b"\n")
+    if b"\r" in payload:
+        raise ValueError(f"artifact contains non-LF carriage return: {path}")
+    path.write_bytes(payload)
+    return payload
 
 
 def positive_json_vector(
@@ -683,7 +691,7 @@ def generate_manifest() -> None:
         paths.append(pytest_xml)
     artifacts = []
     for path in paths:
-        payload = path.read_bytes()
+        payload = repository_text_bytes(path)
         artifacts.append(
             {
                 "path": path.relative_to(ROOT).as_posix(),
