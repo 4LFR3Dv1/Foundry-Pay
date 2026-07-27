@@ -1,0 +1,17 @@
+{
+  "work_item": "FC-CTRL-008",
+  "status": "passed",
+  "baseline_commit": "0d74c2f1254fa8340d31292aec322bb365796d7d",
+  "authorized_path": "contracts/channel/test-vectors/positive/close-race-v1.json",
+  "reason": "the normative foundation close-race vector must migrate with the FC-PROTO-005 closure schema",
+  "checks": {
+    "foundation_validator_before_migration": "passed",
+    "ready_with_incomplete_dependencies": {},
+    "git_diff_check": "passed"
+  },
+  "claims": {
+    "schema_migrated": false,
+    "runtime_implemented": false,
+    "scope_broadened_beyond_exact_vector": false
+  }
+}
