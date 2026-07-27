@@ -274,6 +274,45 @@ work_items:
       - the PR modifies FC-PROTO-007 implementation or evidence
       - the policy silently removes a previously recorded gate
 
+  - id: FC-CTRL-015
+    status: active
+    objective: record governed FC-PROTO-007 integration and reconcile the next security gate
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-015.yaml
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - docs/channels/EVIDENCE_INDEX.md
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-015/**
+    dependencies: [FC-PROTO-007, FC-GOV-001]
+    invariants:
+      - done records delivery and does not infer external review
+      - FC-PROTO-007 remains externally unreviewed
+      - devnet, mainnet, and real-value authorization remain blocked
+      - SA-CHAN-000 remains blocked until FC-SEC-002 is done
+    acceptance:
+      - PR 34 functional, evidence, merge, and main CI SHAs are immutable
+      - FC-PROTO-007 is done under the FC-ADR-009 maturity model
+      - FC-SEC-002 is the next ready technical gate
+      - no protocol, runner, vector, or authorization behavior changes
+    tests:
+      - foundation work-graph validation
+      - full regression
+      - secret scan
+    evidence:
+      - evidence/runs/FC-CTRL-015/README.md
+      - evidence/runs/FC-CTRL-015/validation-report.json
+      - evidence/runs/FC-CTRL-015/fc-proto-007-maturity.json
+      - evidence/runs/FC-CTRL-015/artifact-manifest.json
+    security_review: program-governance-review
+    stop_conditions:
+      - external review is represented as performed
+      - a deployment authorization is broadened
+      - SA-CHAN-000 becomes ready before FC-SEC-002 is done
+      - implementation paths change
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -381,7 +420,7 @@ work_items:
     stop_conditions: [Rust and JSON domains cannot map byte-for-byte]
 
   - id: FC-PROTO-007
-    status: review
+    status: done
     objective: publish cross-language Python, TypeScript, and Rust conformance vectors
     owner: conformance-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -433,6 +472,20 @@ work_items:
       - one runner delegates to another implementation
       - self-validation is represented as external review
       - any deployment or real-value authorization is introduced
+    implementation:
+      pr: 34
+      functional_head: ef9a99949bae3d2088a7b51cd55ef4efb14124c7
+      evidence_head: 5e4f7fff521f99c93a2e6b99bd8db8c9a8041649
+      merge_commit: 63da85549bcd247a0510e8af18cddc30d8c53bb2
+      main_ci_run: 30286605271
+    maturity:
+      implementation: complete
+      self_validation: passed
+      external_review: not_performed
+      local_validator: allowed
+      devnet_fixture: blocked
+      mainnet: blocked
+      real_value: blocked
 
   - id: FC-SEC-001
     status: done

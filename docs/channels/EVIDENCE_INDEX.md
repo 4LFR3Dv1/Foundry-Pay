@@ -37,6 +37,8 @@ README after the validation run.
 | FC-PROTO-002 | `a27a0e3daf0ecf2d0f11471d3055283cf6859db7` | `evidence/runs/FC-PROTO-002/` |
 | FC-PROTO-003 | `2a5a7f8392c5af96e59d19585a83578761c2606b` | `evidence/runs/FC-PROTO-003/` |
 | FC-SEC-003 | `ec8db6ba213d40718b3d9e5593826021d36e0e77` | `evidence/runs/FC-SEC-003/` |
+| FC-GOV-001 | `6207df8d4291f8e832fe3758a39ffd267524b447` | `evidence/runs/FC-GOV-001/` |
+| FC-PROTO-007 | `63da85549bcd247a0510e8af18cddc30d8c53bb2` | `evidence/runs/FC-PROTO-007/` |
 
 These merges authorize the next offline protocol work only. They do not prove
 ChannelVault, Solana execution, a deployed consumer frontend, or product demand.
