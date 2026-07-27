@@ -915,9 +915,26 @@ mod tests {
         let cases = root.join("tests/channels/security/replay/mutation-cases.json");
         let results =
             run_security_cases(&cases, &registry).expect("security mutation cases must run");
+        let expectations: Value = serde_json::from_str(
+            &fs::read_to_string(root.join(
+                "contracts/channel/test-vectors/negative/fc-sec-002-signed-preimage-mutations-v1.json",
+            ))
+            .expect("expectation vector must be readable"),
+        )
+        .expect("expectation vector must be JSON");
+        assert_eq!(
+            expectations
+                .get("runner_reads_expectations")
+                .and_then(Value::as_bool),
+            Some(false)
+        );
+        let expected_results = expectations
+            .get("expectations")
+            .and_then(Value::as_array)
+            .expect("expectations must be an array");
 
         assert_eq!(results.len(), 23);
-        for result in results {
+        for (result, expected) in results.into_iter().zip(expected_results) {
             assert_eq!(result.decision, "reject");
             assert_eq!(result.economic_effect_count, 0);
             assert_eq!(result.authority_advancement_count, 0);
@@ -926,6 +943,20 @@ mod tests {
             assert_eq!(result.activation_requested_transition_count, 0);
             assert_eq!(result.authorized_transition_count, 0);
             assert_eq!(result.completed_transition_count, 0);
+            let mut actual = serde_json::to_value(&result).expect("security result must serialize");
+            let object = actual
+                .as_object_mut()
+                .expect("security result must serialize as object");
+            for metadata in [
+                "implementation",
+                "runtime_version",
+                "runner_contract",
+                "runner_version",
+                "schema_version",
+            ] {
+                object.remove(metadata);
+            }
+            assert_eq!(&actual, expected);
         }
     }
 }
