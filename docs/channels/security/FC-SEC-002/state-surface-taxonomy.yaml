@@ -1,0 +1,182 @@
+schema_version: 1
+work_item: FC-SEC-002
+baseline_commit: 41c9fe00803cd14094fae233f000ac48cfede46e
+
+effect_classes:
+  economic:
+    rejection_policy: forbidden
+    fields:
+      - funded_total
+      - activated_total
+      - settled_total
+      - refunded_total
+      - vault_balance
+  authority:
+    rejection_policy: forbidden
+    transitions:
+      - verified
+      - activation_requested
+      - authorized
+      - completed
+  lifecycle:
+    rejection_policy: forbidden
+    transitions:
+      - active
+      - closing
+      - closed
+      - finalized
+  normative_sequence:
+    rejection_policy: forbidden
+    fields:
+      - latest_sequence
+      - latest_voucher_hash
+      - binding_nonce_consumed
+      - authorization_single_use_consumed
+  audit:
+    rejection_policy: allowlisted
+  operational_metrics:
+    rejection_policy: allowlisted
+  local_rate_limit:
+    rejection_policy: undeclared_and_forbidden_in_v1
+  rejection_evidence:
+    rejection_policy: allowlisted
+
+permitted_rejection_effects:
+  - effect: append_audit_event
+    event_type: rejected
+    append_only: true
+    authority_effect: false
+    economic_effect: false
+    lifecycle_effect: false
+    normative_sequence_effect: false
+    payload_policy: bounded_hash_and_closed_code_only
+  - effect: increment_rejection_metric
+    metric: rejected_attempt_total
+    authority_effect: false
+    economic_effect: false
+    lifecycle_effect: false
+    normative_sequence_effect: false
+    labels: [object_type, stage, stable_code]
+  - effect: publish_rejection_evidence
+    authority_effect: false
+    economic_effect: false
+    lifecycle_effect: false
+    normative_sequence_effect: false
+    content: [object_hash, stage, stable_code, correlation_id, observed_at]
+
+forbidden_rejection_effects:
+  - advance_latest_sequence
+  - replace_latest_voucher_hash
+  - consume_binding_nonce
+  - consume_execution_authorization
+  - create_pending_settlement
+  - bind_recipient
+  - activate_right
+  - authorize_execution
+  - settle_value
+  - close_or_finalize_channel
+
+objects:
+  channel_voucher:
+    registry_domain: foundry.channels.voucher
+    authority_binding: direct_exact_payload_signature
+    signer: sender
+    rejection_behavior:
+      economic_effect: forbidden
+      authority_advancement: forbidden
+      lifecycle_transition: forbidden
+      normative_sequence_effect: forbidden
+      audit_append: permitted
+      audit_event_type: rejected
+  recipient_binding:
+    registry_domain: foundry.channels.recipient-binding
+    authority_binding: direct_dual_exact_payload_signature
+    signer: claim_key_and_destination_wallet
+    rejection_behavior:
+      economic_effect: forbidden
+      authority_advancement: forbidden
+      lifecycle_transition: forbidden
+      normative_sequence_effect: forbidden
+      audit_append: not_currently_performed
+  settlement_request:
+    registry_domain: foundry.channels.settlement-request
+    authority_binding: transitive_via_execution_commitment_and_authorization
+    signer: foundry_execution_authority
+    limitation: request hash alone is not a signature
+    rejection_behavior:
+      economic_effect: forbidden
+      authority_advancement: forbidden
+      lifecycle_transition: forbidden
+      normative_sequence_effect: forbidden
+      audit_append: permitted
+      audit_event_type: rejected
+  settlement_execution_commitment:
+    registry_domain: foundry.channels.settlement-execution-commitment
+    authority_binding: exact_hash_link_to_signed_execution_authorization
+    signer: external_execution_authority
+    limitation: commitment hash alone is not a signature
+    rejection_behavior:
+      economic_effect: forbidden
+      authority_advancement: forbidden
+      lifecycle_transition: forbidden
+      normative_sequence_effect: forbidden
+      audit_append: permitted
+      audit_event_type: rejected
+  execution_authorization:
+    registry_domain: foundry.channels.settlement-authorization
+    authority_binding: direct_authorization_signature
+    signer: external_execution_authority
+    rejection_behavior:
+      economic_effect: forbidden
+      authority_advancement: forbidden
+      lifecycle_transition: forbidden
+      normative_sequence_effect: forbidden
+      audit_append: permitted
+      audit_event_type: rejected
+  channel_closure_request:
+    registry_domain: foundry.channels.closure-request
+    authority_binding: offline_self_hash_only_future_transaction_signer_required
+    signer: not_present_in_offline_reference_object
+    limitation: ChannelVault must require sender authority; self-hash is not authorization
+    rejection_behavior:
+      economic_effect: forbidden
+      authority_advancement: forbidden
+      lifecycle_transition: forbidden
+      normative_sequence_effect: forbidden
+      audit_append: permitted
+      audit_event_type: rejected
+  refund_request:
+    registry_domain: foundry.channels.refund-request
+    authority_binding: offline_self_hash_plus_transitive_execution_authorization
+    signer: future_sender_transaction_and_external_execution_authority
+    limitation: offline request hash alone is not authorization
+    rejection_behavior:
+      economic_effect: forbidden
+      authority_advancement: forbidden
+      lifecycle_transition: forbidden
+      normative_sequence_effect: forbidden
+      audit_append: permitted
+      audit_event_type: rejected
+  reconciled_receipt:
+    registry_domain: foundry.channels.reconciled-settlement-receipt
+    authority_binding: non_authoritative_reconciliation_evidence
+    signer: none
+    limitation: receipt cannot authorize execution or create a right
+    rejection_behavior:
+      economic_effect: forbidden
+      authority_advancement: forbidden
+      lifecycle_transition: forbidden
+      normative_sequence_effect: forbidden
+      audit_append: permitted
+      audit_event_type: rejected
+
+journal_controls:
+  append_only: true
+  stable_codes_only: true
+  arbitrary_labels_forbidden: true
+  raw_payload_forbidden_when_hash_suffices: true
+  claim_secret_forbidden: true
+  private_key_forbidden: true
+  bounded_event_size_required: true
+  retention_and_rate_limits: deferred_but_required_before_hosted_operation
+  economic_consumer_forbidden: true
