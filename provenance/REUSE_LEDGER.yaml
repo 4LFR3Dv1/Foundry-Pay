@@ -5,6 +5,33 @@ policy:
   attribution_required: true
 
 sources:
+  - id: foundry-channels-fc-proto-005-first-party-reuse
+    repository: 4LFR3Dv1/Foundry-Pay
+    commit: e1b43118f8aff29c8b2101c1c08bc3aa57694177
+    visibility: public
+    license: Apache-2.0
+    disposition: first-party-reuse-by-import-and-extension
+    candidate_assets:
+      - RFC 8785 canonicalization and SHA-256 helpers
+      - offline Channel accounting and lifecycle validation
+      - FC-PROTO-004 SQLite intent, recovery, and reconciliation design patterns
+    copied_paths: []
+    reused_by_import:
+      - packages/external-execution-protocol/python/foundry_external_execution_protocol/canonicalization.py
+      - packages/channel-protocol/python/foundry_channel_protocol/channel.py
+    created_paths:
+      - packages/channel-protocol/python/foundry_channel_protocol/closure.py
+      - tests/channels/test_closure.py
+    constraints:
+      - no existing kernel was copied or absorbed
+      - activated rights never expire economically in protocol v1
+      - request-time activation is never used to project a refund
+      - technical refund receipts do not update refunded total
+      - only a verified independent observation produces a reconciled receipt
+      - caller-provided snapshots and observations do not assert on-chain provenance
+      - epoch output is eligibility only and does not claim execution
+      - closure canonical vectors remain draft until FC-PROTO-006
+
   - id: foundry-channels-fc-proto-004-first-party-reuse
     repository: 4LFR3Dv1/Foundry-Pay
     commit: b20fa0203089eff242998e47485377921b1c10b4

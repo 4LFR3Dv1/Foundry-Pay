@@ -263,9 +263,7 @@ def validate() -> dict[str, Any]:
     ):
         object_errors = list(closure_validator.iter_errors(value))
         closure_schema_errors.extend(object_errors)
-        errors.extend(
-            f"close-race {object_name}: {error.message}" for error in object_errors
-        )
+        errors.extend(f"close-race {object_name}: {error.message}" for error in object_errors)
     held = close_vector["voucher_held_at_close"]
     during = close_vector["expected_during_claim_window"]
     after = close_vector["expected_after_settlement_and_deadline"]
@@ -293,8 +291,7 @@ def validate() -> dict[str, Any]:
             request_snapshot["claim_deadline"] == closure["claim_deadline"]
             and freeze_snapshot["claim_deadline"] == closure["claim_deadline"]
             and parse_time(held["presented_at"]) < parse_time(closure["claim_deadline"])
-            and parse_time(freeze_snapshot["frozen_at"])
-            >= parse_time(closure["claim_deadline"])
+            and parse_time(freeze_snapshot["frozen_at"]) >= parse_time(closure["claim_deadline"])
         ),
         "presentation_is_inside_window": (
             parse_time(closure["requested_at"])
