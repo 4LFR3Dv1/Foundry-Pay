@@ -1,0 +1,56 @@
+{
+  "baseline_commit": "8975a4b3edfae070919d68afe851652eb1f71ea8",
+  "changed_paths": [
+    ".agents/tasks/FC-GOV-001.yaml",
+    "contracts/governance/component-maturity.schema.json",
+    "contracts/governance/examples/fc-proto-007-self-validated.json",
+    "docs/channels/ADR/FC-ADR-009-evidence-maturity-and-deployment-authorization.md",
+    "docs/channels/EVIDENCE_INDEX.md",
+    "docs/channels/MATURITY_AND_AUTHORIZATION.md",
+    "docs/channels/WORK_GRAPH.md",
+    "docs/channels/work-items.yaml",
+    "scripts/check_channel_foundation.py",
+    "scripts/check_maturity_authorization.py",
+    "tests/channels/test_maturity_authorization.py"
+  ],
+  "claims_excluded": [
+    "external review performed",
+    "ChannelVault implemented",
+    "devnet authorized",
+    "mainnet authorized",
+    "real-value use authorized",
+    "production readiness"
+  ],
+  "fc_proto_007_example": {
+    "devnet_fixture": "blocked",
+    "external_review": "not_performed",
+    "implementation": "complete",
+    "local_validator": "allowed",
+    "mainnet": "blocked",
+    "real_value": "blocked",
+    "self_validation": "passed"
+  },
+  "forbidden_protocol_changes": [],
+  "implementation_commit": "3cbf61ee819ac1277202d94c062f93f250c6412d",
+  "policy": {
+    "applies_program_wide": true,
+    "external_review_inferred": false,
+    "previous_fc_proto_007_gate_recorded": true,
+    "work_item_done_implies_deployment_authorization": false,
+    "work_item_done_implies_external_review": false
+  },
+  "schema": {
+    "draft": "2020-12",
+    "example_valid": true,
+    "semantic_validation": "passed",
+    "structurally_valid": true
+  },
+  "schema_version": 1,
+  "status": "passed",
+  "tests": {
+    "errors": 0,
+    "failures": 0,
+    "skipped": 11,
+    "tests": 479
+  }
+}

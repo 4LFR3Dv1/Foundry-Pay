@@ -1,0 +1,256 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundry.pay/contracts/governance/component-maturity.schema.json",
+  "title": "Foundry Channels component maturity and deployment authorization",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "component",
+    "current_commit",
+    "work_item_status",
+    "maturity",
+    "deployment_authorization"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "component": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$"
+    },
+    "current_commit": {"$ref": "#/$defs/commit"},
+    "work_item_status": {
+      "enum": ["blocked", "ready", "active", "review", "done"]
+    },
+    "maturity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["implementation", "self_validation", "external_review"],
+      "properties": {
+        "implementation": {"$ref": "#/$defs/implementation"},
+        "self_validation": {"$ref": "#/$defs/selfValidation"},
+        "external_review": {"$ref": "#/$defs/externalReview"}
+      }
+    },
+    "deployment_authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "local_validator",
+        "devnet_fixture",
+        "mainnet",
+        "real_value"
+      ],
+      "properties": {
+        "local_validator": {"$ref": "#/$defs/authorization"},
+        "devnet_fixture": {"$ref": "#/$defs/authorization"},
+        "mainnet": {"$ref": "#/$defs/authorization"},
+        "real_value": {"$ref": "#/$defs/authorization"}
+      }
+    }
+  },
+  "$defs": {
+    "commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "nullableCommit": {
+      "oneOf": [{"$ref": "#/$defs/commit"}, {"type": "null"}]
+    },
+    "nullableText": {
+      "type": ["string", "null"],
+      "minLength": 1
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "implementation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "commit"],
+      "properties": {
+        "status": {"enum": ["not_started", "in_progress", "complete"]},
+        "commit": {"$ref": "#/$defs/nullableCommit"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "complete"}}},
+          "then": {"properties": {"commit": {"$ref": "#/$defs/commit"}}}
+        },
+        {
+          "if": {"properties": {"status": {"const": "not_started"}}},
+          "then": {"properties": {"commit": {"type": "null"}}}
+        }
+      ]
+    },
+    "selfValidation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "validated_commit", "evidence"],
+      "properties": {
+        "status": {
+          "enum": ["not_performed", "pending", "passed", "failed", "stale"]
+        },
+        "validated_commit": {"$ref": "#/$defs/nullableCommit"},
+        "evidence": {"$ref": "#/$defs/nullableText"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"status": {"enum": ["passed", "stale"]}}
+          },
+          "then": {
+            "properties": {
+              "validated_commit": {"$ref": "#/$defs/commit"},
+              "evidence": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"status": {"const": "not_performed"}}},
+          "then": {
+            "properties": {
+              "validated_commit": {"type": "null"},
+              "evidence": {"type": "null"}
+            }
+          }
+        }
+      ]
+    },
+    "externalReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "reviewed_commit",
+        "reviewer",
+        "report",
+        "completed_at"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "not_required",
+            "not_performed",
+            "pending",
+            "passed",
+            "failed",
+            "stale"
+          ]
+        },
+        "reviewed_commit": {"$ref": "#/$defs/nullableCommit"},
+        "reviewer": {"$ref": "#/$defs/nullableText"},
+        "report": {"$ref": "#/$defs/nullableText"},
+        "completed_at": {
+          "oneOf": [{"$ref": "#/$defs/timestamp"}, {"type": "null"}]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"status": {"enum": ["passed", "stale"]}}
+          },
+          "then": {
+            "properties": {
+              "reviewed_commit": {"$ref": "#/$defs/commit"},
+              "reviewer": {"type": "string", "minLength": 1},
+              "report": {"type": "string", "minLength": 1},
+              "completed_at": {"$ref": "#/$defs/timestamp"}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"status": {"const": "not_performed"}}},
+          "then": {
+            "properties": {
+              "reviewed_commit": {"type": "null"},
+              "reviewer": {"type": "null"},
+              "report": {"type": "null"},
+              "completed_at": {"type": "null"}
+            }
+          }
+        }
+      ]
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "scope",
+        "artifact_commit",
+        "decision_ref",
+        "reason",
+        "constraints"
+      ],
+      "properties": {
+        "status": {
+          "enum": ["blocked", "allowed", "suspended", "revoked", "expired"]
+        },
+        "scope": {"type": "string", "minLength": 1},
+        "artifact_commit": {"$ref": "#/$defs/nullableCommit"},
+        "decision_ref": {"$ref": "#/$defs/nullableText"},
+        "reason": {"$ref": "#/$defs/nullableText"},
+        "constraints": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "release": {"type": "string", "minLength": 1},
+            "cluster": {"type": "string", "minLength": 1},
+            "genesis_hash": {"type": "string", "minLength": 1},
+            "program_id": {"type": "string", "minLength": 1},
+            "idl_sha256": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "mint": {"type": "string", "minLength": 1},
+            "upgrade_authority": {"type": "string", "minLength": 1},
+            "max_value_base_units": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]*)$"
+            },
+            "valid_until": {"$ref": "#/$defs/timestamp"}
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "allowed"}}},
+          "then": {
+            "properties": {
+              "artifact_commit": {"$ref": "#/$defs/commit"},
+              "decision_ref": {"type": "string", "minLength": 1},
+              "reason": {"type": "null"}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"status": {"const": "blocked"}}},
+          "then": {
+            "properties": {
+              "artifact_commit": {"type": "null"},
+              "decision_ref": {"type": "null"},
+              "reason": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {"enum": ["suspended", "revoked", "expired"]}
+            }
+          },
+          "then": {
+            "properties": {
+              "artifact_commit": {"$ref": "#/$defs/commit"},
+              "decision_ref": {"type": "string", "minLength": 1},
+              "reason": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -22,7 +22,8 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-CTRL-011 | done | FC-CTRL-010 | authorize normative documentation and provenance paths for FC-PROTO-006 |
 | FC-CTRL-012 | done | FC-CTRL-011 | authorize the canonicalization test package marker |
 | FC-CTRL-013 | done | FC-PROTO-006 | record reviewed canonicalization integration and reconcile the graph |
-| FC-CTRL-014 | review | FC-CTRL-013 | freeze FC-PROTO-007 toolchains, runner contract, rejection matrix, independence, and paths |
+| FC-CTRL-014 | done | FC-CTRL-013 | freeze FC-PROTO-007 toolchains, runner contract, rejection matrix, independence, and paths |
+| FC-GOV-001 | active | FC-CTRL-014 | separate work completion, evidence maturity, external review, and deployment authorization |
 
 ## Epic B — Channel protocol
 

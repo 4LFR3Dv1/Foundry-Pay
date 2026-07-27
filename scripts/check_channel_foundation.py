@@ -51,6 +51,7 @@ REQUIRED_DOCS = (
     "OPEN_QUESTIONS.md",
     "GLOSSARY.md",
     "SECURITY_GATES.md",
+    "MATURITY_AND_AUTHORIZATION.md",
 )
 
 REQUIRED_ADRS = tuple(
@@ -61,6 +62,7 @@ REQUIRED_ADRS = tuple(
         (3, "public-private-boundary"),
         (4, "link-and-recipient-binding"),
         (5, "repository-topology"),
+        (9, "evidence-maturity-and-deployment-authorization"),
     )
 )
 
@@ -74,6 +76,7 @@ REQUIRED_WORK_ITEMS = {
     *(f"FC-VAL-{number:03d}" for number in range(1, 6)),
     "SA-CHAN-000",
     "FC-FAIL-003",
+    "FC-GOV-001",
 }
 
 WORK_ITEM_FIELDS = {

@@ -1,0 +1,20 @@
+work_item: FC-GOV-001
+baseline_commit: 8975a4b3edfae070919d68afe851652eb1f71ea8
+implementation_commit: 3cbf61ee819ac1277202d94c062f93f250c6412d
+objective: separate work completion, evidence maturity, external review, and deployment authorization
+policy_transition:
+  previous: independent review required before FC-PROTO-007 merge
+  new: offline self-validated artifacts may merge while external review remains explicit
+unchanged_blocks:
+  - ChannelVault execution
+  - devnet deployment
+  - mainnet deployment
+  - real-value execution
+acceptance:
+  - exact-version schema is closed
+  - stale evidence remains historical but cannot authorize current artifacts
+  - mainnet and real value require passed exact-version external review
+  - FC-PROTO-007 implementation and evidence are not modified
+review:
+  required: program-governance-review
+  external_security_review_inferred: false
