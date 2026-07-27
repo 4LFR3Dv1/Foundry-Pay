@@ -8,8 +8,8 @@
   "second_remediation_commit": "286eb823fe09fab8d75492b33fae726a1b238534",
   "rejected_reviewed_head": "35148a91efd47b8642a6fd834cb072aeeb9b94ea",
   "rejected_rereviewed_head": "1c7f4027940e779335fc45175865ee5648f069c0",
-  "reviewed_head": null,
-  "review_status": "pending_independent_rereview",
+  "reviewed_head": "5e0737aefa6d707f6236f527950b845773bf26a5",
+  "review_status": "approved",
   "artifacts": [
     {
       "path": "contracts/channel/channel-closure.schema.json",
@@ -41,7 +41,7 @@
     },
     {
       "path": "evidence/runs/FC-PROTO-005/validation-report.json",
-      "sha256": "e4d68c4c6229bf8f53c701954cd6530c078826ddd0d9fc5901807c55b6330915"
+      "sha256": "b8c8885233ddb414066fa309471f5c5f4a963cc605238aba66e4dded779347ec"
     },
     {
       "path": "evidence/runs/FC-PROTO-005/close-transition-matrix.json",
@@ -70,6 +70,10 @@
     {
       "path": "evidence/runs/FC-PROTO-005/independent-review-1c7f402.json",
       "sha256": "43cf039ce8b24b8b594070f1cf6692d54e47904cb75352c641e413b92e8d32b3"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-005/independent-rereview-5e0737a.json",
+      "sha256": "6c07e22a53bab6f281ea065b765e259158272f1f645b05c0e4b91d2b0359dc14"
     },
     {
       "path": "evidence/runs/FC-PROTO-005/pytest-full.xml",

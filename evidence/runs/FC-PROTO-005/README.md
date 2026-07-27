@@ -47,4 +47,6 @@ The eight findings are recorded in `independent-review-35148a9.json` and were
 remediated in `8420ee25...`. The re-review of `1c7f402...` closed seven of
 those findings and found two additional accounting-transition blockers,
 recorded in `independent-review-1c7f402.json`. They were remediated in
-`286eb823...`. Independent final re-review is still required before merge.
+`286eb823...`. The final independent re-review approved exact head
+`5e0737ae...`; the decision is recorded in
+`independent-rereview-5e0737a.json`.

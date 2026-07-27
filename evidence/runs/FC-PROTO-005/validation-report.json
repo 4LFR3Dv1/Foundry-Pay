@@ -1,6 +1,6 @@
 {
   "work_item": "FC-PROTO-005",
-  "status": "second_remediation_complete_final_rereview_pending",
+  "status": "independently_reviewed",
   "baseline_commit": "e1b43118f8aff29c8b2101c1c08bc3aa57694177",
   "contract_commit": "d1b1d2b587143b26f435941037ab9b42689047f6",
   "implementation_commit": "87c314a44698e16ea9e1d9ae39be3c0bb736c98a",
@@ -8,8 +8,8 @@
   "second_remediation_commit": "286eb823fe09fab8d75492b33fae726a1b238534",
   "rejected_reviewed_head": "35148a91efd47b8642a6fd834cb072aeeb9b94ea",
   "rejected_rereviewed_head": "1c7f4027940e779335fc45175865ee5648f069c0",
-  "reviewed_head": null,
-  "review_status": "mandatory_independent_money_movement_rereview_pending",
+  "reviewed_head": "5e0737aefa6d707f6236f527950b845773bf26a5",
+  "review_status": "approved",
   "checks": {
     "python_tests": {
       "passed": 379,

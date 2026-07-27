@@ -1,0 +1,27 @@
+{
+  "work_item": "FC-PROTO-005",
+  "reviewed_head": "5e0737aefa6d707f6236f527950b845773bf26a5",
+  "decision": "approve",
+  "review_type": "independent_read_only_adversarial_final_rereview",
+  "blocking_findings": [],
+  "verified": {
+    "focused_tests_passed": 49,
+    "full_tests_collected": 390,
+    "full_tests_failed": 0,
+    "full_tests_skipped": 11,
+    "foundation_checker": "passed",
+    "artifact_hashes": {
+      "verified": 16,
+      "failed": 0
+    },
+    "overlapping_refund_interval": "second_refund_needs_review",
+    "subsequent_over_reservation": "blocked",
+    "activated_voucher_transition": "coherent",
+    "original_findings": "remain_closed"
+  },
+  "limitations": [
+    "offline reference runtime only",
+    "no RPC, wallet, signer, ChannelVault, Cloud, custody, production, or on-chain claim",
+    "11 skipped chaos tests require an external pinned SA-CHAOS-001 checkout and do not cover this offline runtime"
+  ]
+}
