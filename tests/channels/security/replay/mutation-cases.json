@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "runner_contract": "foundry.channels.security-mutation-result/1",
+  "cases": [
+    {"case_id":"voucher-domain","vector":"voucher-payload-v1.json","verifier_object_type":"channel_voucher","profile_id":"signed-payload-v1","path":["payload","domain"],"replacement":"foundry.channels.recipient-binding"},
+    {"case_id":"voucher-version","vector":"voucher-payload-v1.json","verifier_object_type":"channel_voucher","profile_id":"signed-payload-v1","path":["payload","protocol_version"],"replacement":"2.0.0"},
+    {"case_id":"voucher-environment","vector":"voucher-payload-v1.json","verifier_object_type":"channel_voucher","profile_id":"signed-payload-v1","path":["payload","environment"],"replacement":"local"},
+    {"case_id":"voucher-network","vector":"voucher-payload-v1.json","verifier_object_type":"channel_voucher","profile_id":"signed-payload-v1","path":["payload","network"],"replacement":"solana:localnet"},
+    {"case_id":"voucher-genesis","vector":"voucher-payload-v1.json","verifier_object_type":"channel_voucher","profile_id":"signed-payload-v1","path":["payload","genesis_hash"],"replacement":"SysvarC1ock11111111111111111111111111111111"},
+    {"case_id":"voucher-program","vector":"voucher-payload-v1.json","verifier_object_type":"channel_voucher","profile_id":"signed-payload-v1","path":["payload","program_id"],"replacement":"11111111111111111111111111111111"},
+    {"case_id":"voucher-channel","vector":"voucher-payload-v1.json","verifier_object_type":"channel_voucher","profile_id":"signed-payload-v1","path":["payload","channel_id"],"replacement":"channel_foundations_002"},
+    {"case_id":"voucher-account","vector":"voucher-payload-v1.json","verifier_object_type":"channel_voucher","profile_id":"signed-payload-v1","path":["payload","channel_account"],"replacement":"SysvarRent111111111111111111111111111111111"},
+    {"case_id":"voucher-epoch","vector":"voucher-payload-v1.json","verifier_object_type":"channel_voucher","profile_id":"signed-payload-v1","path":["payload","epoch"],"replacement":1},
+    {"case_id":"voucher-sender","vector":"voucher-payload-v1.json","verifier_object_type":"channel_voucher","profile_id":"signed-payload-v1","path":["payload","sender"],"replacement":"SysvarRent111111111111111111111111111111111"},
+    {"case_id":"voucher-recipient","vector":"voucher-payload-v1.json","verifier_object_type":"channel_voucher","profile_id":"signed-payload-v1","path":["payload","recipient_claim_pubkey"],"replacement":"SysvarC1ock11111111111111111111111111111111"},
+    {"case_id":"voucher-mint","vector":"voucher-payload-v1.json","verifier_object_type":"channel_voucher","profile_id":"signed-payload-v1","path":["payload","mint"],"replacement":"So11111111111111111111111111111111111111112"},
+    {"case_id":"voucher-sequence","vector":"voucher-payload-v1.json","verifier_object_type":"channel_voucher","profile_id":"signed-payload-v1","path":["payload","sequence"],"replacement":4},
+    {"case_id":"voucher-previous-hash","vector":"voucher-payload-v1.json","verifier_object_type":"channel_voucher","profile_id":"signed-payload-v1","path":["payload","previous_activated_voucher_hash"],"replacement":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"case_id":"voucher-amount","vector":"voucher-payload-v1.json","verifier_object_type":"channel_voucher","profile_id":"signed-payload-v1","path":["payload","cumulative_authorized_base_units"],"replacement":"40000001"},
+    {"case_id":"voucher-expiry","vector":"voucher-payload-v1.json","verifier_object_type":"channel_voucher","profile_id":"signed-payload-v1","path":["payload","expires_at"],"replacement":"2026-08-02T00:00:01Z"},
+    {"case_id":"binding-destination","vector":"recipient-binding-payload-v1.json","verifier_object_type":"recipient_binding","profile_id":"signed-payload-v1","path":["payload","destination_wallet"],"replacement":"SysvarRent111111111111111111111111111111111"},
+    {"case_id":"binding-claim","vector":"recipient-binding-payload-v1.json","verifier_object_type":"recipient_binding","profile_id":"signed-payload-v1","path":["payload","claim_id"],"replacement":"claim_foundations_002"},
+    {"case_id":"binding-voucher-hash","vector":"recipient-binding-payload-v1.json","verifier_object_type":"recipient_binding","profile_id":"signed-payload-v1","path":["payload","voucher_hash"],"replacement":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"case_id":"binding-nonce","vector":"recipient-binding-payload-v1.json","verifier_object_type":"recipient_binding","profile_id":"signed-payload-v1","path":["payload","binding_nonce"],"replacement":2},
+    {"case_id":"voucher-as-binding","vector":"voucher-payload-v1.json","verifier_object_type":"recipient_binding","profile_id":"signed-payload-v1","path":["payload","sequence"],"replacement":4},
+    {"case_id":"binding-as-voucher","vector":"recipient-binding-payload-v1.json","verifier_object_type":"channel_voucher","profile_id":"signed-payload-v1","path":["payload","binding_nonce"],"replacement":2},
+    {"case_id":"unknown-profile","vector":"voucher-payload-v1.json","verifier_object_type":"channel_voucher","profile_id":"signed-payload-v2","path":["payload","sequence"],"replacement":4}
+  ]
+}

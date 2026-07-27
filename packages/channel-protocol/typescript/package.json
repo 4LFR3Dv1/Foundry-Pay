@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "npm run build && node --test dist/tests/channels/link-security/*.test.js dist/tests/channels/conformance/*.test.js",
+    "test": "npm run build && node --test dist/tests/channels/link-security/*.test.js dist/tests/channels/conformance/*.test.js dist/tests/channels/security/replay/*.test.js",
     "conformance": "node dist/packages/channel-protocol/typescript/src/conformance-runner.js"
   },
   "dependencies": {

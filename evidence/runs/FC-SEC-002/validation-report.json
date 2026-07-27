@@ -1,0 +1,24 @@
+{
+  "cases": 23,
+  "claims_excluded": [
+    "independent Ed25519 verification",
+    "ChannelVault behavior",
+    "Solana execution",
+    "devnet authorization",
+    "mainnet readiness",
+    "real-value safety"
+  ],
+  "cross_language_exact_expectation_match": true,
+  "external_review": "not_performed",
+  "full_regression": {
+    "failed": 0,
+    "passed": 490,
+    "skipped": 11
+  },
+  "functional_head": "e785dedd62b982cbe03a7b542534688ddc3b8370",
+  "schema_version": 1,
+  "secret_guard": "passed",
+  "status": "passed",
+  "validated_head": "e785dedd62b982cbe03a7b542534688ddc3b8370",
+  "workflow_run": 30310061435
+}

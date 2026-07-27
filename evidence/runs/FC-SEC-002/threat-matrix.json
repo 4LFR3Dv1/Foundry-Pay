@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "threats": [
+    {
+      "class": "cross_channel",
+      "control": "signed preimage",
+      "effect": "zero"
+    },
+    {
+      "class": "cross_epoch",
+      "control": "signed preimage",
+      "effect": "zero"
+    },
+    {
+      "class": "cross_network",
+      "control": "signed preimage",
+      "effect": "zero"
+    },
+    {
+      "class": "cross_program",
+      "control": "signed preimage",
+      "effect": "zero"
+    },
+    {
+      "class": "cross_asset",
+      "control": "signed preimage",
+      "effect": "zero"
+    },
+    {
+      "class": "cross_recipient",
+      "control": "signed preimage",
+      "effect": "zero"
+    },
+    {
+      "class": "cross_type",
+      "control": "exact verifier type/domain",
+      "effect": "zero"
+    },
+    {
+      "class": "cross_profile",
+      "control": "exact profile",
+      "effect": "zero"
+    },
+    {
+      "class": "downgrade",
+      "control": "no fallback",
+      "effect": "zero"
+    },
+    {
+      "class": "cloud_revocation",
+      "control": "verifiable lifecycle only",
+      "effect": "no cryptographic revocation"
+    }
+  ]
+}

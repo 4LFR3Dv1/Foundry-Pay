@@ -1,0 +1,9 @@
+{
+  "channel_epoch_context_fixed": true,
+  "cloud_revocation_authority": false,
+  "future_migration_requires_adr_and_authoritative_transition": true,
+  "in_transit_rewrite": false,
+  "schema_version": 1,
+  "status": "passed",
+  "v1_objects_remain_v1": true
+}

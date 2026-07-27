@@ -28,8 +28,13 @@ from .canonical import (
 
 
 RUNNER_CONTRACT = "foundry.channels.conformance-runner-result/1"
+SECURITY_RUNNER_CONTRACT = "foundry.channels.security-mutation-result/1"
 RUNNER_VERSION = "1.0.0"
 _HASH = re.compile(r"^sha256:[0-9a-f]{64}$")
+_SIGNED_TYPES = {
+    "channel_voucher": ("foundry.channels.voucher", "voucher_hash"),
+    "recipient_binding": ("foundry.channels.recipient-binding", "binding_hash"),
+}
 
 
 def _reject(code: str, stage: str, path: str, detail: str) -> NoReturn:
@@ -200,16 +205,146 @@ def run_registry(registry_root: Path) -> list[dict[str, Any]]:
     return results
 
 
+def _security_rejection(
+    case: Mapping[str, Any],
+    *,
+    stage: str,
+    code: str,
+    computed_bytes: bytes | None = None,
+) -> dict[str, Any]:
+    result: dict[str, Any] = {
+        "schema_version": 1,
+        "runner_contract": SECURITY_RUNNER_CONTRACT,
+        "implementation": "python",
+        "runtime_version": platform.python_version(),
+        "runner_version": RUNNER_VERSION,
+        "case_id": case["case_id"],
+        "decision": "reject",
+        "stage": stage,
+        "code": code,
+        "economic_effect_count": 0,
+        "authority_advancement_count": 0,
+        "lifecycle_transition_count": 0,
+        "verified_transition_count": 0,
+        "activation_requested_transition_count": 0,
+        "authorized_transition_count": 0,
+        "completed_transition_count": 0,
+    }
+    if computed_bytes is not None:
+        result.update(
+            {
+                "mutated_canonical_utf8_hex": computed_bytes.hex(),
+                "mutated_byte_length": len(computed_bytes),
+                "mutated_sha256": sha256_raw_bytes(computed_bytes),
+            }
+        )
+    return result
+
+
+def _apply_security_mutation(source: dict[str, Any], case: Mapping[str, Any]) -> None:
+    path = case.get("path")
+    if not isinstance(path, list) or not path or any(not isinstance(item, str) for item in path):
+        raise ValueError(f"{case.get('case_id')}: invalid mutation path")
+    target: dict[str, Any] = source
+    for segment in path[:-1]:
+        child = target.get(segment)
+        if not isinstance(child, dict):
+            raise ValueError(f"{case.get('case_id')}: mutation path is not an object")
+        target = child
+    final = path[-1]
+    if final not in target:
+        raise ValueError(f"{case.get('case_id')}: mutation field is absent")
+    target[final] = case.get("replacement")
+
+
+def _run_security_case(
+    case: Mapping[str, Any],
+    registry_root: Path,
+) -> dict[str, Any]:
+    object_type = case.get("verifier_object_type")
+    if not isinstance(object_type, str) or object_type not in _SIGNED_TYPES:
+        raise ValueError(f"{case.get('case_id')}: unsupported verifier object type")
+    expected_domain, hash_field = _SIGNED_TYPES[object_type]
+    if case.get("profile_id") != "signed-payload-v1":
+        return _security_rejection(
+            case,
+            stage="profile_verification",
+            code="unsupported_profile",
+        )
+
+    filename = case.get("vector")
+    if not isinstance(filename, str) or Path(filename).name != filename:
+        raise ValueError(f"{case.get('case_id')}: invalid vector filename")
+    vector = _load_json(registry_root / "positive" / filename)
+    source_json = vector.get("source_json")
+    if not isinstance(source_json, str):
+        raise ValueError(f"{case.get('case_id')}: source_json missing")
+    source = parse_strict_json(source_json)
+    if not isinstance(source, dict):
+        raise ValueError(f"{case.get('case_id')}: source must be an object")
+    declared_hash = source.get(hash_field)
+    if not isinstance(declared_hash, str):
+        return _security_rejection(
+            case,
+            stage="type_verification",
+            code="object_type_mismatch",
+        )
+    _apply_security_mutation(source, case)
+    payload = source.get("payload")
+    if not isinstance(payload, dict):
+        raise ValueError(f"{case.get('case_id')}: signed payload missing")
+    if payload.get("protocol_version") != "1.0.0":
+        return _security_rejection(
+            case,
+            stage="version_verification",
+            code="unsupported_version",
+        )
+    if payload.get("domain") != expected_domain:
+        return _security_rejection(
+            case,
+            stage="domain_verification",
+            code="domain_mismatch",
+        )
+    computed_bytes = canonical_json_bytes(payload)
+    if sha256_raw_bytes(computed_bytes) == declared_hash:
+        raise ValueError(f"{case.get('case_id')}: mutation preserved signed preimage")
+    return _security_rejection(
+        case,
+        stage="signed_preimage_verification",
+        code="signed_preimage_mismatch",
+        computed_bytes=computed_bytes,
+    )
+
+
+def run_security_cases(cases_path: Path, registry_root: Path) -> list[dict[str, Any]]:
+    registry = _load_json(cases_path)
+    if registry.get("runner_contract") != SECURITY_RUNNER_CONTRACT:
+        raise ValueError("security mutation runner contract mismatch")
+    cases = registry.get("cases")
+    if not isinstance(cases, list) or any(not isinstance(case, dict) for case in cases):
+        raise ValueError("security mutation cases must be objects")
+    results = [_run_security_case(case, registry_root) for case in cases]
+    case_ids = [result["case_id"] for result in results]
+    if len(case_ids) != len(set(case_ids)):
+        raise ValueError("duplicate security mutation case_id")
+    return sorted(results, key=lambda result: result["case_id"])
+
+
 def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--registry-root", type=Path, required=True)
+    parser.add_argument("--security-cases", type=Path)
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(sys.argv[1:] if argv is None else argv)
     try:
-        results = run_registry(args.registry_root)
+        results = (
+            run_security_cases(args.security_cases, args.registry_root)
+            if args.security_cases is not None
+            else run_registry(args.registry_root)
+        )
     except Exception as error:
         print(f"python conformance runner failed: {error}", file=sys.stderr)
         return 2

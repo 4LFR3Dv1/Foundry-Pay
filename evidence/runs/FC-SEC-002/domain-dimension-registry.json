@@ -1,0 +1,33 @@
+{
+  "case_count": 23,
+  "exact_domain_equality": true,
+  "mutated_dimensions": [
+    "binding_nonce",
+    "channel_account",
+    "channel_id",
+    "claim_id",
+    "cumulative_authorized_base_units",
+    "destination_wallet",
+    "domain",
+    "environment",
+    "epoch",
+    "expires_at",
+    "genesis_hash",
+    "mint",
+    "network",
+    "previous_activated_voucher_hash",
+    "program_id",
+    "protocol_version",
+    "recipient_claim_pubkey",
+    "sender",
+    "sequence",
+    "voucher_hash"
+  ],
+  "prefix_matching": false,
+  "schema_version": 1,
+  "signed_authority_objects": [
+    "channel_voucher",
+    "recipient_binding"
+  ],
+  "status": "passed"
+}

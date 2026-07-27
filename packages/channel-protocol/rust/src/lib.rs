@@ -5,12 +5,13 @@ use std::path::{Path, PathBuf};
 
 use base64::Engine;
 use base64::engine::general_purpose::STANDARD as BASE64;
-use serde::Serialize;
 use serde::de::{Deserialize, Deserializer, MapAccess, SeqAccess, Visitor};
+use serde::{Deserialize as SerdeDeserialize, Serialize};
 use serde_json::{Map, Number, Value};
 use sha2::{Digest, Sha256};
 
 const RUNNER_CONTRACT: &str = "foundry.channels.conformance-runner-result/1";
+const SECURITY_RUNNER_CONTRACT: &str = "foundry.channels.security-mutation-result/1";
 const RUNNER_VERSION: &str = "1.0.0";
 const JSON_SAFE_UNSIGNED_MAX: i128 = 9_007_199_254_740_991;
 const U64_MAX_TEXT: &str = "18446744073709551615";
@@ -673,7 +674,206 @@ pub fn run_registry(registry_root: &Path) -> Result<Vec<RunnerResult>, String> {
     Ok(results)
 }
 
+#[derive(Debug, SerdeDeserialize)]
+struct SecurityRegistry {
+    runner_contract: String,
+    cases: Vec<SecurityCase>,
+}
+
+#[derive(Debug, SerdeDeserialize)]
+struct SecurityCase {
+    case_id: String,
+    vector: String,
+    verifier_object_type: String,
+    profile_id: String,
+    path: Vec<String>,
+    replacement: Value,
+}
+
+#[derive(Debug, Serialize)]
+pub struct SecurityResult {
+    schema_version: u8,
+    runner_contract: &'static str,
+    implementation: &'static str,
+    runtime_version: &'static str,
+    runner_version: &'static str,
+    case_id: String,
+    decision: &'static str,
+    stage: &'static str,
+    code: &'static str,
+    economic_effect_count: u8,
+    authority_advancement_count: u8,
+    lifecycle_transition_count: u8,
+    verified_transition_count: u8,
+    activation_requested_transition_count: u8,
+    authorized_transition_count: u8,
+    completed_transition_count: u8,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    mutated_canonical_utf8_hex: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    mutated_byte_length: Option<usize>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    mutated_sha256: Option<String>,
+}
+
+fn security_rejection(
+    case: &SecurityCase,
+    stage: &'static str,
+    code: &'static str,
+    computed_bytes: Option<&[u8]>,
+) -> SecurityResult {
+    SecurityResult {
+        schema_version: 1,
+        runner_contract: SECURITY_RUNNER_CONTRACT,
+        implementation: "rust",
+        runtime_version: env!("FC_RUSTC_VERSION"),
+        runner_version: RUNNER_VERSION,
+        case_id: case.case_id.clone(),
+        decision: "reject",
+        stage,
+        code,
+        economic_effect_count: 0,
+        authority_advancement_count: 0,
+        lifecycle_transition_count: 0,
+        verified_transition_count: 0,
+        activation_requested_transition_count: 0,
+        authorized_transition_count: 0,
+        completed_transition_count: 0,
+        mutated_canonical_utf8_hex: computed_bytes.map(hex::encode),
+        mutated_byte_length: computed_bytes.map(<[u8]>::len),
+        mutated_sha256: computed_bytes.map(sha256),
+    }
+}
+
+fn apply_security_mutation(source: &mut Value, case: &SecurityCase) -> Result<(), String> {
+    let (field, parents) = case
+        .path
+        .split_last()
+        .ok_or_else(|| format!("{}: mutation path is empty", case.case_id))?;
+    let mut target = source;
+    for segment in parents {
+        target = target
+            .get_mut(segment)
+            .filter(|value| value.is_object())
+            .ok_or_else(|| format!("{}: mutation path is not an object", case.case_id))?;
+    }
+    let object = target
+        .as_object_mut()
+        .ok_or_else(|| format!("{}: mutation target is not an object", case.case_id))?;
+    if !object.contains_key(field) {
+        return Err(format!("{}: mutation field is absent", case.case_id));
+    }
+    object.insert(field.clone(), case.replacement.clone());
+    Ok(())
+}
+
+fn run_security_case(case: &SecurityCase, registry_root: &Path) -> Result<SecurityResult, String> {
+    let (expected_domain, hash_field) = match case.verifier_object_type.as_str() {
+        "channel_voucher" => ("foundry.channels.voucher", "voucher_hash"),
+        "recipient_binding" => ("foundry.channels.recipient-binding", "binding_hash"),
+        _ => return Err(format!("{}: unsupported verifier type", case.case_id)),
+    };
+    if case.profile_id != "signed-payload-v1" {
+        return Ok(security_rejection(
+            case,
+            "profile_verification",
+            "unsupported_profile",
+            None,
+        ));
+    }
+    if Path::new(&case.vector)
+        .file_name()
+        .and_then(|name| name.to_str())
+        != Some(case.vector.as_str())
+    {
+        return Err(format!("{}: invalid vector filename", case.case_id));
+    }
+    let vector = load_object(&registry_root.join("positive").join(&case.vector))?;
+    let source_json = required_string(&vector, "source_json")?;
+    let mut source = strict_parse(source_json).map_err(|error| error.to_string())?;
+    let declared_hash = match source.get(hash_field).and_then(Value::as_str) {
+        Some(value) => value.to_owned(),
+        None => {
+            return Ok(security_rejection(
+                case,
+                "type_verification",
+                "object_type_mismatch",
+                None,
+            ));
+        }
+    };
+    apply_security_mutation(&mut source, case)?;
+    let payload = source
+        .get("payload")
+        .and_then(Value::as_object)
+        .ok_or_else(|| format!("{}: signed payload missing", case.case_id))?;
+    if payload.get("protocol_version").and_then(Value::as_str) != Some("1.0.0") {
+        return Ok(security_rejection(
+            case,
+            "version_verification",
+            "unsupported_version",
+            None,
+        ));
+    }
+    if payload.get("domain").and_then(Value::as_str) != Some(expected_domain) {
+        return Ok(security_rejection(
+            case,
+            "domain_verification",
+            "domain_mismatch",
+            None,
+        ));
+    }
+    let computed_bytes =
+        canonical_bytes(&Value::Object(payload.clone())).map_err(|error| error.to_string())?;
+    if sha256(&computed_bytes) == declared_hash {
+        return Err(format!(
+            "{}: mutation preserved signed preimage",
+            case.case_id
+        ));
+    }
+    Ok(security_rejection(
+        case,
+        "signed_preimage_verification",
+        "signed_preimage_mismatch",
+        Some(&computed_bytes),
+    ))
+}
+
+pub fn run_security_cases(
+    cases_path: &Path,
+    registry_root: &Path,
+) -> Result<Vec<SecurityResult>, String> {
+    let registry: SecurityRegistry =
+        serde_json::from_str(&fs::read_to_string(cases_path).map_err(|error| error.to_string())?)
+            .map_err(|error| error.to_string())?;
+    if registry.runner_contract != SECURITY_RUNNER_CONTRACT {
+        return Err("security mutation runner contract mismatch".to_owned());
+    }
+    let mut results = registry
+        .cases
+        .iter()
+        .map(|case| run_security_case(case, registry_root))
+        .collect::<Result<Vec<_>, _>>()?;
+    results.sort_by(|left, right| left.case_id.cmp(&right.case_id));
+    if results
+        .windows(2)
+        .any(|pair| pair[0].case_id == pair[1].case_id)
+    {
+        return Err("duplicate security mutation case_id".to_owned());
+    }
+    Ok(results)
+}
+
 pub fn render_jsonl(results: &[RunnerResult]) -> Result<String, serde_json::Error> {
+    let mut output = String::new();
+    for result in results {
+        output.push_str(&serde_json::to_string(result)?);
+        output.push('\n');
+    }
+    Ok(output)
+}
+
+pub fn render_security_jsonl(results: &[SecurityResult]) -> Result<String, serde_json::Error> {
     let mut output = String::new();
     for result in results {
         output.push_str(&serde_json::to_string(result)?);
@@ -706,5 +906,57 @@ mod tests {
                 .count(),
             20
         );
+    }
+
+    #[test]
+    fn rust_rejects_all_signed_preimage_mutations_without_authority_effect() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let registry = root.join("contracts/channel/canonicalization");
+        let cases = root.join("tests/channels/security/replay/mutation-cases.json");
+        let results =
+            run_security_cases(&cases, &registry).expect("security mutation cases must run");
+        let expectations: Value = serde_json::from_str(
+            &fs::read_to_string(root.join(
+                "contracts/channel/test-vectors/negative/fc-sec-002/signed-preimage-mutations-v1.json",
+            ))
+            .expect("expectation vector must be readable"),
+        )
+        .expect("expectation vector must be JSON");
+        assert_eq!(
+            expectations
+                .get("runner_reads_expectations")
+                .and_then(Value::as_bool),
+            Some(false)
+        );
+        let expected_results = expectations
+            .get("expectations")
+            .and_then(Value::as_array)
+            .expect("expectations must be an array");
+
+        assert_eq!(results.len(), 23);
+        for (result, expected) in results.into_iter().zip(expected_results) {
+            assert_eq!(result.decision, "reject");
+            assert_eq!(result.economic_effect_count, 0);
+            assert_eq!(result.authority_advancement_count, 0);
+            assert_eq!(result.lifecycle_transition_count, 0);
+            assert_eq!(result.verified_transition_count, 0);
+            assert_eq!(result.activation_requested_transition_count, 0);
+            assert_eq!(result.authorized_transition_count, 0);
+            assert_eq!(result.completed_transition_count, 0);
+            let mut actual = serde_json::to_value(&result).expect("security result must serialize");
+            let object = actual
+                .as_object_mut()
+                .expect("security result must serialize as object");
+            for metadata in [
+                "implementation",
+                "runtime_version",
+                "runner_contract",
+                "runner_version",
+                "schema_version",
+            ] {
+                object.remove(metadata);
+            }
+            assert_eq!(&actual, expected);
+        }
     }
 }

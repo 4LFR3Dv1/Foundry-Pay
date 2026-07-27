@@ -1,0 +1,123 @@
+{
+  "algorithm": "sha256",
+  "artifacts": [
+    {
+      "bytes": 41426,
+      "path": "contracts/channel/test-vectors/negative/fc-sec-002/signed-preimage-mutations-v1.json",
+      "sha256": "sha256:04e6dda5ce838cc35904ce6330d5ce177659903d330f0ef7ae288b547281fc24"
+    },
+    {
+      "bytes": 2101,
+      "path": "docs/channels/security/FC-SEC-002/SIGNED_AUTHORITY_INVENTORY.md",
+      "sha256": "sha256:bfb1d9d9a0e5fa21977e38e45cf2030dcc639abb914cea5122ddd318ac89a08a"
+    },
+    {
+      "bytes": 6153,
+      "path": "docs/channels/security/FC-SEC-002/state-surface-taxonomy.yaml",
+      "sha256": "sha256:a1eacc0b07913eb4958c83f30f6c390b13804649aa88f6f53f8c5240ca06b503"
+    },
+    {
+      "bytes": 3202,
+      "path": "docs/channels/security/FC-SEC-002/VERSION_LIFECYCLE.md",
+      "sha256": "sha256:39230186ae577a171abac9425a356d14ad83e5e97db445716298451e026a658c"
+    },
+    {
+      "bytes": 868,
+      "path": "evidence/runs/FC-SEC-002/cross-language-report.json",
+      "sha256": "sha256:0bf938081ac21f122a9845c027f5599dd17b79fe4919d21b231811e410f32a0c"
+    },
+    {
+      "bytes": 659,
+      "path": "evidence/runs/FC-SEC-002/domain-dimension-registry.json",
+      "sha256": "sha256:6f3277c65ae1adbd4241e7f50329b973e7362a545b747237870fae5599fbe68b"
+    },
+    {
+      "bytes": 240,
+      "path": "evidence/runs/FC-SEC-002/downgrade-report.json",
+      "sha256": "sha256:6bfdb2a9f4b9dc7f81beda8230cb127a5906bdc7f26d7dcb59993b6ead3ca32a"
+    },
+    {
+      "bytes": 12191,
+      "path": "evidence/runs/FC-SEC-002/generate_evidence.py",
+      "sha256": "sha256:0ac6bb4648ff4d6a0b28611667244a7a18dcb85c0d6f6414ffdcdcdfa71a3fbc"
+    },
+    {
+      "bytes": 1683,
+      "path": "evidence/runs/FC-SEC-002/maturity.json",
+      "sha256": "sha256:725c5a1a1de57ef7704d13a6902505793d740b9d26ad5da971a759fc98154244"
+    },
+    {
+      "bytes": 43741,
+      "path": "evidence/runs/FC-SEC-002/mutation-cases.jsonl",
+      "sha256": "sha256:a7e9e361c36cd1e3982d718018344ec4189b25bf633007d1759512a5ff7f88c7"
+    },
+    {
+      "bytes": 439,
+      "path": "evidence/runs/FC-SEC-002/no-effect-report.json",
+      "sha256": "sha256:1d20c6a2fd0fea29b26e1632c5419eb7daf4bcdf5f514d69cd575cb011cdddb5"
+    },
+    {
+      "bytes": 74493,
+      "path": "evidence/runs/FC-SEC-002/pytest-full.xml",
+      "sha256": "sha256:6de72ea95ce519c5e3ffcfcedce1ab2a22921f15d945eb3c8c08f96ad5afea7c"
+    },
+    {
+      "bytes": 1236,
+      "path": "evidence/runs/FC-SEC-002/README.md",
+      "sha256": "sha256:b984ee4ea28c75d7dae74560179f1358d68978f579488647ff0826a2fef513bb"
+    },
+    {
+      "bytes": 207,
+      "path": "evidence/runs/FC-SEC-002/semantic-collision-report.json",
+      "sha256": "sha256:964612e9f6d9a09f73e484d9e31b80c36f44dc63d0a98187955235543e27124a"
+    },
+    {
+      "bytes": 1139,
+      "path": "evidence/runs/FC-SEC-002/threat-matrix.json",
+      "sha256": "sha256:b7493df72d2878051fe38c1a61cd01d58ac8cacd32285ddd18dba70f37ce82d9"
+    },
+    {
+      "bytes": 619,
+      "path": "evidence/runs/FC-SEC-002/validation-report.json",
+      "sha256": "sha256:7ffa660bd630ae80ee9f70d24314f3a01d044910b39cf6f3747168b85cfa0032"
+    },
+    {
+      "bytes": 259,
+      "path": "evidence/runs/FC-SEC-002/version-lifecycle-report.json",
+      "sha256": "sha256:b5b8c58efb3798c3c875dfbc32d1c191dc773590e15918db61f41bfcc3582d54"
+    },
+    {
+      "bytes": 13657,
+      "path": "packages/channel-protocol/python/foundry_channel_protocol/conformance_runner.py",
+      "sha256": "sha256:5b987d9f9019da994c815a013fa6e3ef7f7b32091244c064011f110aa30f2e5d"
+    },
+    {
+      "bytes": 32094,
+      "path": "packages/channel-protocol/rust/src/lib.rs",
+      "sha256": "sha256:2c6ccbed9124a7be15e1ea09da21e114f173621eccf9e8cc0a67c379d1238976"
+    },
+    {
+      "bytes": 22944,
+      "path": "packages/channel-protocol/typescript/src/conformance-runner.ts",
+      "sha256": "sha256:70437dae11f84fc83ce78c2e90870edd0637806bc5a9f5b59a82e808776a78df"
+    },
+    {
+      "bytes": 5237,
+      "path": "tests/channels/security/replay/mutation-cases.json",
+      "sha256": "sha256:dca10bfa98f50fda91ef97f1e081084268f8463c40964bc876045f39d2b6f7bb"
+    },
+    {
+      "bytes": 5990,
+      "path": "tests/channels/security/replay/run_cross_language.py",
+      "sha256": "sha256:e20241c6be22ed291447b1939ab0261651a910d4217f265bd5e99835b1422664"
+    },
+    {
+      "bytes": 5265,
+      "path": "tests/channels/security/replay/test_rejection_effects.py",
+      "sha256": "sha256:08afd1460f89d6e1fb95e7109929796c10e460cf7855ea3af394c7c74d2e1812"
+    }
+  ],
+  "functional_head": "e785dedd62b982cbe03a7b542534688ddc3b8370",
+  "schema_version": 1,
+  "validated_head": "e785dedd62b982cbe03a7b542534688ddc3b8370"
+}
