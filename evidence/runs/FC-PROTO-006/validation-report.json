@@ -20,8 +20,8 @@
     "errors": 0,
     "failures": 0,
     "skipped": 11,
-    "tests": 471,
-    "time_seconds": 10.221
+    "tests": 472,
+    "time_seconds": 11.374
   },
   "work_item": "FC-PROTO-006"
 }

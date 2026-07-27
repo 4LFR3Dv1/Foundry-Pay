@@ -7,149 +7,149 @@
       "sha256": "sha256:a892e91a3b0794b4f780fa230f095c09acdc863308e42547d74d6e19405f7bf3"
     },
     {
-      "bytes": 1055,
+      "bytes": 1017,
       "path": "contracts/channel/canonicalization/manifest.v1.json",
-      "sha256": "sha256:01ee65aaeeeef5275062e434c735bebbf3c28e66eda293f3e009daae23acbf8e"
+      "sha256": "sha256:37dd5ddc42b50e2aecac49abd341f2a69153a53a5fa2866fe3bac6f6f9463e13"
     },
     {
-      "bytes": 175,
+      "bytes": 168,
       "path": "contracts/channel/canonicalization/negative/amount-leading-zero.json",
-      "sha256": "sha256:73f60c15da79515d68496f53cb99989a385b6dd6c6b28e4d6b904d08e15dbda4"
+      "sha256": "sha256:a8238251f1a81139f1bb3ca8ad5b3d78fa1334712d209f1f6ed93b772b23611a"
     },
     {
-      "bytes": 172,
+      "bytes": 165,
       "path": "contracts/channel/canonicalization/negative/bool-as-integer.json",
-      "sha256": "sha256:49089339d1bad04d7f2267a3f78804a0b427db16894226212926275bc82b154e"
+      "sha256": "sha256:28b159bb0d897ae5b8eb9609f0df15a8fcdb303e6b6a530b767a3adfe7762b2b"
     },
     {
-      "bytes": 353,
+      "bytes": 343,
       "path": "contracts/channel/canonicalization/negative/canonical-set-duplicate.json",
-      "sha256": "sha256:dfc2c1ddc320f4568c831175d74cadaa56fffbfa9214feb214c444dcd237860d"
+      "sha256": "sha256:17a52fd910e59889faf6175ddf217a618663337d48bd8e7e4b4b3d68ca39d4ed"
     },
     {
-      "bytes": 345,
+      "bytes": 335,
       "path": "contracts/channel/canonicalization/negative/canonical-set-order.json",
-      "sha256": "sha256:45a58df56e5b36ba37cd5852edb37a186ca6a627189b936836bf069f6dbe26a7"
+      "sha256": "sha256:6e05508c9f91582e0a64776713f7b8c1ec097fbf4d1b6b050781ed9941526a33"
     },
     {
-      "bytes": 183,
+      "bytes": 176,
       "path": "contracts/channel/canonicalization/negative/duplicate-keys.json",
-      "sha256": "sha256:8c5c27d79232c31df6961bb59828e814809fc2a92a67e472c662a578a522e85e"
+      "sha256": "sha256:165b72e53c2fd5c24a5ee0c9775c119f24c610bb337d8b8d3aafa7d86ee34219"
     },
     {
-      "bytes": 170,
+      "bytes": 163,
       "path": "contracts/channel/canonicalization/negative/float.json",
-      "sha256": "sha256:0b119d04e582b830ec6e62be5aa67e410f3d53f0a137011e387533021770c85c"
+      "sha256": "sha256:d1fc9591a48347bcb8d4fc80b3c715582907010a5267d2c45b4064223c7eda30"
     },
     {
-      "bytes": 180,
+      "bytes": 173,
       "path": "contracts/channel/canonicalization/negative/infinity.json",
-      "sha256": "sha256:5ade9eeaa3759417c3c44a1f63d83c863ccaa05f5482d4e00ec9e16458cd3257"
+      "sha256": "sha256:b60d235e6aa8641b74607e92f67833456e92f37ff8bd4b5ceebb4be809c95516"
     },
     {
-      "bytes": 185,
+      "bytes": 178,
       "path": "contracts/channel/canonicalization/negative/lone-surrogate.json",
-      "sha256": "sha256:0f605c7173ba8f4964a7078797b452e0c9a5448c8c9a84c67a5c924f5074b948"
+      "sha256": "sha256:6e10ba0316f624d32578b50d8c124d1c9961d4ae9f7fbbacf59fc7a24841182f"
     },
     {
-      "bytes": 196,
+      "bytes": 189,
       "path": "contracts/channel/canonicalization/negative/malformed-timestamp.json",
-      "sha256": "sha256:0f665f9930607010d26d96baeebd00954244d11c5511042320c1d094644d3485"
+      "sha256": "sha256:158927e6f8e202cf3c11630968f938553e1509f1890fe2cf121751f4d20d4f29"
     },
     {
-      "bytes": 212,
+      "bytes": 203,
       "path": "contracts/channel/canonicalization/negative/missing-field.json",
-      "sha256": "sha256:8f77f688b4b1dd94a8870739441b322fd475b08ec58cbd2f2d42fbe400728a26"
+      "sha256": "sha256:5f56a01ba7dd65ec777b57817b57bc55987e30f7396d8e23d4cdc1c5145b8f9d"
     },
     {
-      "bytes": 170,
+      "bytes": 163,
       "path": "contracts/channel/canonicalization/negative/nan.json",
-      "sha256": "sha256:f19b33e2545efe3826bde6a8eda9643767bd6cefe75463001ab5cfe7d1f52759"
+      "sha256": "sha256:95dc88a556c3849d52b319fb652b542764f34b77946c8aa6bb1bb88c53b0b4fd"
     },
     {
-      "bytes": 175,
+      "bytes": 168,
       "path": "contracts/channel/canonicalization/negative/negative-zero.json",
-      "sha256": "sha256:c731e230afb261750eb9f52c133d69c33a83acbb5cffedddee92988a5b7b98a0"
+      "sha256": "sha256:16f8d0deecf9ab0a75a05ca3c05b3c0522dfc762c90aefe013da54513e0f1a98"
     },
     {
-      "bytes": 174,
+      "bytes": 167,
       "path": "contracts/channel/canonicalization/negative/null.json",
-      "sha256": "sha256:8d8b105fb9600ab35e942fd56093302a44a974ba47cccad83db545109f73d0ef"
+      "sha256": "sha256:d22068ad4d142e3c78d7d6b5a1de823f86bb9ff996c19aa84418f5511d93b6d0"
     },
     {
-      "bytes": 306,
+      "bytes": 296,
       "path": "contracts/channel/canonicalization/negative/own-hash-in-preimage.json",
-      "sha256": "sha256:d7951ca83b5b803b6c220bb64dc2b41072c433b7b180930539d9301c02feeeac"
+      "sha256": "sha256:8cd1430d2f7cac76c5ce7e2fb8f90248be5b553b32ed62003c8d52e1f8336c98"
+    },
+    {
+      "bytes": 177,
+      "path": "contracts/channel/canonicalization/negative/short-hash.json",
+      "sha256": "sha256:67227274de8fbc400e97d5c867401eb0c757bc70eb98836a9658f82114d8112a"
     },
     {
       "bytes": 184,
-      "path": "contracts/channel/canonicalization/negative/short-hash.json",
-      "sha256": "sha256:ac854182d118a55d11fd2d452cf2123662fb482b91d0de7e3b278e3b3d8341fd"
-    },
-    {
-      "bytes": 191,
       "path": "contracts/channel/canonicalization/negative/u64-overflow.json",
-      "sha256": "sha256:19be7e4e18f627ed33f058bfa12c65128ef7a58d5976bed89891f11659b672b0"
+      "sha256": "sha256:6fb6837a506c17229feebc215e985eed7dd70e39beb56518ce13b2c3267108fa"
     },
     {
-      "bytes": 234,
+      "bytes": 224,
       "path": "contracts/channel/canonicalization/negative/unknown-field.json",
-      "sha256": "sha256:225e6000fb367037759d628798f8e8f58e8d126e3647fa2dc78e96bac6da2cc4"
+      "sha256": "sha256:26ed6b2acdc3b13d7e5b69cf20f67c3fc3fd1e6224caaf433364fd697e6608ba"
     },
     {
-      "bytes": 215,
+      "bytes": 208,
       "path": "contracts/channel/canonicalization/negative/unregistered-domain.json",
-      "sha256": "sha256:270f9997649edfdccf4aad2b044de74b27bbb7b68f6908695e132600b2e82bb8"
+      "sha256": "sha256:aa7c6c85fdd12f01cb0d130976c15edfd48120a2af3a121c5c9fa38f2be148cb"
     },
     {
-      "bytes": 191,
+      "bytes": 184,
       "path": "contracts/channel/canonicalization/negative/unsafe-integer.json",
-      "sha256": "sha256:b42e89a971b9fdd9732ad2cad0e821188b19a1278f19cec2924327d9f42c9dc6"
+      "sha256": "sha256:b42323fc29ec148d764f96774c410641235b7673f19548a7809abf39053d10bc"
     },
     {
-      "bytes": 248,
+      "bytes": 241,
       "path": "contracts/channel/canonicalization/negative/uppercase-hash.json",
-      "sha256": "sha256:4888b12ab51f6c4add92115a083fa3dfeb523a065410668eec0756d5497e0e86"
+      "sha256": "sha256:a679dd185c31791f5c129112801c69b9db0ec23250c0e83e058325c9011778f1"
     },
     {
-      "bytes": 606,
+      "bytes": 592,
       "path": "contracts/channel/canonicalization/positive/evidence-artifact-v1.json",
-      "sha256": "sha256:b8255a52ed767a9de7d47cfe0a43bdb25398f76a4fe17f286d444f38b56e1bfa"
+      "sha256": "sha256:064ecf990af6e508825d03119078fa21cffc67007f68d9d082a4dd5fd3af7792"
     },
     {
-      "bytes": 493,
+      "bytes": 480,
       "path": "contracts/channel/canonicalization/positive/raw-bytes-v1.json",
-      "sha256": "sha256:2d52db438358401ea933f9a89363b21385a1d4305100ad36a3aa2cc9205fcfca"
+      "sha256": "sha256:5d7ef4abf29c246f2c1c36b0dd127021ec41cd74b7abf118172a80b530542278"
     },
     {
-      "bytes": 6775,
+      "bytes": 6711,
       "path": "contracts/channel/canonicalization/positive/recipient-binding-payload-v1.json",
-      "sha256": "sha256:0565f87026eccd5b5d855704b670a40397e9f2862a54279a6b9f3b03f14f9053"
+      "sha256": "sha256:3bee749805f82fa156f0c9abfc43618f0b7d4b63f677fcbc2556487b7a2a5ec8"
     },
     {
-      "bytes": 3877,
+      "bytes": 3833,
       "path": "contracts/channel/canonicalization/positive/refund-journal-entry-v1.json",
-      "sha256": "sha256:c76a3a2009e6d631de52835d1ef1070848241f84999e0c97745cde6a53c44831"
+      "sha256": "sha256:29c9df2d09cd06e03db059b567947b9e3a70999fd560aec93e0baa4b950b461f"
     },
     {
-      "bytes": 4017,
+      "bytes": 3973,
       "path": "contracts/channel/canonicalization/positive/settlement-journal-entry-v1.json",
-      "sha256": "sha256:863f60b55d9d2e65a1bc479739c5c8ff54b52ce6f18c85ded3ef43dd59b71869"
+      "sha256": "sha256:2cf7924c81385231ef7cc8cb042faba70f9bc8c9f27a9f4168c6c1125c97d895"
     },
     {
-      "bytes": 5280,
+      "bytes": 5228,
       "path": "contracts/channel/canonicalization/positive/settlement-observation-v1.json",
-      "sha256": "sha256:ad643a7142ac1b58d919f8d4f73137985c149294ed783f3f25b8b629c700695d"
+      "sha256": "sha256:92cc166584f00aaf8d962c52c26abc92c13d39ea730855f8049350777ecb7e2c"
     },
     {
-      "bytes": 4177,
+      "bytes": 4136,
       "path": "contracts/channel/canonicalization/positive/voucher-ledger-scope-v1.json",
-      "sha256": "sha256:368fede9a83563e7f3797c24abd0f4ddbc28eac9abb693d6c4be09547262f283"
+      "sha256": "sha256:aabe4d657a28a9f846fa3869cd57b693e01a163c686fe6319479773bfa01ebc0"
     },
     {
-      "bytes": 6350,
+      "bytes": 6290,
       "path": "contracts/channel/canonicalization/positive/voucher-payload-v1.json",
-      "sha256": "sha256:f9e603226e32634c36c6db55f36cb3218c57ac5ffe6f3b9a98f9e68c690afda6"
+      "sha256": "sha256:8e7219f4c96eb2ca24b825a8d3dbf66f57e39f3fe71c19e1eb8891ff4719cba4"
     },
     {
       "bytes": 1466,
@@ -207,9 +207,9 @@
       "sha256": "sha256:07f2cce2858a8b26cef681a9e8b49d6c2e82be14dd9d69dd20b1b141360de95c"
     },
     {
-      "bytes": 16886,
+      "bytes": 17416,
       "path": "tests/channels/test_canonicalization.py",
-      "sha256": "sha256:7bda0cfad798d3f0929df82c4221abe4092e6c86b20d28a0851da954e70c3fb8"
+      "sha256": "sha256:8132acce4aca172ddb15d24ba61e6a4f59294790b5dbfbb710a6d25dd64b7a63"
     },
     {
       "bytes": 3067,
@@ -222,9 +222,9 @@
       "sha256": "sha256:aebd31181ff631b719c80c2b07c69c37faa1720be60b25873119c6a796ceb6ec"
     },
     {
-      "bytes": 3357,
+      "bytes": 3409,
       "path": "docs/channels/DOMAIN_REGISTRY.md",
-      "sha256": "sha256:dcccd84e40df6b115861817fd2fee901b93bbee23cdb0207f981b5655be83705"
+      "sha256": "sha256:2cecfae342b5aa20bec5f52007dc98d8a9950b24610ee89fc8aa51fd95c5e413"
     },
     {
       "bytes": 3529,
@@ -234,45 +234,45 @@
     {
       "bytes": 1511,
       "path": "evidence/runs/FC-PROTO-006/README.md",
-      "sha256": "sha256:da1c37e1d5395d0f440682de04a0a1239337cb6b65025a2de97ec6c135a243b9"
+      "sha256": "sha256:81bfeca66b7ac4acb80bf625f771dedbb040a3aa1afe29dd7cfbeaf2b8086f34"
     },
     {
-      "bytes": 747,
+      "bytes": 720,
       "path": "evidence/runs/FC-PROTO-006/validation-report.json",
-      "sha256": "sha256:fe9d0f689f3bac043973e56aafc2ea480e68395bc2fdca2a2687849d821f8ada"
+      "sha256": "sha256:7fad8423cfdce494ac91017ced2ee5c37e6e946941ea2081c8a81fc1b15079ba"
     },
     {
-      "bytes": 5061,
+      "bytes": 4897,
       "path": "evidence/runs/FC-PROTO-006/object-inventory.json",
-      "sha256": "sha256:59215d187b75957af96083cb4cdea5b6d2b0bae8c8186fe85e5c4be34fd40ea9"
+      "sha256": "sha256:d31670fc49f5874b7e2ad98c679cfe82035a67f7d17d6c46ce49049a67920d9e"
     },
     {
-      "bytes": 7641,
+      "bytes": 7393,
       "path": "evidence/runs/FC-PROTO-006/hash-profile-matrix.json",
-      "sha256": "sha256:6d2b4aa185a260fdb27d1b722aa9c168e473e96c2277da48b99b24a9315a4614"
+      "sha256": "sha256:3a9ac4117358a58412ecbeb3ad726193d0a702ac535f5f542608d1130f553efa"
     },
     {
-      "bytes": 3816,
+      "bytes": 3722,
       "path": "evidence/runs/FC-PROTO-006/domain-mutation-report.json",
-      "sha256": "sha256:1943d3b667d3b7ef8ac04dabe22676ea445eb03f1d8cfe62d5878ec584260cc8"
+      "sha256": "sha256:fbfa1d4dd00fc02e29ce88051c0e2cbcd96696bbf6177b5e05d2c068d8dba762"
     },
     {
-      "bytes": 651,
+      "bytes": 634,
       "path": "evidence/runs/FC-PROTO-006/unicode-number-report.json",
-      "sha256": "sha256:5d74c789c040e3720b7100c5235820822a1d5970f93ec2b456f978aeb750e77b"
+      "sha256": "sha256:a3084e618a42a9f661b66a4c74cfc52e1abbac338b57af61c29545f999aedd2d"
     },
     {
-      "bytes": 1341,
+      "bytes": 1310,
       "path": "evidence/runs/FC-PROTO-006/legacy-hash-compatibility.json",
-      "sha256": "sha256:47d61f77ea444d0b02552748da16c82746c7461de116f5fbe9964e9e018ef63d"
+      "sha256": "sha256:e48830874aa53e25fe4c6e8d8cf3d1c45b5e1d1e2fc7bfc99daf4e9908404b24"
     },
     {
-      "bytes": 69967,
+      "bytes": 70111,
       "path": "evidence/runs/FC-PROTO-006/pytest-full.xml",
-      "sha256": "sha256:1379a9f83d43b5265ba22abc321b46a5d0c1ccf5d74242226a442a0dd608dffd"
+      "sha256": "sha256:8427b7085f2a38172374392abd6a09fb175811e369e2dc1b9ea1daed31043f33"
     }
   ],
   "baseline_commit": "ac10151b74cdfb33638d3c28fb3607a134234057",
-  "implementation_commit": "1714f7a0b7732638ad1905cfcd8891bbec8511e1",
+  "implementation_commit": "835de5c9f2ed6c5ee0c6a2001ec63193e57eab7c",
   "work_item": "FC-PROTO-006"
 }
