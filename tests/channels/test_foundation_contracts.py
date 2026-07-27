@@ -93,7 +93,7 @@ def test_fc_sec_002_contract_matches_governed_experimental_scope() -> None:
         "FC-PROTO-002",
         "FC-PROTO-006",
         "FC-PROTO-007",
-        "FC-CTRL-016",
+        "FC-CTRL-017",
     ]
     assert security["maturity_gate"] == {
         "implementation": "complete",
@@ -109,6 +109,18 @@ def test_fc_sec_002_contract_matches_governed_experimental_scope() -> None:
     assert security["external_review_requirement"] == {"required_before": ["mainnet", "real_value"]}
     assert "Cloud statements cannot revoke cryptographic rights" in security["invariants"]
     assert (
+        "rejected mutations create no economic effect or authority advancement"
+        in security["invariants"]
+    )
+    assert (
+        "durable rejection audit effects are permitted but never confer authority"
+        in security["invariants"]
+    )
+    assert (
         "an unknown version or profile falls back to an older interpretation"
+        in security["stop_conditions"]
+    )
+    assert (
+        "a rejected mutation advances verified, activation-requested, authorized, or completed state"
         in security["stop_conditions"]
     )

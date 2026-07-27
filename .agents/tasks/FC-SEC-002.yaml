@@ -17,7 +17,8 @@ invariants:
   - signatures are unusable across every bound domain dimension
   - semantically distinct authority types cannot share an accepted signed meaning
   - unknown versions and profiles fail closed without legacy fallback
-  - rejected mutations create no reference-ledger effect
+  - rejected mutations create no economic effect or authority advancement
+  - durable rejection audit effects are permitted but never confer authority
   - Cloud statements cannot revoke cryptographic rights
   - v1 objects remain v1 and are never rewritten in transit
 acceptance:
@@ -65,5 +66,5 @@ stop_conditions:
   - equivalent implementations reject at different semantic stages or codes
   - unknown version or profile falls back to an older interpretation
   - rotation or revocation depends on an unverifiable Cloud assertion
-  - a rejected mutation changes reference-ledger state
+  - a rejected mutation advances verified, activation-requested, authorized, or completed state
   - a v1 preimage changes without an ADR and explicit version migration

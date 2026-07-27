@@ -1,0 +1,23 @@
+{
+  "baseline_commit": "c73ab47bb80364392d601f1f5ed9e00aa217f3b8",
+  "changed_paths": [
+    ".agents/tasks/FC-CTRL-017.yaml",
+    ".agents/tasks/FC-SEC-002.yaml",
+    "docs/channels/EVIDENCE_INDEX.md",
+    "docs/channels/WORK_GRAPH.md",
+    "docs/channels/security/FC-SEC-002-CONTRACT.md",
+    "docs/channels/work-items.yaml",
+    "tests/channels/test_foundation_contracts.py"
+  ],
+  "external_review": "not_performed",
+  "implementation_commit": "0ee8db60c73dce4a916fe129f28b86d3287d8005",
+  "schema_version": 1,
+  "status": "passed",
+  "tests": {
+    "errors": 0,
+    "failures": 0,
+    "skipped": 11,
+    "tests": 491
+  },
+  "unauthorized_changes": []
+}

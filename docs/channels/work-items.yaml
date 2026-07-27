@@ -355,6 +355,47 @@ work_items:
       - a v1 preimage changes without an ADR and version decision
       - implementation paths change
 
+  - id: FC-CTRL-017
+    status: done
+    objective: distinguish forbidden authority or economic effects from permitted rejection audit effects
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-017.yaml
+      - .agents/tasks/FC-SEC-002.yaml
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - docs/channels/EVIDENCE_INDEX.md
+      - docs/channels/security/FC-SEC-002-CONTRACT.md
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-017/**
+    dependencies: [FC-CTRL-016]
+    invariants:
+      - rejected authority creates no economic effect
+      - rejected authority never advances verified, activation-requested, authorized, or completed state
+      - a durable rejection audit record is permitted and expected
+      - audit observability never becomes economic authority
+    acceptance:
+      - zero effect is defined by economic and authority counters
+      - rejection journal mutations are classified separately
+      - the existing voucher rejection journal remains observable
+      - recipient binding still verifies before insertion
+    tests:
+      - foundation work-graph validation
+      - frozen effect-taxonomy assertions
+      - full regression
+      - secret scan
+    evidence:
+      - evidence/runs/FC-CTRL-017/README.md
+      - evidence/runs/FC-CTRL-017/validation-report.json
+      - evidence/runs/FC-CTRL-017/artifact-manifest.json
+    security_review: self-validated governance clarification; external review required before mainnet or real-value authorization
+    stop_conditions:
+      - a rejected object advances authority
+      - an audit record is treated as economic completion
+      - rejection observability is removed to satisfy a metric
+      - implementation paths change
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -554,12 +595,13 @@ work_items:
       - contracts/channel/test-vectors/negative/**
       - docs/channels/security/FC-SEC-002/**
       - evidence/runs/FC-SEC-002/**
-    dependencies: [FC-PROTO-002, FC-PROTO-006, FC-PROTO-007, FC-CTRL-016]
+    dependencies: [FC-PROTO-002, FC-PROTO-006, FC-PROTO-007, FC-CTRL-017]
     invariants:
       - signatures are unusable across every bound domain dimension
       - semantically distinct authority types cannot share an accepted signed meaning
       - unknown versions and profiles fail closed without fallback
-      - rejected mutations create no reference-ledger effect
+      - rejected mutations create no economic effect or authority advancement
+      - durable rejection audit effects are permitted but never confer authority
       - Cloud statements cannot revoke cryptographic rights
       - v1 objects remain v1 and are never rewritten in transit
     acceptance:
@@ -597,7 +639,7 @@ work_items:
       - equivalent implementations reject at different semantic stages or codes
       - an unknown version or profile falls back to an older interpretation
       - rotation or revocation depends on an unverifiable Cloud assertion
-      - a rejected mutation changes reference-ledger state
+      - a rejected mutation advances verified, activation-requested, authorized, or completed state
       - a v1 preimage changes without an ADR and explicit version migration
 
   - id: FC-SEC-003

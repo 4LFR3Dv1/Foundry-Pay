@@ -57,6 +57,11 @@ FC-SEC-002 may be integrated as self-validated evidence, but that state permits
 only offline and local-validator experimentation. Devnet, mainnet, real-value
 use, and claims of independent external review remain blocked.
 
+The gate distinguishes forbidden economic or authority effects from permitted
+audit effects. A rejected attempt may produce a durable `rejected` journal
+event, but it cannot advance verification, activation, authorization,
+completion, or any economic total.
+
 ## Evidence maturity and authorization
 
 Evidence maturity and operational authorization are independent records under
