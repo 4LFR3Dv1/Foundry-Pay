@@ -1,0 +1,12 @@
+{
+  "work_item": "FC-CTRL-011",
+  "status": "passed",
+  "baseline_commit": "8117ef0c4237222edba93922307d8b652f82858d",
+  "claims": {
+    "fc_proto_006_status_changed": false,
+    "protocol_code_changed": false,
+    "on_chain_gate_advanced": false,
+    "product_gate_advanced": false,
+    "required_paths_reserved": true
+  }
+}

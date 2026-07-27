@@ -142,6 +142,20 @@ work_items:
     security_review: program-governance-review
     stop_conditions: [a rejected head is represented as approved or an unrelated gate changes state]
 
+  - id: FC-CTRL-011
+    status: done
+    objective: authorize the normative documentation and provenance paths required by FC-PROTO-006
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [docs/channels/work-items.yaml, evidence/runs/FC-CTRL-011/**]
+    dependencies: [FC-CTRL-010]
+    invariants: [FC-PROTO-006 remains offline and FC-PROTO-007, ChannelVault, and product gates remain blocked]
+    acceptance: [the work item reserves every required normative specification path without broadening runtime authority]
+    tests: [foundation work-graph validator]
+    evidence: [coordination diff and passing foundation checker]
+    security_review: program-governance-review
+    stop_conditions: [an unrelated path or gate is authorized]
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -229,7 +243,16 @@ work_items:
     objective: freeze normative channel canonicalization, domain separation, and hash functions
     owner: protocol-engineer
     repository: 4LFR3Dv1/Foundry-Pay
-    allowed_paths: [packages/channel-protocol/**, contracts/channel/**, tests/channels/test_canonicalization.py, evidence/runs/FC-PROTO-006/**]
+    allowed_paths:
+      - packages/channel-protocol/**
+      - contracts/channel/**
+      - tests/channels/test_canonicalization.py
+      - docs/channels/CANONICALIZATION.md
+      - docs/channels/HASH_PROFILES.md
+      - docs/channels/DOMAIN_REGISTRY.md
+      - docs/channels/ADR/FC-ADR-007-canonicalization-and-hash-profiles.md
+      - evidence/runs/FC-PROTO-006/**
+      - provenance/REUSE_LEDGER.yaml
     dependencies: [FC-PROTO-001, FC-PROTO-002, FC-PROTO-003]
     invariants: [every signed object binds version, environment, network, program, channel, epoch, recipient, and asset]
     acceptance: [closed normalization and canonical bytes are published for every signed object]
