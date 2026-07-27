@@ -156,6 +156,20 @@ work_items:
     security_review: program-governance-review
     stop_conditions: [an unrelated path or gate is authorized]
 
+  - id: FC-CTRL-012
+    status: done
+    objective: authorize a package marker that prevents canonicalization test-module basename collision
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [docs/channels/work-items.yaml, evidence/runs/FC-CTRL-012/**]
+    dependencies: [FC-CTRL-011]
+    invariants: [the marker contains no runtime or test behavior]
+    acceptance: [full pytest can collect both channel and external protocol canonicalization suites]
+    tests: [foundation work-graph validator]
+    evidence: [reproduced pytest import-file mismatch and coordination diff]
+    security_review: program-governance-review
+    stop_conditions: [runtime behavior or another work-item status changes]
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -247,6 +261,7 @@ work_items:
       - packages/channel-protocol/**
       - contracts/channel/**
       - tests/channels/test_canonicalization.py
+      - tests/channels/__init__.py
       - docs/channels/CANONICALIZATION.md
       - docs/channels/HASH_PROFILES.md
       - docs/channels/DOMAIN_REGISTRY.md
