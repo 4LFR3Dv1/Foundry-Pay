@@ -17,14 +17,24 @@
       "sha256": "sha256:731422155cc8d91aaaa2ea02d48e7197f68dc633ab8f2c69bbda2b6ced93fd77"
     },
     {
+      "bytes": 7698,
+      "path": "contracts/governance/component-maturity.schema.json",
+      "sha256": "sha256:a6440bd9e3acb6ba6c16b6da253cd388e82d2dcc3b154574b22e23de6090783c"
+    },
+    {
       "bytes": 341,
       "path": "evidence/runs/FC-PROTO-007/comparison-report.json",
       "sha256": "sha256:233b926a1ea19084f983175a859d53e2736e45b72627b41f087638099d5bb705"
     },
     {
-      "bytes": 8879,
+      "bytes": 11940,
       "path": "evidence/runs/FC-PROTO-007/generate_evidence.py",
-      "sha256": "sha256:251e4bba4371d8625554e209e8d24e77e16e18f2562651a72209d7742a196a7b"
+      "sha256": "sha256:41f942112d9040d7e5e838352757086136054ab91ab1121da1237e4aacaca775"
+    },
+    {
+      "bytes": 1723,
+      "path": "evidence/runs/FC-PROTO-007/maturity.json",
+      "sha256": "sha256:37abc1ad30b0478fe4166d7af0ecf24e560ec887092329079c1b103c0f5d859c"
     },
     {
       "bytes": 403,
@@ -32,9 +42,9 @@
       "sha256": "sha256:16fd76c2028594abb6cd79b813f07a06858991a30649091c9da4d7923132a11d"
     },
     {
-      "bytes": 69275,
+      "bytes": 70325,
       "path": "evidence/runs/FC-PROTO-007/pytest-full.xml",
-      "sha256": "sha256:51ba0b546ff92c3a625ae8cc4c2712e211a1fc9aea7a5f9c95edd9b63ab24dc2"
+      "sha256": "sha256:b34031a892910bdc8f73d49c9deb06600ca6acf00024a60f41bb7ae9024e6a2f"
     },
     {
       "bytes": 21783,
@@ -42,9 +52,9 @@
       "sha256": "sha256:d77eb23a3cc1d78b29833b0b09999267f481a433a16bff932c66bbf9a226d147"
     },
     {
-      "bytes": 1208,
+      "bytes": 1416,
       "path": "evidence/runs/FC-PROTO-007/README.md",
-      "sha256": "sha256:2d51590ecc5ccdf105b2f9084e19e16948e5471d20709908a13cdce78dddc17c"
+      "sha256": "sha256:0e8953db05853ccdd0f59883c1be020287ac6487d14cd8f5a0bc72042547fe90"
     },
     {
       "bytes": 21727,
@@ -52,9 +62,9 @@
       "sha256": "sha256:d679df8f6c241909d9953b949eaf905ecb6fb6037326ea8af1fb33fcde1c4e28"
     },
     {
-      "bytes": 937,
+      "bytes": 1240,
       "path": "evidence/runs/FC-PROTO-007/TASK_CONTRACT.yaml",
-      "sha256": "sha256:29e74324c58ffd438c568b001872a6ed0456b2c0a378f580c5b824ae958b0972"
+      "sha256": "sha256:483b79b0b84ce7b2e4c2ee88bc89dcfe37cdb21f900e9983272f990dcde0aada"
     },
     {
       "bytes": 611,
@@ -67,9 +77,9 @@
       "sha256": "sha256:e8efa5e8b8426b5b99d317254064b4e16c95c9422babe4110d0722c02e619056"
     },
     {
-      "bytes": 1248,
+      "bytes": 1576,
       "path": "evidence/runs/FC-PROTO-007/validation-report.json",
-      "sha256": "sha256:e6342bf67969e5780d30aeba0311ed90861bc854d11e6f229b461b107130113b"
+      "sha256": "sha256:cacbcd0eac8b082aba9617c5cf3d166dd5f98e7578837363076379bfa4de15e5"
     },
     {
       "bytes": 8296,

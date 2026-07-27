@@ -6,7 +6,7 @@
     "poisoned_streams_byte_identical": true,
     "positive_bytes_lengths_hashes": true
   },
-  "baseline_commit": "8975a4b3edfae070919d68afe851652eb1f71ea8",
+  "baseline_commit": "6207df8d4291f8e832fe3758a39ffd267524b447",
   "claims_excluded": [
     "Solana execution",
     "ChannelVault behavior",
@@ -19,22 +19,32 @@
     "errors": 0,
     "failures": 0,
     "skipped": 0,
-    "tests": 482
+    "tests": 489
   },
-  "implementation_commit": "e0991ace6052527a10d929abfc4dfb87f3ff4581",
-  "reviewed_head": "1d23660e7be3d41e580089aefcdd50c4e0bc577f",
+  "governance_adaptation_commit": "ef9a99949bae3d2088a7b51cd55ef4efb14124c7",
+  "implementation_commit": "cc962ee2277e80b74b39e7d35a1967b7addf84ca",
+  "maturity": {
+    "devnet_fixture": "blocked",
+    "external_review": "not_performed",
+    "implementation": "complete",
+    "local_validator": "allowed",
+    "mainnet": "blocked",
+    "real_value": "blocked",
+    "self_validation": "passed"
+  },
   "schema_version": 1,
   "status": "passed",
+  "validated_head": "ef9a99949bae3d2088a7b51cd55ef4efb14124c7",
   "vectors": {
     "negative": 20,
     "positive": 8,
     "results_per_implementation": 28
   },
   "workflow": {
-    "artifact_merge_sha": "005cfaa1a9d605f6847305d515ea0cb20cee7c5c",
+    "artifact_merge_sha": "73d31ef80838197427331bfba41838f37c378012",
     "conclusion": "success",
-    "head_sha": "1d23660e7be3d41e580089aefcdd50c4e0bc577f",
-    "run_id": 30281177556,
-    "url": "https://github.com/4LFR3Dv1/Foundry-Pay/actions/runs/30281177556"
+    "head_sha": "ef9a99949bae3d2088a7b51cd55ef4efb14124c7",
+    "run_id": 30286052598,
+    "url": "https://github.com/4LFR3Dv1/Foundry-Pay/actions/runs/30286052598"
   }
 }

@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 import subprocess
+import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any
@@ -13,14 +14,18 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[3]
 RUN = ROOT / "evidence/runs/FC-PROTO-007"
-BASELINE = "8975a4b3edfae070919d68afe851652eb1f71ea8"
+BASELINE = "6207df8d4291f8e832fe3758a39ffd267524b447"
 FROZEN_SPECIFICATION = "17b656cbdd6ae53cece9cebb9123058c03e67b82"
-IMPLEMENTATION_COMMIT = "e0991ace6052527a10d929abfc4dfb87f3ff4581"
-REVIEWED_HEAD = "1d23660e7be3d41e580089aefcdd50c4e0bc577f"
-WORKFLOW_RUN = 30281177556
-WORKFLOW_URL = "https://github.com/4LFR3Dv1/Foundry-Pay/actions/runs/30281177556"
-WORKFLOW_ARTIFACT_SHA = "005cfaa1a9d605f6847305d515ea0cb20cee7c5c"
+IMPLEMENTATION_COMMIT = "cc962ee2277e80b74b39e7d35a1967b7addf84ca"
+GOVERNANCE_ADAPTATION_COMMIT = "ef9a99949bae3d2088a7b51cd55ef4efb14124c7"
+VALIDATED_HEAD = "ef9a99949bae3d2088a7b51cd55ef4efb14124c7"
+WORKFLOW_RUN = 30286052598
+WORKFLOW_URL = "https://github.com/4LFR3Dv1/Foundry-Pay/actions/runs/30286052598"
+WORKFLOW_ARTIFACT_SHA = "73d31ef80838197427331bfba41838f37c378012"
 IMPLEMENTATIONS = ("python", "typescript", "rust")
+
+sys.path.insert(0, str(ROOT / "scripts"))
+from check_maturity_authorization import validate_record  # noqa: E402
 
 
 def _dump(path: Path, value: Any) -> None:
@@ -136,6 +141,69 @@ def generate(artifact_root: Path) -> None:
     if pytest_counts["failures"] or pytest_counts["errors"]:
         raise RuntimeError(f"full regression failed: {pytest_counts}")
 
+    maturity = {
+        "schema_version": 1,
+        "component": "FC-PROTO-007",
+        "current_commit": VALIDATED_HEAD,
+        "work_item_status": "review",
+        "maturity": {
+            "implementation": {
+                "status": "complete",
+                "commit": VALIDATED_HEAD,
+            },
+            "self_validation": {
+                "status": "passed",
+                "validated_commit": VALIDATED_HEAD,
+                "evidence": "evidence/runs/FC-PROTO-007",
+            },
+            "external_review": {
+                "status": "not_performed",
+                "reviewed_commit": None,
+                "reviewer": None,
+                "report": None,
+                "completed_at": None,
+            },
+        },
+        "deployment_authorization": {
+            "local_validator": {
+                "status": "allowed",
+                "scope": "offline conformance and local-validator experimentation only",
+                "artifact_commit": VALIDATED_HEAD,
+                "decision_ref": "FC-ADR-009",
+                "reason": None,
+                "constraints": {},
+            },
+            "devnet_fixture": {
+                "status": "blocked",
+                "scope": "fixture-only devnet",
+                "artifact_commit": None,
+                "decision_ref": None,
+                "reason": "requires FC-SEC-002 and explicit deployment authorization",
+                "constraints": {},
+            },
+            "mainnet": {
+                "status": "blocked",
+                "scope": "Solana mainnet",
+                "artifact_commit": None,
+                "decision_ref": None,
+                "reason": "requires passed exact-version external review",
+                "constraints": {},
+            },
+            "real_value": {
+                "status": "blocked",
+                "scope": "assets with economic value on any cluster",
+                "artifact_commit": None,
+                "decision_ref": None,
+                "reason": "requires passed review and explicit economic authorization",
+                "constraints": {},
+            },
+        },
+    }
+    maturity_errors = validate_record(maturity)
+    if maturity_errors:
+        raise RuntimeError(f"maturity record failed: {maturity_errors}")
+    _dump(RUN / "maturity.json", maturity)
+
     _dump(
         RUN / "validation-report.json",
         {
@@ -144,12 +212,22 @@ def generate(artifact_root: Path) -> None:
             "baseline_commit": BASELINE,
             "frozen_specification_commit": FROZEN_SPECIFICATION,
             "implementation_commit": IMPLEMENTATION_COMMIT,
-            "reviewed_head": REVIEWED_HEAD,
+            "governance_adaptation_commit": GOVERNANCE_ADAPTATION_COMMIT,
+            "validated_head": VALIDATED_HEAD,
+            "maturity": {
+                "implementation": "complete",
+                "self_validation": "passed",
+                "external_review": "not_performed",
+                "local_validator": "allowed",
+                "devnet_fixture": "blocked",
+                "mainnet": "blocked",
+                "real_value": "blocked",
+            },
             "workflow": {
                 "run_id": WORKFLOW_RUN,
                 "url": WORKFLOW_URL,
                 "conclusion": "success",
-                "head_sha": REVIEWED_HEAD,
+                "head_sha": VALIDATED_HEAD,
                 "artifact_merge_sha": WORKFLOW_ARTIFACT_SHA,
             },
             "vectors": {
@@ -212,6 +290,8 @@ def generate(artifact_root: Path) -> None:
         RUN / "pytest-full.xml",
         RUN / "validation-report.json",
         RUN / "toolchain-dependency-report.json",
+        RUN / "maturity.json",
+        ROOT / "contracts/governance/component-maturity.schema.json",
         ROOT / "contracts/channel/conformance/toolchains.v1.json",
         ROOT / "contracts/channel/conformance/rejection-codes.v1.json",
         ROOT / "contracts/channel/conformance/runner-result.v1.schema.json",
