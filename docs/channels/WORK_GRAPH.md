@@ -16,6 +16,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-CTRL-005 | done | FC-CTRL-001 | public/private and repository boundary |
 | FC-CTRL-006 | done | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003, FC-SEC-003 | reconcile integrated gates and unlock only satisfied offline work |
 | FC-CTRL-007 | done | FC-PROTO-004 | record reviewed settlement integration and authorize FC-PROTO-005 paths |
+| FC-CTRL-008 | done | FC-CTRL-007 | authorize the exact close-race vector migration required by FC-PROTO-005 |
 
 ## Epic B — Channel protocol
 
@@ -187,6 +188,7 @@ remain unchanged.
   - `packages/channel-protocol/**`
   - `tests/channels/test_closure.py`
   - `contracts/channel/channel-closure.schema.json`
+  - `contracts/channel/test-vectors/positive/close-race-v1.json`
   - `docs/channels/ADR/FC-ADR-006-activated-right-expiry-v1.md`
   - `evidence/runs/FC-PROTO-005/**`
   - `provenance/REUSE_LEDGER.yaml`

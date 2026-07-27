@@ -100,6 +100,20 @@ work_items:
     security_review: program-governance-review
     stop_conditions: [runtime work begins against a stale graph or unauthorized path]
 
+  - id: FC-CTRL-008
+    status: done
+    objective: authorize migration of the normative close-race vector required by the FC-PROTO-005 schema decision
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [docs/channels/WORK_GRAPH.md, docs/channels/work-items.yaml, evidence/runs/FC-CTRL-008/**]
+    dependencies: [FC-CTRL-007]
+    invariants: [contract migration cannot preserve the ambiguous legacy closure object]
+    acceptance: [the exact close-race vector path is reserved before FC-PROTO-005 changes it]
+    tests: [foundation work-graph validator]
+    evidence: [schema gate failure proving the vector migration requirement]
+    security_review: program-governance-review
+    stop_conditions: [unrelated channel vectors or runtime paths are broadened]
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -165,7 +179,7 @@ work_items:
     objective: implement close, expiry, epoch, and refund reference semantics
     owner: protocol-engineer
     repository: 4LFR3Dv1/Foundry-Pay
-    allowed_paths: [packages/channel-protocol/**, tests/channels/test_closure.py, contracts/channel/channel-closure.schema.json, docs/channels/ADR/FC-ADR-006-activated-right-expiry-v1.md, evidence/runs/FC-PROTO-005/**, provenance/REUSE_LEDGER.yaml]
+    allowed_paths: [packages/channel-protocol/**, tests/channels/test_closure.py, contracts/channel/channel-closure.schema.json, contracts/channel/test-vectors/positive/close-race-v1.json, docs/channels/ADR/FC-ADR-006-activated-right-expiry-v1.md, evidence/runs/FC-PROTO-005/**, provenance/REUSE_LEDGER.yaml]
     dependencies: [FC-PROTO-001, FC-PROTO-002]
     invariants: [closing preserves unexpired outstanding rights, refund preserves conservation]
     acceptance: [excess and final refunds are distinguished and rights remain reserved through grace]
