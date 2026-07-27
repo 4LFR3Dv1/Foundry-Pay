@@ -650,10 +650,27 @@ def freeze_closure(
         _reject("settled_total_decreased", "channel", "S must remain monotonic")
     if projection.activated_authorized_total_base_units < requested_activated:
         _reject("activated_total_decreased", "channel", "A must remain monotonic")
-    if int(channel_at_freeze["latest_activated_sequence"]) < int(
-        snapshot_at_request["latest_activated_sequence"]
-    ):
+    requested_sequence = int(snapshot_at_request["latest_activated_sequence"])
+    frozen_sequence = int(channel_at_freeze["latest_activated_sequence"])
+    requested_voucher_hash = str(snapshot_at_request["latest_activated_voucher_hash"])
+    frozen_voucher_hash = str(channel_at_freeze["latest_activated_voucher_hash"])
+    if frozen_sequence < requested_sequence:
         _reject("activated_sequence_decreased", "channel", "sequence must remain monotonic")
+    activation_increased = projection.activated_authorized_total_base_units > requested_activated
+    sequence_advanced = frozen_sequence > requested_sequence
+    hash_changed = frozen_voucher_hash != requested_voucher_hash
+    if activation_increased and not sequence_advanced:
+        _reject(
+            "activation_transition_inconsistent",
+            "channel.latest_activated_sequence",
+            "increased A requires a newer activated voucher",
+        )
+    if sequence_advanced != hash_changed:
+        _reject(
+            "activation_transition_inconsistent",
+            "channel.latest_activated_voucher_hash",
+            "sequence advance and voucher hash change must occur together",
+        )
     states = _operation_states(operation_states)
     unsigned = {
         "type": "closure_snapshot_at_freeze",
@@ -1385,6 +1402,44 @@ class ClosureRuntime:
                 _reject("reconciliation_state_invalid", "refund.state", str(row["state"]))
             request = json.loads(row["request_json"])
             projection = json.loads(row["projection_json"])
+            completed_high_water_row = connection.execute(
+                """
+                SELECT MAX(refunded_after) AS high_water
+                FROM refunds
+                WHERE channel_id = ? AND epoch = ? AND closure_id = ?
+                  AND state = 'completed' AND refund_id <> ?
+                """,
+                (
+                    row["channel_id"],
+                    row["epoch"],
+                    row["closure_id"],
+                    refund_id,
+                ),
+            ).fetchone()
+            completed_high_water = completed_high_water_row["high_water"]
+            projected_before = int(projection["refunded_total_before_base_units"])
+            if completed_high_water is not None and projected_before < int(completed_high_water):
+                connection.execute(
+                    "UPDATE refunds SET state = 'needs_review', updated_at = ? WHERE refund_id = ?",
+                    (timestamp, refund_id),
+                )
+                self._event(
+                    connection,
+                    refund_id,
+                    "needs_review",
+                    {
+                        "reason": "overlapping_refund_interval",
+                        "projected_refunded_before": projected_before,
+                        "reconciled_refunded_high_water": int(completed_high_water),
+                    },
+                    timestamp,
+                )
+                connection.commit()
+                _reject(
+                    "overlapping_refund_interval",
+                    "projection.refunded_total_before_base_units",
+                    "a reconciled refund already advanced R beyond this projection",
+                )
             expected = {
                 "domain": request["domain"],
                 "channel_id": request["channel"]["channel_id"],

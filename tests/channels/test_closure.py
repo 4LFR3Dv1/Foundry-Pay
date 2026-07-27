@@ -379,6 +379,32 @@ def test_freeze_rejects_settled_total_regression() -> None:
     )
 
 
+def test_freeze_rejects_activation_without_new_voucher() -> None:
+    artifacts = request_close(
+        channel(),
+        closure_id="closure_001",
+        idempotency_key="close_001",
+        now=NOW,
+        claim_deadline=DEADLINE,
+    )
+    inconsistent = channel(
+        status="closing",
+        activated=40_000_000,
+        settled=15_000_000,
+        latest_sequence=1,
+        updated_at="2026-08-01T00:06:00Z",
+    )
+    assert_error(
+        "activation_transition_inconsistent",
+        lambda: freeze_closure(
+            artifacts.request,
+            artifacts.snapshot_at_request,
+            inconsistent,
+            now=DEADLINE,
+        ),
+    )
+
+
 @pytest.mark.parametrize(
     ("field", "value"),
     [
@@ -916,6 +942,41 @@ def test_completed_refund_establishes_refunded_high_water(tmp_path: Path) -> Non
         ).state
         == "validated"
     )
+
+
+def test_overlapping_completed_refund_intervals_are_rejected(tmp_path: Path) -> None:
+    _, request, _, frozen = closure_flow()
+    runtime = ClosureRuntime(tmp_path / "overlapping-intervals.sqlite3")
+    first = refund_request(request, frozen, amount=20_000_000, suffix="first")
+    second = refund_request(request, frozen, amount=20_000_000, suffix="second")
+    first_projection = prepare_refund(runtime, first, frozen)
+    second_projection = prepare_refund(runtime, second, frozen)
+    for intent in (first, second):
+        runtime.record_submit_intent(intent["refund_id"], now=DEADLINE)
+        runtime.record_technical_receipt(
+            intent["refund_id"],
+            technical_receipt(intent),
+            now=DEADLINE + timedelta(seconds=1),
+        )
+    assert (
+        runtime.reconcile(
+            first["refund_id"],
+            refund_observation(first, first_projection),
+            observation_verifier=FixtureObservationVerifier(),
+            now=DEADLINE + timedelta(seconds=2),
+        ).state
+        == "completed"
+    )
+    assert_error(
+        "overlapping_refund_interval",
+        lambda: runtime.reconcile(
+            second["refund_id"],
+            refund_observation(second, second_projection),
+            observation_verifier=FixtureObservationVerifier(),
+            now=DEADLINE + timedelta(seconds=3),
+        ),
+    )
+    assert runtime.get(second["refund_id"]).state == "needs_review"
 
 
 def sqlite_projection(path: Path, refund_id: str) -> str:
