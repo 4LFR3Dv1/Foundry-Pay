@@ -1,0 +1,47 @@
+work_item: FC-CTRL-016
+objective: freeze the FC-SEC-002 adversarial, lifecycle, maturity, and path contract
+owner: program-integrator
+branch: agent/control/FC-CTRL-016
+allowed_paths:
+  - .agents/tasks/FC-CTRL-016.yaml
+  - .agents/tasks/FC-SEC-002.yaml
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - docs/channels/EVIDENCE_INDEX.md
+  - docs/channels/security/FC-SEC-002-CONTRACT.md
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-016/**
+dependencies:
+  - FC-CTRL-015
+  - FC-GOV-001
+invariants:
+  - work-item completion does not imply external review
+  - self-validation authorizes only offline and local-validator experimentation
+  - devnet, mainnet, and real-value use remain blocked
+  - FC-SEC-002 cannot silently change frozen v1 preimages
+  - SA-CHAN-000 remains blocked until FC-SEC-002 is done
+acceptance:
+  - FC-SEC-002 is split into v1 replay resistance, cross-type collision resistance, and version lifecycle policy
+  - mutation checks require structurally valid alternate contexts and zero ledger effect
+  - stable cross-language rejection semantics are required where all three runners apply
+  - unknown versions and profiles fail closed without fallback
+  - external review is required before mainnet or real-value authorization
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python -m pytest
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+evidence:
+  - evidence/runs/FC-CTRL-016/README.md
+  - evidence/runs/FC-CTRL-016/validation-report.json
+  - evidence/runs/FC-CTRL-016/artifact-manifest.json
+provenance:
+  - first-party governance and protocol contract only
+stop_conditions:
+  - external review is represented as performed
+  - deployment authorization is broadened
+  - a Cloud-controlled revocation authority is introduced
+  - a v1 preimage is changed without an ADR and version decision
+  - implementation paths change
