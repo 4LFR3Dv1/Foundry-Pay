@@ -26,8 +26,10 @@
     "evidence-artifact-v1.json",
     "raw-bytes-v1.json",
     "recipient-binding-payload-v1.json",
+    "refund-journal-entry-v1.json",
     "settlement-journal-entry-v1.json",
     "settlement-observation-v1.json",
+    "voucher-ledger-scope-v1.json",
     "voucher-payload-v1.json"
   ],
   "profiles": "profiles.v1.json",

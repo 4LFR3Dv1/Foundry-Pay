@@ -40,6 +40,30 @@
       "excluded_fields": []
     },
     {
+      "domain": "foundry.channels.voucher-ledger-scope",
+      "object_type": "voucher_ledger_scope",
+      "profile_id": "canonical-record-v1",
+      "schema": "../channel-voucher.schema.json",
+      "version": "1.0.0",
+      "authority": "reference_voucher_ledger",
+      "binding": {"kind": "explicit_field", "field": "domain"},
+      "required_separation_fields": ["protocol_version", "environment", "network", "genesis_hash", "program_id", "channel_id", "channel_account", "epoch", "sender", "recipient_claim_pubkey", "mint"],
+      "result_hash_field": "domain_key",
+      "excluded_fields": []
+    },
+    {
+      "domain": "foundry.channels.channel-snapshot",
+      "object_type": "channel",
+      "profile_id": "canonical-record-v1",
+      "schema": "../channel.schema.json",
+      "version": "1.0.0",
+      "authority": "caller_supplied_snapshot_observation",
+      "binding": {"kind": "type_and_protocol_version", "type": "channel", "protocol_version": "1.0.0"},
+      "required_separation_fields": ["environment", "network", "genesis_hash", "program_id", "channel_id", "channel_account", "epoch", "sender", "recipient_claim_pubkey", "mint"],
+      "result_hash_field": "channel_snapshot_hash",
+      "excluded_fields": []
+    },
+    {
       "domain": "foundry.channels.settlement-request",
       "object_type": "settlement_request",
       "profile_id": "canonical-record-v1",
@@ -61,6 +85,18 @@
       "binding": {"kind": "type_and_protocol_version", "type": "settlement_execution_commitment", "protocol_version": "1.0.0"},
       "required_separation_fields": ["settlement_request_hash", "execution_request_id", "execution_commitment_hash", "prepared_message_hash", "executor_id", "expected_signer", "expires_at"],
       "result_hash_field": "commitment_hash",
+      "excluded_fields": []
+    },
+    {
+      "domain": "foundry.channels.settlement-authorization",
+      "object_type": "execution_authorization",
+      "profile_id": "canonical-record-v1",
+      "schema": "../../external-execution-protocol/execution-authorization.schema.json",
+      "version": "1.0.0",
+      "authority": "external_authorization_verifier",
+      "binding": {"kind": "type_and_protocol_version", "type": "execution_authorization", "protocol_version": "1.0.0"},
+      "required_separation_fields": ["authorization_id", "execution_request_id", "execution_commitment_hash", "prepared_message_hash", "signer", "expires_at"],
+      "result_hash_field": "authorization_hash",
       "excluded_fields": []
     },
     {
@@ -180,6 +216,31 @@
       "result_hash_field": "projection_hash",
       "own_hash_field": "projection_hash",
       "excluded_fields": ["projection_hash"]
+    },
+    {
+      "domain": "foundry.channels.refund-execution-commitment",
+      "object_type": "refund_execution_commitment",
+      "profile_id": "canonical-record-v1",
+      "schema": "../channel-closure.schema.json",
+      "version": "1.0.0",
+      "authority": "technical_executor_commitment",
+      "binding": {"kind": "type_and_protocol_version", "type": "refund_execution_commitment", "protocol_version": "1.0.0"},
+      "required_separation_fields": ["refund_request_hash", "refund_projection_hash", "execution_request_id", "execution_commitment_hash", "prepared_message_hash", "executor_id", "expected_signer", "expires_at"],
+      "result_hash_field": "commitment_hash",
+      "excluded_fields": []
+    },
+    {
+      "domain": "foundry.channels.technical-refund-receipt",
+      "object_type": "technical_refund_receipt",
+      "profile_id": "self-hashed-record-v1",
+      "schema": "../channel-closure.schema.json",
+      "version": "1.0.0",
+      "authority": "technical_executor_evidence",
+      "binding": {"kind": "type_and_protocol_version", "type": "technical_refund_receipt", "protocol_version": "1.0.0"},
+      "required_separation_fields": ["refund_id", "refund_request_hash", "execution_request_id", "execution_commitment_hash", "observed_at"],
+      "result_hash_field": "receipt_hash",
+      "own_hash_field": "receipt_hash",
+      "excluded_fields": ["receipt_hash"]
     },
     {
       "domain": "foundry.channels.refund-observation",

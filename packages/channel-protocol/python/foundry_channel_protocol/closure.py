@@ -1677,9 +1677,12 @@ class ClosureRuntime:
         sequence = 1 if previous is None else int(previous["sequence"]) + 1
         previous_hash = ZERO_HASH if previous is None else str(previous["event_hash"])
         event = {
+            "type": "refund_journal_entry",
+            "protocol_version": PROTOCOL_VERSION,
             "refund_id": refund_id,
             "sequence": sequence,
             "state": state,
+            "event_type": state,
             "payload": dict(payload),
             "previous_event_hash": previous_hash,
             "recorded_at": timestamp,

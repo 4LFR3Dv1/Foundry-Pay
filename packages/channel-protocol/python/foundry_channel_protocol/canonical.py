@@ -26,11 +26,14 @@ _EXPLICIT_DOMAINS = frozenset(
         "foundry.channels.voucher",
         "foundry.channels.recipient-binding",
         "foundry.channels.recipient-binding-journal",
+        "foundry.channels.voucher-ledger-scope",
     }
 )
 _TYPE_DOMAINS = {
+    "foundry.channels.channel-snapshot": "channel",
     "foundry.channels.settlement-request": "settlement_request",
     "foundry.channels.settlement-execution-commitment": "settlement_execution_commitment",
+    "foundry.channels.settlement-authorization": "execution_authorization",
     "foundry.channels.settlement-observation": "settlement_observation",
     "foundry.channels.reconciled-settlement-receipt": "reconciled_settlement_receipt",
     "foundry.channels.recovery-record": "settlement_recovery_record",
@@ -40,6 +43,8 @@ _TYPE_DOMAINS = {
     "foundry.channels.closure-freeze": "closure_snapshot_at_freeze",
     "foundry.channels.refund-request": "refund_request",
     "foundry.channels.refund-projection": "refund_projection",
+    "foundry.channels.refund-execution-commitment": "refund_execution_commitment",
+    "foundry.channels.technical-refund-receipt": "technical_refund_receipt",
     "foundry.channels.refund-observation": "channel_refund_observation",
     "foundry.channels.reconciled-refund": "reconciled_channel_refund",
     "foundry.channels.epoch-transition-eligibility": "epoch_transition_eligibility",

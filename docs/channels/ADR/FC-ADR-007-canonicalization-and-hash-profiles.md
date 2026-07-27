@@ -50,11 +50,22 @@ Raw bytes are hashed directly and are never encoded through JSON first.
 
 ## Compatibility
 
-Voucher and RecipientBinding canonical bytes and hashes remain unchanged.
-Existing settlement, recovery, closure, refund, finalization, and journal
-preimages remain unchanged because their exact `type` and `protocol_version`
-were already present. FC-PROTO-006 centralizes the low-level operation and
-publishes those preimages; it does not introduce a second v1 interpretation.
+Voucher, RecipientBinding, settlement, recovery, closure, refund, and
+finalization canonical bytes and hashes remain unchanged.
+
+Two pre-runtime security migrations are explicit:
+
+- voucher-ledger scope keys now include
+  `domain=foundry.channels.voucher-ledger-scope` and `protocol_version=1.0.0`;
+- settlement and refund journal event preimages now include their exact `type`
+  and `protocol_version`.
+
+Existing local reference databases created before FC-PROTO-006 are
+incompatible and must be discarded and rebuilt from their source evidence.
+There is no fallback or automatic normalization. These records are reference
+persistence identities and audit-chain entries, not activated rights.
+FC-PROTO-006 publishes one v1 interpretation after this coordinated
+pre-runtime migration.
 
 Any future security correction that changes a preimage requires a coordinated
 pre-runtime migration or a new domain/profile/version. Legacy fallback,
@@ -69,4 +80,3 @@ forbidden.
   domains, malformed hashes, and non-canonical set arrays fail closed.
 - Evidence file digests cannot be presented as economic protocol hashes.
 - ChannelVault and on-chain verification remain outside this decision.
-

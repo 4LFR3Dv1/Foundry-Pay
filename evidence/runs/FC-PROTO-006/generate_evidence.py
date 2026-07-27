@@ -9,6 +9,7 @@ import platform
 import ssl
 import subprocess
 import sys
+import xml.etree.ElementTree as ET
 from importlib.metadata import version
 from pathlib import Path
 from typing import Any
@@ -30,7 +31,11 @@ RUN = ROOT / "evidence/runs/FC-PROTO-006"
 CANON = ROOT / "contracts/channel/canonicalization"
 POSITIVE = CANON / "positive"
 NEGATIVE = CANON / "negative"
-BASELINE = "469a28e9a92a7d443b9e20621ade2e4d23a09eee"
+BASELINE = "ac10151b74cdfb33638d3c28fb3607a134234057"
+REQUIRED_MERGES = {
+    "FC-PROTO-005": "59f37870475df0f0ee9d7619be9d3eff7f5a16bd",
+    "FC-CTRL-010": "8117ef0c4237222edba93922307d8b652f82858d",
+}
 
 
 def dump(path: Path, value: Any) -> None:
@@ -117,6 +122,31 @@ def generate_vectors() -> list[dict[str, Any]]:
         "previous_event_hash": "sha256:" + "0" * 64,
         "recorded_at": "2026-08-01T00:07:00Z",
     }
+    refund_journal_projection = {
+        "type": "refund_journal_entry",
+        "protocol_version": "1.0.0",
+        "refund_id": "refund_001",
+        "sequence": 1,
+        "state": "validated",
+        "event_type": "validated",
+        "payload": {"request_hash": "sha256:" + "2" * 64},
+        "previous_event_hash": "sha256:" + "0" * 64,
+        "recorded_at": "2026-08-02T00:00:00Z",
+    }
+    voucher_ledger_scope = {
+        "domain": "foundry.channels.voucher-ledger-scope",
+        "protocol_version": "1.0.0",
+        "environment": voucher_fixture["constants"]["environment"],
+        "network": voucher_fixture["constants"]["network"],
+        "genesis_hash": voucher_fixture["constants"]["genesis_hash"],
+        "program_id": voucher_fixture["constants"]["program_id"],
+        "channel_id": voucher_fixture["constants"]["channel_id"],
+        "channel_account": voucher_fixture["constants"]["channel_account"],
+        "epoch": 0,
+        "sender": voucher_fixture["constants"]["sender"],
+        "recipient_claim_pubkey": voucher_fixture["constants"]["claim_pubkey"],
+        "mint": voucher_fixture["constants"]["mint"],
+    }
     vectors = [
         positive_json_vector(
             vector_id="voucher-payload-v1",
@@ -153,6 +183,22 @@ def generate_vectors() -> list[dict[str, Any]]:
             object_type="settlement_journal_entry",
             projection=journal_projection,
             excluded_fields=["event_hash"],
+        ),
+        positive_json_vector(
+            vector_id="refund-journal-entry-v1",
+            profile_id="journal-chain-v1",
+            domain="foundry.channels.refund-journal-entry",
+            object_type="refund_journal_entry",
+            projection=refund_journal_projection,
+            excluded_fields=["event_hash"],
+        ),
+        positive_json_vector(
+            vector_id="voucher-ledger-scope-v1",
+            profile_id="canonical-record-v1",
+            domain="foundry.channels.voucher-ledger-scope",
+            object_type="voucher_ledger_scope",
+            projection=voucher_ledger_scope,
+            excluded_fields=[],
         ),
     ]
 
@@ -258,6 +304,7 @@ def generate_reports(vectors: list[dict[str, Any]]) -> None:
     inventory = {
         "work_item": "FC-PROTO-006",
         "baseline_commit": BASELINE,
+        "required_merges": REQUIRED_MERGES,
         "runtime": {
             "python": platform.python_version(),
             "rfc8785": version("rfc8785"),
@@ -276,6 +323,133 @@ def generate_reports(vectors: list[dict[str, Any]]) -> None:
             "packages/external-execution-protocol/python/foundry_external_execution_protocol/canonicalization.py",
         ],
         "known_channel_domains": len(domains),
+        "hash_locations": [
+            {"module": "voucher.py", "object": "voucher_payload", "profile": "signed-payload-v1"},
+            {
+                "module": "voucher.py",
+                "object": "voucher_ledger_scope",
+                "profile": "canonical-record-v1",
+            },
+            {
+                "module": "recipient_binding.py",
+                "object": "recipient_binding_payload",
+                "profile": "signed-payload-v1",
+            },
+            {
+                "module": "recipient_binding.py",
+                "object": "recipient_binding_journal_scope",
+                "profile": "canonical-record-v1",
+            },
+            {
+                "module": "settlement.py",
+                "object": "channel_snapshot",
+                "profile": "canonical-record-v1",
+            },
+            {
+                "module": "settlement.py",
+                "object": "settlement_request",
+                "profile": "canonical-record-v1",
+            },
+            {
+                "module": "settlement.py",
+                "object": "settlement_execution_commitment",
+                "profile": "canonical-record-v1",
+            },
+            {
+                "module": "settlement.py",
+                "object": "execution_authorization",
+                "profile": "canonical-record-v1",
+            },
+            {
+                "module": "settlement.py",
+                "object": "settlement_observation",
+                "profile": "self-hashed-record-v1",
+            },
+            {
+                "module": "settlement.py",
+                "object": "reconciled_settlement_receipt",
+                "profile": "self-hashed-record-v1",
+            },
+            {
+                "module": "settlement.py",
+                "object": "settlement_recovery_record",
+                "profile": "self-hashed-record-v1",
+            },
+            {
+                "module": "settlement.py",
+                "object": "settlement_journal_entry",
+                "profile": "journal-chain-v1",
+            },
+            {
+                "module": "closure.py",
+                "object": "channel_snapshot",
+                "profile": "canonical-record-v1",
+            },
+            {
+                "module": "closure.py",
+                "object": "channel_closure_request",
+                "profile": "self-hashed-record-v1",
+            },
+            {
+                "module": "closure.py",
+                "object": "closure_snapshot_at_request",
+                "profile": "self-hashed-record-v1",
+            },
+            {
+                "module": "closure.py",
+                "object": "closure_snapshot_at_freeze",
+                "profile": "self-hashed-record-v1",
+            },
+            {
+                "module": "closure.py",
+                "object": "refund_request",
+                "profile": "self-hashed-record-v1",
+            },
+            {
+                "module": "closure.py",
+                "object": "refund_projection",
+                "profile": "self-hashed-record-v1",
+            },
+            {
+                "module": "closure.py",
+                "object": "refund_execution_commitment",
+                "profile": "canonical-record-v1",
+            },
+            {
+                "module": "closure.py",
+                "object": "technical_refund_receipt",
+                "profile": "self-hashed-record-v1",
+            },
+            {
+                "module": "closure.py",
+                "object": "channel_refund_observation",
+                "profile": "self-hashed-record-v1",
+            },
+            {
+                "module": "closure.py",
+                "object": "reconciled_channel_refund",
+                "profile": "self-hashed-record-v1",
+            },
+            {
+                "module": "closure.py",
+                "object": "epoch_transition_eligibility",
+                "profile": "self-hashed-record-v1",
+            },
+            {
+                "module": "closure.py",
+                "object": "refund_journal_entry",
+                "profile": "journal-chain-v1",
+            },
+        ],
+        "adjacent_external_execution_hashes": [
+            "economic_plan_hash",
+            "prepared_message_hash",
+            "simulation_attestation_hash",
+            "execution_commitment_hash",
+            "external_execution_receipt.receipt_hash",
+            "recovery_status_response_hash",
+        ],
+        "adjacent_external_execution_profile": "foundry-pay-domain-v1 and exact raw bytes; owned by External Execution Protocol",
         "result": "all known channel hash object types have a registered profile",
     }
     dump(RUN / "object-inventory.json", inventory)
@@ -385,6 +559,20 @@ def generate_reports(vectors: list[dict[str, Any]]) -> None:
                 "migration": "none",
                 "verification": "existing regression suite uses unchanged JCS preimages through the common primitive",
             },
+            "pre_runtime_security_migrations": [
+                {
+                    "object": "voucher_ledger_scope",
+                    "change": "add explicit domain and protocol_version to the preimage",
+                    "compatibility": "pre-FC-PROTO-006 local reference databases must be rebuilt",
+                    "fallback": "forbidden",
+                },
+                {
+                    "object": "settlement_journal_entry and refund_journal_entry",
+                    "change": "add exact type and protocol_version to each event preimage",
+                    "compatibility": "pre-FC-PROTO-006 local reference databases must be rebuilt",
+                    "fallback": "forbidden",
+                },
+            ],
         },
     )
 
@@ -399,12 +587,37 @@ def generate_reports(vectors: list[dict[str, Any]]) -> None:
             "domains": "domains.v1.json",
         },
     )
+    pytest_xml = RUN / "pytest-full.xml"
+    test_summary: dict[str, int | float] | None = None
+    if pytest_xml.exists():
+        root = ET.parse(pytest_xml).getroot()
+        if root.tag == "testsuites":
+            suite = root.find("testsuite")
+            if suite is None:
+                raise RuntimeError("pytest XML contains no testsuite")
+            root = suite
+        test_summary = {
+            "tests": int(root.attrib["tests"]),
+            "failures": int(root.attrib["failures"]),
+            "errors": int(root.attrib["errors"]),
+            "skipped": int(root.attrib["skipped"]),
+            "time_seconds": float(root.attrib["time"]),
+        }
+    status = (
+        "passed"
+        if test_summary is not None
+        and test_summary["failures"] == 0
+        and test_summary["errors"] == 0
+        else "generated"
+    )
     dump(
         RUN / "validation-report.json",
         {
             "work_item": "FC-PROTO-006",
             "baseline_commit": BASELINE,
-            "status": "generated",
+            "required_merges": REQUIRED_MERGES,
+            "status": status,
+            "test_summary": test_summary,
             "positive_vector_count": len(list(POSITIVE.glob("*.json"))),
             "negative_vector_count": len(list(NEGATIVE.glob("*.json"))),
             "domain_count": len(domains),

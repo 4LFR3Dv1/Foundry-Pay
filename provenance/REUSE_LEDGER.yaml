@@ -29,7 +29,9 @@ sources:
       - no external kernel or third-party source was copied
       - rfc8785 remains pinned by the existing Apache-2.0 repository dependency policy
       - signed Voucher and RecipientBinding bytes and hashes remain unchanged
-      - operational v1 records retain exact type plus protocol_version domain binding
+      - economic v1 records retain their reviewed preimages
+      - voucher-ledger scope and journal chains receive a documented pre-runtime domain migration
+      - pre-FC-PROTO-006 local reference databases are rebuilt rather than accepted through fallback
       - no legacy fallback or second v1 preimage is introduced
       - TypeScript and Rust conformance remain FC-PROTO-007
       - ChannelVault and on-chain verification remain blocked

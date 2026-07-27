@@ -486,6 +486,8 @@ class ReferenceVoucherLedger:
     @staticmethod
     def _domain_key(context: VoucherContext) -> str:
         identity = {
+            "domain": "foundry.channels.voucher-ledger-scope",
+            "protocol_version": "1.0.0",
             "environment": context.environment,
             "network": context.network,
             "genesis_hash": context.genesis_hash,

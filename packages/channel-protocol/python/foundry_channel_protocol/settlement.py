@@ -2124,6 +2124,8 @@ class SettlementRuntime:
         sequence = 1 if previous is None else int(previous["sequence"]) + 1
         previous_hash = _ZERO_HASH if previous is None else str(previous["event_hash"])
         event = {
+            "type": "settlement_journal_entry",
+            "protocol_version": PROTOCOL_VERSION,
             "settlement_id": settlement_id,
             "sequence": sequence,
             "state": state,

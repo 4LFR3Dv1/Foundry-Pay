@@ -1,5 +1,6 @@
 work_item: FC-PROTO-006
-baseline_commit: 469a28e9a92a7d443b9e20621ade2e4d23a09eee
+baseline_commit: ac10151b74cdfb33638d3c28fb3607a134234057
+protocol_decision_baseline: 469a28e9a92a7d443b9e20621ade2e4d23a09eee
 objective: freeze normative canonicalization, domain separation, hash profiles, and exact-byte vectors
 owner: cryptographic-protocol-engineer
 repository: 4LFR3Dv1/Foundry-Pay
