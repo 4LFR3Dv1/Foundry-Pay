@@ -19,6 +19,9 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-CTRL-008 | done | FC-CTRL-007 | authorize the exact close-race vector migration required by FC-PROTO-005 |
 | FC-CTRL-009 | done | FC-CTRL-008 | authorize migration of the foundation close-race checker to request/freeze snapshots |
 | FC-CTRL-010 | done | FC-PROTO-005 | record reviewed close/refund integration and reconcile the graph |
+| FC-CTRL-011 | done | FC-CTRL-010 | authorize normative documentation and provenance paths for FC-PROTO-006 |
+| FC-CTRL-012 | done | FC-CTRL-011 | authorize the canonicalization test package marker |
+| FC-CTRL-013 | done | FC-PROTO-006 | record reviewed canonicalization integration and reconcile the graph |
 
 ## Epic B — Channel protocol
 
@@ -29,15 +32,15 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-PROTO-003 | done | FOUNDATIONS-001 | claim and dual-signature recipient binding verifier |
 | FC-PROTO-004 | done | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | settlement and receipt implementation |
 | FC-PROTO-005 | done | FC-PROTO-001, FC-PROTO-002 | close, expiry, epoch, and refund implementation |
-| FC-PROTO-006 | ready | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | normative canonicalization and hashes |
-| FC-PROTO-007 | blocked | FC-PROTO-006 | Python/TypeScript/Rust cross-language vectors |
+| FC-PROTO-006 | done | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | normative canonicalization and hashes |
+| FC-PROTO-007 | ready | FC-PROTO-006 | Python/TypeScript/Rust cross-language vectors |
 
 ## Epic C — Security
 
 | Work item | Status | Depends on | Outcome |
 |---|---|---|---|
 | FC-SEC-001 | done | FOUNDATIONS-001 | comprehensive design threat model |
-| FC-SEC-002 | blocked | FC-PROTO-002, FC-PROTO-006 | replay and domain-separation property suite |
+| FC-SEC-002 | ready | FC-PROTO-002, FC-PROTO-006 | replay and domain-separation property suite |
 | FC-SEC-003 | done | FOUNDATIONS-001 | claim-link handling and secret non-disclosure test kit |
 | FC-SEC-004 | blocked | FC-PROTO-004, FC-SOL-004 | concurrent settlement adversarial proof |
 | FC-SEC-005 | blocked | FC-PROTO-004, SA-CHAN-004 | Cloud outage and self-recovery proof |

@@ -170,6 +170,20 @@ work_items:
     security_review: program-governance-review
     stop_conditions: [runtime behavior or another work-item status changes]
 
+  - id: FC-CTRL-013
+    status: done
+    objective: record independently reviewed FC-PROTO-006 integration and reconcile the work graph
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [docs/channels/WORK_GRAPH.md, docs/channels/work-items.yaml, tests/channels/test_foundation_contracts.py, evidence/runs/FC-CTRL-013/**]
+    dependencies: [FC-PROTO-006]
+    invariants: [done status is backed by immutable functional head, evidence head, merge commit, independent review, and green main CI]
+    acceptance: [FC-PROTO-006 is done and only dependency-complete offline work becomes ready]
+    tests: [foundation work-graph validator and complete regression]
+    evidence: [reviewed heads, merge commit, main CI run, and coordination validation report]
+    security_review: program-governance-review
+    stop_conditions: [a rejected head is represented as approved or an on-chain or product gate advances]
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -253,7 +267,7 @@ work_items:
       main_ci_run: 30231971193
 
   - id: FC-PROTO-006
-    status: ready
+    status: done
     objective: freeze normative channel canonicalization, domain separation, and hash functions
     owner: protocol-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -277,7 +291,7 @@ work_items:
     stop_conditions: [Rust and JSON domains cannot map byte-for-byte]
 
   - id: FC-PROTO-007
-    status: blocked
+    status: ready
     objective: publish cross-language Python, TypeScript, and Rust conformance vectors
     owner: conformance-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -305,7 +319,7 @@ work_items:
     stop_conditions: [critical right or authority has no modeled threat]
 
   - id: FC-SEC-002
-    status: blocked
+    status: ready
     objective: prove replay resistance and domain separation with properties and negative vectors
     owner: security-engineer
     repository: 4LFR3Dv1/Foundry-Pay

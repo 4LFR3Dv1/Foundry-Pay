@@ -1,0 +1,28 @@
+{
+  "work_item": "FC-CTRL-013",
+  "status": "passed",
+  "baseline_commit": "959cd8db597510a5fc58ee6acd421a1ae6bacb42",
+  "fc_proto_006": {
+    "pr": 30,
+    "reviewed_functional_head": "835de5c9f2ed6c5ee0c6a2001ec63193e57eab7c",
+    "final_evidence_head": "a396719a04ac6520a129850e5c402301fa2c3d68",
+    "merge_commit": "959cd8db597510a5fc58ee6acd421a1ae6bacb42",
+    "main_ci_run": 30237524518,
+    "main_ci_result": "passed",
+    "independent_review": "approved",
+    "artifact_hashes_reproduced": "54/54",
+    "registered_schemas_resolved": "23/23",
+    "positive_vectors_reproduced": "8/8"
+  },
+  "ready_items": [
+    "FC-PROTO-007",
+    "FC-SEC-002",
+    "FC-VAL-003"
+  ],
+  "claims": {
+    "protocol_code_changed": false,
+    "on_chain_gate_advanced": false,
+    "product_gate_advanced": false,
+    "work_graph_reconciled": true
+  }
+}
