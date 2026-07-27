@@ -18,6 +18,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-CTRL-007 | done | FC-PROTO-004 | record reviewed settlement integration and authorize FC-PROTO-005 paths |
 | FC-CTRL-008 | done | FC-CTRL-007 | authorize the exact close-race vector migration required by FC-PROTO-005 |
 | FC-CTRL-009 | done | FC-CTRL-008 | authorize migration of the foundation close-race checker to request/freeze snapshots |
+| FC-CTRL-010 | done | FC-PROTO-005 | record reviewed close/refund integration and reconcile the graph |
 
 ## Epic B — Channel protocol
 
@@ -27,7 +28,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-PROTO-002 | done | FOUNDATIONS-001 | cumulative voucher verifier and monotonic reference ledger |
 | FC-PROTO-003 | done | FOUNDATIONS-001 | claim and dual-signature recipient binding verifier |
 | FC-PROTO-004 | done | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | settlement and receipt implementation |
-| FC-PROTO-005 | ready | FC-PROTO-001, FC-PROTO-002 | close, expiry, epoch, and refund implementation |
+| FC-PROTO-005 | done | FC-PROTO-001, FC-PROTO-002 | close, expiry, epoch, and refund implementation |
 | FC-PROTO-006 | ready | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | normative canonicalization and hashes |
 | FC-PROTO-007 | blocked | FC-PROTO-006 | Python/TypeScript/Rust cross-language vectors |
 
@@ -180,10 +181,17 @@ remain unchanged.
 - Reviewed head: `47a5c9f9160e5f0562058fd3e18936f24c222ab3`.
 - Merge commit: `74359f6ac81e75d595f934ed3e03428a45a2dafa`.
 
-### FC-PROTO-005 — Close, expiry, epoch, and refund semantics
+### FC-PROTO-005 — Close, expiry, epoch, and refund semantics (done)
 
 - Repository: Foundry-Pay public
 - Scope: preserve unexpired rights during close and conservation during refund.
+- Protocol v1 decision: activated rights do not expire economically and remain
+  reserved until reconciled settlement.
+- Reviewed functional head:
+  `5e0737aefa6d707f6236f527950b845773bf26a5`.
+- Final evidence head: `f39e3953692bb516745d7055ddd2c4f30775442a`.
+- Merge commit: `59f37870475df0f0ee9d7619be9d3eff7f5a16bd`.
+- Main CI run: `30231971193` (passed).
 - Baseline must contain `74359f6ac81e75d595f934ed3e03428a45a2dafa`.
 - Reserved paths:
   - `packages/channel-protocol/**`

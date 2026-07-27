@@ -37,7 +37,6 @@ def test_foundation_contracts_and_gates_pass() -> None:
         is True
     )
     assert result["checks"]["work_graph"]["ready_items"] == [
-        "FC-PROTO-005",
         "FC-PROTO-006",
         "FC-VAL-003",
     ]
