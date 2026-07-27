@@ -1,0 +1,14 @@
+{
+  "work_item": "FC-CTRL-012",
+  "status": "passed",
+  "baseline_commit": "469a28e9a92a7d443b9e20621ade2e4d23a09eee",
+  "reproduced_error": "import file mismatch: tests/channels/test_canonicalization.py and tests/protocol/test_canonicalization.py",
+  "authorized_path": "tests/channels/__init__.py",
+  "claims": {
+    "runtime_behavior_changed": false,
+    "test_behavior_changed": false,
+    "work_item_status_changed": false,
+    "on_chain_gate_advanced": false,
+    "product_gate_advanced": false
+  }
+}
