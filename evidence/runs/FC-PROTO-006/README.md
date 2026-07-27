@@ -28,7 +28,7 @@ python -m ruff check .
 python scripts/check_secrets.py
 ```
 
-The completed local run collected 461 tests: 450 passed and 11 environment
+The remediated local run collected 470 tests: 459 passed and 11 environment
 dependent chaos tests were skipped. The artifact manifest is generated from
 file bytes and uses the evidence namespace; it is not an economic protocol
 receipt.

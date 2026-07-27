@@ -157,7 +157,8 @@
     "contracts/channel/channel-voucher.schema.json",
     "contracts/channel/channel.schema.json",
     "contracts/channel/recipient-binding.schema.json",
-    "contracts/channel/settlement.schema.json"
+    "contracts/channel/settlement.schema.json",
+    "packages/external-execution-protocol/schemas/external-execution-agent.v1.schema.json"
   ],
   "work_item": "FC-PROTO-006"
 }
