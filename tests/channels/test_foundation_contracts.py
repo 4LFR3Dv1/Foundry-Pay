@@ -39,8 +39,9 @@ def test_foundation_contracts_and_gates_pass() -> None:
         is True
     )
     assert result["checks"]["work_graph"]["ready_items"] == [
-        "FC-SEC-002",
+        "FC-SOL-002",
         "FC-VAL-003",
+        "SA-CHAN-000",
     ]
     assert result["checks"]["work_graph"]["ready_with_incomplete_dependencies"] == {}
     assert result["checks"]["accounting"] == {
@@ -74,8 +75,8 @@ def test_fc_proto_007_integration_uses_governed_self_validation() -> None:
         "real_value": "blocked",
     }
 
-    assert by_id["FC-SEC-002"]["status"] == "ready"
-    assert by_id["SA-CHAN-000"]["status"] == "blocked"
+    assert by_id["FC-SEC-002"]["status"] == "done"
+    assert by_id["SA-CHAN-000"]["status"] == "ready"
     assert by_id["SA-CHAN-000"]["dependencies"] == ["FC-PROTO-007", "FC-SEC-002"]
 
 
@@ -89,6 +90,23 @@ def test_fc_sec_002_contract_matches_governed_experimental_scope() -> None:
     assert by_id["FC-CTRL-016"]["status"] == "done"
 
     security = by_id["FC-SEC-002"]
+    assert security["status"] == "done"
+    assert security["implementation"] == {
+        "pr": 40,
+        "functional_head": "e785dedd62b982cbe03a7b542534688ddc3b8370",
+        "evidence_head": "dc0ff464a54044144a836af762d84c839b58cb2f",
+        "merge_commit": "0d203389052a78d6cdec5b565ca28e605dad13fb",
+        "main_ci_run": 30310413080,
+    }
+    assert security["maturity"] == {
+        "implementation": "complete",
+        "self_validation": "passed",
+        "external_review": "not_performed",
+        "local_validator": "allowed",
+        "devnet_fixture": "blocked",
+        "mainnet": "blocked",
+        "real_value": "blocked",
+    }
     assert security["dependencies"] == [
         "FC-PROTO-002",
         "FC-PROTO-006",
@@ -127,3 +145,9 @@ def test_fc_sec_002_contract_matches_governed_experimental_scope() -> None:
 
     task = yaml.safe_load((ROOT / ".agents/tasks/FC-SEC-002.yaml").read_text(encoding="utf-8"))
     assert task["dependencies"] == security["dependencies"]
+
+    assert by_id["FC-SOL-002"]["status"] == "ready"
+    assert by_id["FC-SOL-003"]["status"] == "blocked"
+    assert by_id["FC-SOL-004"]["status"] == "blocked"
+    assert by_id["SA-CHAN-000"]["status"] == "ready"
+    assert by_id["FC-FAIL-003"]["status"] == "blocked"

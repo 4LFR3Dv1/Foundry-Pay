@@ -1,0 +1,38 @@
+work_item: FC-CTRL-019
+objective: record FC-SEC-002 self-validated integration and release only satisfied experimental successors
+owner: program-integrator
+branch: agent/control/FC-CTRL-019
+allowed_paths:
+  - .agents/tasks/FC-CTRL-019.yaml
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - docs/channels/EVIDENCE_INDEX.md
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-019/**
+dependencies:
+  - FC-SEC-002
+invariants:
+  - self-validation is not represented as external review
+  - local experimental readiness does not authorize devnet, mainnet, or real value
+  - only work items with satisfied dependencies become ready
+acceptance:
+  - FC-SEC-002 records PR 40, both heads, merge commit, and main CI
+  - FC-SOL-002 is ready for account-layout work only
+  - SA-CHAN-000 is ready for transport-independent fake-adapter work only
+  - FC-SOL-003, FC-SOL-004, FC-FAIL-003, devnet, mainnet, and real value remain blocked
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+evidence:
+  - evidence/runs/FC-CTRL-019/README.md
+  - evidence/runs/FC-CTRL-019/validation-report.json
+provenance:
+  - FC-SEC-002 PR 40
+  - main merge 0d203389052a78d6cdec5b565ca28e605dad13fb
+stop_conditions:
+  - an unmet successor is marked ready
+  - external review is inferred
+  - a deployment authorization is broadened
