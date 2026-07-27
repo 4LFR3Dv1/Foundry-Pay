@@ -332,7 +332,8 @@ def generate_reports(vectors: list[dict[str, Any]]) -> None:
         "schemas_analyzed": sorted(
             path.relative_to(ROOT).as_posix()
             for path in (ROOT / "contracts/channel").glob("*.schema.json")
-        ),
+        )
+        + ["packages/external-execution-protocol/schemas/external-execution-agent.v1.schema.json"],
         "modules_analyzed": [
             "packages/channel-protocol/python/foundry_channel_protocol/voucher.py",
             "packages/channel-protocol/python/foundry_channel_protocol/recipient_binding.py",
@@ -657,6 +658,9 @@ def generate_manifest() -> None:
     ).strip()
     paths = [
         *sorted(CANON.rglob("*.json")),
+        *sorted((ROOT / "contracts/channel").glob("*.schema.json")),
+        ROOT
+        / "packages/external-execution-protocol/schemas/external-execution-agent.v1.schema.json",
         ROOT / "packages/channel-protocol/python/foundry_channel_protocol/canonical.py",
         ROOT / "tests/channels/test_canonicalization.py",
         ROOT / "docs/channels/CANONICALIZATION.md",
