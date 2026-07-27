@@ -39,11 +39,12 @@ README after the validation run.
 | FC-SEC-003 | `ec8db6ba213d40718b3d9e5593826021d36e0e77` | `evidence/runs/FC-SEC-003/` |
 | FC-GOV-001 | `6207df8d4291f8e832fe3758a39ffd267524b447` | `evidence/runs/FC-GOV-001/` |
 | FC-PROTO-007 | `63da85549bcd247a0510e8af18cddc30d8c53bb2` | `evidence/runs/FC-PROTO-007/` |
+| FC-SEC-002 | `0d203389052a78d6cdec5b565ca28e605dad13fb` | `evidence/runs/FC-SEC-002/` |
 
 These merges authorize the next offline protocol work only. They do not prove
 ChannelVault, Solana execution, a deployed consumer frontend, or product demand.
 
-## Next security gate
+## Integrated security gate
 
 The frozen [FC-SEC-002 contract](security/FC-SEC-002-CONTRACT.md) separates:
 
@@ -61,6 +62,13 @@ The gate distinguishes forbidden economic or authority effects from permitted
 audit effects. A rejected attempt may produce a durable `rejected` journal
 event, but it cannot advance verification, activation, authorization,
 completion, or any economic total.
+
+PR #40 was integrated with functional head `e785dedd...`, evidence head
+`dc0ff464...`, merge `0d203389...`, and green main CI run `30310413080`.
+External review remains `not_performed`. The integration releases only
+`FC-SOL-002` account-layout work and the transport-independent `SA-CHAN-000`
+fake adapter. Later ChannelVault instructions, on-chain invariant gates,
+failure-lab work, devnet, mainnet, and real-value use remain blocked.
 
 ## Evidence maturity and authorization
 

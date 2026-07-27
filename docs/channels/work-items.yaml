@@ -420,6 +420,37 @@ work_items:
     stop_conditions:
       - runtime, vectors, preimages, or authorization change
 
+  - id: FC-CTRL-019
+    status: done
+    objective: record FC-SEC-002 self-validated integration and release only satisfied experimental successors
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-019.yaml
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - docs/channels/EVIDENCE_INDEX.md
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-019/**
+    dependencies: [FC-SEC-002]
+    invariants:
+      - self-validation is not represented as external review
+      - local experimental readiness does not authorize devnet, mainnet, or real value
+      - only work items with satisfied dependencies become ready
+    acceptance:
+      - FC-SEC-002 integration identifiers are immutable
+      - FC-SOL-002 and SA-CHAN-000 are the only newly ready implementation items
+      - unmet on-chain, failure-lab, and deployment gates remain blocked
+    tests:
+      - executable graph and authorization assertions
+    evidence:
+      - evidence/runs/FC-CTRL-019/validation-report.json
+    security_review: self-validated coordination; no external security review inferred
+    stop_conditions:
+      - an unmet successor is marked ready
+      - external review is inferred
+      - a deployment authorization is broadened
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -609,7 +640,7 @@ work_items:
     stop_conditions: [critical right or authority has no modeled threat]
 
   - id: FC-SEC-002
-    status: ready
+    status: done
     objective: prove replay, semantic-collision, downgrade, and lifecycle resistance for signed channel authority
     owner: security-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -620,6 +651,20 @@ work_items:
       - docs/channels/security/FC-SEC-002/**
       - evidence/runs/FC-SEC-002/**
     dependencies: [FC-PROTO-002, FC-PROTO-006, FC-PROTO-007, FC-CTRL-017]
+    implementation:
+      pr: 40
+      functional_head: e785dedd62b982cbe03a7b542534688ddc3b8370
+      evidence_head: dc0ff464a54044144a836af762d84c839b58cb2f
+      merge_commit: 0d203389052a78d6cdec5b565ca28e605dad13fb
+      main_ci_run: 30310413080
+    maturity:
+      implementation: complete
+      self_validation: passed
+      external_review: not_performed
+      local_validator: allowed
+      devnet_fixture: blocked
+      mainnet: blocked
+      real_value: blocked
     invariants:
       - signatures are unusable across every bound domain dimension
       - semantically distinct authority types cannot share an accepted signed meaning
@@ -723,7 +768,7 @@ work_items:
     stop_conditions: [program implementation begins in the foundation work item]
 
   - id: FC-SOL-002
-    status: blocked
+    status: ready
     objective: freeze ChannelVault account layout, PDA seeds, space, rent, and token accounts
     owner: solana-program-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -779,7 +824,7 @@ work_items:
     stop_conditions: [mainnet discussion without approved upgrade policy]
 
   - id: SA-CHAN-000
-    status: blocked
+    status: ready
     objective: draft transport-independent channel capability contracts and a fake conformance adapter
     owner: protocol-integration-engineer
     repository: 4LFR3Dv1/Foundry-Pay

@@ -28,6 +28,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-CTRL-016 | done | FC-CTRL-015, FC-GOV-001 | freeze FC-SEC-002 adversarial, lifecycle, maturity, and path contract |
 | FC-CTRL-017 | done | FC-CTRL-016 | distinguish forbidden economic/authority effects from permitted rejection audit effects |
 | FC-CTRL-018 | done | FC-CTRL-017 | align the FC-SEC-002 task contract dependency with the integrated effect taxonomy |
+| FC-CTRL-019 | done | FC-SEC-002 | record self-validated security integration and release only satisfied experimental successors |
 
 ## Epic B — Channel protocol
 
@@ -46,7 +47,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | Work item | Status | Depends on | Outcome |
 |---|---|---|---|
 | FC-SEC-001 | done | FOUNDATIONS-001 | comprehensive design threat model |
-| FC-SEC-002 | ready | FC-PROTO-002, FC-PROTO-006, FC-PROTO-007, FC-CTRL-017 | replay, semantic-collision, downgrade, and lifecycle property suite |
+| FC-SEC-002 | done | FC-PROTO-002, FC-PROTO-006, FC-PROTO-007, FC-CTRL-017 | replay, semantic-collision, downgrade, and lifecycle property suite |
 | FC-SEC-003 | done | FOUNDATIONS-001 | claim-link handling and secret non-disclosure test kit |
 | FC-SEC-004 | blocked | FC-PROTO-004, FC-SOL-004 | concurrent settlement adversarial proof |
 | FC-SEC-005 | blocked | FC-PROTO-004, SA-CHAN-004 | Cloud outage and self-recovery proof |
@@ -56,7 +57,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | Work item | Status | Depends on | Outcome |
 |---|---|---|---|
 | FC-SOL-001 | done | FOUNDATIONS-001 | ChannelVault design specification |
-| FC-SOL-002 | blocked | FC-PROTO-001 | exact accounts and PDA layout |
+| FC-SOL-002 | ready | FC-PROTO-001 | exact accounts and PDA layout |
 | FC-SOL-003 | blocked | FC-PROTO-002, FC-PROTO-003, FC-PROTO-004, FC-PROTO-005, FC-SOL-002 | instruction and error contract |
 | FC-SOL-004 | blocked | FC-SOL-003, FC-SEC-002 | on-chain invariants and property/formal harness |
 | FC-SOL-005 | blocked | FC-SOL-003 | upgrade, migration, and governance policy |
@@ -67,7 +68,7 @@ No program implementation is authorized by `FOUNDATIONS-001`.
 
 | Work item | Status | Depends on | Outcome |
 |---|---|---|---|
-| SA-CHAN-000 | blocked | FC-PROTO-007, FC-SEC-002 | draft capability contracts and fake conformance adapter; no ChannelVault compatibility claim |
+| SA-CHAN-000 | ready | FC-PROTO-007, FC-SEC-002 | draft capability contracts and fake conformance adapter; no ChannelVault compatibility claim |
 | SA-CHAN-001 | blocked | FC-PROTO-006, FC-SOL-003 | generic channel capability discovery |
 | SA-CHAN-002 | blocked | SA-CHAN-001, FC-SOL-003 | open/top-up/activation preparation |
 | SA-CHAN-003 | blocked | SA-CHAN-001, FC-SOL-003 | settlement preparation |
