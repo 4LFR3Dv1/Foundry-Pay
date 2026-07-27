@@ -1,0 +1,43 @@
+work_item: FC-CTRL-017
+objective: distinguish forbidden authority or economic effects from permitted rejection audit effects
+owner: program-integrator
+branch: agent/control/FC-CTRL-017
+allowed_paths:
+  - .agents/tasks/FC-CTRL-017.yaml
+  - .agents/tasks/FC-SEC-002.yaml
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - docs/channels/EVIDENCE_INDEX.md
+  - docs/channels/security/FC-SEC-002-CONTRACT.md
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-017/**
+dependencies:
+  - FC-CTRL-016
+invariants:
+  - rejected authority creates no economic effect
+  - rejected authority never advances verified, activation-requested, authorized, or completed state
+  - a durable rejection audit record is permitted and expected
+  - audit observability never becomes economic authority
+acceptance:
+  - zero effect is defined by economic and authority counters
+  - rejection journal mutations are classified separately
+  - the existing voucher rejection journal remains observable
+  - recipient binding still verifies before insertion
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python -m pytest
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+evidence:
+  - evidence/runs/FC-CTRL-017/README.md
+  - evidence/runs/FC-CTRL-017/validation-report.json
+  - evidence/runs/FC-CTRL-017/artifact-manifest.json
+provenance:
+  - clarification derived from existing first-party voucher and binding journals
+stop_conditions:
+  - a rejected object advances authority
+  - an audit record is treated as economic completion
+  - rejection observability is removed to satisfy a metric
+  - implementation paths change

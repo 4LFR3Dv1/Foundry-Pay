@@ -13,8 +13,8 @@ The implementation has three independent proof classes.
 
 For every signed authority object, the harness must retain the original
 signature and mutate exactly one material dimension into another structurally
-valid context. Verification must reject and the reference state must remain
-byte-for-byte unchanged.
+valid context. Verification must reject without economic effect or authority
+advancement.
 
 The registry must cover every semantically applicable dimension:
 
@@ -68,8 +68,20 @@ comparator is passive and cannot repair, normalize, or reinterpret a result.
 
 Property-based tests must publish deterministic seeds, example counts,
 minimized counterexamples, and library versions. Each accepted baseline and
-rejected mutation must record the state before and after verification so that
-zero effect is independently checkable.
+rejected mutation must record the state before and after verification.
+
+`zero effect` means:
+
+```text
+economic effect count = 0
+authority advancement count = 0
+verified/activation_requested/authorized/completed transitions = 0
+```
+
+It does not require an audit journal to remain byte-for-byte unchanged. A
+durable `rejected` event is permitted and expected when the runtime is designed
+to make invalid attempts observable. Such an audit effect cannot grant
+authority, activate a right, authorize execution, or declare economic success.
 
 The required evidence classes are:
 
@@ -102,7 +114,8 @@ Stop rather than weaken the tests if:
 - two languages reject at different semantic stages or with different codes;
 - an unknown version or profile falls back to an older interpretation;
 - Cloud state is required to revoke an otherwise valid right;
-- a rejected mutation changes a reference ledger;
+- a rejected mutation advances verified, activation-requested, authorized, or
+  completed state;
 - remediation requires silently changing a frozen v1 preimage.
 
 The last condition is a security finding requiring an ADR, an explicit version

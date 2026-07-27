@@ -26,6 +26,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-GOV-001 | done | FC-CTRL-014 | separate work completion, evidence maturity, external review, and deployment authorization |
 | FC-CTRL-015 | done | FC-PROTO-007, FC-GOV-001 | record governed conformance integration and reconcile the next security gate |
 | FC-CTRL-016 | done | FC-CTRL-015, FC-GOV-001 | freeze FC-SEC-002 adversarial, lifecycle, maturity, and path contract |
+| FC-CTRL-017 | done | FC-CTRL-016 | distinguish forbidden economic/authority effects from permitted rejection audit effects |
 
 ## Epic B — Channel protocol
 
@@ -44,7 +45,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | Work item | Status | Depends on | Outcome |
 |---|---|---|---|
 | FC-SEC-001 | done | FOUNDATIONS-001 | comprehensive design threat model |
-| FC-SEC-002 | ready | FC-PROTO-002, FC-PROTO-006, FC-PROTO-007, FC-CTRL-016 | replay, semantic-collision, downgrade, and lifecycle property suite |
+| FC-SEC-002 | ready | FC-PROTO-002, FC-PROTO-006, FC-PROTO-007, FC-CTRL-017 | replay, semantic-collision, downgrade, and lifecycle property suite |
 | FC-SEC-003 | done | FOUNDATIONS-001 | claim-link handling and secret non-disclosure test kit |
 | FC-SEC-004 | blocked | FC-PROTO-004, FC-SOL-004 | concurrent settlement adversarial proof |
 | FC-SEC-005 | blocked | FC-PROTO-004, SA-CHAN-004 | Cloud outage and self-recovery proof |
