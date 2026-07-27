@@ -207,9 +207,9 @@
       "sha256": "sha256:07f2cce2858a8b26cef681a9e8b49d6c2e82be14dd9d69dd20b1b141360de95c"
     },
     {
-      "bytes": 16110,
+      "bytes": 16886,
       "path": "tests/channels/test_canonicalization.py",
-      "sha256": "sha256:45b7cf7c645684f80ad9f5af66eb01bd925512839fdcd4a59f9322bb21a5eef1"
+      "sha256": "sha256:7bda0cfad798d3f0929df82c4221abe4092e6c86b20d28a0851da954e70c3fb8"
     },
     {
       "bytes": 3067,
@@ -217,9 +217,9 @@
       "sha256": "sha256:261d60a17645d202f234c10b7a9d20cc1b39c6f14b04bced8c8ef8ebf4b7495c"
     },
     {
-      "bytes": 2165,
+      "bytes": 2318,
       "path": "docs/channels/HASH_PROFILES.md",
-      "sha256": "sha256:4153cc810e74ba2b495712bcfa05a5cec531866fc0c1d95147c6d4e6cc4b7f55"
+      "sha256": "sha256:aebd31181ff631b719c80c2b07c69c37faa1720be60b25873119c6a796ceb6ec"
     },
     {
       "bytes": 3357,
@@ -227,19 +227,19 @@
       "sha256": "sha256:dcccd84e40df6b115861817fd2fee901b93bbee23cdb0207f981b5655be83705"
     },
     {
-      "bytes": 3402,
+      "bytes": 3529,
       "path": "docs/channels/ADR/FC-ADR-007-canonicalization-and-hash-profiles.md",
-      "sha256": "sha256:b3337460ae21062d57e8f83c6d7626da8e6618bee8506489311b95fad3c29047"
+      "sha256": "sha256:84de6db167b8fba637e1e3374a6bcc9880ce2bfe09fc2b4c0e85267b43614194"
     },
     {
       "bytes": 1511,
       "path": "evidence/runs/FC-PROTO-006/README.md",
-      "sha256": "sha256:b9348aa44c69464c5fe08ad72d445c868d2ac55282abcf8940113b6ff4b1263a"
+      "sha256": "sha256:da1c37e1d5395d0f440682de04a0a1239337cb6b65025a2de97ec6c135a243b9"
     },
     {
       "bytes": 747,
       "path": "evidence/runs/FC-PROTO-006/validation-report.json",
-      "sha256": "sha256:dc288bcfac99888f92f095d8afc6c6229339a6941f08715ae3befb02b3a16edd"
+      "sha256": "sha256:fe9d0f689f3bac043973e56aafc2ea480e68395bc2fdca2a2687849d821f8ada"
     },
     {
       "bytes": 5061,
@@ -262,17 +262,17 @@
       "sha256": "sha256:5d74c789c040e3720b7100c5235820822a1d5970f93ec2b456f978aeb750e77b"
     },
     {
-      "bytes": 1265,
+      "bytes": 1341,
       "path": "evidence/runs/FC-PROTO-006/legacy-hash-compatibility.json",
-      "sha256": "sha256:e75490250537d036bea36e2635407fa1ecb9c1721e7401db7f9846d997dc44ce"
+      "sha256": "sha256:47d61f77ea444d0b02552748da16c82746c7461de116f5fbe9964e9e018ef63d"
     },
     {
-      "bytes": 69823,
+      "bytes": 69967,
       "path": "evidence/runs/FC-PROTO-006/pytest-full.xml",
-      "sha256": "sha256:11c63e153327503d94414a2cb71b0fecb961d65d28e02a88636eba4cffb636b9"
+      "sha256": "sha256:1379a9f83d43b5265ba22abc321b46a5d0c1ccf5d74242226a442a0dd608dffd"
     }
   ],
   "baseline_commit": "ac10151b74cdfb33638d3c28fb3607a134234057",
-  "implementation_commit": "82e16dbbba6bce2755b1ed0603073edcf0b08d98",
+  "implementation_commit": "1714f7a0b7732638ad1905cfcd8891bbec8511e1",
   "work_item": "FC-PROTO-006"
 }
