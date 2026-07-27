@@ -1,0 +1,25 @@
+work_item: FC-CTRL-018
+objective: align the FC-SEC-002 task contract dependency with the integrated effect taxonomy
+owner: program-integrator
+branch: agent/control/FC-CTRL-018
+allowed_paths:
+  - .agents/tasks/FC-CTRL-018.yaml
+  - .agents/tasks/FC-SEC-002.yaml
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - tests/channels/test_foundation_contracts.py
+dependencies:
+  - FC-CTRL-017
+invariants:
+  - the task contract and canonical work graph name the same baseline dependencies
+acceptance:
+  - FC-SEC-002 depends on FC-CTRL-017 in both records
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - git diff --check
+evidence:
+  - focused foundation contract test
+provenance:
+  - first-party metadata correction only
+stop_conditions:
+  - runtime, vectors, preimages, or authorization change

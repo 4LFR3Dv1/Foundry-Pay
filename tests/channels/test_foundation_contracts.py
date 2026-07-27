@@ -124,3 +124,6 @@ def test_fc_sec_002_contract_matches_governed_experimental_scope() -> None:
         "a rejected mutation advances verified, activation-requested, authorized, or completed state"
         in security["stop_conditions"]
     )
+
+    task = yaml.safe_load((ROOT / ".agents/tasks/FC-SEC-002.yaml").read_text(encoding="utf-8"))
+    assert task["dependencies"] == security["dependencies"]

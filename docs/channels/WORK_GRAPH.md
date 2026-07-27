@@ -27,6 +27,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-CTRL-015 | done | FC-PROTO-007, FC-GOV-001 | record governed conformance integration and reconcile the next security gate |
 | FC-CTRL-016 | done | FC-CTRL-015, FC-GOV-001 | freeze FC-SEC-002 adversarial, lifecycle, maturity, and path contract |
 | FC-CTRL-017 | done | FC-CTRL-016 | distinguish forbidden economic/authority effects from permitted rejection audit effects |
+| FC-CTRL-018 | done | FC-CTRL-017 | align the FC-SEC-002 task contract dependency with the integrated effect taxonomy |
 
 ## Epic B — Channel protocol
 

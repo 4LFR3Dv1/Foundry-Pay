@@ -12,7 +12,7 @@ dependencies:
   - FC-PROTO-002
   - FC-PROTO-006
   - FC-PROTO-007
-  - FC-CTRL-016
+  - FC-CTRL-017
 invariants:
   - signatures are unusable across every bound domain dimension
   - semantically distinct authority types cannot share an accepted signed meaning
