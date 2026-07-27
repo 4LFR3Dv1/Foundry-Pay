@@ -1,0 +1,51 @@
+{
+  "registry": "foundry.channels.hash-profiles",
+  "version": "1.0.0",
+  "hash_text_pattern": "^sha256:[0-9a-f]{64}$",
+  "profiles": [
+    {
+      "profile_id": "signed-payload-v1",
+      "input": "validated closed JSON payload",
+      "canonicalization": "RFC8785-JCS",
+      "digest": "SHA-256",
+      "excluded_fields": "registry-defined envelope fields only"
+    },
+    {
+      "profile_id": "canonical-record-v1",
+      "input": "validated closed JSON record",
+      "canonicalization": "RFC8785-JCS",
+      "digest": "SHA-256",
+      "excluded_fields": []
+    },
+    {
+      "profile_id": "self-hashed-record-v1",
+      "input": "validated closed JSON record",
+      "canonicalization": "RFC8785-JCS",
+      "digest": "SHA-256",
+      "excluded_fields": "exactly the registered own_hash_field"
+    },
+    {
+      "profile_id": "journal-chain-v1",
+      "input": "validated closed journal event",
+      "canonicalization": "RFC8785-JCS",
+      "digest": "SHA-256",
+      "excluded_fields": ["event_hash"]
+    },
+    {
+      "profile_id": "raw-bytes-commitment-v1",
+      "input": "exact bytes",
+      "canonicalization": "none",
+      "digest": "SHA-256",
+      "excluded_fields": []
+    },
+    {
+      "profile_id": "evidence-artifact-v1",
+      "input": "exact file bytes",
+      "canonicalization": "none",
+      "digest": "SHA-256",
+      "namespace": "foundry.channels.evidence",
+      "economic_authority": false,
+      "excluded_fields": []
+    }
+  ]
+}
