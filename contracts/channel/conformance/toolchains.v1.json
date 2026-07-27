@@ -1,0 +1,56 @@
+{
+  "baseline_commit": "17b656cbdd6ae53cece9cebb9123058c03e67b82",
+  "implementations": [
+    {
+      "implementation": "python",
+      "jcs_dependency": {
+        "license": "Apache-2.0",
+        "name": "rfc8785",
+        "source": "https://pypi.org/project/rfc8785/0.1.4/",
+        "version": "0.1.4"
+      },
+      "runtime": {
+        "name": "CPython",
+        "version": "3.11.9"
+      }
+    },
+    {
+      "compiler": {
+        "name": "TypeScript",
+        "version": "5.9.3"
+      },
+      "implementation": "typescript",
+      "jcs_dependency": {
+        "license": "Apache-2.0",
+        "name": "canonicalize",
+        "source": "https://www.npmjs.com/package/canonicalize/v/3.0.0",
+        "version": "3.0.0"
+      },
+      "runtime": {
+        "name": "Node.js",
+        "version": "24.15.0"
+      }
+    },
+    {
+      "compiler": {
+        "edition": "2024",
+        "name": "rustc",
+        "version": "1.85.1"
+      },
+      "implementation": "rust",
+      "jcs_dependency": {
+        "license": "MIT",
+        "name": "serde_json_canonicalizer",
+        "source": "https://crates.io/crates/serde_json_canonicalizer/0.3.2",
+        "version": "0.3.2"
+      },
+      "runtime": {
+        "name": "cargo",
+        "version": "1.85.1"
+      }
+    }
+  ],
+  "protocol_version": "1.0.0",
+  "runner_contract": "foundry.channels.conformance-runner-result/1",
+  "schema_version": 1
+}

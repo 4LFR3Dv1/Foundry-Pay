@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundry.pay/contracts/channel/conformance/runner-result.v1.schema.json",
+  "title": "Foundry Channels cross-language conformance runner result v1",
+  "oneOf": [
+    {
+      "required": [
+        "schema_version",
+        "runner_contract",
+        "implementation",
+        "runtime_version",
+        "runner_version",
+        "vector_id",
+        "vector_kind",
+        "decision",
+        "stage",
+        "code",
+        "canonical_utf8_hex",
+        "canonical_utf8_base64",
+        "byte_length",
+        "sha256"
+      ],
+      "properties": {
+        "vector_kind": {"const": "positive"},
+        "decision": {"const": "accept"},
+        "stage": {"const": "complete"},
+        "code": {"const": "ok"},
+        "canonical_utf8_hex": {
+          "type": "string",
+          "pattern": "^(?:[0-9a-f]{2})+$"
+        },
+        "canonical_utf8_base64": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9+/]+={0,2}$"
+        },
+        "byte_length": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      }
+    },
+    {
+      "not": {
+        "anyOf": [
+          {"required": ["canonical_utf8_hex"]},
+          {"required": ["canonical_utf8_base64"]},
+          {"required": ["byte_length"]},
+          {"required": ["sha256"]}
+        ]
+      },
+      "required": [
+        "schema_version",
+        "runner_contract",
+        "implementation",
+        "runtime_version",
+        "runner_version",
+        "vector_id",
+        "vector_kind",
+        "decision",
+        "stage",
+        "code"
+      ],
+      "properties": {
+        "vector_kind": {"const": "negative"},
+        "decision": {"const": "reject"},
+        "stage": {
+          "enum": [
+            "parse",
+            "schema",
+            "projection",
+            "canonicalization",
+            "domain_verification",
+            "hash_verification"
+          ]
+        },
+        "code": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        }
+      }
+    }
+  ],
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "runner_contract",
+    "implementation",
+    "runtime_version",
+    "runner_version",
+    "vector_id",
+    "vector_kind",
+    "decision",
+    "stage",
+    "code"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "runner_contract": {
+      "const": "foundry.channels.conformance-runner-result/1"
+    },
+    "implementation": {
+      "enum": ["python", "typescript", "rust"]
+    },
+    "runtime_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "runner_version": {"const": "1.0.0"},
+    "vector_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "vector_kind": {
+      "enum": ["positive", "negative"]
+    },
+    "decision": {
+      "enum": ["accept", "reject"]
+    },
+    "stage": {
+      "type": "string"
+    },
+    "code": {
+      "type": "string"
+    },
+    "canonical_utf8_hex": {
+      "type": "string"
+    },
+    "canonical_utf8_base64": {
+      "type": "string"
+    },
+    "byte_length": {
+      "type": "integer"
+    },
+    "sha256": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+work_item: FC-CTRL-014
+objective: freeze the FC-PROTO-007 execution contract before cross-language implementation
+owner: program-integrator
+branch: agent/control/FC-CTRL-014
+allowed_paths:
+  - .agents/tasks/FC-CTRL-014.yaml
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - docs/channels/conformance/FC-PROTO-007-COORDINATION.md
+  - docs/channels/ADR/FC-ADR-008-cross-language-conformance-boundary.md
+  - tests/channels/test_foundation_contracts.py
+  - contracts/channel/conformance/toolchains.v1.json
+  - contracts/channel/conformance/rejection-codes.v1.json
+  - contracts/channel/conformance/runner-result.v1.schema.json
+  - evidence/runs/FC-CTRL-014/**
+dependencies:
+  - FC-CTRL-013
+invariants:
+  - baseline is 17b656cbdd6ae53cece9cebb9123058c03e67b82
+  - no FC-PROTO-006 normative vector, byte, hash, domain, or profile changes
+  - runners use source inputs and never expected result fields as computation inputs
+  - Python, TypeScript, and Rust implementations remain operationally independent
+  - the comparator cannot canonicalize, normalize, repair, or reinterpret output
+acceptance:
+  - exact toolchain and JCS dependency versions are machine-readable
+  - one closed JSONL result contract covers accepted and rejected vectors
+  - all twenty existing negative vectors have one normative stage and code
+  - the functional work item reserves every required implementation and CI path
+  - FC-PROTO-007 remains blocked until this coordination item is integrated
+verification_commands:
+  - python scripts/check_channel_foundation.py
+  - python scripts/check_secrets.py
+  - python -m pytest tests/channels/test_foundation_contracts.py tests/channels/test_canonicalization.py
+  - git diff --check
+evidence:
+  - evidence/runs/FC-CTRL-014/README.md
+  - evidence/runs/FC-CTRL-014/validation-report.json
+provenance:
+  - Python rfc8785 0.1.4 from PyPI, Apache-2.0
+  - TypeScript canonicalize 3.0.0 from npm, Apache-2.0
+  - Rust serde_json_canonicalizer 0.3.2 from crates.io, MIT
+stop_conditions:
+  - a runner or comparator is implemented in this coordination PR
+  - a functional dependency is added to a package manifest
+  - a frozen normative artifact changes
+  - a generic rejection replaces exact stage and code comparison
