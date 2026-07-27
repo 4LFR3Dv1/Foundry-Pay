@@ -396,6 +396,30 @@ work_items:
       - rejection observability is removed to satisfy a metric
       - implementation paths change
 
+  - id: FC-CTRL-018
+    status: done
+    objective: align the FC-SEC-002 task contract dependency with the integrated effect taxonomy
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-018.yaml
+      - .agents/tasks/FC-SEC-002.yaml
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - tests/channels/test_foundation_contracts.py
+    dependencies: [FC-CTRL-017]
+    invariants:
+      - the task contract and canonical work graph name the same baseline dependencies
+    acceptance:
+      - FC-SEC-002 depends on FC-CTRL-017 in both records
+    tests:
+      - focused foundation contract test
+    evidence:
+      - task contract and work graph diff
+    security_review: self-validated metadata consistency review
+    stop_conditions:
+      - runtime, vectors, preimages, or authorization change
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
