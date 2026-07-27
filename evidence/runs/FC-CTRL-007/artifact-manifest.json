@@ -1,0 +1,19 @@
+{
+  "work_item": "FC-CTRL-007",
+  "baseline_commit": "74359f6ac81e75d595f934ed3e03428a45a2dafa",
+  "implementation_commit": "54157e0934fe2ea37cb24feba3ebaa4d242e324a",
+  "artifacts": [
+    {
+      "path": "docs/channels/work-items.yaml",
+      "sha256": "f7b9bfd71d0adf5a0115f9709664325ff40a2f39f96aeba1c71163c67e8351aa"
+    },
+    {
+      "path": "docs/channels/WORK_GRAPH.md",
+      "sha256": "e29450259f11be04741d097194192f4f30832ed6c47c4b1a44d08379c0841734"
+    },
+    {
+      "path": "tests/channels/test_foundation_contracts.py",
+      "sha256": "08a740d0a242975be6fe1a88b50d0e859df35850fc6eb9fb2f8b6d20eea71996"
+    }
+  ]
+}
