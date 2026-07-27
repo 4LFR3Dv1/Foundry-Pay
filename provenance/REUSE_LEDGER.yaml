@@ -5,6 +5,37 @@ policy:
   attribution_required: true
 
 sources:
+  - id: foundry-channels-fc-proto-006-first-party-consolidation
+    repository: 4LFR3Dv1/Foundry-Pay
+    commit: 469a28e9a92a7d443b9e20621ade2e4d23a09eee
+    visibility: public
+    license: Apache-2.0
+    disposition: first-party-consolidation-without-preimage-change
+    candidate_assets:
+      - reviewed Voucher and RecipientBinding RFC 8785 payload preimages
+      - reviewed settlement, recovery, closure, refund, and journal preimages
+      - External Execution Protocol RFC 8785 and SHA-256 behavior
+    copied_paths: []
+    migrated_callers:
+      - packages/channel-protocol/python/foundry_channel_protocol/voucher.py
+      - packages/channel-protocol/python/foundry_channel_protocol/recipient_binding.py
+      - packages/channel-protocol/python/foundry_channel_protocol/settlement.py
+      - packages/channel-protocol/python/foundry_channel_protocol/closure.py
+    created_paths:
+      - packages/channel-protocol/python/foundry_channel_protocol/canonical.py
+      - contracts/channel/canonicalization
+      - tests/channels/test_canonicalization.py
+    constraints:
+      - no external kernel or third-party source was copied
+      - rfc8785 remains pinned by the existing Apache-2.0 repository dependency policy
+      - signed Voucher and RecipientBinding bytes and hashes remain unchanged
+      - economic v1 records retain their reviewed preimages
+      - voucher-ledger scope and journal chains receive a documented pre-runtime domain migration
+      - pre-FC-PROTO-006 local reference databases are rebuilt rather than accepted through fallback
+      - no legacy fallback or second v1 preimage is introduced
+      - TypeScript and Rust conformance remain FC-PROTO-007
+      - ChannelVault and on-chain verification remain blocked
+
   - id: foundry-channels-fc-proto-005-first-party-reuse
     repository: 4LFR3Dv1/Foundry-Pay
     commit: e1b43118f8aff29c8b2101c1c08bc3aa57694177

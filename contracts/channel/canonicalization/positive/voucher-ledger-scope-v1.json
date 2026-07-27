@@ -1,0 +1,41 @@
+{
+  "byte_length": 543,
+  "canonical_utf8_base64": "eyJjaGFubmVsX2FjY291bnQiOiJFVXQ3d1Y0ZjVielNGSmNjWjVhYWZKVjd6eWtaZnlXejlyY3RhdWc3aFZ4ZCIsImNoYW5uZWxfaWQiOiJjaGFubmVsX2ZvdW5kYXRpb25zXzAwMSIsImRvbWFpbiI6ImZvdW5kcnkuY2hhbm5lbHMudm91Y2hlci1sZWRnZXItc2NvcGUiLCJlbnZpcm9ubWVudCI6ImRldm5ldCIsImVwb2NoIjowLCJnZW5lc2lzX2hhc2giOiJFdFdUUkFCWmFZcTZpTWZlWUtvdVJ1MTY2VlUyeHFhMXdjYVdveFBrclpCRyIsIm1pbnQiOiIydFV6eEFES0hXeHdUcGloSHV1endmb0doWUJZNzczNXMyUVhFdVVjTlgzayIsIm5ldHdvcmsiOiJzb2xhbmE6ZGV2bmV0IiwicHJvZ3JhbV9pZCI6IkJQRkxvYWRlclVwZ3JhZGVhYjFlMTExMTExMTExMTExMTExMTExMTExMTEiLCJwcm90b2NvbF92ZXJzaW9uIjoiMS4wLjAiLCJyZWNpcGllbnRfY2xhaW1fcHVia2V5IjoiOUxBZlhqaUx4QURhU1F3MmlwR1FxNWtQeXpDeThGMmhaaG5QNFlMQkVSZVYiLCJzZW5kZXIiOiI5enNKdlJGVHhBRzVzQnVYaGpNRFprZ1diOW9xUWJLOGdEeXdvN21VTU5LYiJ9",
+  "canonical_utf8_hex": "7b226368616e6e656c5f6163636f756e74223a22455574377756346635627a53464a63635a356161664a56377a796b5a6679577a397263746175673768567864222c226368616e6e656c5f6964223a226368616e6e656c5f666f756e646174696f6e735f303031222c22646f6d61696e223a22666f756e6472792e6368616e6e656c732e766f75636865722d6c65646765722d73636f7065222c22656e7669726f6e6d656e74223a226465766e6574222c2265706f6368223a302c2267656e657369735f68617368223a22457457545241425a61597136694d6665594b6f75527531363656553278716131776361576f78506b725a4247222c226d696e74223a223274557a7841444b48577877547069684875757a77666f47685942593737333573325158457555634e58336b222c226e6574776f726b223a22736f6c616e613a6465766e6574222c2270726f6772616d5f6964223a224250464c6f6164657255706772616465616231653131313131313131313131313131313131313131313131222c2270726f746f636f6c5f76657273696f6e223a22312e302e30222c22726563697069656e745f636c61696d5f7075626b6579223a22394c4166586a694c78414461535177326970475171356b50797a4379384632685a686e5034594c4245526556222c2273656e646572223a22397a734a765246547841473573427558686a4d445a6b675762396f7151624b38674479776f376d554d4e4b62227d",
+  "domain": "foundry.channels.voucher-ledger-scope",
+  "excluded_fields": [],
+  "expected_acceptance": true,
+  "expected_sha256": "sha256:fbbafd129752e2d67a278423b0ca2f157e6b7202ba0b4bcd6c43c93d78ce9f8b",
+  "object_type": "voucher_ledger_scope",
+  "parsed_projection": {
+    "channel_account": "EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd",
+    "channel_id": "channel_foundations_001",
+    "domain": "foundry.channels.voucher-ledger-scope",
+    "environment": "devnet",
+    "epoch": 0,
+    "genesis_hash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+    "mint": "2tUzxADKHWxwTpihHuuzwfoGhYBY7735s2QXEuUcNX3k",
+    "network": "solana:devnet",
+    "program_id": "BPFLoaderUpgradeab1e11111111111111111111111",
+    "protocol_version": "1.0.0",
+    "recipient_claim_pubkey": "9LAfXjiLxADaSQw2ipGQq5kPyzCy8F2hZhnP4YLBEReV",
+    "sender": "9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb"
+  },
+  "parsed_source": {
+    "channel_account": "EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd",
+    "channel_id": "channel_foundations_001",
+    "domain": "foundry.channels.voucher-ledger-scope",
+    "environment": "devnet",
+    "epoch": 0,
+    "genesis_hash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+    "mint": "2tUzxADKHWxwTpihHuuzwfoGhYBY7735s2QXEuUcNX3k",
+    "network": "solana:devnet",
+    "program_id": "BPFLoaderUpgradeab1e11111111111111111111111",
+    "protocol_version": "1.0.0",
+    "recipient_claim_pubkey": "9LAfXjiLxADaSQw2ipGQq5kPyzCy8F2hZhnP4YLBEReV",
+    "sender": "9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb"
+  },
+  "profile_id": "canonical-record-v1",
+  "source_json": "{\"domain\": \"foundry.channels.voucher-ledger-scope\", \"protocol_version\": \"1.0.0\", \"environment\": \"devnet\", \"network\": \"solana:devnet\", \"genesis_hash\": \"EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG\", \"program_id\": \"BPFLoaderUpgradeab1e11111111111111111111111\", \"channel_id\": \"channel_foundations_001\", \"channel_account\": \"EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd\", \"epoch\": 0, \"sender\": \"9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb\", \"recipient_claim_pubkey\": \"9LAfXjiLxADaSQw2ipGQq5kPyzCy8F2hZhnP4YLBEReV\", \"mint\": \"2tUzxADKHWxwTpihHuuzwfoGhYBY7735s2QXEuUcNX3k\"}",
+  "vector_id": "voucher-ledger-scope-v1"
+}

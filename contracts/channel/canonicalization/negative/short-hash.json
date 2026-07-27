@@ -1,0 +1,7 @@
+{
+  "expected_acceptance": false,
+  "expected_rejection_code": "invalid_hash",
+  "input": "sha256:abcd",
+  "rejection_stage": "hash_verification",
+  "vector_id": "short-hash"
+}

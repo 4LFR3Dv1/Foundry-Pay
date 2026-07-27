@@ -1,0 +1,10 @@
+{
+  "expected_acceptance": false,
+  "expected_rejection_code": "canonical_set_duplicate",
+  "input": [
+    "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  ],
+  "rejection_stage": "projection",
+  "vector_id": "canonical-set-duplicate"
+}

@@ -7,7 +7,6 @@ the claim key and that destination wallet.
 
 from __future__ import annotations
 
-import hashlib
 import re
 import sqlite3
 from contextlib import closing
@@ -16,8 +15,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping, NoReturn, Protocol
 
-import rfc8785
-
+from .canonical import CanonicalizationError, canonical_json_bytes, sha256_raw_bytes
 
 _AMOUNT = re.compile(r"^(0|[1-9][0-9]*)$")
 _HASH = re.compile(r"^sha256:[0-9a-f]{64}$")
@@ -279,10 +277,10 @@ def recipient_binding_domain_hash(context: RecipientBindingContext) -> str:
         "mint": context.mint,
     }
     try:
-        canonical = rfc8785.dumps(domain)
-    except (rfc8785.CanonicalizationError, rfc8785.FloatDomainError) as error:
+        canonical = canonical_json_bytes(domain)
+    except CanonicalizationError as error:
         _reject("canonicalization_failed", "context", str(error))
-    return f"sha256:{hashlib.sha256(canonical).hexdigest()}"
+    return sha256_raw_bytes(canonical)
 
 
 def validate_channel_claim(
@@ -391,8 +389,8 @@ def canonical_recipient_binding_payload(
         _reject("binding_outlives_claim", "binding.payload.expires_at", "exceeds claim expiry")
 
     try:
-        return rfc8785.dumps(dict(payload))
-    except (rfc8785.CanonicalizationError, rfc8785.FloatDomainError) as error:
+        return canonical_json_bytes(dict(payload))
+    except CanonicalizationError as error:
         _reject("canonicalization_failed", "binding.payload", str(error))
 
 
@@ -419,7 +417,7 @@ def verify_recipient_binding(
         claim=claim,
         now=now,
     )
-    expected_hash = f"sha256:{hashlib.sha256(payload_bytes).hexdigest()}"
+    expected_hash = sha256_raw_bytes(payload_bytes)
     _hash(binding["binding_hash"], "binding.binding_hash")
     if binding["binding_hash"] != expected_hash:
         _reject("binding_hash_mismatch", "binding.binding_hash", "does not hash canonical payload")

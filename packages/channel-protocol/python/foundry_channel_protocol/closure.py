@@ -18,8 +18,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, NoReturn, Protocol
 
-from foundry_external_execution_protocol import canonicalize, sha256_digest
-
+from .canonical import sha256_canonical_json
 from .channel import AccountingProjection, validate_channel
 
 
@@ -248,7 +247,7 @@ def _closed(
 
 
 def _canonical_hash(value: Mapping[str, Any]) -> str:
-    return sha256_digest(canonicalize(dict(value)))
+    return sha256_canonical_json(dict(value))
 
 
 def _with_hash(value: Mapping[str, Any], field: str) -> dict[str, Any]:
@@ -1677,11 +1676,16 @@ class ClosureRuntime:
         ).fetchone()
         sequence = 1 if previous is None else int(previous["sequence"]) + 1
         previous_hash = ZERO_HASH if previous is None else str(previous["event_hash"])
+        event_payload = dict(payload)
         event = {
+            "type": "refund_journal_entry",
+            "protocol_version": PROTOCOL_VERSION,
             "refund_id": refund_id,
             "sequence": sequence,
             "state": state,
-            "payload": dict(payload),
+            "event_type": state,
+            "payload": event_payload,
+            "payload_hash": _canonical_hash(event_payload),
             "previous_event_hash": previous_hash,
             "recorded_at": timestamp,
         }

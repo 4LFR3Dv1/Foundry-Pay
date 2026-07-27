@@ -1,0 +1,38 @@
+{
+  "domains": "domains.v1.json",
+  "negative_vectors": [
+    "amount-leading-zero.json",
+    "bool-as-integer.json",
+    "canonical-set-duplicate.json",
+    "canonical-set-order.json",
+    "duplicate-keys.json",
+    "float.json",
+    "infinity.json",
+    "lone-surrogate.json",
+    "malformed-timestamp.json",
+    "missing-field.json",
+    "nan.json",
+    "negative-zero.json",
+    "null.json",
+    "own-hash-in-preimage.json",
+    "short-hash.json",
+    "u64-overflow.json",
+    "unknown-field.json",
+    "unregistered-domain.json",
+    "unsafe-integer.json",
+    "uppercase-hash.json"
+  ],
+  "positive_vectors": [
+    "evidence-artifact-v1.json",
+    "raw-bytes-v1.json",
+    "recipient-binding-payload-v1.json",
+    "refund-journal-entry-v1.json",
+    "settlement-journal-entry-v1.json",
+    "settlement-observation-v1.json",
+    "voucher-ledger-scope-v1.json",
+    "voucher-payload-v1.json"
+  ],
+  "profiles": "profiles.v1.json",
+  "registry": "foundry.channels.canonicalization-vectors",
+  "version": "1.0.0"
+}

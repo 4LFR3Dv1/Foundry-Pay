@@ -1,0 +1,27 @@
+{
+  "baseline_commit": "ac10151b74cdfb33638d3c28fb3607a134234057",
+  "claims": {
+    "channelvault_complete": false,
+    "offline_only": true,
+    "on_chain_execution_proven": false,
+    "production_ready": false,
+    "rust_conformance_complete": false,
+    "typescript_conformance_complete": false
+  },
+  "domain_count": 23,
+  "negative_vector_count": 20,
+  "positive_vector_count": 8,
+  "required_merges": {
+    "FC-CTRL-010": "8117ef0c4237222edba93922307d8b652f82858d",
+    "FC-PROTO-005": "59f37870475df0f0ee9d7619be9d3eff7f5a16bd"
+  },
+  "status": "passed",
+  "test_summary": {
+    "errors": 0,
+    "failures": 0,
+    "skipped": 11,
+    "tests": 472,
+    "time_seconds": 11.374
+  },
+  "work_item": "FC-PROTO-006"
+}

@@ -1,0 +1,10 @@
+{
+  "expected_acceptance": false,
+  "expected_rejection_code": "hash_mismatch",
+  "input": {
+    "receipt_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "type": "record"
+  },
+  "rejection_stage": "hash_verification",
+  "vector_id": "own-hash-in-preimage"
+}

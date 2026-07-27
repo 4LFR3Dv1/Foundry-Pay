@@ -1,0 +1,44 @@
+work_item: FC-PROTO-006
+baseline_commit: ac10151b74cdfb33638d3c28fb3607a134234057
+protocol_decision_baseline: 469a28e9a92a7d443b9e20621ade2e4d23a09eee
+objective: freeze normative canonicalization, domain separation, hash profiles, and exact-byte vectors
+owner: cryptographic-protocol-engineer
+repository: 4LFR3Dv1/Foundry-Pay
+allowed_paths:
+  - packages/channel-protocol/**
+  - contracts/channel/**
+  - tests/channels/test_canonicalization.py
+  - docs/channels/CANONICALIZATION.md
+  - docs/channels/HASH_PROFILES.md
+  - docs/channels/DOMAIN_REGISTRY.md
+  - docs/channels/ADR/FC-ADR-007-canonicalization-and-hash-profiles.md
+  - evidence/runs/FC-PROTO-006/**
+  - provenance/REUSE_LEDGER.yaml
+dependencies:
+  - FC-PROTO-001
+  - FC-PROTO-002
+  - FC-PROTO-003
+  - FC-PROTO-004
+  - FC-PROTO-005
+invariants:
+  - validation precedes canonicalization
+  - registered domains match exactly
+  - no field is silently removed or coerced
+  - self-hashed records exclude exactly their registered own-hash field
+  - raw bytes are never passed through JSON before hashing
+  - existing reviewed v1 preimages do not change silently
+acceptance:
+  - every known channel hash object has a profile and documented preimage
+  - exact canonical bytes and SHA-256 values are published
+  - duplicate keys, unsafe numbers, invalid Unicode, and unknown domains reject
+  - FC-PROTO-007 can implement conformance without importing Python runtime code
+tests:
+  - tests/channels/test_canonicalization.py
+  - full repository regression
+evidence:
+  - evidence/runs/FC-PROTO-006
+security_review: independent-cryptographic-protocol-review
+stop_conditions:
+  - permissive normalization or legacy fallback is introduced
+  - a v1 preimage changes without an explicit migration decision
+  - TypeScript, Rust, ChannelVault, on-chain execution, or production is claimed

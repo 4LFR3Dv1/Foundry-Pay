@@ -1,0 +1,10 @@
+{
+  "expected_acceptance": false,
+  "expected_rejection_code": "canonical_set_order",
+  "input": [
+    "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  ],
+  "rejection_stage": "projection",
+  "vector_id": "canonical-set-order"
+}

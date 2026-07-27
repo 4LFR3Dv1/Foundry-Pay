@@ -1,0 +1,52 @@
+{
+  "byte_length": 667,
+  "canonical_utf8_base64": "eyJjaGFubmVsX2FjY291bnQiOiJFVXQ3d1Y0ZjVielNGSmNjWjVhYWZKVjd6eWtaZnlXejlyY3RhdWc3aFZ4ZCIsImNoYW5uZWxfaWQiOiJjaGFubmVsX2ZvdW5kYXRpb25zXzAwMSIsImRlc3RpbmF0aW9uIjoiNmR6MnU1OXBtbjlKblNNUU1lQjE2TXEyaU1EengzSnoxWGEyZFRkYnhBaUUiLCJlcG9jaCI6MCwibWludCI6IjJ0VXp4QURLSFd4d1RwaWhIdXV6d2ZvR2hZQlk3NzM1czJRWEV1VWNOWDNrIiwib2JzZXJ2ZWRfYXQiOiIyMDI2LTA4LTAxVDAwOjA4OjAwWiIsInByb3RvY29sX3ZlcnNpb24iOiIxLjAuMCIsInJlY2lwaWVudF9iYWxhbmNlX2FmdGVyIjoiMjUwMDAwMDAiLCJyZWNpcGllbnRfYmFsYW5jZV9iZWZvcmUiOiIwIiwic2V0dGxlZF90b3RhbF9hZnRlciI6IjQwMDAwMDAwIiwic2V0dGxlZF90b3RhbF9iZWZvcmUiOiIxNTAwMDAwMCIsInNvdXJjZV9pZCI6InByb3ZpZGVyX2EiLCJ0cmFuc2FjdGlvbl9zaWduYXR1cmUiOiJSemdRWUFUdGdGWk5HN2VEZ2t0UEFhS2gzUjkyMkJFallOTFJudk03dTk2ZUZqc25TZTRhRllRQXRnYVA0SGk3a3luOTFpdEYxZVRFZW80OThOSjh1UzQiLCJ0eXBlIjoic2V0dGxlbWVudF9vYnNlcnZhdGlvbiIsInZhdWx0X2JhbGFuY2VfYWZ0ZXIiOiI2MDAwMDAwMCIsInZhdWx0X2JhbGFuY2VfYmVmb3JlIjoiODUwMDAwMDAifQ==",
+  "canonical_utf8_hex": "7b226368616e6e656c5f6163636f756e74223a22455574377756346635627a53464a63635a356161664a56377a796b5a6679577a397263746175673768567864222c226368616e6e656c5f6964223a226368616e6e656c5f666f756e646174696f6e735f303031222c2264657374696e6174696f6e223a2236647a32753539706d6e394a6e534d514d654231364d7132694d447a78334a7a315861326454646278416945222c2265706f6368223a302c226d696e74223a223274557a7841444b48577877547069684875757a77666f47685942593737333573325158457555634e58336b222c226f627365727665645f6174223a22323032362d30382d30315430303a30383a30305a222c2270726f746f636f6c5f76657273696f6e223a22312e302e30222c22726563697069656e745f62616c616e63655f6166746572223a223235303030303030222c22726563697069656e745f62616c616e63655f6265666f7265223a2230222c22736574746c65645f746f74616c5f6166746572223a223430303030303030222c22736574746c65645f746f74616c5f6265666f7265223a223135303030303030222c22736f757263655f6964223a2270726f76696465725f61222c227472616e73616374696f6e5f7369676e6174757265223a22527a67515941547467465a4e47376544676b745041614b68335239323242456a594e4c526e764d3775393665466a736e536534614659514174676150344869376b796e393169744631655445656f3439384e4a38755334222c2274797065223a22736574746c656d656e745f6f62736572766174696f6e222c227661756c745f62616c616e63655f6166746572223a223630303030303030222c227661756c745f62616c616e63655f6265666f7265223a223835303030303030227d",
+  "domain": "foundry.channels.settlement-observation",
+  "excluded_fields": [
+    "observation_hash"
+  ],
+  "expected_acceptance": true,
+  "expected_sha256": "sha256:9c0aaf5ef7864f62245e535f9e1adf1d6af563b9ac5df4eb66475d5392e0345e",
+  "object_type": "settlement_observation",
+  "parsed_projection": {
+    "channel_account": "EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd",
+    "channel_id": "channel_foundations_001",
+    "destination": "6dz2u59pmn9JnSMQMeB16Mq2iMDzx3Jz1Xa2dTdbxAiE",
+    "epoch": 0,
+    "mint": "2tUzxADKHWxwTpihHuuzwfoGhYBY7735s2QXEuUcNX3k",
+    "observed_at": "2026-08-01T00:08:00Z",
+    "protocol_version": "1.0.0",
+    "recipient_balance_after": "25000000",
+    "recipient_balance_before": "0",
+    "settled_total_after": "40000000",
+    "settled_total_before": "15000000",
+    "source_id": "provider_a",
+    "transaction_signature": "RzgQYATtgFZNG7eDgktPAaKh3R922BEjYNLRnvM7u96eFjsnSe4aFYQAtgaP4Hi7kyn91itF1eTEeo498NJ8uS4",
+    "type": "settlement_observation",
+    "vault_balance_after": "60000000",
+    "vault_balance_before": "85000000"
+  },
+  "parsed_source": {
+    "channel_account": "EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd",
+    "channel_id": "channel_foundations_001",
+    "destination": "6dz2u59pmn9JnSMQMeB16Mq2iMDzx3Jz1Xa2dTdbxAiE",
+    "epoch": 0,
+    "mint": "2tUzxADKHWxwTpihHuuzwfoGhYBY7735s2QXEuUcNX3k",
+    "observation_hash": "sha256:9c0aaf5ef7864f62245e535f9e1adf1d6af563b9ac5df4eb66475d5392e0345e",
+    "observed_at": "2026-08-01T00:08:00Z",
+    "protocol_version": "1.0.0",
+    "recipient_balance_after": "25000000",
+    "recipient_balance_before": "0",
+    "settled_total_after": "40000000",
+    "settled_total_before": "15000000",
+    "source_id": "provider_a",
+    "transaction_signature": "RzgQYATtgFZNG7eDgktPAaKh3R922BEjYNLRnvM7u96eFjsnSe4aFYQAtgaP4Hi7kyn91itF1eTEeo498NJ8uS4",
+    "type": "settlement_observation",
+    "vault_balance_after": "60000000",
+    "vault_balance_before": "85000000"
+  },
+  "profile_id": "self-hashed-record-v1",
+  "source_json": "{\"type\": \"settlement_observation\", \"protocol_version\": \"1.0.0\", \"source_id\": \"provider_a\", \"channel_id\": \"channel_foundations_001\", \"channel_account\": \"EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd\", \"epoch\": 0, \"mint\": \"2tUzxADKHWxwTpihHuuzwfoGhYBY7735s2QXEuUcNX3k\", \"destination\": \"6dz2u59pmn9JnSMQMeB16Mq2iMDzx3Jz1Xa2dTdbxAiE\", \"transaction_signature\": \"RzgQYATtgFZNG7eDgktPAaKh3R922BEjYNLRnvM7u96eFjsnSe4aFYQAtgaP4Hi7kyn91itF1eTEeo498NJ8uS4\", \"settled_total_before\": \"15000000\", \"settled_total_after\": \"40000000\", \"vault_balance_before\": \"85000000\", \"vault_balance_after\": \"60000000\", \"recipient_balance_before\": \"0\", \"recipient_balance_after\": \"25000000\", \"observed_at\": \"2026-08-01T00:08:00Z\", \"observation_hash\": \"sha256:9c0aaf5ef7864f62245e535f9e1adf1d6af563b9ac5df4eb66475d5392e0345e\"}",
+  "vector_id": "settlement-observation-v1"
+}

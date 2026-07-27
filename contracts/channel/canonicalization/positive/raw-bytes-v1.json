@@ -1,0 +1,13 @@
+{
+  "byte_length": 28,
+  "canonical_utf8_base64": null,
+  "canonical_utf8_hex": null,
+  "domain": "commitment-object-required",
+  "excluded_fields": [],
+  "expected_acceptance": true,
+  "expected_sha256": "sha256:b5b2963fd21838a897a75d4d99e151c2c303ea2b5f3ba34b1f2695668987c2e7",
+  "object_type": "prepared_message_bytes",
+  "profile_id": "raw-bytes-commitment-v1",
+  "source_bytes_hex": "00666f756e6472792d6368616e6e656c2d6d6573736167652d7631ff",
+  "vector_id": "raw-bytes-v1"
+}

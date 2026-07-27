@@ -21,14 +21,13 @@ from pathlib import Path
 from typing import Any, NoReturn, Protocol
 
 from foundry_external_execution_protocol import (
-    canonicalize,
     economic_plan_hash,
     execution_commitment_hash,
     prepared_message_hash,
-    sha256_digest,
     simulation_attestation_hash,
 )
 
+from .canonical import sha256_canonical_json
 from .channel import validate_channel
 
 
@@ -458,7 +457,7 @@ def _json(value: Mapping[str, Any]) -> str:
 
 
 def _canonical_hash(value: Mapping[str, Any]) -> str:
-    return sha256_digest(canonicalize(value))
+    return sha256_canonical_json(value)
 
 
 def channel_snapshot_hash(channel_snapshot: Mapping[str, Any]) -> str:
@@ -2124,12 +2123,16 @@ class SettlementRuntime:
         ).fetchone()
         sequence = 1 if previous is None else int(previous["sequence"]) + 1
         previous_hash = _ZERO_HASH if previous is None else str(previous["event_hash"])
+        event_payload = dict(payload)
         event = {
+            "type": "settlement_journal_entry",
+            "protocol_version": PROTOCOL_VERSION,
             "settlement_id": settlement_id,
             "sequence": sequence,
             "state": state,
             "event_type": event_type,
-            "payload": dict(payload),
+            "payload": event_payload,
+            "payload_hash": _canonical_hash(event_payload),
             "previous_event_hash": previous_hash,
             "recorded_at": recorded_at,
         }

@@ -1,5 +1,21 @@
 """Offline reference validation for Foundry Channels."""
 
+from .canonical import (
+    CanonicalizationError,
+    REGISTERED_DOMAINS,
+    canonical_json_bytes,
+    parse_strict_json,
+    sha256_canonical_json,
+    sha256_raw_bytes,
+    unsigned_record_projection,
+    validate_amount_text,
+    validate_canonical_set,
+    validate_timestamp_text,
+    validate_unsigned_integer,
+    verify_declared_hash,
+    verify_registered_domain,
+    verify_self_hashed_record,
+)
 from .channel import (
     AccountingProjection,
     ChannelValidationError,
@@ -51,6 +67,20 @@ from .closure import (
 )
 
 __all__ = [
+    "CanonicalizationError",
+    "REGISTERED_DOMAINS",
+    "canonical_json_bytes",
+    "parse_strict_json",
+    "sha256_canonical_json",
+    "sha256_raw_bytes",
+    "unsigned_record_projection",
+    "validate_amount_text",
+    "validate_canonical_set",
+    "validate_timestamp_text",
+    "validate_unsigned_integer",
+    "verify_declared_hash",
+    "verify_registered_domain",
+    "verify_self_hashed_record",
     "AccountingProjection",
     "ChannelValidationError",
     "validate_channel",

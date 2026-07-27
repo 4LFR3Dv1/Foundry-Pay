@@ -1,0 +1,31 @@
+{
+  "decision": "preserve reviewed v1 preimages",
+  "pre_runtime_security_migrations": [
+    {
+      "change": "add explicit domain and protocol_version to the preimage",
+      "compatibility": "pre-FC-PROTO-006 local reference databases must be rebuilt",
+      "fallback": "forbidden",
+      "object": "voucher_ledger_scope"
+    },
+    {
+      "change": "settlement adds exact type, protocol_version, and payload_hash; refund adds exact type, protocol_version, event_type, and payload_hash",
+      "compatibility": "pre-FC-PROTO-006 local reference databases must be rebuilt",
+      "fallback": "forbidden",
+      "object": "settlement_journal_entry and refund_journal_entry"
+    }
+  ],
+  "recipient_binding": {
+    "expected": "sha256:5ffc2a2ac51ebcbeb23d2cffa013251ce2680747eec9cbb570d5ee793a535192",
+    "match": true,
+    "observed": "sha256:5ffc2a2ac51ebcbeb23d2cffa013251ce2680747eec9cbb570d5ee793a535192"
+  },
+  "settlement_closure_recovery": {
+    "migration": "none",
+    "verification": "existing regression suite uses unchanged JCS preimages through the common primitive"
+  },
+  "voucher": {
+    "expected": "sha256:8a3283d61a75e1bbe987941601e8f28708875913fd0dfef0fa399c6a7dd296e2",
+    "match": true,
+    "observed": "sha256:8a3283d61a75e1bbe987941601e8f28708875913fd0dfef0fa399c6a7dd296e2"
+  }
+}

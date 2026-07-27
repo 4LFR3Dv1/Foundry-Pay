@@ -1,0 +1,7 @@
+{
+  "expected_acceptance": false,
+  "expected_rejection_code": "invalid_timestamp",
+  "input": "2026-02-30T00:00:00Z",
+  "rejection_stage": "schema",
+  "vector_id": "malformed-timestamp"
+}
