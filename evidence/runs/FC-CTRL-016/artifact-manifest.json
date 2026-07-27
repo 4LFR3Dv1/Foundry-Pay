@@ -1,0 +1,71 @@
+{
+  "algorithm": "sha256",
+  "artifacts": [
+    {
+      "bytes": 2002,
+      "path": ".agents/tasks/FC-CTRL-016.yaml",
+      "sha256": "sha256:b1fe582283422eb7869a41dc24f03d3dd1559ddcc98f0221f3892d29c2665d0a"
+    },
+    {
+      "bytes": 2942,
+      "path": ".agents/tasks/FC-SEC-002.yaml",
+      "sha256": "sha256:b54a76203414e905f3322e3847eb17fc3cc559e684fdf2ac836e99ff47b7774e"
+    },
+    {
+      "bytes": 4917,
+      "path": "docs/channels/EVIDENCE_INDEX.md",
+      "sha256": "sha256:472cf735792974835f1d1d32ee9249bfccc7ecb2c1d33399f989baafda514e53"
+    },
+    {
+      "bytes": 3946,
+      "path": "docs/channels/security/FC-SEC-002-CONTRACT.md",
+      "sha256": "sha256:3ed39daac43a4e64d564f6bd16eeb66f934038828ff388ffa06dbda033a48718"
+    },
+    {
+      "bytes": 52403,
+      "path": "docs/channels/work-items.yaml",
+      "sha256": "sha256:2788b94243a0c1253e0910a6445034f679da5d08ca817dbc6afb705e36c159a7"
+    },
+    {
+      "bytes": 12546,
+      "path": "docs/channels/WORK_GRAPH.md",
+      "sha256": "sha256:51571226415974717dc94a80cc9e2af1385ebcfcd18012521f6b727ba581547f"
+    },
+    {
+      "bytes": 1870,
+      "path": "evidence/runs/FC-CTRL-016/fc-sec-002-contract.json",
+      "sha256": "sha256:7515b4b347455346046daee0ea370f259ffcbe3cc94217b8e9f7aba37b56aa19"
+    },
+    {
+      "bytes": 5934,
+      "path": "evidence/runs/FC-CTRL-016/generate_evidence.py",
+      "sha256": "sha256:947389da7784cf1c4d2c5970fcb66c3727600d9ad5c852c4002a171cd775a7b3"
+    },
+    {
+      "bytes": 72889,
+      "path": "evidence/runs/FC-CTRL-016/pytest-full.xml",
+      "sha256": "sha256:5046e5952c4e84377a6cfcdef9884b20e948a11b4a364695ae1283704714ccb9"
+    },
+    {
+      "bytes": 901,
+      "path": "evidence/runs/FC-CTRL-016/README.md",
+      "sha256": "sha256:5161df75b6c6989df1550f879f231ad0790d703b2f18278c135128aa9f481a37"
+    },
+    {
+      "bytes": 647,
+      "path": "evidence/runs/FC-CTRL-016/TASK_CONTRACT.yaml",
+      "sha256": "sha256:82fcb4b2ccfdca0b11b45555fc095f30914d830047a28fd50191b5fbcf05273f"
+    },
+    {
+      "bytes": 1080,
+      "path": "evidence/runs/FC-CTRL-016/validation-report.json",
+      "sha256": "sha256:4897274bd3c450eb9b54aa3c10e7433237fbc2f187bf87b66ac38d89b257f8b2"
+    },
+    {
+      "bytes": 3913,
+      "path": "tests/channels/test_foundation_contracts.py",
+      "sha256": "sha256:e1c7f61d96232de999bc651e470aa25cbc55628ef2569d28470a1bd6c2811973"
+    }
+  ],
+  "schema_version": 1
+}

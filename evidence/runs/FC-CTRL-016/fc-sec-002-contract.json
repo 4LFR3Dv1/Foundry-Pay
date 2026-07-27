@@ -1,0 +1,50 @@
+{
+  "acceptance": [
+    "every signed authority object has a material-field mutation matrix",
+    "structurally valid single-field mutations invalidate the original signature",
+    "all applicable language runners agree on decision, stage, and stable code",
+    "cross-type and cross-profile reinterpretation attempts reject",
+    "downgrade, rotation, revocation, and migration policy is explicit",
+    "property seeds and minimized counterexamples are preserved"
+  ],
+  "dependencies": [
+    "FC-PROTO-002",
+    "FC-PROTO-006",
+    "FC-PROTO-007",
+    "FC-CTRL-016"
+  ],
+  "deployment_authorization": {
+    "devnet_fixture": "blocked",
+    "local_validator": "allowed",
+    "mainnet": "blocked",
+    "real_value": "blocked"
+  },
+  "external_review_requirement": {
+    "required_before": [
+      "mainnet",
+      "real_value"
+    ]
+  },
+  "invariants": [
+    "signatures are unusable across every bound domain dimension",
+    "semantically distinct authority types cannot share an accepted signed meaning",
+    "unknown versions and profiles fail closed without fallback",
+    "rejected mutations create no reference-ledger effect",
+    "Cloud statements cannot revoke cryptographic rights",
+    "v1 objects remain v1 and are never rewritten in transit"
+  ],
+  "maturity_gate": {
+    "external_review": "not_performed",
+    "implementation": "complete",
+    "self_validation": "passed"
+  },
+  "status": "ready",
+  "stop_conditions": [
+    "a material authority dimension is not cryptographically bound",
+    "equivalent implementations reject at different semantic stages or codes",
+    "an unknown version or profile falls back to an older interpretation",
+    "rotation or revocation depends on an unverifiable Cloud assertion",
+    "a rejected mutation changes reference-ledger state",
+    "a v1 preimage changes without an ADR and explicit version migration"
+  ]
+}

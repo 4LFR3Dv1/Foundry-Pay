@@ -1,0 +1,39 @@
+{
+  "baseline_commit": "4a1ce934b7d3a3d95772f9546128c1afc591e36e",
+  "changed_paths": [
+    ".agents/tasks/FC-CTRL-016.yaml",
+    ".agents/tasks/FC-SEC-002.yaml",
+    "docs/channels/EVIDENCE_INDEX.md",
+    "docs/channels/WORK_GRAPH.md",
+    "docs/channels/security/FC-SEC-002-CONTRACT.md",
+    "docs/channels/work-items.yaml",
+    "tests/channels/test_foundation_contracts.py"
+  ],
+  "deployment_authorization": {
+    "devnet_fixture": "blocked",
+    "local_validator": "allowed",
+    "mainnet": "blocked",
+    "real_value": "blocked"
+  },
+  "external_review": "not_performed",
+  "implementation_commit": "a2660e202e68808bf654fca5e2b4bd1752d2a206",
+  "maturity": {
+    "external_review": "not_performed",
+    "implementation": "complete",
+    "self_validation": "passed"
+  },
+  "proof_classes": [
+    "protocol_v1_replay_resistance",
+    "cross_type_and_profile_collision_resistance",
+    "version_lifecycle"
+  ],
+  "schema_version": 1,
+  "status": "passed",
+  "tests": {
+    "errors": 0,
+    "failures": 0,
+    "skipped": 11,
+    "tests": 491
+  },
+  "unauthorized_changes": []
+}

@@ -1,0 +1,12 @@
+work_item: FC-CTRL-016
+baseline_commit: 4a1ce934b7d3a3d95772f9546128c1afc591e36e
+implementation_commit: a2660e202e68808bf654fca5e2b4bd1752d2a206
+objective: freeze the FC-SEC-002 adversarial, lifecycle, maturity, and path contract
+claims:
+  - FC-SEC-002 has separate replay, semantic-collision, and version-lifecycle proof classes
+  - structurally valid mutations must reject with zero reference-ledger effect
+  - self-validation permits only offline and local-validator experimentation
+limitations:
+  - external review was not performed
+  - no ChannelVault or Solana execution is implemented
+  - devnet, mainnet, and real-value use remain blocked
