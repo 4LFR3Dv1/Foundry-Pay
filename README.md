@@ -24,11 +24,19 @@ persistent, funded stablecoin transfer relationships: open a channel, share a
 protected link, and update cumulative value without giving the hosted service
 authority to manufacture recipient rights.
 
-The current Channels deliverable is an implementation-ready architecture,
-normative schemas, test vectors, threat model, and gated
-[work graph](docs/channels/WORK_GRAPH.md). It is not a deployed program or
-payment product. Start with the [product thesis](docs/channels/PRODUCT_THESIS.md)
-and [MVP vertical slice](docs/channels/MVP_VERTICAL_SLICE.md).
+The public repository now includes an offline reference runtime for channel
+accounting and funding, cumulative vouchers, dual-signature recipient binding,
+settlement and reconciliation, closure and refund, and normative
+canonicalization with positive and adversarial vectors. These components prove
+protocol rules against caller-provided snapshots; they do not claim those
+snapshots came from a blockchain.
+
+The next protocol gate is independent Python, TypeScript, and Rust conformance
+against the frozen bytes and hashes. ChannelVault, Solana execution, hosted
+Cloud, and the consumer product remain gated and are not implemented here.
+Start with the [product thesis](docs/channels/PRODUCT_THESIS.md),
+[protocol](docs/channels/CHANNEL_PROTOCOL.md), and
+[work graph](docs/channels/WORK_GRAPH.md).
 
 ## Why Foundry Pay
 
@@ -54,7 +62,7 @@ operate on Solana without becoming the economic authority.
 - contributors building protocol schemas, conformance tooling, and sanitized
   evidence.
 
-## Five-minute local proof
+## Five-minute external execution proof
 
 Requirements: Git, Python 3.11 or newer, and an internet connection for the
 initial package install. No wallet, Solana CLI, RPC endpoint, token, or funds are
@@ -99,6 +107,42 @@ receipt, and rejects replay. Successful output includes:
 
 The hashes in the full output bind the economic plan, prepared message,
 execution commitment, and receipt.
+
+## Offline Channels protocol
+
+The Channels reference runtime is deterministic and requires no wallet,
+Solana CLI, RPC endpoint, token, or funds. After installing the development
+dependencies, run its focused protocol suite:
+
+```text
+python -m pip install -e ".[dev]"
+python -m pytest tests/channels
+npm ci --prefix packages/channel-protocol/typescript
+npm test --prefix packages/channel-protocol/typescript
+```
+
+The suite verifies:
+
+- conservation and lifecycle rules for channel funding;
+- monotonic cumulative vouchers and replay rejection;
+- claim and destination-wallet binding;
+- partial and total settlement, idempotency, restart, and recovery;
+- the distinction between technical execution and economic reconciliation;
+- close-window, refund, activated-right, and epoch-transition rules;
+- strict canonicalization, domain separation, Unicode and numeric boundaries;
+- claim-link secret handling in the TypeScript reference surface.
+
+The normative relation is:
+
+```text
+signed voucher = issued
+ChannelVault acceptance = activated
+activated total - settled total = liquidatable right
+```
+
+The offline voucher ledger can record `issued`, `verified`, and
+`activation_requested`; it cannot declare a right `activated`. Only a future
+ChannelVault observation may serve as that authority.
 
 ## Architecture
 
@@ -160,6 +204,11 @@ Objects are versioned and correlated by `execution_request_id`,
 | Reconciliation service | Source-diverse L1/L2 observations and deterministic outcomes |
 | Failure labs | Response loss, restart, RPC failure, concurrency, and recovery matrices |
 | Evidence index | Sanitized claims, artifacts, limitations, and residual gates |
+| Channels accounting | Offline Channel and ChannelFunding validation |
+| Channels rights | Cumulative voucher and dual-signature recipient-binding verification |
+| Channels settlement | Durable offline request, recovery, observation, and reconciled receipt runtime |
+| Channels lifecycle | Close, claim window, activated-right reservation, refund, and epoch rules |
+| Channels canonicalization | Frozen v1 hash profiles, domain registry, exact bytes, and adversarial vectors |
 
 The JSONL transport is an initial adapter, not part of the domain authority
 model.
@@ -231,14 +280,21 @@ prerequisites for evaluating the five-minute local proof.
 
 ## Current status
 
-Foundry Pay is pre-alpha proof-of-work:
+Foundry Pay is pre-alpha proof-of-work. Two related but independent tracks are
+available:
 
-- deterministic protocol and recovery tests are available;
-- a governed Solana devnet remediation has been demonstrated;
-- production custody, L3 observation, sustained operation, mainnet use, and
-  external security review remain open.
+| Track | Demonstrated | Still open |
+| --- | --- | --- |
+| External execution | Exact-message authorization, governed devnet remediation, recovery, L1/L2 reconciliation, and evidence | Protocol stabilization, external verification, production signer operations, L3, mainnet, and security review |
+| Foundry Channels | Foundation plus offline protocol work FC-PROTO-001 through FC-PROTO-006 | Cross-language FC-PROTO-007, replay property suite, independent cryptographic review, ChannelVault, Solana integration, and product validation |
 
-See the public [roadmap](ROADMAP.md) and [changelog](CHANGELOG.md).
+No ChannelVault program, hosted Channels service, consumer interface, custody
+system, or production payment flow is claimed. Product research is
+pre-registered but has not yet established user comprehension or demand.
+
+See the public [roadmap](ROADMAP.md), Channels
+[evidence index](docs/channels/EVIDENCE_INDEX.md), canonical
+[work graph](docs/channels/WORK_GRAPH.md), and [changelog](CHANGELOG.md).
 
 ## Contributing and security
 
