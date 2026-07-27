@@ -1,0 +1,28 @@
+{
+  "work_item": "FC-PROTO-005",
+  "deadline_semantics": "exclusive_for_activation",
+  "matrix": [
+    {
+      "time": "claim_deadline_minus_1_second",
+      "activation": "eligible",
+      "refund": "blocked"
+    },
+    {
+      "time": "claim_deadline",
+      "activation": "ineligible",
+      "freeze": "eligible",
+      "refund_after_freeze": "eligible_subject_to_other_gates"
+    },
+    {
+      "time": "claim_deadline_plus_1_second",
+      "activation": "ineligible",
+      "freeze": "eligible"
+    },
+    {
+      "request_activated_total": "10000000",
+      "freeze_activated_total": "40000000",
+      "refund_basis": "freeze_activated_total",
+      "maximum_refundable": "60000000"
+    }
+  ]
+}

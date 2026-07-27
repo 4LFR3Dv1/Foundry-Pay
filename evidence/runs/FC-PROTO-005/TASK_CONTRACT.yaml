@@ -1,0 +1,68 @@
+work_item: FC-PROTO-005
+objective: implement offline close, exclusive claim-window freeze, refund, finalization, and epoch-eligibility reference semantics
+owner: protocol-engineer
+repository: 4LFR3Dv1/Foundry-Pay
+branch: agent/protocol/FC-PROTO-005
+baseline: e1b43118f8aff29c8b2101c1c08bc3aa57694177
+allowed_paths:
+  - packages/channel-protocol/**
+  - tests/channels/test_closure.py
+  - tests/channels/test_foundation_contracts.py
+  - scripts/check_channel_foundation.py
+  - contracts/channel/channel-closure.schema.json
+  - contracts/channel/test-vectors/positive/close-race-v1.json
+  - docs/channels/ADR/FC-ADR-006-activated-right-expiry-v1.md
+  - evidence/runs/FC-PROTO-005/**
+  - provenance/REUSE_LEDGER.yaml
+dependencies:
+  - FC-PROTO-001
+  - FC-PROTO-002
+  - FC-PROTO-004
+invariants:
+  - voucher expiry prevents future activation but never extinguishes an activated right
+  - activated total never decreases within an epoch
+  - refund before the exclusive claim deadline is always zero
+  - refund projection uses ClosureSnapshotAtFreeze and never ClosureSnapshotAtRequest
+  - excess refund cannot consume activated outstanding rights
+  - finalization requires zero outstanding right, zero vault, and zero unresolved economic operations
+  - technical refund receipt never updates refunded total or declares economic completion
+  - ambiguous money-moving operations block every refund and finalization
+  - epoch eligibility binds the previous final closure hash and does not claim execution
+acceptance:
+  - request and freeze snapshots remain distinct when activation advances during the claim window
+  - activation is allowed only when now is strictly before claim_deadline
+  - excess and final refunds preserve conservation and cumulative authorization
+  - refund request, projection, technical receipt, observation, and reconciled result remain separate
+  - idempotency, restart, and concurrent refund attempts preserve aggregate bounds
+  - old-epoch closure, refund, voucher, and binding artifacts cannot be reused
+tests:
+  - close lifecycle and minimum-grace validation
+  - activation immediately before, exactly at, and after the deadline
+  - request snapshot versus freeze snapshot activation race
+  - pre-deadline, excess, final, zero, outstanding-consuming, and above-vault refunds
+  - unresolved settlement and refund ambiguity
+  - same-key idempotency and changed-byte conflict
+  - restart and two-process refund races
+  - epoch eligibility and cross-epoch replay
+  - schema, tamper, and deterministic hash validation
+evidence:
+  - evidence/runs/FC-PROTO-005/README.md
+  - evidence/runs/FC-PROTO-005/validation-report.json
+  - evidence/runs/FC-PROTO-005/close-transition-matrix.json
+  - evidence/runs/FC-PROTO-005/claim-window-matrix.json
+  - evidence/runs/FC-PROTO-005/refund-conservation-matrix.json
+  - evidence/runs/FC-PROTO-005/concurrency-report.json
+  - evidence/runs/FC-PROTO-005/epoch-replay-report.json
+  - evidence/runs/FC-PROTO-005/artifact-manifest.json
+  - evidence/runs/FC-PROTO-005/pytest-full.xml
+security_review: mandatory-independent-money-movement-review
+stop_conditions:
+  - activated right is reduced or economically expired
+  - expired_outstanding_right appears as a v1 refund reason
+  - request-time activated total is used for refund projection
+  - refund is allowed before claim_deadline or while an economic operation is unresolved
+  - technical receipt or transaction signature updates refunded total
+  - finalization succeeds with outstanding right or nonzero vault
+  - epoch transition is represented as executed
+  - RPC, wallet, Solana SDK, ChannelVault, Cloud, or consumer surface is introduced
+  - on-chain, production, custody, or exactly-once behavior is claimed

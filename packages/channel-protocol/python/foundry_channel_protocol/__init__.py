@@ -35,6 +35,20 @@ from .settlement import (
     channel_snapshot_hash,
     validate_settlement_request,
 )
+from .closure import (
+    ClosureArtifacts,
+    ClosureError,
+    ClosureRuntime,
+    RefundObservationVerifier,
+    RefundRecord,
+    activation_is_eligible,
+    epoch_transition_eligibility,
+    freeze_closure,
+    make_refund_request,
+    project_refund,
+    request_close,
+    validate_finalization,
+)
 
 __all__ = [
     "AccountingProjection",
@@ -66,4 +80,16 @@ __all__ = [
     "TechnicalExecutionReceipt",
     "channel_snapshot_hash",
     "validate_settlement_request",
+    "ClosureArtifacts",
+    "ClosureError",
+    "ClosureRuntime",
+    "RefundObservationVerifier",
+    "RefundRecord",
+    "activation_is_eligible",
+    "epoch_transition_eligibility",
+    "freeze_closure",
+    "make_refund_request",
+    "project_refund",
+    "request_close",
+    "validate_finalization",
 ]

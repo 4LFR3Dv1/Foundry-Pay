@@ -1,14 +1,18 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://foundry.pay/schemas/channel/channel-closure.v1.schema.json",
-  "title": "Foundry Channels closure and refund",
+  "title": "Foundry Channels v1 offline closure and refund reference objects",
   "oneOf": [
-    {
-      "$ref": "#/$defs/ChannelClosure"
-    },
-    {
-      "$ref": "#/$defs/ChannelRefund"
-    }
+    {"$ref": "#/$defs/ChannelClosureRequest"},
+    {"$ref": "#/$defs/ClosureSnapshotAtRequest"},
+    {"$ref": "#/$defs/ClosureSnapshotAtFreeze"},
+    {"$ref": "#/$defs/RefundRequest"},
+    {"$ref": "#/$defs/RefundProjection"},
+    {"$ref": "#/$defs/RefundExecutionCommitment"},
+    {"$ref": "#/$defs/TechnicalRefundReceipt"},
+    {"$ref": "#/$defs/ChannelRefundObservation"},
+    {"$ref": "#/$defs/ReconciledChannelRefund"},
+    {"$ref": "#/$defs/EpochTransitionEligibility"}
   ],
   "$defs": {
     "Identifier": {
@@ -27,153 +31,595 @@
       "type": "string",
       "pattern": "^(0|[1-9][0-9]*)$"
     },
+    "PositiveAmount": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$"
+    },
     "Timestamp": {
       "type": "string",
       "format": "date-time",
       "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
     },
-    "ChannelClosure": {
+    "Domain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "environment",
+        "network",
+        "genesis_hash",
+        "program_id"
+      ],
+      "properties": {
+        "environment": {"const": "devnet"},
+        "network": {"const": "solana:devnet"},
+        "genesis_hash": {"$ref": "#/$defs/Pubkey"},
+        "program_id": {"$ref": "#/$defs/Pubkey"}
+      }
+    },
+    "ChannelReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "channel_id",
+        "channel_account",
+        "epoch",
+        "sender",
+        "mint"
+      ],
+      "properties": {
+        "channel_id": {"$ref": "#/$defs/Identifier"},
+        "channel_account": {"$ref": "#/$defs/Pubkey"},
+        "epoch": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sender": {"$ref": "#/$defs/Pubkey"},
+        "mint": {"$ref": "#/$defs/Pubkey"}
+      }
+    },
+    "UnresolvedOperation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operation_id",
+        "operation_kind",
+        "state"
+      ],
+      "properties": {
+        "operation_id": {"$ref": "#/$defs/Identifier"},
+        "operation_kind": {
+          "enum": [
+            "settlement",
+            "refund"
+          ]
+        },
+        "state": {
+          "enum": [
+            "submitted",
+            "confirming",
+            "reconciling",
+            "needs_recovery",
+            "needs_review",
+            "disputed"
+          ]
+        }
+      }
+    },
+    "ChannelClosureRequest": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "type",
         "protocol_version",
+        "domain",
+        "channel",
         "closure_id",
-        "channel_id",
-        "channel_account",
-        "epoch",
-        "latest_activated_sequence_at_request",
-        "latest_activated_voucher_hash_at_request",
-        "activated_authorized_total_at_request_base_units",
-        "settled_total_at_request_base_units",
-        "outstanding_right_at_request_base_units",
-        "activation_allowed_until",
-        "pre_deadline_refundable_base_units",
+        "idempotency_key",
+        "channel_snapshot_hash",
         "requested_at",
         "claim_deadline",
-        "state"
+        "status",
+        "request_hash"
       ],
       "properties": {
-        "type": {
-          "const": "channel_closure"
-        },
-        "protocol_version": {
-          "const": "1.0.0"
-        },
-        "closure_id": {
-          "$ref": "#/$defs/Identifier"
-        },
-        "channel_id": {
-          "$ref": "#/$defs/Identifier"
-        },
-        "channel_account": {
-          "$ref": "#/$defs/Pubkey"
-        },
-        "epoch": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "latest_activated_sequence_at_request": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "latest_activated_voucher_hash_at_request": {
-          "$ref": "#/$defs/Hash"
-        },
-        "activated_authorized_total_at_request_base_units": {
-          "$ref": "#/$defs/Amount"
-        },
-        "settled_total_at_request_base_units": {
-          "$ref": "#/$defs/Amount"
-        },
-        "outstanding_right_at_request_base_units": {
-          "$ref": "#/$defs/Amount"
-        },
-        "activation_allowed_until": {
-          "$ref": "#/$defs/Timestamp"
-        },
-        "pre_deadline_refundable_base_units": {
-          "const": "0"
-        },
-        "requested_at": {
-          "$ref": "#/$defs/Timestamp"
-        },
+        "type": {"const": "channel_closure_request"},
+        "protocol_version": {"const": "1.0.0"},
+        "domain": {"$ref": "#/$defs/Domain"},
+        "channel": {"$ref": "#/$defs/ChannelReference"},
+        "closure_id": {"$ref": "#/$defs/Identifier"},
+        "idempotency_key": {"$ref": "#/$defs/Identifier"},
+        "channel_snapshot_hash": {"$ref": "#/$defs/Hash"},
+        "requested_at": {"$ref": "#/$defs/Timestamp"},
         "claim_deadline": {
-          "$ref": "#/$defs/Timestamp"
+          "$ref": "#/$defs/Timestamp",
+          "description": "Exclusive activation deadline: activation requires now < claim_deadline."
         },
-        "state": {
-          "enum": [
-            "closing",
-            "claim_window",
-            "ready_to_finalize",
-            "closed",
-            "blocked",
-            "disputed",
-            "needs_recovery",
-            "needs_review"
-          ]
-        }
+        "status": {"const": "requested"},
+        "request_hash": {"$ref": "#/$defs/Hash"}
       }
     },
-    "ChannelRefund": {
+    "ClosureSnapshotAtRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "protocol_version",
+        "domain",
+        "channel",
+        "closure_id",
+        "closure_request_hash",
+        "channel_snapshot_hash",
+        "funded_total_base_units",
+        "activated_total_base_units",
+        "settled_total_base_units",
+        "refunded_total_base_units",
+        "vault_balance_base_units",
+        "outstanding_right_base_units",
+        "unallocated_capacity_base_units",
+        "latest_activated_sequence",
+        "latest_activated_voucher_hash",
+        "requested_at",
+        "claim_deadline",
+        "pre_deadline_refundable_base_units",
+        "channel_status",
+        "closure_phase",
+        "request_snapshot_hash"
+      ],
+      "properties": {
+        "type": {"const": "closure_snapshot_at_request"},
+        "protocol_version": {"const": "1.0.0"},
+        "domain": {"$ref": "#/$defs/Domain"},
+        "channel": {"$ref": "#/$defs/ChannelReference"},
+        "closure_id": {"$ref": "#/$defs/Identifier"},
+        "closure_request_hash": {"$ref": "#/$defs/Hash"},
+        "channel_snapshot_hash": {"$ref": "#/$defs/Hash"},
+        "funded_total_base_units": {"$ref": "#/$defs/Amount"},
+        "activated_total_base_units": {"$ref": "#/$defs/Amount"},
+        "settled_total_base_units": {"$ref": "#/$defs/Amount"},
+        "refunded_total_base_units": {"$ref": "#/$defs/Amount"},
+        "vault_balance_base_units": {"$ref": "#/$defs/Amount"},
+        "outstanding_right_base_units": {"$ref": "#/$defs/Amount"},
+        "unallocated_capacity_base_units": {"$ref": "#/$defs/Amount"},
+        "latest_activated_sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "latest_activated_voucher_hash": {"$ref": "#/$defs/Hash"},
+        "requested_at": {"$ref": "#/$defs/Timestamp"},
+        "claim_deadline": {"$ref": "#/$defs/Timestamp"},
+        "pre_deadline_refundable_base_units": {"const": "0"},
+        "channel_status": {"const": "closing"},
+        "closure_phase": {"const": "claim_window"},
+        "request_snapshot_hash": {"$ref": "#/$defs/Hash"}
+      }
+    },
+    "ClosureSnapshotAtFreeze": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "protocol_version",
+        "domain",
+        "channel",
+        "closure_id",
+        "request_snapshot_hash",
+        "channel_snapshot_hash",
+        "funded_total_base_units",
+        "activated_total_base_units",
+        "settled_total_base_units",
+        "refunded_total_base_units",
+        "vault_balance_base_units",
+        "outstanding_right_base_units",
+        "excess_refundable_base_units",
+        "latest_activated_sequence",
+        "latest_activated_voucher_hash",
+        "claim_deadline",
+        "frozen_at",
+        "unresolved_operation_count",
+        "channel_status",
+        "closure_phase",
+        "freeze_snapshot_hash"
+      ],
+      "properties": {
+        "type": {"const": "closure_snapshot_at_freeze"},
+        "protocol_version": {"const": "1.0.0"},
+        "domain": {"$ref": "#/$defs/Domain"},
+        "channel": {"$ref": "#/$defs/ChannelReference"},
+        "closure_id": {"$ref": "#/$defs/Identifier"},
+        "request_snapshot_hash": {"$ref": "#/$defs/Hash"},
+        "channel_snapshot_hash": {"$ref": "#/$defs/Hash"},
+        "funded_total_base_units": {"$ref": "#/$defs/Amount"},
+        "activated_total_base_units": {"$ref": "#/$defs/Amount"},
+        "settled_total_base_units": {"$ref": "#/$defs/Amount"},
+        "refunded_total_base_units": {"$ref": "#/$defs/Amount"},
+        "vault_balance_base_units": {"$ref": "#/$defs/Amount"},
+        "outstanding_right_base_units": {"$ref": "#/$defs/Amount"},
+        "excess_refundable_base_units": {"$ref": "#/$defs/Amount"},
+        "latest_activated_sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "latest_activated_voucher_hash": {"$ref": "#/$defs/Hash"},
+        "claim_deadline": {"$ref": "#/$defs/Timestamp"},
+        "frozen_at": {"$ref": "#/$defs/Timestamp"},
+        "unresolved_operation_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "channel_status": {"const": "closing"},
+        "closure_phase": {"const": "ready_to_finalize"},
+        "freeze_snapshot_hash": {"$ref": "#/$defs/Hash"}
+      }
+    },
+    "RefundRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "protocol_version",
+        "domain",
+        "channel",
+        "closure_id",
+        "refund_id",
+        "idempotency_key",
+        "reason",
+        "destination",
+        "requested_base_units",
+        "freeze_snapshot_hash",
+        "created_at",
+        "expires_at",
+        "request_hash"
+      ],
+      "properties": {
+        "type": {"const": "refund_request"},
+        "protocol_version": {"const": "1.0.0"},
+        "domain": {"$ref": "#/$defs/Domain"},
+        "channel": {"$ref": "#/$defs/ChannelReference"},
+        "closure_id": {"$ref": "#/$defs/Identifier"},
+        "refund_id": {"$ref": "#/$defs/Identifier"},
+        "idempotency_key": {"$ref": "#/$defs/Identifier"},
+        "reason": {
+          "enum": [
+            "post_claim_window_unallocated",
+            "final_close"
+          ]
+        },
+        "destination": {"$ref": "#/$defs/Pubkey"},
+        "requested_base_units": {"$ref": "#/$defs/PositiveAmount"},
+        "freeze_snapshot_hash": {"$ref": "#/$defs/Hash"},
+        "created_at": {"$ref": "#/$defs/Timestamp"},
+        "expires_at": {"$ref": "#/$defs/Timestamp"},
+        "request_hash": {"$ref": "#/$defs/Hash"}
+      }
+    },
+    "RefundProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "protocol_version",
+        "refund_request_hash",
+        "freeze_snapshot_hash",
+        "reason",
+        "funded_total_base_units",
+        "activated_total_base_units",
+        "settled_total_base_units",
+        "refunded_total_before_base_units",
+        "refunded_total_after_base_units",
+        "vault_balance_before_base_units",
+        "vault_balance_after_base_units",
+        "outstanding_right_base_units",
+        "maximum_refundable_base_units",
+        "requested_base_units",
+        "unresolved_operation_count",
+        "eligible",
+        "projected_at",
+        "projection_hash"
+      ],
+      "properties": {
+        "type": {"const": "refund_projection"},
+        "protocol_version": {"const": "1.0.0"},
+        "refund_request_hash": {"$ref": "#/$defs/Hash"},
+        "freeze_snapshot_hash": {"$ref": "#/$defs/Hash"},
+        "reason": {
+          "enum": [
+            "post_claim_window_unallocated",
+            "final_close"
+          ]
+        },
+        "funded_total_base_units": {"$ref": "#/$defs/Amount"},
+        "activated_total_base_units": {"$ref": "#/$defs/Amount"},
+        "settled_total_base_units": {"$ref": "#/$defs/Amount"},
+        "refunded_total_before_base_units": {"$ref": "#/$defs/Amount"},
+        "refunded_total_after_base_units": {"$ref": "#/$defs/Amount"},
+        "vault_balance_before_base_units": {"$ref": "#/$defs/Amount"},
+        "vault_balance_after_base_units": {"$ref": "#/$defs/Amount"},
+        "outstanding_right_base_units": {"$ref": "#/$defs/Amount"},
+        "maximum_refundable_base_units": {"$ref": "#/$defs/Amount"},
+        "requested_base_units": {"$ref": "#/$defs/PositiveAmount"},
+        "unresolved_operation_count": {"const": 0},
+        "eligible": {"const": true},
+        "projected_at": {"$ref": "#/$defs/Timestamp"},
+        "projection_hash": {"$ref": "#/$defs/Hash"}
+      }
+    },
+    "RefundExecutionCommitment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "protocol_version",
+        "refund_request_hash",
+        "refund_projection_hash",
+        "execution_request_id",
+        "execution_commitment_hash",
+        "prepared_message_hash",
+        "executor_id",
+        "expected_signer",
+        "expires_at"
+      ],
+      "properties": {
+        "type": {"const": "refund_execution_commitment"},
+        "protocol_version": {"const": "1.0.0"},
+        "refund_request_hash": {"$ref": "#/$defs/Hash"},
+        "refund_projection_hash": {"$ref": "#/$defs/Hash"},
+        "execution_request_id": {"$ref": "#/$defs/Identifier"},
+        "execution_commitment_hash": {"$ref": "#/$defs/Hash"},
+        "prepared_message_hash": {"$ref": "#/$defs/Hash"},
+        "executor_id": {"$ref": "#/$defs/Identifier"},
+        "expected_signer": {"$ref": "#/$defs/Pubkey"},
+        "expires_at": {"$ref": "#/$defs/Timestamp"}
+      }
+    },
+    "TechnicalRefundReceipt": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "type",
         "protocol_version",
         "refund_id",
-        "channel_id",
-        "channel_account",
-        "destination",
-        "amount_base_units",
-        "refunded_total_after_base_units",
-        "vault_balance_after_base_units",
-        "reason",
-        "transaction_signature",
-        "observed_at"
+        "refund_request_hash",
+        "execution_request_id",
+        "execution_commitment_hash",
+        "outcome",
+        "signature_status",
+        "technical_status",
+        "observed_at",
+        "receipt_hash"
       ],
       "properties": {
-        "type": {
-          "const": "channel_refund"
-        },
-        "protocol_version": {
-          "const": "1.0.0"
-        },
-        "refund_id": {
-          "$ref": "#/$defs/Identifier"
-        },
-        "channel_id": {
-          "$ref": "#/$defs/Identifier"
-        },
-        "channel_account": {
-          "$ref": "#/$defs/Pubkey"
-        },
-        "destination": {
-          "$ref": "#/$defs/Pubkey"
-        },
-        "amount_base_units": {
-          "$ref": "#/$defs/Amount"
-        },
-        "refunded_total_after_base_units": {
-          "$ref": "#/$defs/Amount"
-        },
-        "vault_balance_after_base_units": {
-          "$ref": "#/$defs/Amount"
-        },
-        "reason": {
+        "type": {"const": "technical_refund_receipt"},
+        "protocol_version": {"const": "1.0.0"},
+        "refund_id": {"$ref": "#/$defs/Identifier"},
+        "refund_request_hash": {"$ref": "#/$defs/Hash"},
+        "execution_request_id": {"$ref": "#/$defs/Identifier"},
+        "execution_commitment_hash": {"$ref": "#/$defs/Hash"},
+        "outcome": {
           "enum": [
-            "post_claim_window_unallocated",
-            "expired_outstanding_right",
-            "final_close"
+            "accepted",
+            "rejected",
+            "unknown"
+          ]
+        },
+        "signature_status": {
+          "enum": [
+            "known",
+            "unknown"
           ]
         },
         "transaction_signature": {
           "type": "string",
-          "pattern": "^[1-9A-HJ-NP-Za-km-z]{64,88}$"
+          "minLength": 1,
+          "maxLength": 128
         },
-        "observed_at": {
-          "$ref": "#/$defs/Timestamp"
+        "technical_status": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "observed_at": {"$ref": "#/$defs/Timestamp"},
+        "receipt_hash": {"$ref": "#/$defs/Hash"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "signature_status": {"const": "known"}
+            },
+            "required": ["signature_status"]
+          },
+          "then": {
+            "required": ["transaction_signature"]
+          }
         }
+      ]
+    },
+    "ChannelRefundObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "protocol_version",
+        "domain",
+        "source_id",
+        "channel_id",
+        "channel_account",
+        "epoch",
+        "mint",
+        "destination",
+        "refund_id",
+        "refund_request_hash",
+        "refund_projection_hash",
+        "transaction_signature",
+        "funded_total_base_units",
+        "activated_total_base_units",
+        "settled_total_base_units",
+        "refunded_total_before_base_units",
+        "refunded_total_after_base_units",
+        "vault_balance_before_base_units",
+        "vault_balance_after_base_units",
+        "observed_at",
+        "observation_hash"
+      ],
+      "properties": {
+        "type": {"const": "channel_refund_observation"},
+        "protocol_version": {"const": "1.0.0"},
+        "domain": {"$ref": "#/$defs/Domain"},
+        "source_id": {"$ref": "#/$defs/Identifier"},
+        "channel_id": {"$ref": "#/$defs/Identifier"},
+        "channel_account": {"$ref": "#/$defs/Pubkey"},
+        "epoch": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mint": {"$ref": "#/$defs/Pubkey"},
+        "destination": {"$ref": "#/$defs/Pubkey"},
+        "refund_id": {"$ref": "#/$defs/Identifier"},
+        "refund_request_hash": {"$ref": "#/$defs/Hash"},
+        "refund_projection_hash": {"$ref": "#/$defs/Hash"},
+        "transaction_signature": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "funded_total_base_units": {"$ref": "#/$defs/Amount"},
+        "activated_total_base_units": {"$ref": "#/$defs/Amount"},
+        "settled_total_base_units": {"$ref": "#/$defs/Amount"},
+        "refunded_total_before_base_units": {"$ref": "#/$defs/Amount"},
+        "refunded_total_after_base_units": {"$ref": "#/$defs/Amount"},
+        "vault_balance_before_base_units": {"$ref": "#/$defs/Amount"},
+        "vault_balance_after_base_units": {"$ref": "#/$defs/Amount"},
+        "observed_at": {"$ref": "#/$defs/Timestamp"},
+        "observation_hash": {"$ref": "#/$defs/Hash"}
+      }
+    },
+    "ReconciledChannelRefund": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "protocol_version",
+        "refund_id",
+        "refund_request_hash",
+        "refund_projection_hash",
+        "channel_id",
+        "channel_account",
+        "epoch",
+        "mint",
+        "destination",
+        "reason",
+        "amount_base_units",
+        "activated_total_base_units",
+        "settled_total_base_units",
+        "refunded_total_before_base_units",
+        "refunded_total_after_base_units",
+        "vault_balance_before_base_units",
+        "vault_balance_after_base_units",
+        "transaction_signature",
+        "observation_hashes",
+        "reconciliation_status",
+        "completed_at",
+        "receipt_hash"
+      ],
+      "properties": {
+        "type": {"const": "reconciled_channel_refund"},
+        "protocol_version": {"const": "1.0.0"},
+        "refund_id": {"$ref": "#/$defs/Identifier"},
+        "refund_request_hash": {"$ref": "#/$defs/Hash"},
+        "refund_projection_hash": {"$ref": "#/$defs/Hash"},
+        "channel_id": {"$ref": "#/$defs/Identifier"},
+        "channel_account": {"$ref": "#/$defs/Pubkey"},
+        "epoch": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mint": {"$ref": "#/$defs/Pubkey"},
+        "destination": {"$ref": "#/$defs/Pubkey"},
+        "reason": {
+          "enum": [
+            "post_claim_window_unallocated",
+            "final_close"
+          ]
+        },
+        "amount_base_units": {"$ref": "#/$defs/PositiveAmount"},
+        "activated_total_base_units": {"$ref": "#/$defs/Amount"},
+        "settled_total_base_units": {"$ref": "#/$defs/Amount"},
+        "refunded_total_before_base_units": {"$ref": "#/$defs/Amount"},
+        "refunded_total_after_base_units": {"$ref": "#/$defs/Amount"},
+        "vault_balance_before_base_units": {"$ref": "#/$defs/Amount"},
+        "vault_balance_after_base_units": {"$ref": "#/$defs/Amount"},
+        "transaction_signature": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "observation_hashes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/Hash"}
+        },
+        "reconciliation_status": {"const": "reference_observation_matched"},
+        "completed_at": {"$ref": "#/$defs/Timestamp"},
+        "receipt_hash": {"$ref": "#/$defs/Hash"}
+      }
+    },
+    "EpochTransitionEligibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "protocol_version",
+        "domain",
+        "channel_id",
+        "channel_account",
+        "previous_epoch",
+        "next_epoch",
+        "previous_final_closure_hash",
+        "previous_status",
+        "previous_vault_balance_base_units",
+        "previous_outstanding_right_base_units",
+        "unresolved_operation_count",
+        "next_funded_total_base_units",
+        "next_activated_total_base_units",
+        "next_settled_total_base_units",
+        "next_refunded_total_base_units",
+        "next_latest_sequence",
+        "next_latest_voucher_hash",
+        "decision",
+        "evaluated_at",
+        "eligibility_hash"
+      ],
+      "properties": {
+        "type": {"const": "epoch_transition_eligibility"},
+        "protocol_version": {"const": "1.0.0"},
+        "domain": {"$ref": "#/$defs/Domain"},
+        "channel_id": {"$ref": "#/$defs/Identifier"},
+        "channel_account": {"$ref": "#/$defs/Pubkey"},
+        "previous_epoch": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "next_epoch": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "previous_final_closure_hash": {"$ref": "#/$defs/Hash"},
+        "previous_status": {"const": "closed"},
+        "previous_vault_balance_base_units": {"const": "0"},
+        "previous_outstanding_right_base_units": {"const": "0"},
+        "unresolved_operation_count": {"const": 0},
+        "next_funded_total_base_units": {"const": "0"},
+        "next_activated_total_base_units": {"const": "0"},
+        "next_settled_total_base_units": {"const": "0"},
+        "next_refunded_total_base_units": {"const": "0"},
+        "next_latest_sequence": {"const": 0},
+        "next_latest_voucher_hash": {
+          "const": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "decision": {"const": "epoch_transition_eligible"},
+        "evaluated_at": {"$ref": "#/$defs/Timestamp"},
+        "eligibility_hash": {"$ref": "#/$defs/Hash"}
       }
     }
   }

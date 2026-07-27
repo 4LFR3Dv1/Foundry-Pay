@@ -1,24 +1,65 @@
 {
-  "vector_version": "1",
+  "vector_version": "2",
   "scenario": "issued-voucher-survives-close-race",
-  "fixture_notice": "Synthetic protocol behavior vector. No ChannelVault transaction or cryptographic signature is claimed.",
+  "fixture_notice": "Synthetic offline protocol behavior vector. No ChannelVault transaction, network signature, or on-chain observation is claimed.",
   "closure_request": {
-    "type": "channel_closure",
+    "type": "channel_closure_request",
     "protocol_version": "1.0.0",
+    "domain": {
+      "environment": "devnet",
+      "network": "solana:devnet",
+      "genesis_hash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+      "program_id": "BPFLoaderUpgradeab1e11111111111111111111111"
+    },
+    "channel": {
+      "channel_id": "channel_foundations_001",
+      "channel_account": "EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd",
+      "epoch": 0,
+      "sender": "9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb",
+      "mint": "2tUzxADKHWxwTpihHuuzwfoGhYBY7735s2QXEuUcNX3k"
+    },
     "closure_id": "closure_foundations_001",
-    "channel_id": "channel_foundations_001",
-    "channel_account": "EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd",
-    "epoch": 0,
-    "latest_activated_sequence_at_request": 1,
-    "latest_activated_voucher_hash_at_request": "sha256:f91159c7977bed60de04241ed34002320fc1c023e5316e96cfae8a35206b3758",
-    "activated_authorized_total_at_request_base_units": "10000000",
-    "settled_total_at_request_base_units": "0",
-    "outstanding_right_at_request_base_units": "10000000",
-    "activation_allowed_until": "2026-08-01T00:15:00Z",
-    "pre_deadline_refundable_base_units": "0",
+    "idempotency_key": "close_foundations_001",
+    "channel_snapshot_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
     "requested_at": "2026-08-01T00:05:00Z",
     "claim_deadline": "2026-08-01T00:15:00Z",
-    "state": "claim_window"
+    "status": "requested",
+    "request_hash": "sha256:c253a6c23b61a8f068ba09488eda1dc59d8300388a51ec2ffeb17b624db20645"
+  },
+  "snapshot_at_request": {
+    "type": "closure_snapshot_at_request",
+    "protocol_version": "1.0.0",
+    "domain": {
+      "environment": "devnet",
+      "network": "solana:devnet",
+      "genesis_hash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+      "program_id": "BPFLoaderUpgradeab1e11111111111111111111111"
+    },
+    "channel": {
+      "channel_id": "channel_foundations_001",
+      "channel_account": "EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd",
+      "epoch": 0,
+      "sender": "9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb",
+      "mint": "2tUzxADKHWxwTpihHuuzwfoGhYBY7735s2QXEuUcNX3k"
+    },
+    "closure_id": "closure_foundations_001",
+    "closure_request_hash": "sha256:c253a6c23b61a8f068ba09488eda1dc59d8300388a51ec2ffeb17b624db20645",
+    "channel_snapshot_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "funded_total_base_units": "100000000",
+    "activated_total_base_units": "10000000",
+    "settled_total_base_units": "0",
+    "refunded_total_base_units": "0",
+    "vault_balance_base_units": "100000000",
+    "outstanding_right_base_units": "10000000",
+    "unallocated_capacity_base_units": "90000000",
+    "latest_activated_sequence": 1,
+    "latest_activated_voucher_hash": "sha256:f91159c7977bed60de04241ed34002320fc1c023e5316e96cfae8a35206b3758",
+    "requested_at": "2026-08-01T00:05:00Z",
+    "claim_deadline": "2026-08-01T00:15:00Z",
+    "pre_deadline_refundable_base_units": "0",
+    "channel_status": "closing",
+    "closure_phase": "claim_window",
+    "request_snapshot_hash": "sha256:f52dc79f92b12c28ed5a8a715245f5234cd85e80b25bf02398e7c5e505b01294"
   },
   "voucher_held_at_close": {
     "sequence": 3,
@@ -28,6 +69,41 @@
     "sender_signature_present": true,
     "presented_at": "2026-08-01T00:10:00Z",
     "expires_at": "2026-08-02T00:00:00Z"
+  },
+  "snapshot_at_freeze": {
+    "type": "closure_snapshot_at_freeze",
+    "protocol_version": "1.0.0",
+    "domain": {
+      "environment": "devnet",
+      "network": "solana:devnet",
+      "genesis_hash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+      "program_id": "BPFLoaderUpgradeab1e11111111111111111111111"
+    },
+    "channel": {
+      "channel_id": "channel_foundations_001",
+      "channel_account": "EUt7wV4f5bzSFJccZ5aafJV7zykZfyWz9rctaug7hVxd",
+      "epoch": 0,
+      "sender": "9zsJvRFTxAG5sBuXhjMDZkgWb9oqQbK8gDywo7mUMNKb",
+      "mint": "2tUzxADKHWxwTpihHuuzwfoGhYBY7735s2QXEuUcNX3k"
+    },
+    "closure_id": "closure_foundations_001",
+    "request_snapshot_hash": "sha256:f52dc79f92b12c28ed5a8a715245f5234cd85e80b25bf02398e7c5e505b01294",
+    "channel_snapshot_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "funded_total_base_units": "100000000",
+    "activated_total_base_units": "40000000",
+    "settled_total_base_units": "0",
+    "refunded_total_base_units": "0",
+    "vault_balance_base_units": "100000000",
+    "outstanding_right_base_units": "40000000",
+    "excess_refundable_base_units": "60000000",
+    "latest_activated_sequence": 3,
+    "latest_activated_voucher_hash": "sha256:8a3283d61a75e1bbe987941601e8f28708875913fd0dfef0fa399c6a7dd296e2",
+    "claim_deadline": "2026-08-01T00:15:00Z",
+    "frozen_at": "2026-08-01T00:15:00Z",
+    "unresolved_operation_count": 0,
+    "channel_status": "closing",
+    "closure_phase": "ready_to_finalize",
+    "freeze_snapshot_hash": "sha256:b45076d239debff3c29456a0d046069c4ee8ac09466b05ad6399c58b7c9b0640"
   },
   "expected_during_claim_window": {
     "activation": "accepted",

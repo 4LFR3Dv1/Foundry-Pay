@@ -1,0 +1,83 @@
+{
+  "work_item": "FC-PROTO-005",
+  "algorithm": "sha256",
+  "baseline_commit": "e1b43118f8aff29c8b2101c1c08bc3aa57694177",
+  "contract_commit": "d1b1d2b587143b26f435941037ab9b42689047f6",
+  "implementation_commit": "87c314a44698e16ea9e1d9ae39be3c0bb736c98a",
+  "remediation_commit": "8420ee25ef0aed50dfbc611c3b40da809d7aa05d",
+  "second_remediation_commit": "286eb823fe09fab8d75492b33fae726a1b238534",
+  "rejected_reviewed_head": "35148a91efd47b8642a6fd834cb072aeeb9b94ea",
+  "rejected_rereviewed_head": "1c7f4027940e779335fc45175865ee5648f069c0",
+  "reviewed_head": "5e0737aefa6d707f6236f527950b845773bf26a5",
+  "review_status": "approved",
+  "artifacts": [
+    {
+      "path": "contracts/channel/channel-closure.schema.json",
+      "sha256": "3735f7769c2763512fec66193d043f07a18411ef21b2f40538538b9b28d89346"
+    },
+    {
+      "path": "contracts/channel/test-vectors/positive/close-race-v1.json",
+      "sha256": "72a1630935ebee5723190013a04dce6aaebbf70989267284c51146801a9920ac"
+    },
+    {
+      "path": "docs/channels/ADR/FC-ADR-006-activated-right-expiry-v1.md",
+      "sha256": "e63ff18e447c88b23eb5d609471043dfb6c27b3b18cd2a55ccfd7852fcfeaa81"
+    },
+    {
+      "path": "packages/channel-protocol/python/foundry_channel_protocol/closure.py",
+      "sha256": "a320a8a90d258e85cc824a00d611b04d51c38ba5dfee201615dedf1c88808ae7"
+    },
+    {
+      "path": "tests/channels/test_closure.py",
+      "sha256": "bb1ab9e857e0c48d2fd25ebb8bfab659a06abb7e979ef7eb8c99d76060b01d4f"
+    },
+    {
+      "path": "provenance/REUSE_LEDGER.yaml",
+      "sha256": "c9a570eee2480ceac5b03bde57f484b0080ed81155e1297d9c9263207a2504f1"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-005/TASK_CONTRACT.yaml",
+      "sha256": "39996531d770c43accf697cea0883b0562dc5402421f2f24b0c0de884e805d2d"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-005/validation-report.json",
+      "sha256": "b8c8885233ddb414066fa309471f5c5f4a963cc605238aba66e4dded779347ec"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-005/close-transition-matrix.json",
+      "sha256": "e3a3687b026c02515cfd13aed6ff58f214e86835992ae7558717367ff121d55c"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-005/claim-window-matrix.json",
+      "sha256": "5df7ad4d743544e9005685c7b43de9c00431fbdb48613ce94bc28536fe74e797"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-005/refund-conservation-matrix.json",
+      "sha256": "cde7f8554d405cb33054e706154a03735102f48f9ebc2d7b528b90e62111e658"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-005/concurrency-report.json",
+      "sha256": "71d126ef83d8c0c73d36af81a44b247bbe46a88f8a305bad346f3596af138923"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-005/epoch-replay-report.json",
+      "sha256": "ec18fd3de3fe755315ee3a6e3d6d45248cf8a8fa1b2259d8c5f95a139a1dc55e"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-005/independent-review-35148a9.json",
+      "sha256": "2e8ad237d45be7860de26b59cf42a2c9cfade0c9186ffc4dc9d554ff9f12da0c"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-005/independent-review-1c7f402.json",
+      "sha256": "43cf039ce8b24b8b594070f1cf6692d54e47904cb75352c641e413b92e8d32b3"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-005/independent-rereview-5e0737a.json",
+      "sha256": "6c07e22a53bab6f281ea065b765e259158272f1f645b05c0e4b91d2b0359dc14"
+    },
+    {
+      "path": "evidence/runs/FC-PROTO-005/pytest-full.xml",
+      "sha256": "44272fa47c320b3e62102475d5f8e15ad87f9f27e3351fadd963c1929a37f8f2"
+    }
+  ]
+}

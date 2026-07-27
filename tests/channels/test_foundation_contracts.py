@@ -27,6 +27,15 @@ def test_foundation_contracts_and_gates_pass() -> None:
     assert result["checks"]["schemas"]["count"] == 7
     assert result["checks"]["negative_vectors"]["count"] >= 12
     assert result["checks"]["closing_race_vector"]["valid"] is True
+    assert result["checks"]["closing_race_vector"]["validated_objects"] == [
+        "closure_request",
+        "snapshot_at_request",
+        "snapshot_at_freeze",
+    ]
+    assert (
+        result["checks"]["closing_race_vector"]["rules"]["freeze_refund_uses_final_activation"]
+        is True
+    )
     assert result["checks"]["work_graph"]["ready_items"] == [
         "FC-PROTO-005",
         "FC-PROTO-006",

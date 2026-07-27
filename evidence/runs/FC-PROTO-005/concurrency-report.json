@@ -1,0 +1,55 @@
+{
+  "work_item": "FC-PROTO-005",
+  "journal": "sqlite_wal",
+  "transaction_mode": "begin_immediate",
+  "scenarios": [
+    {
+      "case": "same_idempotency_key_same_bytes",
+      "result": "existing_record_returned"
+    },
+    {
+      "case": "same_idempotency_key_changed_bytes",
+      "result": "idempotency_conflict"
+    },
+    {
+      "case": "two_40m_refunds_against_60m_capacity",
+      "results": ["validated", "aggregate_refund_exceeds_unallocated"],
+      "aggregate_bound_preserved": true
+    },
+    {
+      "case": "two_60m_refunds_with_distinct_freeze_hashes",
+      "results": ["validated", "aggregate_refund_exceeds_unallocated"],
+      "reservation_scope": "channel_id_epoch_closure_id",
+      "aggregate_bound_preserved": true
+    },
+    {
+      "case": "completed_refund_followed_by_stale_freeze",
+      "result": "stale_freeze_snapshot",
+      "refunded_high_water_preserved": true
+    },
+    {
+      "case": "two_completed_refunds_with_overlapping_R_intervals",
+      "first_result": "completed",
+      "second_result": "overlapping_refund_interval",
+      "second_state": "needs_review",
+      "reconciled_high_water_serialized": true
+    },
+    {
+      "case": "restart_after_unknown_result",
+      "submit_intent_count": 1,
+      "automatic_second_submission_count": 0,
+      "signature_recovered": true,
+      "completed_only_after_reconciliation": true
+    },
+    {
+      "case": "unknown_receipt_followed_by_different_accepted_receipt",
+      "result": "technical_receipt_conflict",
+      "original_unknown_preserved": true
+    },
+    {
+      "case": "provider_divergence",
+      "result": "disputed"
+    }
+  ],
+  "claim": "at-most-one submission intent by the controlled reference runtime within the tested model"
+}

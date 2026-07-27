@@ -1,0 +1,37 @@
+{
+  "work_item": "FC-PROTO-005",
+  "initial": {
+    "F": "100000000",
+    "A": "40000000",
+    "S": "15000000",
+    "R": "0",
+    "V": "85000000",
+    "outstanding": "25000000",
+    "unallocated": "60000000"
+  },
+  "after_excess_refund": {
+    "F": "100000000",
+    "A": "40000000",
+    "S": "15000000",
+    "R": "60000000",
+    "V": "25000000",
+    "outstanding": "25000000",
+    "conservation": "passed",
+    "activated_total_unchanged": true
+  },
+  "cases": [
+    {"case": "zero_refund", "result": "rejected"},
+    {"case": "refund_above_unallocated", "result": "rejected"},
+    {"case": "final_refund_with_outstanding", "result": "rejected"},
+    {"case": "destination_substitution", "result": "rejected"},
+    {"case": "snapshot_tampering", "result": "rejected"},
+    {"case": "technical_receipt_only", "result": "reconciling"},
+    {"case": "submit_without_execution_commitment", "result": "rejected"},
+    {"case": "accepted_receipt_with_unknown_or_empty_signature", "result": "rejected"},
+    {"case": "observation_domain_replay", "result": "rejected"},
+    {"case": "partial_final_close", "result": "rejected"},
+    {"case": "finalization_with_unresolved_freeze", "result": "rejected"},
+    {"case": "matching_verified_observation", "result": "completed"},
+    {"case": "economic_mismatch", "result": "needs_review"}
+  ]
+}
