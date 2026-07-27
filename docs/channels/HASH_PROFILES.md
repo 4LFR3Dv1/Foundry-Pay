@@ -52,4 +52,3 @@ output view, not an alternative event-chain preimage.
 Raw protocol bytes and evidence files both use SHA-256 over exact bytes, but
 their namespaces and authority are different. An evidence manifest digest
 never proves an economic right or an execution commitment.
-

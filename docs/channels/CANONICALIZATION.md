@@ -85,4 +85,3 @@ raw_bytes_hash_v1(B) =
 `B` must be a non-empty byte string when required by the object contract. Its
 domain separation lives in the validated commitment object that references the
 raw digest, never in an ad-hoc byte prefix added by this primitive.
-
