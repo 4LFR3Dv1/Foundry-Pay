@@ -48,7 +48,8 @@ jobs:
         env:
           SOLANA_AGENT_ROOT: ${{ github.workspace }}/.chaos/Solana-Agent
         run: |
-          python -m pytest
+          mkdir -p evidence/runs/FC-PROTO-007
+          python -m pytest --junitxml=evidence/runs/FC-PROTO-007/pytest-full.xml
           npm test --prefix packages/external-execution-protocol/typescript
           npm test --prefix packages/channel-protocol/typescript
       - name: Publish FP-FAIL-002 journal root
@@ -57,6 +58,14 @@ jobs:
         with:
           name: fp-fail-002-journal-root-${{ github.sha }}
           path: evidence/runs/FP-FAIL-002/journal-root.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Publish FC-PROTO-007 full regression report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fc-proto-007-pytest-${{ github.sha }}
+          path: evidence/runs/FC-PROTO-007/pytest-full.xml
           if-no-files-found: error
           retention-days: 90
 
