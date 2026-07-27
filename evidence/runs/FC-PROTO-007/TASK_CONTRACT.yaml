@@ -26,5 +26,13 @@ non_goals:
   - mainnet
   - production readiness
 review_gate:
-  independent_review_required: true
-  merge_before_review: forbidden
+  self_validation_required_before_merge: true
+  external_review_status: not_performed
+  external_review_required_before:
+    - mainnet authorization
+    - real-value authorization
+deployment_authorization:
+  local_validator: allowed
+  devnet_fixture: blocked
+  mainnet: blocked
+  real_value: blocked

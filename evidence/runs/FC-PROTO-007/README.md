@@ -30,5 +30,9 @@ python tests/channels/conformance/run_cross_language.py
 ```
 
 The workflow execution and immutable commits are recorded in
-`validation-report.json`. The PR remains subject to the independent review gate
-defined by the work item.
+`validation-report.json`.
+
+Under FC-ADR-009, this offline artifact may merge after reproducible
+self-validation while external review remains explicitly `not_performed`.
+External exact-version review is still required before mainnet or real-value
+authorization. This pack authorizes no ChannelVault or deployment.

@@ -19,6 +19,7 @@ allowed_paths:
 dependencies:
   - FC-PROTO-006
   - FC-CTRL-014
+  - FC-GOV-001
 invariants:
   - FC-PROTO-006 normative inputs remain read-only
   - positive agreement includes exact bytes, byte length, and SHA-256
@@ -27,6 +28,8 @@ invariants:
   - expected result fields are not computation inputs
   - no runner imports, invokes, generates, or reads another runner
   - the comparator performs no canonicalization or repair
+  - external review remains explicit and cannot be inferred from self-validation
+  - devnet, mainnet, and real-value authorization remain blocked
 acceptance:
   - Python, TypeScript, and Rust independently emit all 28 ordered results
   - all eight positives agree with frozen bytes, lengths, and hashes
@@ -34,6 +37,8 @@ acceptance:
   - poisoning expected result fields leaves each computed stream unchanged
   - the comparator rejects the poisoned expectation set
   - CI uses the exact coordinated toolchains and committed dependency locks
+  - maturity records implementation complete and self-validation passed
+  - external review is recorded as not_performed
 verification_commands:
   - python -m pytest tests/channels/conformance
   - npm test --prefix packages/channel-protocol/typescript
@@ -62,3 +67,5 @@ stop_conditions:
   - a runner reads an expected result field
   - one runner delegates to another language
   - a toolchain or dependency cannot be locked
+  - self-validation is represented as external review
+  - any deployment or real-value authorization is introduced
