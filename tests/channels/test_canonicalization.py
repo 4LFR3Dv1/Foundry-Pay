@@ -317,6 +317,31 @@ def test_profile_and_domain_registries_are_closed_and_consistent() -> None:
     assert all(item["excluded_fields"] is not None for item in domains["domains"])
 
 
+def test_journal_profile_documentation_matches_registered_preimage() -> None:
+    profile_document = (ROOT / "docs/channels/HASH_PROFILES.md").read_text(encoding="utf-8")
+    documented_fields = """type
+protocol_version
+settlement_id or refund_id
+sequence
+state
+event_type
+payload
+payload_hash
+previous_event_hash
+recorded_at"""
+    assert documented_fields in profile_document
+    assert "`event_hash` is excluded" in profile_document
+    assert "excluding only `event_hash`" in profile_document
+
+    journal_domains = [
+        entry
+        for entry in load(CANON / "domains.v1.json")["domains"]
+        if entry["profile_id"] == "journal-chain-v1"
+    ]
+    assert journal_domains
+    assert all(entry["excluded_fields"] == ["event_hash"] for entry in journal_domains)
+
+
 def test_every_registered_schema_and_fragment_exists() -> None:
     domains = load(CANON / "domains.v1.json")["domains"]
     for entry in domains:

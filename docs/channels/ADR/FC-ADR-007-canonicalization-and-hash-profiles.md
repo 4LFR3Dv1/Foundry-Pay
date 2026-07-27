@@ -57,8 +57,10 @@ Two pre-runtime security migrations are explicit:
 
 - voucher-ledger scope keys now include
   `domain=foundry.channels.voucher-ledger-scope` and `protocol_version=1.0.0`;
-- settlement and refund journal event preimages now include their exact `type`
-  and `protocol_version`.
+- settlement journal event preimages now include their exact `type`,
+  `protocol_version`, and `payload_hash`;
+- refund journal event preimages now include their exact `type`,
+  `protocol_version`, `event_type`, and `payload_hash`.
 
 Existing local reference databases created before FC-PROTO-006 are
 incompatible and must be discarded and rebuilt from their source evidence.

@@ -39,13 +39,16 @@ sequence
 state
 event_type
 payload
+payload_hash
 previous_event_hash
 recorded_at
 ```
 
 The precise identity field is registered per journal. `event_hash` is excluded.
-`payload_hash` is derived independently from the complete payload and is an
-output view, not an alternative event-chain preimage.
+`payload_hash` is derived independently from the complete payload and is also
+included in the event-chain preimage. A verifier must both recompute
+`payload_hash` from `payload` and recompute `event_hash` from the complete
+closed event after excluding only `event_hash`.
 
 ## Raw bytes and evidence
 

@@ -587,7 +587,10 @@ def generate_reports(vectors: list[dict[str, Any]]) -> None:
                 },
                 {
                     "object": "settlement_journal_entry and refund_journal_entry",
-                    "change": "add exact type and protocol_version to each event preimage",
+                    "change": (
+                        "settlement adds exact type, protocol_version, and payload_hash; "
+                        "refund adds exact type, protocol_version, event_type, and payload_hash"
+                    ),
                     "compatibility": "pre-FC-PROTO-006 local reference databases must be rebuilt",
                     "fallback": "forbidden",
                 },
