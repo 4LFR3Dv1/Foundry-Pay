@@ -1,0 +1,96 @@
+{
+  "entries": [
+    {
+      "code": "duplicate_key",
+      "stage": "parse",
+      "vectors": ["duplicate-keys"]
+    },
+    {
+      "code": "float_forbidden",
+      "stage": "parse",
+      "vectors": ["float"]
+    },
+    {
+      "code": "negative_zero",
+      "stage": "parse",
+      "vectors": ["negative-zero"]
+    },
+    {
+      "code": "non_finite_number",
+      "stage": "parse",
+      "vectors": ["infinity", "nan"]
+    },
+    {
+      "code": "unsafe_integer",
+      "stage": "parse",
+      "vectors": ["unsafe-integer"]
+    },
+    {
+      "code": "amount_out_of_range",
+      "stage": "schema",
+      "vectors": ["u64-overflow"]
+    },
+    {
+      "code": "invalid_amount",
+      "stage": "schema",
+      "vectors": ["amount-leading-zero"]
+    },
+    {
+      "code": "invalid_integer",
+      "stage": "schema",
+      "vectors": ["bool-as-integer"]
+    },
+    {
+      "code": "invalid_timestamp",
+      "stage": "schema",
+      "vectors": ["malformed-timestamp"]
+    },
+    {
+      "code": "missing_field",
+      "stage": "schema",
+      "vectors": ["missing-field"]
+    },
+    {
+      "code": "unknown_field",
+      "stage": "schema",
+      "vectors": ["unknown-field"]
+    },
+    {
+      "code": "canonical_set_duplicate",
+      "stage": "projection",
+      "vectors": ["canonical-set-duplicate"]
+    },
+    {
+      "code": "canonical_set_order",
+      "stage": "projection",
+      "vectors": ["canonical-set-order"]
+    },
+    {
+      "code": "null_forbidden",
+      "stage": "projection",
+      "vectors": ["null"]
+    },
+    {
+      "code": "lone_surrogate",
+      "stage": "canonicalization",
+      "vectors": ["lone-surrogate"]
+    },
+    {
+      "code": "domain_unregistered",
+      "stage": "domain_verification",
+      "vectors": ["unregistered-domain"]
+    },
+    {
+      "code": "hash_mismatch",
+      "stage": "hash_verification",
+      "vectors": ["own-hash-in-preimage"]
+    },
+    {
+      "code": "invalid_hash",
+      "stage": "hash_verification",
+      "vectors": ["short-hash", "uppercase-hash"]
+    }
+  ],
+  "schema_version": 1,
+  "vector_count": 20
+}

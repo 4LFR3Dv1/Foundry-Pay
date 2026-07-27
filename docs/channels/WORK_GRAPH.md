@@ -22,6 +22,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-CTRL-011 | done | FC-CTRL-010 | authorize normative documentation and provenance paths for FC-PROTO-006 |
 | FC-CTRL-012 | done | FC-CTRL-011 | authorize the canonicalization test package marker |
 | FC-CTRL-013 | done | FC-PROTO-006 | record reviewed canonicalization integration and reconcile the graph |
+| FC-CTRL-014 | review | FC-CTRL-013 | freeze FC-PROTO-007 toolchains, runner contract, rejection matrix, independence, and paths |
 
 ## Epic B — Channel protocol
 
@@ -33,7 +34,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-PROTO-004 | done | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | settlement and receipt implementation |
 | FC-PROTO-005 | done | FC-PROTO-001, FC-PROTO-002 | close, expiry, epoch, and refund implementation |
 | FC-PROTO-006 | done | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | normative canonicalization and hashes |
-| FC-PROTO-007 | ready | FC-PROTO-006 | Python/TypeScript/Rust cross-language vectors |
+| FC-PROTO-007 | blocked | FC-PROTO-006, FC-CTRL-014 | Python/TypeScript/Rust cross-language conformance |
 
 ## Epic C — Security
 
@@ -212,6 +213,21 @@ remain unchanged.
 - Repository: Foundry-Pay public
 - Scope: freeze signed-object domains only after the draft settlement objects
   exist.
+
+### FC-PROTO-007 — Cross-language conformance
+
+- Repository: Foundry-Pay public
+- Coordination gate: `FC-CTRL-014`.
+- Required implementations: Python, TypeScript, and Rust.
+- Positive acceptance: identical canonical UTF-8 bytes, byte length, and
+  SHA-256 in all three implementations.
+- Negative acceptance: identical rejection stage and stable rejection code in
+  all three implementations.
+- Independence: each runner parses and computes from normative source inputs;
+  no runner imports, invokes, generates, or reads another implementation.
+- The comparator compares runner outputs only. It does not canonicalize,
+  normalize, repair, or reinterpret a result.
+- The functional work remains blocked until the coordination PR is integrated.
 
 ### FC-VAL-003 — 30-second comprehension test
 

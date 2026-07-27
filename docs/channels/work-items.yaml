@@ -184,6 +184,48 @@ work_items:
     security_review: program-governance-review
     stop_conditions: [a rejected head is represented as approved or an on-chain or product gate advances]
 
+  - id: FC-CTRL-014
+    status: review
+    objective: freeze FC-PROTO-007 toolchains, runner contract, rejection matrix, independence rules, and reserved paths
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-014.yaml
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - docs/channels/conformance/FC-PROTO-007-COORDINATION.md
+      - docs/channels/ADR/FC-ADR-008-cross-language-conformance-boundary.md
+      - tests/channels/test_foundation_contracts.py
+      - contracts/channel/conformance/toolchains.v1.json
+      - contracts/channel/conformance/rejection-codes.v1.json
+      - contracts/channel/conformance/runner-result.v1.schema.json
+      - evidence/runs/FC-CTRL-014/**
+    dependencies: [FC-CTRL-013]
+    invariants:
+      - no runner can use expected bytes or hashes as computation input
+      - Python, TypeScript, and Rust implementations remain operationally independent
+      - the comparator never canonicalizes or repairs runner output
+      - FC-PROTO-006 normative bytes and vectors remain unchanged
+    acceptance:
+      - baseline 17b656cbdd6ae53cece9cebb9123058c03e67b82 is fixed
+      - exact language and JCS dependency versions are fixed
+      - one closed JSONL runner-result contract is fixed
+      - every existing negative vector maps to one rejection stage and code
+      - all functional paths are reserved before implementation begins
+    tests:
+      - JSON and YAML contract validation
+      - foundation work-graph validation
+      - secret scan
+    evidence:
+      - evidence/runs/FC-CTRL-014/README.md
+      - evidence/runs/FC-CTRL-014/validation-report.json
+    security_review: program-governance-and-conformance-boundary-review
+    stop_conditions:
+      - a functional runner or comparator is implemented in the coordination PR
+      - a frozen FC-PROTO-006 vector or preimage changes
+      - one implementation can consume another implementation or its output
+      - a rejection is compared only as generic accept or reject
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -291,18 +333,52 @@ work_items:
     stop_conditions: [Rust and JSON domains cannot map byte-for-byte]
 
   - id: FC-PROTO-007
-    status: ready
+    status: blocked
     objective: publish cross-language Python, TypeScript, and Rust conformance vectors
     owner: conformance-engineer
     repository: 4LFR3Dv1/Foundry-Pay
-    allowed_paths: [packages/channel-protocol/**, contracts/channel/test-vectors/**, tests/channels/conformance/**, evidence/runs/FC-PROTO-007/**]
-    dependencies: [FC-PROTO-006]
-    invariants: [all implementations produce identical bytes and hashes]
-    acceptance: [positive and all shared negative vectors agree in three implementations]
-    tests: [cross-language conformance suite]
-    evidence: [implementation versions and vector result manifest]
+    allowed_paths:
+      - .github/workflows/ci.yml
+      - .agents/tasks/FC-PROTO-007.yaml
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - packages/channel-protocol/python/**
+      - packages/channel-protocol/typescript/**
+      - packages/channel-protocol/rust/**
+      - contracts/channel/conformance/**
+      - tests/channels/conformance/**
+      - evidence/runs/FC-PROTO-007/**
+      - provenance/REUSE_LEDGER.yaml
+      - provenance/THIRD_PARTY_NOTICES.md
+    dependencies: [FC-PROTO-006, FC-CTRL-014]
+    invariants:
+      - all implementations produce identical bytes and hashes for positive vectors
+      - all implementations produce identical rejection stages and codes for negative vectors
+      - runners compute from source inputs and never echo expected result fields
+      - runners do not import, invoke, generate, or read another language implementation
+      - the comparator never canonicalizes, normalizes, or repairs runner output
+    acceptance:
+      - all eight frozen positive vectors agree byte-for-byte in three implementations
+      - all twenty frozen negative vectors agree on exact stage and code in three implementations
+      - poisoning expected bytes, lengths, and hashes does not change computed runner output
+      - CI runs each runner independently and compares only after all outputs exist
+    tests:
+      - per-language runner tests
+      - cross-language comparator
+      - expected-output poisoning
+      - missing, duplicate, malformed, and out-of-order result rejection
+    evidence:
+      - exact toolchain and dependency versions
+      - three result streams
+      - cross-language comparison report
+      - artifact manifest and full regression
     security_review: independent-conformance-review
-    stop_conditions: [any implementation silently normalizes differently]
+    stop_conditions:
+      - any implementation silently normalizes differently
+      - a positive vector agrees only on decision but not bytes and hash
+      - a negative vector agrees only on rejection but not stage and code
+      - expected result fields are used as computation inputs
+      - one runner delegates to another implementation
 
   - id: FC-SEC-001
     status: done

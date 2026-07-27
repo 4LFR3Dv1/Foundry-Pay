@@ -1,0 +1,46 @@
+{
+  "baseline_commit": "17b656cbdd6ae53cece9cebb9123058c03e67b82",
+  "functional_code_added": false,
+  "implementation_commit": "daedc93ac617066bb360e02db50dae43f0385ac2",
+  "jcs_dependencies": {
+    "python": "rfc8785==0.1.4",
+    "rust": "serde_json_canonicalizer==0.3.2",
+    "typescript": "canonicalize==3.0.0"
+  },
+  "negative_vector_count": 20,
+  "positive_vector_count": 8,
+  "runner_contract": "foundry.channels.conformance-runner-result/1",
+  "schema_version": 1,
+  "status": "coordination_ready_for_review",
+  "validation": {
+    "coordination_contracts": "passed",
+    "full_pytest": {
+      "passed": 461,
+      "skipped": 11
+    },
+    "focused_pytest": {
+      "passed": 83
+    },
+    "foundation_checker": "passed",
+    "frozen_fc_proto_006_artifacts_changed": false,
+    "ruff_check": "passed",
+    "ruff_format_check": {
+      "files": 56,
+      "status": "passed"
+    },
+    "runner_result_schema": "draft-2020-12-valid",
+    "secret_scan": {
+      "files_scanned": 350,
+      "status": "passed"
+    }
+  },
+  "toolchains": {
+    "python": "3.11.9",
+    "rust": "1.85.1",
+    "typescript": {
+      "node": "24.15.0",
+      "typescript": "5.9.3"
+    }
+  },
+  "work_item": "FC-CTRL-014"
+}
