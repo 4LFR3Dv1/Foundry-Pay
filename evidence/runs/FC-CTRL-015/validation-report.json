@@ -1,0 +1,41 @@
+{
+  "baseline_commit": "63da85549bcd247a0510e8af18cddc30d8c53bb2",
+  "changed_paths": [
+    ".agents/tasks/FC-CTRL-015.yaml",
+    "docs/channels/EVIDENCE_INDEX.md",
+    "docs/channels/WORK_GRAPH.md",
+    "docs/channels/work-items.yaml",
+    "tests/channels/test_foundation_contracts.py"
+  ],
+  "fc_proto_007": {
+    "evidence_head": "5e4f7fff521f99c93a2e6b99bd8db8c9a8041649",
+    "functional_head": "ef9a99949bae3d2088a7b51cd55ef4efb14124c7",
+    "main_ci_conclusion": "success",
+    "main_ci_run": 30286605271,
+    "merge_commit": "63da85549bcd247a0510e8af18cddc30d8c53bb2",
+    "pr": 34
+  },
+  "forbidden_implementation_changes": [],
+  "implementation_commit": "e464d4c03f873683aeca65b5d44297c2561b7077",
+  "maturity": {
+    "devnet_fixture": "blocked",
+    "external_review": "not_performed",
+    "implementation": "complete",
+    "local_validator": "allowed",
+    "mainnet": "blocked",
+    "real_value": "blocked",
+    "self_validation": "passed"
+  },
+  "next_gates": {
+    "FC-SEC-002": "ready",
+    "SA-CHAN-000": "blocked_pending_FC-SEC-002"
+  },
+  "schema_version": 1,
+  "status": "passed",
+  "tests": {
+    "errors": 0,
+    "failures": 0,
+    "skipped": 11,
+    "tests": 490
+  }
+}
