@@ -1,0 +1,18 @@
+{
+  "comparator_rejected_poisoned_expectations": true,
+  "poisoned_fields": [
+    "canonical_utf8_hex",
+    "canonical_utf8_base64",
+    "byte_length",
+    "expected_sha256",
+    "rejection_stage",
+    "expected_rejection_code"
+  ],
+  "poisoned_vectors": {
+    "negative_vectors": 20,
+    "positive_vectors": 8
+  },
+  "runner_streams_byte_identical": true,
+  "schema_version": 1,
+  "status": "passed"
+}

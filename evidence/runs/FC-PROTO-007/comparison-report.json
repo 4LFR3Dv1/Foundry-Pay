@@ -1,0 +1,17 @@
+{
+  "agreement": {
+    "negative_stages_codes": true,
+    "positive_bytes_lengths_hashes": true
+  },
+  "implementations": [
+    "python",
+    "typescript",
+    "rust"
+  ],
+  "negative_vectors": 20,
+  "positive_vectors": 8,
+  "result_count_per_implementation": 28,
+  "schema_version": 1,
+  "status": "passed",
+  "toolchains_enforced": true
+}

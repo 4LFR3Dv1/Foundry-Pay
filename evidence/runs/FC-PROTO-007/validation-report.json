@@ -1,0 +1,40 @@
+{
+  "agreement": {
+    "independent_artifacts_match_comparator_inputs": true,
+    "negative_stages_codes": true,
+    "poisoned_expectations_rejected": true,
+    "poisoned_streams_byte_identical": true,
+    "positive_bytes_lengths_hashes": true
+  },
+  "baseline_commit": "8975a4b3edfae070919d68afe851652eb1f71ea8",
+  "claims_excluded": [
+    "Solana execution",
+    "ChannelVault behavior",
+    "production readiness",
+    "independent external security review completed"
+  ],
+  "frozen_registry_diff": "empty",
+  "frozen_specification_commit": "17b656cbdd6ae53cece9cebb9123058c03e67b82",
+  "full_regression": {
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "tests": 482
+  },
+  "implementation_commit": "e0991ace6052527a10d929abfc4dfb87f3ff4581",
+  "reviewed_head": "1d23660e7be3d41e580089aefcdd50c4e0bc577f",
+  "schema_version": 1,
+  "status": "passed",
+  "vectors": {
+    "negative": 20,
+    "positive": 8,
+    "results_per_implementation": 28
+  },
+  "workflow": {
+    "artifact_merge_sha": "005cfaa1a9d605f6847305d515ea0cb20cee7c5c",
+    "conclusion": "success",
+    "head_sha": "1d23660e7be3d41e580089aefcdd50c4e0bc577f",
+    "run_id": 30281177556,
+    "url": "https://github.com/4LFR3Dv1/Foundry-Pay/actions/runs/30281177556"
+  }
+}

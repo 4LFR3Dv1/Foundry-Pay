@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "toolchains": {
+    "python": {
+      "jcs": "rfc8785 0.1.4",
+      "lock": "packages/channel-protocol/python/requirements-conformance.lock",
+      "runtime": "CPython 3.11.9"
+    },
+    "rust": {
+      "edition": "2024",
+      "jcs": "serde_json_canonicalizer 0.3.2",
+      "lock": "packages/channel-protocol/rust/Cargo.lock",
+      "runtime": "Rust/Cargo 1.85.1"
+    },
+    "typescript": {
+      "compiler": "TypeScript 5.9.3",
+      "jcs": "canonicalize 3.0.0",
+      "lock": "packages/channel-protocol/typescript/package-lock.json",
+      "runtime": "Node.js 24.15.0"
+    }
+  }
+}
