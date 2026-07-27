@@ -6,9 +6,7 @@ use foundry_channel_conformance::{
 };
 
 fn option(arguments: &[String], name: &str, required: bool) -> Result<Option<PathBuf>, String> {
-    let index = arguments
-        .iter()
-        .position(|argument| argument == name);
+    let index = arguments.iter().position(|argument| argument == name);
     match index.and_then(|position| arguments.get(position + 1)) {
         Some(value) => Ok(Some(PathBuf::from(value))),
         None if required => Err(format!("{name} is required")),

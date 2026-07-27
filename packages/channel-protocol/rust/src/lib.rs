@@ -5,8 +5,8 @@ use std::path::{Path, PathBuf};
 
 use base64::Engine;
 use base64::engine::general_purpose::STANDARD as BASE64;
-use serde::{Deserialize as SerdeDeserialize, Serialize};
 use serde::de::{Deserialize, Deserializer, MapAccess, SeqAccess, Visitor};
+use serde::{Deserialize as SerdeDeserialize, Serialize};
 use serde_json::{Map, Number, Value};
 use sha2::{Digest, Sha256};
 
@@ -767,10 +767,7 @@ fn apply_security_mutation(source: &mut Value, case: &SecurityCase) -> Result<()
     Ok(())
 }
 
-fn run_security_case(
-    case: &SecurityCase,
-    registry_root: &Path,
-) -> Result<SecurityResult, String> {
+fn run_security_case(case: &SecurityCase, registry_root: &Path) -> Result<SecurityResult, String> {
     let (expected_domain, hash_field) = match case.verifier_object_type.as_str() {
         "channel_voucher" => ("foundry.channels.voucher", "voucher_hash"),
         "recipient_binding" => ("foundry.channels.recipient-binding", "binding_hash"),
@@ -784,7 +781,9 @@ fn run_security_case(
             None,
         ));
     }
-    if Path::new(&case.vector).file_name().and_then(|name| name.to_str())
+    if Path::new(&case.vector)
+        .file_name()
+        .and_then(|name| name.to_str())
         != Some(case.vector.as_str())
     {
         return Err(format!("{}: invalid vector filename", case.case_id));
@@ -827,7 +826,10 @@ fn run_security_case(
     let computed_bytes =
         canonical_bytes(&Value::Object(payload.clone())).map_err(|error| error.to_string())?;
     if sha256(&computed_bytes) == declared_hash {
-        return Err(format!("{}: mutation preserved signed preimage", case.case_id));
+        return Err(format!(
+            "{}: mutation preserved signed preimage",
+            case.case_id
+        ));
     }
     Ok(security_rejection(
         case,
@@ -841,10 +843,9 @@ pub fn run_security_cases(
     cases_path: &Path,
     registry_root: &Path,
 ) -> Result<Vec<SecurityResult>, String> {
-    let registry: SecurityRegistry = serde_json::from_str(
-        &fs::read_to_string(cases_path).map_err(|error| error.to_string())?,
-    )
-    .map_err(|error| error.to_string())?;
+    let registry: SecurityRegistry =
+        serde_json::from_str(&fs::read_to_string(cases_path).map_err(|error| error.to_string())?)
+            .map_err(|error| error.to_string())?;
     if registry.runner_contract != SECURITY_RUNNER_CONTRACT {
         return Err("security mutation runner contract mismatch".to_owned());
     }
