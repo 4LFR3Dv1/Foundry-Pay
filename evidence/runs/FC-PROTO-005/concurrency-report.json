@@ -17,11 +17,27 @@
       "aggregate_bound_preserved": true
     },
     {
+      "case": "two_60m_refunds_with_distinct_freeze_hashes",
+      "results": ["validated", "aggregate_refund_exceeds_unallocated"],
+      "reservation_scope": "channel_id_epoch_closure_id",
+      "aggregate_bound_preserved": true
+    },
+    {
+      "case": "completed_refund_followed_by_stale_freeze",
+      "result": "stale_freeze_snapshot",
+      "refunded_high_water_preserved": true
+    },
+    {
       "case": "restart_after_unknown_result",
       "submit_intent_count": 1,
       "automatic_second_submission_count": 0,
       "signature_recovered": true,
       "completed_only_after_reconciliation": true
+    },
+    {
+      "case": "unknown_receipt_followed_by_different_accepted_receipt",
+      "result": "technical_receipt_conflict",
+      "original_unknown_preserved": true
     },
     {
       "case": "provider_divergence",

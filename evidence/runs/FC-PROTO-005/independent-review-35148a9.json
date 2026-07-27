@@ -1,0 +1,50 @@
+{
+  "work_item": "FC-PROTO-005",
+  "reviewed_head": "35148a91efd47b8642a6fd834cb072aeeb9b94ea",
+  "decision": "request_changes",
+  "review_type": "independent_read_only_adversarial",
+  "findings": [
+    {
+      "severity": "critical",
+      "id": "freeze_transition_not_proven",
+      "remediation": "request snapshot links and accounting are validated; F and R are immutable and S is monotonic through freeze"
+    },
+    {
+      "severity": "critical",
+      "id": "aggregate_refund_bypass_by_freeze_hash",
+      "remediation": "reservations are aggregated by channel, epoch, and closure; completed refunds establish a refunded high-water"
+    },
+    {
+      "severity": "high",
+      "id": "unknown_receipt_overwrite",
+      "remediation": "the first technical receipt is immutable; changed bytes produce technical_receipt_conflict"
+    },
+    {
+      "severity": "high",
+      "id": "missing_execution_commitment",
+      "remediation": "exact request, projection, execution, prepared message, executor, and signer correlation is persisted before submit"
+    },
+    {
+      "severity": "high",
+      "id": "out_of_schema_economic_artifacts",
+      "remediation": "technical receipts and observations use closed field sets, shape validation, hash validation, and non-empty signatures"
+    },
+    {
+      "severity": "high",
+      "id": "finalization_omits_unresolved_freeze",
+      "remediation": "finalization requires a validated freeze snapshot and explicit operation states; neither has a permissive default"
+    },
+    {
+      "severity": "medium",
+      "id": "partial_final_close",
+      "remediation": "final_close requires the request to consume the entire remaining vault"
+    },
+    {
+      "severity": "medium",
+      "id": "observation_domain_separation",
+      "remediation": "observations bind domain, refund request hash, and refund projection hash in schema and runtime reconciliation"
+    }
+  ],
+  "remediation_commit": "8420ee25ef0aed50dfbc611c3b40da809d7aa05d",
+  "rereview_status": "pending"
+}

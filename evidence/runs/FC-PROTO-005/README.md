@@ -13,8 +13,12 @@ close, expiry, refund, finalization, and epoch-eligibility semantics.
   `F = V + S + R` and `0 <= S <= A <= F - R`.
 - Every unresolved money-moving state blocks refund and finalization.
 - SQLite constraints and `BEGIN IMMEDIATE` serialize refund reservations.
+- Reservations are scoped to the closure rather than to a caller-controlled
+  freeze hash, and reconciled refunds establish a refunded-total high-water.
 - A controlled refund has at most one persisted submit intent.
+- An exact execution commitment is durably persisted before submit.
 - A technical receipt is not economic completion.
+- An `unknown` technical result cannot be overwritten by a later receipt.
 - An independently verified matching observation is required for completion.
 - Epoch output is eligibility only; it does not claim an executed transition.
 
@@ -38,4 +42,7 @@ npm test --prefix packages/external-execution-protocol/typescript
 npm test --prefix packages/channel-protocol/typescript
 ```
 
-Independent money-movement review is still required before merge.
+The first independent review of head `35148a91...` returned `REQUEST_CHANGES`.
+The eight findings are recorded in `independent-review-35148a9.json` and were
+remediated in `8420ee25...`. Independent re-review is still required before
+merge.

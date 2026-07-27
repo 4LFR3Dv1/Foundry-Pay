@@ -4,12 +4,14 @@
   "baseline_commit": "e1b43118f8aff29c8b2101c1c08bc3aa57694177",
   "contract_commit": "d1b1d2b587143b26f435941037ab9b42689047f6",
   "implementation_commit": "87c314a44698e16ea9e1d9ae39be3c0bb736c98a",
+  "remediation_commit": "8420ee25ef0aed50dfbc611c3b40da809d7aa05d",
+  "rejected_reviewed_head": "35148a91efd47b8642a6fd834cb072aeeb9b94ea",
   "reviewed_head": null,
-  "review_status": "pending_independent_review",
+  "review_status": "pending_independent_rereview",
   "artifacts": [
     {
       "path": "contracts/channel/channel-closure.schema.json",
-      "sha256": "58703143b0ce74b27ba3d62aba49e16283ef8bb024ea531c46d3ce2e9c5a1067"
+      "sha256": "3735f7769c2763512fec66193d043f07a18411ef21b2f40538538b9b28d89346"
     },
     {
       "path": "contracts/channel/test-vectors/positive/close-race-v1.json",
@@ -21,11 +23,11 @@
     },
     {
       "path": "packages/channel-protocol/python/foundry_channel_protocol/closure.py",
-      "sha256": "fb68fe7457552c3cd382ea26106bb53fbafde0fa9f5fd3f5699102eb6b276120"
+      "sha256": "bda041a69090c205c40ff8ffd6cba8633763e151e18d5f71a24e581bf6b3720e"
     },
     {
       "path": "tests/channels/test_closure.py",
-      "sha256": "40730d427a5d3bdb82fa337ed75e24dd0d2ecfca9bef8b73f21aa2f40f8dc7e8"
+      "sha256": "94dff7a32daf32120db66f24e1a43198a934975942dab2dfdcaacdac7d84cd61"
     },
     {
       "path": "provenance/REUSE_LEDGER.yaml",
@@ -37,7 +39,7 @@
     },
     {
       "path": "evidence/runs/FC-PROTO-005/validation-report.json",
-      "sha256": "542d4212bcbd20dcd9f13ad0ec498998d2895d3a3db3ab60ea14ba72b01e8ca2"
+      "sha256": "aecb1b32405ac95666127c8afb0fa20b91923cfc151f0b820af4d650e738a684"
     },
     {
       "path": "evidence/runs/FC-PROTO-005/close-transition-matrix.json",
@@ -49,19 +51,23 @@
     },
     {
       "path": "evidence/runs/FC-PROTO-005/refund-conservation-matrix.json",
-      "sha256": "ae4e44395e36b4b553385a060f5e16cfda326c84d04d8755dda9aed4fede9a97"
+      "sha256": "cde7f8554d405cb33054e706154a03735102f48f9ebc2d7b528b90e62111e658"
     },
     {
       "path": "evidence/runs/FC-PROTO-005/concurrency-report.json",
-      "sha256": "d3700839ae43e533371d0eb45db02fd2d6281a91fd3efbbb2ded13b5f26ca91c"
+      "sha256": "8cd1aeaf6a48ef6ad4407505a12725ebf445d84ecc52c218fb3c4e26e313b32f"
     },
     {
       "path": "evidence/runs/FC-PROTO-005/epoch-replay-report.json",
       "sha256": "ec18fd3de3fe755315ee3a6e3d6d45248cf8a8fa1b2259d8c5f95a139a1dc55e"
     },
     {
+      "path": "evidence/runs/FC-PROTO-005/independent-review-35148a9.json",
+      "sha256": "2e8ad237d45be7860de26b59cf42a2c9cfade0c9186ffc4dc9d554ff9f12da0c"
+    },
+    {
       "path": "evidence/runs/FC-PROTO-005/pytest-full.xml",
-      "sha256": "756acaa37972035d13eb5d0ff1dee86dfd4dbb4cfa59116556ca977ad6450a9e"
+      "sha256": "994e27426221266a529532f843e74720a3181f6d3c0cd94661b554cda5bf0a4e"
     }
   ]
 }
