@@ -27,6 +27,7 @@ PROTOCOL_VERSION = "1.0.0"
 ZERO_HASH = "sha256:" + ("0" * 64)
 _HASH = re.compile(r"^sha256:[0-9a-f]{64}$")
 _IDENTIFIER = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$")
+_PUBKEY = re.compile(r"^[1-9A-HJ-NP-Za-km-z]{32,44}$")
 _TIMESTAMP = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
 _AMBIGUOUS_STATES = frozenset(
     {
@@ -47,6 +48,147 @@ _RELEASING_STATES = frozenset(
     }
 )
 _REFUND_REASONS = frozenset({"post_claim_window_unallocated", "final_close"})
+_CLOSURE_REQUEST_FIELDS = frozenset(
+    {
+        "type",
+        "protocol_version",
+        "domain",
+        "channel",
+        "closure_id",
+        "idempotency_key",
+        "channel_snapshot_hash",
+        "requested_at",
+        "claim_deadline",
+        "status",
+        "request_hash",
+    }
+)
+_REQUEST_SNAPSHOT_FIELDS = frozenset(
+    {
+        "type",
+        "protocol_version",
+        "domain",
+        "channel",
+        "closure_id",
+        "closure_request_hash",
+        "channel_snapshot_hash",
+        "funded_total_base_units",
+        "activated_total_base_units",
+        "settled_total_base_units",
+        "refunded_total_base_units",
+        "vault_balance_base_units",
+        "outstanding_right_base_units",
+        "unallocated_capacity_base_units",
+        "latest_activated_sequence",
+        "latest_activated_voucher_hash",
+        "requested_at",
+        "claim_deadline",
+        "pre_deadline_refundable_base_units",
+        "channel_status",
+        "closure_phase",
+        "request_snapshot_hash",
+    }
+)
+_FREEZE_SNAPSHOT_FIELDS = frozenset(
+    {
+        "type",
+        "protocol_version",
+        "domain",
+        "channel",
+        "closure_id",
+        "request_snapshot_hash",
+        "channel_snapshot_hash",
+        "funded_total_base_units",
+        "activated_total_base_units",
+        "settled_total_base_units",
+        "refunded_total_base_units",
+        "vault_balance_base_units",
+        "outstanding_right_base_units",
+        "excess_refundable_base_units",
+        "latest_activated_sequence",
+        "latest_activated_voucher_hash",
+        "claim_deadline",
+        "frozen_at",
+        "unresolved_operation_count",
+        "channel_status",
+        "closure_phase",
+        "freeze_snapshot_hash",
+    }
+)
+_REFUND_REQUEST_FIELDS = frozenset(
+    {
+        "type",
+        "protocol_version",
+        "domain",
+        "channel",
+        "closure_id",
+        "refund_id",
+        "idempotency_key",
+        "reason",
+        "destination",
+        "requested_base_units",
+        "freeze_snapshot_hash",
+        "created_at",
+        "expires_at",
+        "request_hash",
+    }
+)
+_EXECUTION_COMMITMENT_FIELDS = frozenset(
+    {
+        "type",
+        "protocol_version",
+        "refund_request_hash",
+        "refund_projection_hash",
+        "execution_request_id",
+        "execution_commitment_hash",
+        "prepared_message_hash",
+        "executor_id",
+        "expected_signer",
+        "expires_at",
+    }
+)
+_TECHNICAL_RECEIPT_REQUIRED = frozenset(
+    {
+        "type",
+        "protocol_version",
+        "refund_id",
+        "refund_request_hash",
+        "execution_request_id",
+        "execution_commitment_hash",
+        "outcome",
+        "signature_status",
+        "technical_status",
+        "observed_at",
+        "receipt_hash",
+    }
+)
+_TECHNICAL_RECEIPT_FIELDS = _TECHNICAL_RECEIPT_REQUIRED | {"transaction_signature"}
+_OBSERVATION_FIELDS = frozenset(
+    {
+        "type",
+        "protocol_version",
+        "domain",
+        "source_id",
+        "channel_id",
+        "channel_account",
+        "epoch",
+        "mint",
+        "destination",
+        "refund_id",
+        "refund_request_hash",
+        "refund_projection_hash",
+        "transaction_signature",
+        "funded_total_base_units",
+        "activated_total_base_units",
+        "settled_total_base_units",
+        "refunded_total_before_base_units",
+        "refunded_total_after_base_units",
+        "vault_balance_before_base_units",
+        "vault_balance_after_base_units",
+        "observed_at",
+        "observation_hash",
+    }
+)
 
 
 class ClosureError(RuntimeError):
@@ -88,6 +230,23 @@ def _reject(code: str, field: str, detail: str) -> NoReturn:
     raise ClosureError(code, field, detail)
 
 
+def _closed(
+    value: Mapping[str, Any],
+    *,
+    field: str,
+    required: frozenset[str],
+    allowed: frozenset[str] | None = None,
+) -> None:
+    observed = set(value)
+    permitted = required if allowed is None else allowed
+    missing = sorted(required - observed)
+    unknown = sorted(observed - permitted)
+    if missing:
+        _reject("missing_field", field, ", ".join(missing))
+    if unknown:
+        _reject("unknown_field", field, ", ".join(unknown))
+
+
 def _canonical_hash(value: Mapping[str, Any]) -> str:
     return sha256_digest(canonicalize(dict(value)))
 
@@ -108,6 +267,38 @@ def _identifier(value: object, field: str) -> str:
     if not isinstance(value, str) or _IDENTIFIER.fullmatch(value) is None:
         _reject("invalid_identifier", field, "expected a closed protocol identifier")
     return value
+
+
+def _pubkey(value: object, field: str) -> str:
+    if not isinstance(value, str) or _PUBKEY.fullmatch(value) is None:
+        _reject("invalid_pubkey", field, "expected a base58 public identifier")
+    return value
+
+
+def _validate_domain(value: object, field: str) -> None:
+    if not isinstance(value, Mapping):
+        _reject("invalid_type", field, "expected object")
+    expected = {"environment", "network", "genesis_hash", "program_id"}
+    if set(value) != expected:
+        _reject("invalid_domain_shape", field, "expected closed domain fields")
+    if value["environment"] != "devnet" or value["network"] != "solana:devnet":
+        _reject("unsupported_domain", field, "expected Solana devnet")
+    _pubkey(value["genesis_hash"], f"{field}.genesis_hash")
+    _pubkey(value["program_id"], f"{field}.program_id")
+
+
+def _validate_channel_reference(value: object, field: str) -> None:
+    if not isinstance(value, Mapping):
+        _reject("invalid_type", field, "expected object")
+    expected = {"channel_id", "channel_account", "epoch", "sender", "mint"}
+    if set(value) != expected:
+        _reject("invalid_channel_reference_shape", field, "expected closed channel fields")
+    _identifier(value["channel_id"], f"{field}.channel_id")
+    _pubkey(value["channel_account"], f"{field}.channel_account")
+    if type(value["epoch"]) is not int or value["epoch"] < 0:
+        _reject("invalid_epoch", f"{field}.epoch", "expected non-negative integer")
+    _pubkey(value["sender"], f"{field}.sender")
+    _pubkey(value["mint"], f"{field}.mint")
 
 
 def _time(value: object, field: str) -> datetime:
@@ -179,11 +370,14 @@ def _validate_hash(value: Mapping[str, Any], field: str) -> None:
 
 
 def _validate_freeze_snapshot(value: Mapping[str, Any]) -> None:
+    _closed(value, field="freeze_snapshot", required=_FREEZE_SNAPSHOT_FIELDS)
     _validate_hash(value, "freeze_snapshot_hash")
     if value.get("type") != "closure_snapshot_at_freeze":
         _reject("invalid_freeze_snapshot", "freeze_snapshot.type", "wrong object type")
     if value.get("protocol_version") != PROTOCOL_VERSION:
         _reject("invalid_protocol_version", "freeze_snapshot.protocol_version", "unsupported")
+    _validate_domain(value.get("domain"), "freeze_snapshot.domain")
+    _validate_channel_reference(value.get("channel"), "freeze_snapshot.channel")
     funded = _amount(value.get("funded_total_base_units"), "freeze.funded")
     activated = _amount(value.get("activated_total_base_units"), "freeze.activated")
     settled = _amount(value.get("settled_total_base_units"), "freeze.settled")
@@ -215,6 +409,116 @@ def _validate_freeze_snapshot(value: Mapping[str, Any]) -> None:
             "freeze_snapshot.unresolved_operation_count",
             "expected non-negative integer",
         )
+
+
+def _validate_request_snapshot(
+    closure_request: Mapping[str, Any],
+    value: Mapping[str, Any],
+) -> tuple[int, int, int, int]:
+    _closed(
+        closure_request,
+        field="closure_request",
+        required=_CLOSURE_REQUEST_FIELDS,
+    )
+    _closed(
+        value,
+        field="snapshot_at_request",
+        required=_REQUEST_SNAPSHOT_FIELDS,
+    )
+    _validate_hash(closure_request, "request_hash")
+    _validate_hash(value, "request_snapshot_hash")
+    if closure_request.get("type") != "channel_closure_request":
+        _reject("invalid_closure_request", "closure_request.type", "wrong object type")
+    if closure_request.get("protocol_version") != PROTOCOL_VERSION:
+        _reject("invalid_protocol_version", "closure_request.protocol_version", "unsupported")
+    _validate_domain(closure_request.get("domain"), "closure_request.domain")
+    _validate_channel_reference(closure_request.get("channel"), "closure_request.channel")
+    if value.get("type") != "closure_snapshot_at_request":
+        _reject("invalid_request_snapshot", "snapshot_at_request.type", "wrong object type")
+    if value.get("protocol_version") != PROTOCOL_VERSION:
+        _reject("invalid_protocol_version", "snapshot_at_request.protocol_version", "unsupported")
+    expected_links = {
+        "closure_request_hash": closure_request["request_hash"],
+        "domain": closure_request["domain"],
+        "channel": closure_request["channel"],
+        "closure_id": closure_request["closure_id"],
+        "channel_snapshot_hash": closure_request["channel_snapshot_hash"],
+        "requested_at": closure_request["requested_at"],
+        "claim_deadline": closure_request["claim_deadline"],
+    }
+    mismatches = [
+        field for field, expected in expected_links.items() if value.get(field) != expected
+    ]
+    if mismatches:
+        _reject(
+            "request_snapshot_link_mismatch",
+            "snapshot_at_request",
+            ", ".join(sorted(mismatches)),
+        )
+    if closure_request.get("status") != "requested":
+        _reject("invalid_closure_request", "closure_request.status", "expected requested")
+    if value.get("channel_status") != "closing":
+        _reject("request_snapshot_lifecycle_invalid", "channel_status", "expected closing")
+    if value.get("closure_phase") != "claim_window":
+        _reject("request_snapshot_phase_invalid", "closure_phase", "expected claim_window")
+    if value.get("pre_deadline_refundable_base_units") != "0":
+        _reject(
+            "pre_deadline_refund_forbidden",
+            "pre_deadline_refundable_base_units",
+            "must be zero",
+        )
+    if _time(value.get("claim_deadline"), "snapshot_at_request.claim_deadline") <= _time(
+        value.get("requested_at"),
+        "snapshot_at_request.requested_at",
+    ):
+        _reject("close_window_invalid", "snapshot_at_request", "deadline must follow request")
+    funded = _amount(value.get("funded_total_base_units"), "request_snapshot.funded")
+    activated = _amount(value.get("activated_total_base_units"), "request_snapshot.activated")
+    settled = _amount(value.get("settled_total_base_units"), "request_snapshot.settled")
+    refunded = _amount(value.get("refunded_total_base_units"), "request_snapshot.refunded")
+    vault = _amount(value.get("vault_balance_base_units"), "request_snapshot.vault")
+    outstanding = _amount(
+        value.get("outstanding_right_base_units"),
+        "request_snapshot.outstanding",
+    )
+    unallocated = _amount(
+        value.get("unallocated_capacity_base_units"),
+        "request_snapshot.unallocated",
+    )
+    if funded != vault + settled + refunded:
+        _reject("conservation_violation", "snapshot_at_request", "F must equal V + S + R")
+    if not 0 <= settled <= activated <= funded - refunded:
+        _reject(
+            "rights_bounds_violation",
+            "snapshot_at_request",
+            "requires 0 <= S <= A <= F - R",
+        )
+    if outstanding != activated - settled:
+        _reject("outstanding_right_mismatch", "snapshot_at_request", "must equal A - S")
+    if unallocated != funded - refunded - activated:
+        _reject(
+            "unallocated_capacity_mismatch",
+            "snapshot_at_request",
+            "must equal F - R - A",
+        )
+    sequence = value.get("latest_activated_sequence")
+    if type(sequence) is not int or sequence < 0:
+        _reject(
+            "invalid_activated_sequence",
+            "snapshot_at_request.latest_activated_sequence",
+            "expected non-negative integer",
+        )
+    _hash(
+        value.get("latest_activated_voucher_hash"),
+        "snapshot_at_request.latest_activated_voucher_hash",
+    )
+    if (sequence == 0) != (activated == 0):
+        _reject(
+            "activation_state_inconsistent",
+            "snapshot_at_request",
+            "sequence and A must both be zero or both non-zero",
+        )
+    return funded, activated, settled, refunded
 
 
 def activation_is_eligible(*, now: datetime, claim_deadline: str) -> bool:
@@ -322,10 +626,9 @@ def freeze_closure(
 ) -> dict[str, Any]:
     """Freeze final activation state at or after the exclusive deadline."""
 
-    _validate_hash(closure_request, "request_hash")
-    _validate_hash(snapshot_at_request, "request_snapshot_hash")
-    if snapshot_at_request["closure_request_hash"] != closure_request["request_hash"]:
-        _reject("closure_link_mismatch", "snapshot_at_request", "request hash mismatch")
+    requested_funded, requested_activated, requested_settled, requested_refunded = (
+        _validate_request_snapshot(closure_request, snapshot_at_request)
+    )
     frozen_at = _utc(now)
     deadline = _time(closure_request["claim_deadline"], "claim_deadline")
     if frozen_at < deadline:
@@ -339,10 +642,12 @@ def freeze_closure(
         _reject("domain_mismatch", "channel", "domain changed during close")
     if _channel_reference(channel_at_freeze) != closure_request["channel"]:
         _reject("channel_reference_mismatch", "channel", "identity changed during close")
-    requested_activated = _amount(
-        snapshot_at_request["activated_total_base_units"],
-        "snapshot_at_request.activated_total_base_units",
-    )
+    if projection.funded_total_base_units != requested_funded:
+        _reject("funding_changed_during_close", "channel", "F must remain unchanged")
+    if projection.refunded_total_base_units != requested_refunded:
+        _reject("refund_changed_during_claim_window", "channel", "R must remain unchanged")
+    if projection.settled_total_base_units < requested_settled:
+        _reject("settled_total_decreased", "channel", "S must remain monotonic")
     if projection.activated_authorized_total_base_units < requested_activated:
         _reject("activated_total_decreased", "channel", "A must remain monotonic")
     if int(channel_at_freeze["latest_activated_sequence"]) < int(
@@ -389,6 +694,11 @@ def make_refund_request(
 ) -> dict[str, Any]:
     """Materialize a refund intent without claiming execution."""
 
+    _closed(
+        closure_request,
+        field="closure_request",
+        required=_CLOSURE_REQUEST_FIELDS,
+    )
     _validate_hash(closure_request, "request_hash")
     _validate_freeze_snapshot(freeze_snapshot)
     if freeze_snapshot["request_snapshot_hash"] is None:
@@ -434,6 +744,7 @@ def project_refund(
 ) -> dict[str, Any]:
     """Validate a refund against final activation and unresolved-operation gates."""
 
+    _closed(refund_request, field="refund_request", required=_REFUND_REQUEST_FIELDS)
     _validate_hash(refund_request, "request_hash")
     _validate_freeze_snapshot(freeze_snapshot)
     if refund_request["freeze_snapshot_hash"] != freeze_snapshot["freeze_snapshot_hash"]:
@@ -446,6 +757,9 @@ def project_refund(
         _reject("closure_link_mismatch", "refund_request.closure_id", "wrong closure")
     if refund_request["destination"] != freeze_snapshot["channel"]["sender"]:
         _reject("refund_destination_substitution", "refund_request.destination", "must be sender")
+    _validate_domain(refund_request["domain"], "refund_request.domain")
+    _validate_channel_reference(refund_request["channel"], "refund_request.channel")
+    _pubkey(refund_request["destination"], "refund_request.destination")
     current = _utc(now)
     if current < _time(freeze_snapshot["claim_deadline"], "claim_deadline"):
         _reject("claim_window_open", "now", "refund requires now >= claim_deadline")
@@ -482,6 +796,12 @@ def project_refund(
         _reject("refund_exceeds_unallocated", "requested_base_units", "would consume A - S")
     if requested > vault:
         _reject("refund_exceeds_vault", "requested_base_units", "exceeds observed vault")
+    if reason == "final_close" and requested != vault:
+        _reject(
+            "final_close_requires_full_vault",
+            "requested_base_units",
+            "final close must consume the entire remaining vault",
+        )
     projection = {
         "type": "refund_projection",
         "protocol_version": PROTOCOL_VERSION,
@@ -507,12 +827,14 @@ def project_refund(
 
 def validate_finalization(
     channel: Mapping[str, Any],
+    freeze_snapshot: Mapping[str, Any],
     *,
     now: datetime,
-    operation_states: Sequence[str] = (),
+    operation_states: Sequence[str],
 ) -> None:
     """Fail closed unless a caller-provided snapshot is final-close eligible."""
 
+    _validate_freeze_snapshot(freeze_snapshot)
     projection = validate_channel(channel)
     if channel["status"] != "closing":
         _reject("finalization_lifecycle_forbidden", "channel.status", "requires closing")
@@ -522,6 +844,14 @@ def validate_finalization(
         _reject("outstanding_right_reserved", "channel", "A - S must be zero")
     if projection.vault_balance_base_units != 0:
         _reject("vault_not_empty", "channel", "finalization requires V = 0")
+    if freeze_snapshot["channel"] != _channel_reference(channel):
+        _reject("channel_reference_mismatch", "freeze_snapshot.channel", "wrong channel")
+    if int(freeze_snapshot["unresolved_operation_count"]) != 0:
+        _reject(
+            "unresolved_economic_operation",
+            "freeze_snapshot.unresolved_operation_count",
+            "finalization blocked",
+        )
     if any(state in _AMBIGUOUS_STATES for state in _operation_states(operation_states)):
         _reject("unresolved_economic_operation", "operation_states", "finalization blocked")
 
@@ -607,7 +937,15 @@ class ClosureRuntime:
                     freeze_snapshot_hash TEXT NOT NULL,
                     requested_amount INTEGER NOT NULL CHECK (requested_amount > 0),
                     maximum_refundable INTEGER NOT NULL,
+                    refunded_before INTEGER NOT NULL,
+                    refunded_after INTEGER NOT NULL,
                     state TEXT NOT NULL,
+                    commitment_json TEXT,
+                    execution_request_id TEXT,
+                    execution_commitment_hash TEXT,
+                    prepared_message_hash TEXT,
+                    executor_id TEXT,
+                    expected_signer TEXT,
                     submit_intent_count INTEGER NOT NULL DEFAULT 0 CHECK (submit_intent_count <= 1),
                     technical_receipt_json TEXT,
                     transaction_signature TEXT,
@@ -675,21 +1013,44 @@ class ClosureRuntime:
                 """
                 SELECT COALESCE(SUM(requested_amount), 0) AS reserved
                 FROM refunds
-                WHERE channel_id = ? AND epoch = ? AND freeze_snapshot_hash = ?
+                WHERE channel_id = ? AND epoch = ? AND closure_id = ?
                   AND state NOT IN (
                     'rejected_before_submission',
                     'failed_before_submission',
-                    'explicitly_cancelled_before_authorization'
+                    'explicitly_cancelled_before_authorization',
+                    'completed'
                   )
                 """,
                 (
                     channel["channel_id"],
                     channel["epoch"],
-                    freeze_snapshot["freeze_snapshot_hash"],
+                    refund_request["closure_id"],
                 ),
             ).fetchone()["reserved"]
             requested = int(projection["requested_base_units"])
             maximum = int(projection["maximum_refundable_base_units"])
+            refunded_before = int(projection["refunded_total_before_base_units"])
+            refunded_after = int(projection["refunded_total_after_base_units"])
+            completed_high_water = connection.execute(
+                """
+                SELECT COALESCE(MAX(refunded_after), 0) AS high_water
+                FROM refunds
+                WHERE channel_id = ? AND epoch = ? AND closure_id = ?
+                  AND state = 'completed'
+                """,
+                (
+                    channel["channel_id"],
+                    channel["epoch"],
+                    refund_request["closure_id"],
+                ),
+            ).fetchone()["high_water"]
+            if refunded_before < int(completed_high_water):
+                connection.rollback()
+                _reject(
+                    "stale_freeze_snapshot",
+                    "freeze_snapshot.refunded_total_base_units",
+                    "does not incorporate the latest reconciled refund",
+                )
             if int(reserved) + requested > maximum:
                 connection.rollback()
                 _reject(
@@ -703,8 +1064,8 @@ class ClosureRuntime:
                     refund_id, channel_id, epoch, closure_id, idempotency_key,
                     request_hash, request_json, projection_hash, projection_json,
                     freeze_snapshot_hash, requested_amount, maximum_refundable,
-                    state, created_at, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'validated', ?, ?)
+                    refunded_before, refunded_after, state, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'validated', ?, ?)
                 """,
                 (
                     refund_id,
@@ -719,11 +1080,102 @@ class ClosureRuntime:
                     freeze_snapshot["freeze_snapshot_hash"],
                     requested,
                     maximum,
+                    refunded_before,
+                    refunded_after,
                     timestamp,
                     timestamp,
                 ),
             )
             self._event(connection, refund_id, "validated", projection, timestamp)
+            connection.commit()
+        return self.get(refund_id)
+
+    def commit_execution(
+        self,
+        refund_id: str,
+        commitment: Mapping[str, Any],
+        *,
+        now: datetime,
+    ) -> RefundRecord:
+        """Persist exact execution correlation before a submit intent exists."""
+
+        _closed(
+            commitment,
+            field="execution_commitment",
+            required=_EXECUTION_COMMITMENT_FIELDS,
+        )
+        if commitment["type"] != "refund_execution_commitment":
+            _reject("invalid_execution_commitment", "commitment.type", "wrong object type")
+        if commitment["protocol_version"] != PROTOCOL_VERSION:
+            _reject("invalid_protocol_version", "commitment.protocol_version", "unsupported")
+        for field in (
+            "refund_request_hash",
+            "refund_projection_hash",
+            "execution_commitment_hash",
+            "prepared_message_hash",
+        ):
+            _hash(commitment[field], f"commitment.{field}")
+        for field in ("execution_request_id", "executor_id"):
+            _identifier(commitment[field], f"commitment.{field}")
+        _pubkey(commitment["expected_signer"], "commitment.expected_signer")
+        expires_at = _time(commitment["expires_at"], "commitment.expires_at")
+        if _utc(now) >= expires_at:
+            _reject("execution_commitment_expired", "commitment.expires_at", "expired")
+        timestamp = _format_time(now)
+        serialized = json.dumps(commitment, sort_keys=True, separators=(",", ":"))
+        with closing(self._connect()) as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            row = self._row(connection, refund_id)
+            if row["state"] == "execution_committed":
+                if row["commitment_json"] != serialized:
+                    connection.rollback()
+                    _reject(
+                        "execution_commitment_conflict",
+                        "commitment",
+                        "different exact bytes already persisted",
+                    )
+                connection.commit()
+                return self._record(row)
+            if row["state"] != "validated":
+                connection.rollback()
+                _reject("commitment_state_invalid", "refund.state", str(row["state"]))
+            if commitment["refund_request_hash"] != row["request_hash"]:
+                connection.rollback()
+                _reject("execution_commitment_mismatch", "commitment", "request hash mismatch")
+            if commitment["refund_projection_hash"] != row["projection_hash"]:
+                connection.rollback()
+                _reject(
+                    "execution_commitment_mismatch",
+                    "commitment",
+                    "projection hash mismatch",
+                )
+            connection.execute(
+                """
+                UPDATE refunds
+                SET state = 'execution_committed', commitment_json = ?,
+                    execution_request_id = ?, execution_commitment_hash = ?,
+                    prepared_message_hash = ?, executor_id = ?,
+                    expected_signer = ?, updated_at = ?
+                WHERE refund_id = ?
+                """,
+                (
+                    serialized,
+                    commitment["execution_request_id"],
+                    commitment["execution_commitment_hash"],
+                    commitment["prepared_message_hash"],
+                    commitment["executor_id"],
+                    commitment["expected_signer"],
+                    timestamp,
+                    refund_id,
+                ),
+            )
+            self._event(
+                connection,
+                refund_id,
+                "execution_committed",
+                commitment,
+                timestamp,
+            )
             connection.commit()
         return self.get(refund_id)
 
@@ -735,7 +1187,7 @@ class ClosureRuntime:
             if row["state"] in {"submitted", "needs_recovery", "reconciling", "completed"}:
                 connection.commit()
                 return self._record(row)
-            if row["state"] != "validated":
+            if row["state"] != "execution_committed":
                 connection.rollback()
                 _reject("submit_state_invalid", "refund.state", str(row["state"]))
             connection.execute(
@@ -763,15 +1215,42 @@ class ClosureRuntime:
         *,
         now: datetime,
     ) -> RefundRecord:
+        _closed(
+            receipt,
+            field="technical_receipt",
+            required=_TECHNICAL_RECEIPT_REQUIRED,
+            allowed=_TECHNICAL_RECEIPT_FIELDS,
+        )
         _validate_hash(receipt, "receipt_hash")
         if receipt.get("type") != "technical_refund_receipt":
             _reject("invalid_technical_receipt", "receipt.type", "wrong object type")
         if receipt.get("protocol_version") != PROTOCOL_VERSION:
             _reject("invalid_protocol_version", "receipt.protocol_version", "unsupported")
+        _identifier(receipt["refund_id"], "receipt.refund_id")
+        _identifier(receipt["execution_request_id"], "receipt.execution_request_id")
+        _hash(receipt["refund_request_hash"], "receipt.refund_request_hash")
+        _hash(receipt["execution_commitment_hash"], "receipt.execution_commitment_hash")
+        _time(receipt["observed_at"], "receipt.observed_at")
+        if not isinstance(receipt["technical_status"], str) or not receipt["technical_status"]:
+            _reject("invalid_technical_status", "receipt.technical_status", "required")
         timestamp = _format_time(now)
+        serialized = json.dumps(receipt, sort_keys=True, separators=(",", ":"))
         with closing(self._connect()) as connection:
             connection.execute("BEGIN IMMEDIATE")
             row = self._row(connection, refund_id)
+            if row["technical_receipt_json"] is not None:
+                if row["technical_receipt_json"] != serialized:
+                    connection.rollback()
+                    _reject(
+                        "technical_receipt_conflict",
+                        "receipt",
+                        "a different technical result is already persisted",
+                    )
+                connection.commit()
+                return self._record(row)
+            if row["state"] != "submitted":
+                connection.rollback()
+                _reject("technical_receipt_state_invalid", "refund.state", str(row["state"]))
             if int(row["submit_intent_count"]) != 1:
                 connection.rollback()
                 _reject("submit_intent_missing", "refund", "persist intent before receipt")
@@ -781,14 +1260,34 @@ class ClosureRuntime:
             if receipt["refund_request_hash"] != row["request_hash"]:
                 connection.rollback()
                 _reject("technical_receipt_mismatch", "receipt", "request hash mismatch")
+            if receipt["execution_request_id"] != row["execution_request_id"]:
+                connection.rollback()
+                _reject("technical_receipt_mismatch", "receipt", "execution request mismatch")
+            if receipt["execution_commitment_hash"] != row["execution_commitment_hash"]:
+                connection.rollback()
+                _reject("technical_receipt_mismatch", "receipt", "commitment mismatch")
             outcome = receipt["outcome"]
             if outcome not in {"accepted", "rejected", "unknown"}:
                 connection.rollback()
                 _reject("invalid_technical_outcome", "receipt.outcome", str(outcome))
             signature = receipt.get("transaction_signature")
-            if receipt["signature_status"] == "known" and not signature:
+            signature_status = receipt["signature_status"]
+            if signature_status not in {"known", "unknown"}:
+                connection.rollback()
+                _reject("invalid_signature_status", "receipt.signature_status", signature_status)
+            if signature_status == "known" and not signature:
                 connection.rollback()
                 _reject("technical_signature_missing", "receipt", "known requires signature")
+            if signature is not None and (not isinstance(signature, str) or not signature):
+                connection.rollback()
+                _reject("invalid_transaction_signature", "receipt", "must be non-empty")
+            if outcome == "accepted" and signature_status != "known":
+                connection.rollback()
+                _reject(
+                    "accepted_signature_unknown",
+                    "receipt.signature_status",
+                    "accepted requires a known signature",
+                )
             state = (
                 "needs_recovery"
                 if outcome == "unknown"
@@ -803,7 +1302,7 @@ class ClosureRuntime:
                 """,
                 (
                     state,
-                    json.dumps(receipt, sort_keys=True, separators=(",", ":")),
+                    serialized,
                     signature,
                     timestamp,
                     refund_id,
@@ -821,11 +1320,43 @@ class ClosureRuntime:
         observation_verifier: RefundObservationVerifier,
         now: datetime,
     ) -> RefundRecord:
+        _closed(observation, field="observation", required=_OBSERVATION_FIELDS)
         _validate_hash(observation, "observation_hash")
         if observation.get("type") != "channel_refund_observation":
             _reject("invalid_observation", "observation.type", "wrong object type")
         if observation.get("protocol_version") != PROTOCOL_VERSION:
             _reject("invalid_protocol_version", "observation.protocol_version", "unsupported")
+        _identifier(observation["source_id"], "observation.source_id")
+        _identifier(observation["refund_id"], "observation.refund_id")
+        _validate_domain(observation["domain"], "observation.domain")
+        _identifier(observation["channel_id"], "observation.channel_id")
+        _pubkey(observation["channel_account"], "observation.channel_account")
+        if type(observation["epoch"]) is not int or observation["epoch"] < 0:
+            _reject("invalid_epoch", "observation.epoch", "expected non-negative integer")
+        _pubkey(observation["mint"], "observation.mint")
+        _pubkey(observation["destination"], "observation.destination")
+        _hash(observation["refund_request_hash"], "observation.refund_request_hash")
+        _hash(observation["refund_projection_hash"], "observation.refund_projection_hash")
+        _time(observation["observed_at"], "observation.observed_at")
+        if (
+            not isinstance(observation["transaction_signature"], str)
+            or not observation["transaction_signature"]
+        ):
+            _reject(
+                "invalid_transaction_signature",
+                "observation.transaction_signature",
+                "required",
+            )
+        for field in (
+            "funded_total_base_units",
+            "activated_total_base_units",
+            "settled_total_base_units",
+            "refunded_total_before_base_units",
+            "refunded_total_after_base_units",
+            "vault_balance_before_base_units",
+            "vault_balance_after_base_units",
+        ):
+            _amount(observation[field], f"observation.{field}")
         if observation_verifier.source_id != observation.get("source_id"):
             _reject(
                 "observation_verifier_mismatch",
@@ -855,12 +1386,15 @@ class ClosureRuntime:
             request = json.loads(row["request_json"])
             projection = json.loads(row["projection_json"])
             expected = {
+                "domain": request["domain"],
                 "channel_id": request["channel"]["channel_id"],
                 "channel_account": request["channel"]["channel_account"],
                 "epoch": request["channel"]["epoch"],
                 "mint": request["channel"]["mint"],
                 "destination": request["destination"],
                 "refund_id": refund_id,
+                "refund_request_hash": row["request_hash"],
+                "refund_projection_hash": row["projection_hash"],
                 "funded_total_base_units": projection["funded_total_base_units"],
                 "refunded_total_before_base_units": projection["refunded_total_before_base_units"],
                 "refunded_total_after_base_units": projection["refunded_total_after_base_units"],

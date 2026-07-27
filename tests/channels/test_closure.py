@@ -72,6 +72,7 @@ def channel(
     refunded: int = 0,
     latest_sequence: int = 1,
     epoch: int = 0,
+    funded: int = 100_000_000,
     updated_at: str = "2026-08-01T00:04:00Z",
 ) -> dict:
     result = {
@@ -90,7 +91,7 @@ def channel(
         "mint": MINT,
         "decimals": 6,
         "vault_token_account": VAULT,
-        "funded_total_base_units": "100000000",
+        "funded_total_base_units": str(funded),
         "activated_authorized_total_base_units": str(activated),
         "settled_total_base_units": str(settled),
         "refunded_total_base_units": str(refunded),
@@ -197,6 +198,7 @@ def refund_observation(request: dict, projection: dict, **changes: object) -> di
     unsigned = {
         "type": "channel_refund_observation",
         "protocol_version": "1.0.0",
+        "domain": request["domain"],
         "source_id": "independent_fixture",
         "channel_id": request["channel"]["channel_id"],
         "channel_account": request["channel"]["channel_account"],
@@ -204,6 +206,8 @@ def refund_observation(request: dict, projection: dict, **changes: object) -> di
         "mint": request["channel"]["mint"],
         "destination": request["destination"],
         "refund_id": request["refund_id"],
+        "refund_request_hash": request["request_hash"],
+        "refund_projection_hash": projection["projection_hash"],
         "transaction_signature": SIGNATURE,
         "funded_total_base_units": projection["funded_total_base_units"],
         "activated_total_base_units": projection["activated_total_base_units"],
@@ -216,6 +220,36 @@ def refund_observation(request: dict, projection: dict, **changes: object) -> di
     }
     unsigned.update(changes)
     return {**unsigned, "observation_hash": canonical_hash(unsigned)}
+
+
+def execution_commitment(request: dict, projection: dict) -> dict:
+    return {
+        "type": "refund_execution_commitment",
+        "protocol_version": "1.0.0",
+        "refund_request_hash": request["request_hash"],
+        "refund_projection_hash": projection["projection_hash"],
+        "execution_request_id": f"execution_{request['refund_id']}",
+        "execution_commitment_hash": "sha256:" + ("c" * 64),
+        "prepared_message_hash": "sha256:" + ("d" * 64),
+        "executor_id": "offline_refund_executor",
+        "expected_signer": VAULT,
+        "expires_at": "2026-08-01T00:10:00Z",
+    }
+
+
+def prepare_refund(
+    runtime: ClosureRuntime,
+    request: dict,
+    frozen: dict,
+) -> dict:
+    runtime.register_refund(request, frozen, now=DEADLINE)
+    projection = json.loads(sqlite_projection(runtime.path, request["refund_id"]))
+    runtime.commit_execution(
+        request["refund_id"],
+        execution_commitment(request, projection),
+        now=DEADLINE,
+    )
+    return projection
 
 
 def assert_error(code: str, callback) -> None:
@@ -278,6 +312,140 @@ def test_close_rejects_short_grace_and_freeze_before_deadline() -> None:
                 updated_at="2026-08-01T00:05:59Z",
             ),
             now=DEADLINE - timedelta(seconds=1),
+        ),
+    )
+
+
+@pytest.mark.parametrize(
+    ("closing_changes", "expected_code"),
+    [
+        ({"funded": 120_000_000}, "funding_changed_during_close"),
+        ({"refunded": 5_000_000}, "refund_changed_during_claim_window"),
+    ],
+)
+def test_freeze_rejects_funding_or_refund_during_claim_window(
+    closing_changes: dict,
+    expected_code: str,
+) -> None:
+    artifacts = request_close(
+        channel(),
+        closure_id="closure_001",
+        idempotency_key="close_001",
+        now=NOW,
+        claim_deadline=DEADLINE,
+    )
+    closing = channel(
+        status="closing",
+        activated=40_000_000,
+        settled=15_000_000,
+        latest_sequence=3,
+        updated_at="2026-08-01T00:06:00Z",
+        **closing_changes,
+    )
+    assert_error(
+        expected_code,
+        lambda: freeze_closure(
+            artifacts.request,
+            artifacts.snapshot_at_request,
+            closing,
+            now=DEADLINE,
+        ),
+    )
+
+
+def test_freeze_rejects_settled_total_regression() -> None:
+    artifacts = request_close(
+        channel(settled=5_000_000),
+        closure_id="closure_001",
+        idempotency_key="close_001",
+        now=NOW,
+        claim_deadline=DEADLINE,
+    )
+    closing = channel(
+        status="closing",
+        activated=40_000_000,
+        settled=0,
+        latest_sequence=3,
+        updated_at="2026-08-01T00:06:00Z",
+    )
+    assert_error(
+        "settled_total_decreased",
+        lambda: freeze_closure(
+            artifacts.request,
+            artifacts.snapshot_at_request,
+            closing,
+            now=DEADLINE,
+        ),
+    )
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("closure_id", "closure_forged"),
+        ("channel_snapshot_hash", "sha256:" + ("f" * 64)),
+        ("claim_deadline", "2026-08-01T00:07:00Z"),
+    ],
+)
+def test_freeze_rejects_request_snapshot_link_forgery(field: str, value: object) -> None:
+    artifacts = request_close(
+        channel(),
+        closure_id="closure_001",
+        idempotency_key="close_001",
+        now=NOW,
+        claim_deadline=DEADLINE,
+    )
+    forged = rehash(
+        {**artifacts.snapshot_at_request, field: value},
+        "request_snapshot_hash",
+    )
+    closing = channel(
+        status="closing",
+        activated=40_000_000,
+        settled=15_000_000,
+        latest_sequence=3,
+        updated_at="2026-08-01T00:06:00Z",
+    )
+    assert_error(
+        "request_snapshot_link_mismatch",
+        lambda: freeze_closure(
+            artifacts.request,
+            forged,
+            closing,
+            now=DEADLINE,
+        ),
+    )
+
+
+def test_freeze_rejects_request_snapshot_accounting_forgery() -> None:
+    artifacts = request_close(
+        channel(),
+        closure_id="closure_001",
+        idempotency_key="close_001",
+        now=NOW,
+        claim_deadline=DEADLINE,
+    )
+    forged = rehash(
+        {
+            **artifacts.snapshot_at_request,
+            "vault_balance_base_units": "99999999",
+        },
+        "request_snapshot_hash",
+    )
+    closing = channel(
+        status="closing",
+        activated=40_000_000,
+        settled=15_000_000,
+        latest_sequence=3,
+        updated_at="2026-08-01T00:06:00Z",
+    )
+    assert_error(
+        "conservation_violation",
+        lambda: freeze_closure(
+            artifacts.request,
+            forged,
+            closing,
+            now=DEADLINE,
         ),
     )
 
@@ -356,6 +524,20 @@ def test_refund_bounds_and_final_close_right_gate() -> None:
             requested_base_units=0,
             now=DEADLINE,
             expires_at=DEADLINE + timedelta(minutes=1),
+        ),
+    )
+    _, final_request, _, final_frozen = closure_flow(settled_at_freeze=40_000_000)
+    assert_error(
+        "final_close_requires_full_vault",
+        lambda: project_refund(
+            refund_request(
+                final_request,
+                final_frozen,
+                amount=1,
+                reason="final_close",
+            ),
+            final_frozen,
+            now=DEADLINE,
         ),
     )
 
@@ -438,6 +620,7 @@ def test_golden_refund_preserves_conservation_without_reducing_activation() -> N
 
 
 def test_finalization_requires_no_right_no_vault_and_no_ambiguity() -> None:
+    _, _, _, frozen = closure_flow()
     outstanding = channel(
         status="closing",
         activated=40_000_000,
@@ -448,7 +631,12 @@ def test_finalization_requires_no_right_no_vault_and_no_ambiguity() -> None:
     )
     assert_error(
         "outstanding_right_reserved",
-        lambda: validate_finalization(outstanding, now=DEADLINE),
+        lambda: validate_finalization(
+            outstanding,
+            frozen,
+            now=DEADLINE,
+            operation_states=(),
+        ),
     )
     eligible = channel(
         status="closing",
@@ -458,13 +646,24 @@ def test_finalization_requires_no_right_no_vault_and_no_ambiguity() -> None:
         latest_sequence=3,
         updated_at="2026-08-01T00:06:00Z",
     )
-    validate_finalization(eligible, now=DEADLINE)
+    validate_finalization(eligible, frozen, now=DEADLINE, operation_states=())
     assert_error(
         "unresolved_economic_operation",
         lambda: validate_finalization(
             eligible,
+            frozen,
             now=DEADLINE,
             operation_states=("reconciling",),
+        ),
+    )
+    _, _, _, unresolved_freeze = closure_flow(operation_states=("needs_recovery",))
+    assert_error(
+        "unresolved_economic_operation",
+        lambda: validate_finalization(
+            eligible,
+            unresolved_freeze,
+            now=DEADLINE,
+            operation_states=(),
         ),
     )
 
@@ -504,11 +703,74 @@ def test_two_process_style_race_cannot_over_refund(tmp_path: Path) -> None:
     assert sorted(results) == ["aggregate_refund_exceeds_unallocated", "validated"]
 
 
+def test_distinct_freeze_hashes_cannot_bypass_aggregate_reservation(tmp_path: Path) -> None:
+    _, request, _, frozen = closure_flow()
+    second_frozen = rehash(
+        {**frozen, "frozen_at": "2026-08-01T00:06:01Z"},
+        "freeze_snapshot_hash",
+    )
+    runtime = ClosureRuntime(tmp_path / "freeze-race.sqlite3")
+    first = refund_request(request, frozen, amount=60_000_000, suffix="first")
+    second = refund_request(
+        request,
+        second_frozen,
+        amount=60_000_000,
+        suffix="second",
+    )
+    runtime.register_refund(first, frozen, now=DEADLINE)
+
+    assert_error(
+        "aggregate_refund_exceeds_unallocated",
+        lambda: runtime.register_refund(second, second_frozen, now=DEADLINE),
+    )
+
+
+def test_submit_requires_exact_execution_commitment(tmp_path: Path) -> None:
+    _, request, _, frozen = closure_flow()
+    intent = refund_request(request, frozen)
+    runtime = ClosureRuntime(tmp_path / "commitment.sqlite3")
+    runtime.register_refund(intent, frozen, now=DEADLINE)
+    projection = json.loads(sqlite_projection(runtime.path, intent["refund_id"]))
+    assert_error(
+        "submit_state_invalid",
+        lambda: runtime.record_submit_intent(intent["refund_id"], now=DEADLINE),
+    )
+    wrong = {
+        **execution_commitment(intent, projection),
+        "refund_projection_hash": "sha256:" + ("e" * 64),
+    }
+    assert_error(
+        "execution_commitment_mismatch",
+        lambda: runtime.commit_execution(intent["refund_id"], wrong, now=DEADLINE),
+    )
+    runtime.commit_execution(
+        intent["refund_id"],
+        execution_commitment(intent, projection),
+        now=DEADLINE,
+    )
+    runtime.record_submit_intent(intent["refund_id"], now=DEADLINE)
+    wrong_receipt = rehash(
+        {
+            **technical_receipt(intent),
+            "execution_commitment_hash": "sha256:" + ("e" * 64),
+        },
+        "receipt_hash",
+    )
+    assert_error(
+        "technical_receipt_mismatch",
+        lambda: runtime.record_technical_receipt(
+            intent["refund_id"],
+            wrong_receipt,
+            now=DEADLINE + timedelta(seconds=1),
+        ),
+    )
+
+
 def test_submit_intent_is_at_most_one_and_unknown_never_completes(tmp_path: Path) -> None:
     _, request, _, frozen = closure_flow()
     intent = refund_request(request, frozen)
     runtime = ClosureRuntime(tmp_path / "unknown.sqlite3")
-    runtime.register_refund(intent, frozen, now=DEADLINE)
+    prepare_refund(runtime, intent, frozen)
     runtime.record_submit_intent(intent["refund_id"], now=DEADLINE)
     runtime.record_submit_intent(intent["refund_id"], now=DEADLINE)
     record = runtime.record_technical_receipt(
@@ -522,12 +784,68 @@ def test_submit_intent_is_at_most_one_and_unknown_never_completes(tmp_path: Path
     assert record.reconciled_receipt is None
 
 
+def test_unknown_technical_result_cannot_be_overwritten(tmp_path: Path) -> None:
+    _, request, _, frozen = closure_flow()
+    intent = refund_request(request, frozen)
+    runtime = ClosureRuntime(tmp_path / "unknown-immutable.sqlite3")
+    prepare_refund(runtime, intent, frozen)
+    runtime.record_submit_intent(intent["refund_id"], now=DEADLINE)
+    runtime.record_technical_receipt(
+        intent["refund_id"],
+        technical_receipt(intent, outcome="unknown"),
+        now=DEADLINE + timedelta(seconds=1),
+    )
+
+    assert_error(
+        "technical_receipt_conflict",
+        lambda: runtime.record_technical_receipt(
+            intent["refund_id"],
+            technical_receipt(intent, outcome="accepted"),
+            now=DEADLINE + timedelta(seconds=2),
+        ),
+    )
+    assert runtime.get(intent["refund_id"]).state == "needs_recovery"
+
+
+@pytest.mark.parametrize(
+    ("mutation", "expected_code"),
+    [
+        (
+            {
+                "signature_status": "unknown",
+                "transaction_signature": "",
+            },
+            "invalid_transaction_signature",
+        ),
+        ({"unexpected": "field"}, "unknown_field"),
+    ],
+)
+def test_invalid_technical_receipt_shape_is_rejected(
+    tmp_path: Path,
+    mutation: dict,
+    expected_code: str,
+) -> None:
+    _, request, _, frozen = closure_flow()
+    intent = refund_request(request, frozen)
+    runtime = ClosureRuntime(tmp_path / f"invalid-tech-{expected_code}.sqlite3")
+    prepare_refund(runtime, intent, frozen)
+    runtime.record_submit_intent(intent["refund_id"], now=DEADLINE)
+    invalid = rehash({**technical_receipt(intent), **mutation}, "receipt_hash")
+    assert_error(
+        expected_code,
+        lambda: runtime.record_technical_receipt(
+            intent["refund_id"],
+            invalid,
+            now=DEADLINE + timedelta(seconds=1),
+        ),
+    )
+
+
 def test_technical_receipt_is_not_economic_completion(tmp_path: Path) -> None:
     _, request, _, frozen = closure_flow()
     intent = refund_request(request, frozen)
     runtime = ClosureRuntime(tmp_path / "technical.sqlite3")
-    registered = runtime.register_refund(intent, frozen, now=DEADLINE)
-    projection = json.loads(sqlite_projection(runtime.path, registered.refund_id))
+    projection = prepare_refund(runtime, intent, frozen)
     runtime.record_submit_intent(intent["refund_id"], now=DEADLINE)
     technical = runtime.record_technical_receipt(
         intent["refund_id"],
@@ -546,6 +864,58 @@ def test_technical_receipt_is_not_economic_completion(tmp_path: Path) -> None:
     assert completed.state == "completed"
     assert completed.reconciled_receipt is not None
     assert completed.reconciled_receipt["refunded_total_after_base_units"] == "60000000"
+
+
+def test_completed_refund_establishes_refunded_high_water(tmp_path: Path) -> None:
+    _, request, _, frozen = closure_flow()
+    first = refund_request(request, frozen, amount=30_000_000, suffix="first")
+    runtime = ClosureRuntime(tmp_path / "high-water.sqlite3")
+    projection = prepare_refund(runtime, first, frozen)
+    runtime.record_submit_intent(first["refund_id"], now=DEADLINE)
+    runtime.record_technical_receipt(
+        first["refund_id"],
+        technical_receipt(first),
+        now=DEADLINE + timedelta(seconds=1),
+    )
+    runtime.reconcile(
+        first["refund_id"],
+        refund_observation(first, projection),
+        observation_verifier=FixtureObservationVerifier(),
+        now=DEADLINE + timedelta(seconds=2),
+    )
+    stale_freeze = rehash(
+        {**frozen, "frozen_at": "2026-08-01T00:06:03Z"},
+        "freeze_snapshot_hash",
+    )
+    stale = refund_request(request, stale_freeze, amount=30_000_000, suffix="stale")
+    assert_error(
+        "stale_freeze_snapshot",
+        lambda: runtime.register_refund(
+            stale,
+            stale_freeze,
+            now=DEADLINE + timedelta(seconds=3),
+        ),
+    )
+    current_freeze = rehash(
+        {
+            **frozen,
+            "channel_snapshot_hash": "sha256:" + ("3" * 64),
+            "refunded_total_base_units": "30000000",
+            "vault_balance_base_units": "55000000",
+            "excess_refundable_base_units": "30000000",
+            "frozen_at": "2026-08-01T00:06:03Z",
+        },
+        "freeze_snapshot_hash",
+    )
+    current = refund_request(request, current_freeze, amount=30_000_000, suffix="current")
+    assert (
+        runtime.register_refund(
+            current,
+            current_freeze,
+            now=DEADLINE + timedelta(seconds=3),
+        ).state
+        == "validated"
+    )
 
 
 def sqlite_projection(path: Path, refund_id: str) -> str:
@@ -567,8 +937,7 @@ def test_reconciliation_mismatch_never_completes(tmp_path: Path) -> None:
     _, request, _, frozen = closure_flow()
     intent = refund_request(request, frozen)
     runtime = ClosureRuntime(tmp_path / "mismatch.sqlite3")
-    runtime.register_refund(intent, frozen, now=DEADLINE)
-    projection = json.loads(sqlite_projection(runtime.path, intent["refund_id"]))
+    projection = prepare_refund(runtime, intent, frozen)
     runtime.record_submit_intent(intent["refund_id"], now=DEADLINE)
     runtime.record_technical_receipt(
         intent["refund_id"],
@@ -593,6 +962,71 @@ def test_reconciliation_mismatch_never_completes(tmp_path: Path) -> None:
     assert runtime.get(intent["refund_id"]).state == "needs_review"
 
 
+@pytest.mark.parametrize(
+    ("mutation", "expected_code"),
+    [
+        ({"transaction_signature": ""}, "invalid_transaction_signature"),
+        ({"unexpected": "field"}, "unknown_field"),
+    ],
+)
+def test_invalid_observation_shape_cannot_complete(
+    tmp_path: Path,
+    mutation: dict,
+    expected_code: str,
+) -> None:
+    _, request, _, frozen = closure_flow()
+    intent = refund_request(request, frozen)
+    runtime = ClosureRuntime(tmp_path / f"invalid-observation-{expected_code}.sqlite3")
+    projection = prepare_refund(runtime, intent, frozen)
+    runtime.record_submit_intent(intent["refund_id"], now=DEADLINE)
+    runtime.record_technical_receipt(
+        intent["refund_id"],
+        technical_receipt(intent),
+        now=DEADLINE + timedelta(seconds=1),
+    )
+    invalid = rehash(
+        {**refund_observation(intent, projection), **mutation},
+        "observation_hash",
+    )
+    assert_error(
+        expected_code,
+        lambda: runtime.reconcile(
+            intent["refund_id"],
+            invalid,
+            observation_verifier=FixtureObservationVerifier(),
+            now=DEADLINE + timedelta(seconds=2),
+        ),
+    )
+    assert runtime.get(intent["refund_id"]).state == "reconciling"
+
+
+def test_observation_domain_replay_never_completes(tmp_path: Path) -> None:
+    _, request, _, frozen = closure_flow()
+    intent = refund_request(request, frozen)
+    runtime = ClosureRuntime(tmp_path / "domain-replay.sqlite3")
+    projection = prepare_refund(runtime, intent, frozen)
+    runtime.record_submit_intent(intent["refund_id"], now=DEADLINE)
+    runtime.record_technical_receipt(
+        intent["refund_id"],
+        technical_receipt(intent),
+        now=DEADLINE + timedelta(seconds=1),
+    )
+    replay = refund_observation(intent, projection)
+    replay["domain"] = {**replay["domain"], "network": "solana:mainnet"}
+    replay = rehash(replay, "observation_hash")
+
+    assert_error(
+        "unsupported_domain",
+        lambda: runtime.reconcile(
+            intent["refund_id"],
+            replay,
+            observation_verifier=FixtureObservationVerifier(),
+            now=DEADLINE + timedelta(seconds=2),
+        ),
+    )
+    assert runtime.get(intent["refund_id"]).state == "reconciling"
+
+
 def test_pre_submission_release_frees_reservation(tmp_path: Path) -> None:
     _, request, _, frozen = closure_flow()
     runtime = ClosureRuntime(tmp_path / "release.sqlite3")
@@ -613,8 +1047,7 @@ def test_lost_response_restart_recovers_signature_without_second_submit(tmp_path
     intent = refund_request(request, frozen)
     path = tmp_path / "recovery.sqlite3"
     runtime = ClosureRuntime(path)
-    runtime.register_refund(intent, frozen, now=DEADLINE)
-    projection = json.loads(sqlite_projection(path, intent["refund_id"]))
+    projection = prepare_refund(runtime, intent, frozen)
     runtime.record_submit_intent(intent["refund_id"], now=DEADLINE)
     runtime.record_technical_receipt(
         intent["refund_id"],
@@ -653,8 +1086,7 @@ def test_provider_divergence_is_disputed_and_unverified_observation_fails(
     _, request, _, frozen = closure_flow()
     intent = refund_request(request, frozen)
     runtime = ClosureRuntime(tmp_path / "divergence.sqlite3")
-    runtime.register_refund(intent, frozen, now=DEADLINE)
-    projection = json.loads(sqlite_projection(runtime.path, intent["refund_id"]))
+    projection = prepare_refund(runtime, intent, frozen)
     runtime.record_submit_intent(intent["refund_id"], now=DEADLINE)
     runtime.record_technical_receipt(
         intent["refund_id"],
@@ -716,9 +1148,9 @@ def test_schema_accepts_runtime_artifacts(tmp_path: Path) -> None:
     validator = Draft202012Validator(schema, format_checker=FormatChecker())
     _, request, at_request, frozen = closure_flow()
     intent = refund_request(request, frozen)
-    projection = project_refund(intent, frozen, now=DEADLINE)
     runtime = ClosureRuntime(tmp_path / "schema.sqlite3")
-    runtime.register_refund(intent, frozen, now=DEADLINE)
+    projection = prepare_refund(runtime, intent, frozen)
+    commitment = execution_commitment(intent, projection)
     runtime.record_submit_intent(intent["refund_id"], now=DEADLINE)
     tech = technical_receipt(intent)
     runtime.record_technical_receipt(
@@ -754,6 +1186,7 @@ def test_schema_accepts_runtime_artifacts(tmp_path: Path) -> None:
         frozen,
         intent,
         projection,
+        commitment,
         tech,
         observation,
         completed.reconciled_receipt,
