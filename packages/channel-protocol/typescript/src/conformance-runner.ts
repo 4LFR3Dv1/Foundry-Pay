@@ -36,12 +36,23 @@ type RunnerResult = {
 };
 
 const RUNNER_CONTRACT = "foundry.channels.conformance-runner-result/1" as const;
+const SECURITY_RUNNER_CONTRACT = "foundry.channels.security-mutation-result/1" as const;
 const RUNNER_VERSION = "1.0.0" as const;
 const JSON_SAFE_UNSIGNED_MAX = 9_007_199_254_740_991n;
 const U64_MAX = 18_446_744_073_709_551_615n;
 const HASH = /^sha256:[0-9a-f]{64}$/;
 const AMOUNT = /^(0|[1-9][0-9]*)$/;
 const TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
+const SIGNED_TYPES = {
+  channel_voucher: {
+    domain: "foundry.channels.voucher",
+    hashField: "voucher_hash",
+  },
+  recipient_binding: {
+    domain: "foundry.channels.recipient-binding",
+    hashField: "binding_hash",
+  },
+} as const;
 
 export class ConformanceRejection extends Error {
   readonly code: string;
@@ -481,18 +492,168 @@ export function runRegistry(registryRoot: string): RunnerResult[] {
   });
 }
 
-function parseRegistryRoot(arguments_: string[]): string {
-  const index = arguments_.indexOf("--registry-root");
-  const value = index < 0 ? undefined : arguments_[index + 1];
-  if (value === undefined) {
-    throw new Error("--registry-root is required");
+type SecurityCase = {
+  case_id: string;
+  vector: string;
+  verifier_object_type: keyof typeof SIGNED_TYPES;
+  profile_id: string;
+  path: string[];
+  replacement: JsonValue;
+};
+
+type SecurityResult = {
+  schema_version: 1;
+  runner_contract: typeof SECURITY_RUNNER_CONTRACT;
+  implementation: "typescript";
+  runtime_version: string;
+  runner_version: typeof RUNNER_VERSION;
+  case_id: string;
+  decision: "reject";
+  stage: string;
+  code: string;
+  economic_effect_count: 0;
+  authority_advancement_count: 0;
+  lifecycle_transition_count: 0;
+  verified_transition_count: 0;
+  activation_requested_transition_count: 0;
+  authorized_transition_count: 0;
+  completed_transition_count: 0;
+  mutated_canonical_utf8_hex?: string;
+  mutated_byte_length?: number;
+  mutated_sha256?: string;
+};
+
+function securityRejection(
+  item: SecurityCase,
+  stage: string,
+  code: string,
+  computedBytes?: Buffer,
+): SecurityResult {
+  return {
+    schema_version: 1,
+    runner_contract: SECURITY_RUNNER_CONTRACT,
+    implementation: "typescript",
+    runtime_version: process.versions.node,
+    runner_version: RUNNER_VERSION,
+    case_id: item.case_id,
+    decision: "reject",
+    stage,
+    code,
+    economic_effect_count: 0,
+    authority_advancement_count: 0,
+    lifecycle_transition_count: 0,
+    verified_transition_count: 0,
+    activation_requested_transition_count: 0,
+    authorized_transition_count: 0,
+    completed_transition_count: 0,
+    ...(computedBytes === undefined
+      ? {}
+      : {
+          mutated_canonical_utf8_hex: computedBytes.toString("hex"),
+          mutated_byte_length: computedBytes.length,
+          mutated_sha256: sha256(computedBytes),
+        }),
+  };
+}
+
+function applySecurityMutation(source: JsonObject, item: SecurityCase): void {
+  if (item.path.length === 0) throw new Error(`${item.case_id}: mutation path is empty`);
+  let target = source;
+  for (const segment of item.path.slice(0, -1)) {
+    const child = target[segment];
+    if (child === null || Array.isArray(child) || typeof child !== "object") {
+      throw new Error(`${item.case_id}: mutation path is not an object`);
+    }
+    target = child;
   }
-  return resolve(value);
+  const field = item.path[item.path.length - 1]!;
+  if (!(field in target)) throw new Error(`${item.case_id}: mutation field is absent`);
+  target[field] = item.replacement;
+}
+
+function runSecurityCase(
+  item: SecurityCase,
+  registryRoot: string,
+): SecurityResult {
+  const verifier = SIGNED_TYPES[item.verifier_object_type];
+  if (verifier === undefined) throw new Error(`${item.case_id}: unsupported verifier type`);
+  if (item.profile_id !== "signed-payload-v1") {
+    return securityRejection(item, "profile_verification", "unsupported_profile");
+  }
+  if (item.vector.includes("/") || item.vector.includes("\\")) {
+    throw new Error(`${item.case_id}: invalid vector filename`);
+  }
+  const vector = loadObject(join(registryRoot, "positive", item.vector)) as unknown as Vector;
+  if (typeof vector.source_json !== "string") throw new Error(`${item.case_id}: source missing`);
+  const parsed = strictParse(vector.source_json);
+  if (parsed === null || Array.isArray(parsed) || typeof parsed !== "object") {
+    throw new Error(`${item.case_id}: source must be object`);
+  }
+  const source = parsed;
+  const declaredHash = source[verifier.hashField];
+  if (typeof declaredHash !== "string") {
+    return securityRejection(item, "type_verification", "object_type_mismatch");
+  }
+  applySecurityMutation(source, item);
+  const payload = source["payload"];
+  if (payload === null || Array.isArray(payload) || typeof payload !== "object") {
+    throw new Error(`${item.case_id}: payload missing`);
+  }
+  if (payload["protocol_version"] !== "1.0.0") {
+    return securityRejection(item, "version_verification", "unsupported_version");
+  }
+  if (payload["domain"] !== verifier.domain) {
+    return securityRejection(item, "domain_verification", "domain_mismatch");
+  }
+  const computedBytes = canonicalBytes(payload);
+  if (sha256(computedBytes) === declaredHash) {
+    throw new Error(`${item.case_id}: mutation preserved signed preimage`);
+  }
+  return securityRejection(
+    item,
+    "signed_preimage_verification",
+    "signed_preimage_mismatch",
+    computedBytes,
+  );
+}
+
+export function runSecurityCases(casesPath: string, registryRoot: string): SecurityResult[] {
+  const registry = loadObject(casesPath);
+  if (registry["runner_contract"] !== SECURITY_RUNNER_CONTRACT) {
+    throw new Error("security mutation runner contract mismatch");
+  }
+  const cases = registry["cases"];
+  if (!Array.isArray(cases)) throw new Error("security mutation cases must be an array");
+  const results = (cases as unknown as SecurityCase[])
+    .map((item) => runSecurityCase(item, registryRoot))
+    .sort((left, right) => left.case_id.localeCompare(right.case_id));
+  if (new Set(results.map((result) => result.case_id)).size !== results.length) {
+    throw new Error("duplicate security mutation case_id");
+  }
+  return results;
+}
+
+function option(arguments_: string[], name: string, required = false): string | undefined {
+  const index = arguments_.indexOf(name);
+  const value = index < 0 ? undefined : arguments_[index + 1];
+  if (required && value === undefined) throw new Error(`${name} is required`);
+  return value === undefined ? undefined : resolve(value);
+}
+
+function parseRegistryRoot(arguments_: string[]): string {
+  return option(arguments_, "--registry-root", true)!;
 }
 
 function main(): number {
   try {
-    for (const result of runRegistry(parseRegistryRoot(process.argv.slice(2)))) {
+    const arguments_ = process.argv.slice(2);
+    const registryRoot = parseRegistryRoot(arguments_);
+    const securityCases = option(arguments_, "--security-cases");
+    const results =
+      securityCases === undefined
+        ? runRegistry(registryRoot)
+        : runSecurityCases(securityCases, registryRoot);
+    for (const result of results) {
       process.stdout.write(`${JSON.stringify(result)}\n`);
     }
     return 0;
