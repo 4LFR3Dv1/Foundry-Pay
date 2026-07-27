@@ -645,6 +645,7 @@ def generate_manifest() -> None:
         ROOT / "docs/channels/HASH_PROFILES.md",
         ROOT / "docs/channels/DOMAIN_REGISTRY.md",
         ROOT / "docs/channels/ADR/FC-ADR-007-canonicalization-and-hash-profiles.md",
+        RUN / "README.md",
         RUN / "validation-report.json",
         RUN / "object-inventory.json",
         RUN / "hash-profile-matrix.json",
