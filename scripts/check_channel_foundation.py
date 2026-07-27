@@ -250,17 +250,51 @@ def validate() -> dict[str, Any]:
 
     close_vector = json.loads(POSITIVE_CLOSE.read_text(encoding="utf-8"))
     closure = close_vector["closure_request"]
+    request_snapshot = close_vector["snapshot_at_request"]
+    freeze_snapshot = close_vector["snapshot_at_freeze"]
     closure_validator = Draft202012Validator(
         schemas["channel-closure.schema.json"], format_checker=format_checker
     )
-    closure_schema_errors = list(closure_validator.iter_errors(closure))
-    errors.extend(f"close-race closure: {error.message}" for error in closure_schema_errors)
+    closure_schema_errors = []
+    for object_name, value in (
+        ("closure_request", closure),
+        ("snapshot_at_request", request_snapshot),
+        ("snapshot_at_freeze", freeze_snapshot),
+    ):
+        object_errors = list(closure_validator.iter_errors(value))
+        closure_schema_errors.extend(object_errors)
+        errors.extend(
+            f"close-race {object_name}: {error.message}" for error in object_errors
+        )
     held = close_vector["voucher_held_at_close"]
     during = close_vector["expected_during_claim_window"]
     after = close_vector["expected_after_settlement_and_deadline"]
+    closure_without_hash = {key: value for key, value in closure.items() if key != "request_hash"}
+    request_snapshot_without_hash = {
+        key: value for key, value in request_snapshot.items() if key != "request_snapshot_hash"
+    }
+    freeze_snapshot_without_hash = {
+        key: value for key, value in freeze_snapshot.items() if key != "freeze_snapshot_hash"
+    }
     close_rule_checks = {
-        "deadline_matches_activation_window": (
-            closure["activation_allowed_until"] == closure["claim_deadline"]
+        "deterministic_hashes_match": (
+            closure["request_hash"] == canonical_hash(closure_without_hash)
+            and request_snapshot["request_snapshot_hash"]
+            == canonical_hash(request_snapshot_without_hash)
+            and freeze_snapshot["freeze_snapshot_hash"]
+            == canonical_hash(freeze_snapshot_without_hash)
+        ),
+        "request_and_freeze_are_linked": (
+            request_snapshot["closure_request_hash"] == closure["request_hash"]
+            and freeze_snapshot["request_snapshot_hash"]
+            == request_snapshot["request_snapshot_hash"]
+        ),
+        "deadline_is_shared_and_exclusive": (
+            request_snapshot["claim_deadline"] == closure["claim_deadline"]
+            and freeze_snapshot["claim_deadline"] == closure["claim_deadline"]
+            and parse_time(held["presented_at"]) < parse_time(closure["claim_deadline"])
+            and parse_time(freeze_snapshot["frozen_at"])
+            >= parse_time(closure["claim_deadline"])
         ),
         "presentation_is_inside_window": (
             parse_time(closure["requested_at"])
@@ -268,14 +302,36 @@ def validate() -> dict[str, Any]:
             < parse_time(closure["claim_deadline"])
         ),
         "voucher_advances_snapshot": (
-            held["sequence"] > closure["latest_activated_sequence_at_request"]
+            held["sequence"] > request_snapshot["latest_activated_sequence"]
             and held["previous_activated_voucher_hash"]
-            == closure["latest_activated_voucher_hash_at_request"]
+            == request_snapshot["latest_activated_voucher_hash"]
+            and freeze_snapshot["latest_activated_sequence"] == held["sequence"]
+            and freeze_snapshot["latest_activated_voucher_hash"] == held["voucher_hash"]
+            and freeze_snapshot["activated_total_base_units"]
+            == held["cumulative_authorized_base_units"]
         ),
         "pre_deadline_refund_is_zero": (
-            closure["pre_deadline_refundable_base_units"] == "0"
+            request_snapshot["pre_deadline_refundable_base_units"] == "0"
             and during["pre_deadline_refund"] == "rejected"
             and during["pre_deadline_refundable_base_units"] == "0"
+        ),
+        "freeze_refund_uses_final_activation": (
+            int(freeze_snapshot["excess_refundable_base_units"])
+            == int(freeze_snapshot["funded_total_base_units"])
+            - int(freeze_snapshot["refunded_total_base_units"])
+            - int(freeze_snapshot["activated_total_base_units"])
+            and freeze_snapshot["activated_total_base_units"]
+            != request_snapshot["activated_total_base_units"]
+        ),
+        "snapshots_preserve_conservation": (
+            int(request_snapshot["funded_total_base_units"])
+            == int(request_snapshot["vault_balance_base_units"])
+            + int(request_snapshot["settled_total_base_units"])
+            + int(request_snapshot["refunded_total_base_units"])
+            and int(freeze_snapshot["funded_total_base_units"])
+            == int(freeze_snapshot["vault_balance_base_units"])
+            + int(freeze_snapshot["settled_total_base_units"])
+            + int(freeze_snapshot["refunded_total_base_units"])
         ),
         "valid_voucher_activates_during_window": (
             held["sender_signature_present"]
@@ -294,6 +350,11 @@ def validate() -> dict[str, Any]:
     errors.extend(f"close-race rule failed: {name}" for name in failed_close_rules)
     checks["closing_race_vector"] = {
         "scenario": close_vector["scenario"],
+        "validated_objects": [
+            "closure_request",
+            "snapshot_at_request",
+            "snapshot_at_freeze",
+        ],
         "schema_valid": not closure_schema_errors,
         "rules": close_rule_checks,
         "valid": not closure_schema_errors and not failed_close_rules,
