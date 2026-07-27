@@ -13,10 +13,20 @@ runtime.
 
 ## Package dependencies
 
-Python and Node package dependencies are installed from their respective
+Python, Node, and Rust package dependencies are installed from their respective
 package registries and are not relicensed by Foundry Pay. Their authoritative
-versions are recorded in `pyproject.toml` and
-`packages/external-execution-protocol/typescript/package-lock.json`.
+versions are recorded in `pyproject.toml`, package lockfiles, and Cargo
+lockfiles.
+
+FC-PROTO-007 uses the following independently implemented canonicalization
+libraries against the same frozen Foundry Channels vectors:
+
+- `rfc8785` 0.1.4 (Apache-2.0) for Python;
+- `canonicalize` 3.0.0 (Apache-2.0) for TypeScript;
+- `serde_json_canonicalizer` 0.3.2 (MIT) for Rust.
+
+Their inclusion demonstrates cross-language conformance; no library is treated
+as the authority for another implementation.
 
 ## Reference-only sources
 

@@ -1,0 +1,64 @@
+work_item: FC-PROTO-007
+objective: prove independent Python, TypeScript, and Rust conformance to the frozen Channels v1 bytes, hashes, stages, and codes
+owner: conformance-engineer
+branch: agent/protocol/FC-PROTO-007
+allowed_paths:
+  - .github/workflows/ci.yml
+  - .agents/tasks/FC-PROTO-007.yaml
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - tests/channels/test_foundation_contracts.py
+  - packages/channel-protocol/python/**
+  - packages/channel-protocol/typescript/**
+  - packages/channel-protocol/rust/**
+  - contracts/channel/conformance/**
+  - tests/channels/conformance/**
+  - evidence/runs/FC-PROTO-007/**
+  - provenance/REUSE_LEDGER.yaml
+  - provenance/THIRD_PARTY_NOTICES.md
+dependencies:
+  - FC-PROTO-006
+  - FC-CTRL-014
+invariants:
+  - FC-PROTO-006 normative inputs remain read-only
+  - positive agreement includes exact bytes, byte length, and SHA-256
+  - negative agreement includes exact rejection stage and stable code
+  - runners compute from source_json or source_bytes_hex
+  - expected result fields are not computation inputs
+  - no runner imports, invokes, generates, or reads another runner
+  - the comparator performs no canonicalization or repair
+acceptance:
+  - Python, TypeScript, and Rust independently emit all 28 ordered results
+  - all eight positives agree with frozen bytes, lengths, and hashes
+  - all twenty negatives agree with frozen stages and codes
+  - poisoning expected result fields leaves each computed stream unchanged
+  - the comparator rejects the poisoned expectation set
+  - CI uses the exact coordinated toolchains and committed dependency locks
+verification_commands:
+  - python -m pytest tests/channels/conformance
+  - npm test --prefix packages/channel-protocol/typescript
+  - cargo test --locked --manifest-path packages/channel-protocol/rust/Cargo.toml
+  - python tests/channels/conformance/run_cross_language.py
+  - python -m pytest
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+evidence:
+  - evidence/runs/FC-PROTO-007/python-results.jsonl
+  - evidence/runs/FC-PROTO-007/typescript-results.jsonl
+  - evidence/runs/FC-PROTO-007/rust-results.jsonl
+  - evidence/runs/FC-PROTO-007/comparison-report.json
+  - evidence/runs/FC-PROTO-007/poisoning-report.json
+  - evidence/runs/FC-PROTO-007/artifact-manifest.json
+provenance:
+  - rfc8785 0.1.4, Apache-2.0
+  - canonicalize 3.0.0, Apache-2.0
+  - serde_json_canonicalizer 0.3.2, MIT
+stop_conditions:
+  - a frozen canonicalization artifact must change
+  - any positive differs in bytes or hash
+  - any negative differs in stage or code
+  - a runner reads an expected result field
+  - one runner delegates to another language
+  - a toolchain or dependency cannot be locked

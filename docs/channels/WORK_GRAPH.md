@@ -35,7 +35,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-PROTO-004 | done | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | settlement and receipt implementation |
 | FC-PROTO-005 | done | FC-PROTO-001, FC-PROTO-002 | close, expiry, epoch, and refund implementation |
 | FC-PROTO-006 | done | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | normative canonicalization and hashes |
-| FC-PROTO-007 | blocked | FC-PROTO-006, FC-CTRL-014 | Python/TypeScript/Rust cross-language conformance |
+| FC-PROTO-007 | active | FC-PROTO-006, FC-CTRL-014 | Python/TypeScript/Rust cross-language conformance |
 
 ## Epic C — Security
 

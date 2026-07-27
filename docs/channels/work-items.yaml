@@ -381,7 +381,7 @@ work_items:
     stop_conditions: [Rust and JSON domains cannot map byte-for-byte]
 
   - id: FC-PROTO-007
-    status: blocked
+    status: active
     objective: publish cross-language Python, TypeScript, and Rust conformance vectors
     owner: conformance-engineer
     repository: 4LFR3Dv1/Foundry-Pay

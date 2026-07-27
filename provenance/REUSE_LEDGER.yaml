@@ -5,6 +5,39 @@ policy:
   attribution_required: true
 
 sources:
+  - id: foundry-channels-fc-proto-007-independent-conformance
+    repository: 4LFR3Dv1/Foundry-Pay
+    commit: 8975a4b3edfae070919d68afe851652eb1f71ea8
+    visibility: public
+    license: Apache-2.0
+    disposition: independent-implementation-from-frozen-first-party-specification
+    candidate_assets:
+      - FC-PROTO-006 frozen canonicalization registry and exact-byte vectors
+      - FC-CTRL-014 runner contract, toolchain pins, and rejection code matrix
+    copied_paths: []
+    created_paths:
+      - packages/channel-protocol/python/foundry_channel_protocol/conformance_runner.py
+      - packages/channel-protocol/typescript/src/conformance-runner.ts
+      - packages/channel-protocol/rust
+      - tests/channels/conformance
+    third_party_dependencies:
+      - name: rfc8785
+        version: 0.1.4
+        license: Apache-2.0
+      - name: canonicalize
+        version: 3.0.0
+        license: Apache-2.0
+      - name: serde_json_canonicalizer
+        version: 0.3.2
+        license: MIT
+    constraints:
+      - each implementation reads only the frozen normative registry
+      - no runner imports, invokes, generates, or reads another runner
+      - expected output fields are not runner computation inputs
+      - the comparator is passive and performs no canonicalization or repair
+      - no FC-PROTO-006 canonicalization artifact is modified
+      - conformance is offline and does not claim Solana or production readiness
+
   - id: foundry-channels-fc-proto-006-first-party-consolidation
     repository: 4LFR3Dv1/Foundry-Pay
     commit: 469a28e9a92a7d443b9e20621ade2e4d23a09eee

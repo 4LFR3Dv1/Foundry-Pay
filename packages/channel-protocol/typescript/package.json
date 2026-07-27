@@ -6,10 +6,14 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "npm run build && node --test dist/tests/channels/link-security/*.test.js"
+    "test": "npm run build && node --test dist/tests/channels/link-security/*.test.js dist/tests/channels/conformance/*.test.js",
+    "conformance": "node dist/packages/channel-protocol/typescript/src/conformance-runner.js"
+  },
+  "dependencies": {
+    "canonicalize": "3.0.0"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
-    "typescript": "^5.9.0"
+    "@types/node": "24.13.3",
+    "typescript": "5.9.3"
   }
 }
