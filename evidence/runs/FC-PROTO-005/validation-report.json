@@ -1,0 +1,40 @@
+{
+  "work_item": "FC-PROTO-005",
+  "status": "implementation_complete_review_pending",
+  "baseline_commit": "e1b43118f8aff29c8b2101c1c08bc3aa57694177",
+  "contract_commit": "d1b1d2b587143b26f435941037ab9b42689047f6",
+  "implementation_commit": "87c314a44698e16ea9e1d9ae39be3c0bb736c98a",
+  "reviewed_head": null,
+  "review_status": "mandatory_independent_money_movement_review_pending",
+  "checks": {
+    "python_tests": {
+      "passed": 361,
+      "skipped": 11,
+      "failed": 0
+    },
+    "closure_tests": {
+      "passed": 31,
+      "failed": 0
+    },
+    "ruff_format": "passed",
+    "ruff_check": "passed",
+    "secret_guard": "passed",
+    "foundation_checker": "passed",
+    "typescript_external_execution": {
+      "passed": 8,
+      "failed": 0
+    },
+    "typescript_claim_security": {
+      "passed": 18,
+      "failed": 0
+    }
+  },
+  "claims": {
+    "on_chain_execution": false,
+    "production_readiness": false,
+    "custody": false,
+    "exactly_once": false,
+    "at_most_one_controlled_submit_intent_in_tested_model": true,
+    "economic_completion_requires_verified_observation": true
+  }
+}

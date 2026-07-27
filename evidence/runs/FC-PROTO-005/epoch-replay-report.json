@@ -1,0 +1,22 @@
+{
+  "work_item": "FC-PROTO-005",
+  "required_previous_state": {
+    "status": "closed",
+    "vault_balance": "0",
+    "outstanding_right": "0",
+    "unresolved_operation_count": 0
+  },
+  "next_epoch_projection": {
+    "increment": 1,
+    "F": "0",
+    "A": "0",
+    "S": "0",
+    "R": "0",
+    "latest_sequence": 0,
+    "latest_voucher_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "binding": ["previous_final_closure_hash", "channel_id", "channel_account", "network", "program_id"],
+  "cross_epoch_refund_replay": "rejected_by_channel_reference_mismatch",
+  "decision": "epoch_transition_eligible",
+  "execution_claimed": false
+}

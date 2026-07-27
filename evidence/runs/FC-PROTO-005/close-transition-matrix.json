@@ -1,0 +1,40 @@
+{
+  "work_item": "FC-PROTO-005",
+  "matrix": [
+    {
+      "case": "active_to_closing",
+      "expected": "request_and_request_snapshot_created",
+      "observed": "passed"
+    },
+    {
+      "case": "non_active_close",
+      "expected": "close_lifecycle_forbidden",
+      "observed": "passed"
+    },
+    {
+      "case": "grace_below_policy",
+      "expected": "close_grace_too_short",
+      "observed": "passed"
+    },
+    {
+      "case": "freeze_before_deadline",
+      "expected": "claim_window_open",
+      "observed": "passed"
+    },
+    {
+      "case": "freeze_at_deadline",
+      "expected": "ready_to_finalize_snapshot",
+      "observed": "passed"
+    },
+    {
+      "case": "finalize_with_outstanding_right",
+      "expected": "outstanding_right_reserved",
+      "observed": "passed"
+    },
+    {
+      "case": "finalize_with_zero_right_zero_vault",
+      "expected": "eligible",
+      "observed": "passed"
+    }
+  ]
+}

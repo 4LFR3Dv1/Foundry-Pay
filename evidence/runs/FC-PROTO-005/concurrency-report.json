@@ -1,0 +1,32 @@
+{
+  "work_item": "FC-PROTO-005",
+  "journal": "sqlite_wal",
+  "transaction_mode": "begin_immediate",
+  "scenarios": [
+    {
+      "case": "same_idempotency_key_same_bytes",
+      "result": "existing_record_returned"
+    },
+    {
+      "case": "same_idempotency_key_changed_bytes",
+      "result": "idempotency_conflict"
+    },
+    {
+      "case": "two_40m_refunds_against_60m_capacity",
+      "results": ["validated", "aggregate_refund_exceeds_unallocated"],
+      "aggregate_bound_preserved": true
+    },
+    {
+      "case": "restart_after_unknown_result",
+      "submit_intent_count": 1,
+      "automatic_second_submission_count": 0,
+      "signature_recovered": true,
+      "completed_only_after_reconciliation": true
+    },
+    {
+      "case": "provider_divergence",
+      "result": "disputed"
+    }
+  ],
+  "claim": "at-most-one submission intent by the controlled reference runtime within the tested model"
+}
