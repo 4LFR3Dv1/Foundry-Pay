@@ -18,7 +18,7 @@ REGISTRY = ROOT / "contracts/channel/canonicalization"
 DESTINATION = (
     ROOT
     / "contracts/channel/test-vectors/negative"
-    / "fc-sec-002-signed-preimage-mutations-v1.json"
+    / "fc-sec-002/signed-preimage-mutations-v1.json"
 )
 FIELDS = (
     "case_id",

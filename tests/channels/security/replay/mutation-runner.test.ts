@@ -16,7 +16,7 @@ test("TypeScript rejects every signed-preimage mutation without authority effect
     readFileSync(
       resolve(
         root,
-        "contracts/channel/test-vectors/negative/fc-sec-002-signed-preimage-mutations-v1.json",
+        "contracts/channel/test-vectors/negative/fc-sec-002/signed-preimage-mutations-v1.json",
       ),
       "utf8",
     ),

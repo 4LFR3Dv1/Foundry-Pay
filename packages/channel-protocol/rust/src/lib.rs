@@ -917,7 +917,7 @@ mod tests {
             run_security_cases(&cases, &registry).expect("security mutation cases must run");
         let expectations: Value = serde_json::from_str(
             &fs::read_to_string(root.join(
-                "contracts/channel/test-vectors/negative/fc-sec-002-signed-preimage-mutations-v1.json",
+                "contracts/channel/test-vectors/negative/fc-sec-002/signed-preimage-mutations-v1.json",
             ))
             .expect("expectation vector must be readable"),
         )
