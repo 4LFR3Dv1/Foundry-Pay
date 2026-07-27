@@ -1,0 +1,14 @@
+{
+  "activation_requested_transition_count": 0,
+  "authority_advancement_count": 0,
+  "authorized_transition_count": 0,
+  "completed_transition_count": 0,
+  "economic_effect_count": 0,
+  "lifecycle_transition_count": 0,
+  "mutation_cases": 23,
+  "permitted_effect": "bounded append-only rejected audit event",
+  "recipient_binding_rejection_record_count": 0,
+  "schema_version": 1,
+  "status": "passed",
+  "verified_transition_count": 0
+}

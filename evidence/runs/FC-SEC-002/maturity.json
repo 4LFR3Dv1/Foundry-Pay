@@ -1,0 +1,58 @@
+{
+  "component": "FC-SEC-002",
+  "current_commit": "e785dedd62b982cbe03a7b542534688ddc3b8370",
+  "deployment_authorization": {
+    "devnet_fixture": {
+      "artifact_commit": null,
+      "constraints": {},
+      "decision_ref": null,
+      "reason": "requires explicit post-FC-SEC-002 authorization",
+      "scope": "fixture-only devnet",
+      "status": "blocked"
+    },
+    "local_validator": {
+      "artifact_commit": "e785dedd62b982cbe03a7b542534688ddc3b8370",
+      "constraints": {},
+      "decision_ref": "FC-CTRL-017",
+      "reason": null,
+      "scope": "offline and local-validator experimentation only",
+      "status": "allowed"
+    },
+    "mainnet": {
+      "artifact_commit": null,
+      "constraints": {},
+      "decision_ref": null,
+      "reason": "requires passed exact-version external review",
+      "scope": "Solana mainnet",
+      "status": "blocked"
+    },
+    "real_value": {
+      "artifact_commit": null,
+      "constraints": {},
+      "decision_ref": null,
+      "reason": "requires passed review and explicit economic authorization",
+      "scope": "assets with economic value",
+      "status": "blocked"
+    }
+  },
+  "maturity": {
+    "external_review": {
+      "completed_at": null,
+      "report": null,
+      "reviewed_commit": null,
+      "reviewer": null,
+      "status": "not_performed"
+    },
+    "implementation": {
+      "commit": "e785dedd62b982cbe03a7b542534688ddc3b8370",
+      "status": "complete"
+    },
+    "self_validation": {
+      "evidence": "evidence/runs/FC-SEC-002",
+      "status": "passed",
+      "validated_commit": "e785dedd62b982cbe03a7b542534688ddc3b8370"
+    }
+  },
+  "schema_version": 1,
+  "work_item_status": "review"
+}

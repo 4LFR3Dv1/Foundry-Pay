@@ -18,7 +18,7 @@ EXPECTATIONS = (
     / "contracts/channel/test-vectors/negative"
     / "fc-sec-002/signed-preimage-mutations-v1.json"
 )
-FUNCTIONAL_HEAD = "330b963c70987ee681782dc6d7eab42fa51da895"
+FUNCTIONAL_HEAD = "e785dedd62b982cbe03a7b542534688ddc3b8370"
 FROZEN_CANONICALIZATION = "17b656cbdd6ae53cece9cebb9123058c03e67b82"
 
 
@@ -188,6 +188,87 @@ def generate(*, workflow_run: int, rust_job_url: str, validated_head: str) -> No
             ),
         },
     )
+    _dump(
+        RUN / "maturity.json",
+        {
+            "schema_version": 1,
+            "component": "FC-SEC-002",
+            "current_commit": validated_head,
+            "work_item_status": "review",
+            "maturity": {
+                "implementation": {"status": "complete", "commit": validated_head},
+                "self_validation": {
+                    "status": "passed",
+                    "validated_commit": validated_head,
+                    "evidence": "evidence/runs/FC-SEC-002",
+                },
+                "external_review": {
+                    "status": "not_performed",
+                    "reviewed_commit": None,
+                    "reviewer": None,
+                    "report": None,
+                    "completed_at": None,
+                },
+            },
+            "deployment_authorization": {
+                "local_validator": {
+                    "status": "allowed",
+                    "scope": "offline and local-validator experimentation only",
+                    "artifact_commit": validated_head,
+                    "decision_ref": "FC-CTRL-017",
+                    "reason": None,
+                    "constraints": {},
+                },
+                "devnet_fixture": {
+                    "status": "blocked",
+                    "scope": "fixture-only devnet",
+                    "artifact_commit": None,
+                    "decision_ref": None,
+                    "reason": "requires explicit post-FC-SEC-002 authorization",
+                    "constraints": {},
+                },
+                "mainnet": {
+                    "status": "blocked",
+                    "scope": "Solana mainnet",
+                    "artifact_commit": None,
+                    "decision_ref": None,
+                    "reason": "requires passed exact-version external review",
+                    "constraints": {},
+                },
+                "real_value": {
+                    "status": "blocked",
+                    "scope": "assets with economic value",
+                    "artifact_commit": None,
+                    "decision_ref": None,
+                    "reason": "requires passed review and explicit economic authorization",
+                    "constraints": {},
+                },
+            },
+        },
+    )
+    _dump(
+        RUN / "validation-report.json",
+        {
+            "schema_version": 1,
+            "status": "passed",
+            "functional_head": FUNCTIONAL_HEAD,
+            "validated_head": validated_head,
+            "workflow_run": workflow_run,
+            "cases": 23,
+            "cross_language_exact_expectation_match": True,
+            "full_regression": {"passed": 490, "skipped": 11, "failed": 0},
+            "secret_guard": "passed",
+            "external_review": "not_performed",
+            "claims_excluded": [
+                "independent Ed25519 verification",
+                "ChannelVault behavior",
+                "Solana execution",
+                "devnet authorization",
+                "mainnet readiness",
+                "real-value safety",
+            ],
+        },
+    )
 
     manifest_paths = [
         RUN / "README.md",
@@ -200,6 +281,8 @@ def generate(*, workflow_run: int, rust_job_url: str, validated_head: str) -> No
         RUN / "downgrade-report.json",
         RUN / "version-lifecycle-report.json",
         RUN / "no-effect-report.json",
+        RUN / "maturity.json",
+        RUN / "validation-report.json",
         RUN / "pytest-full.xml",
         CASES,
         EXPECTATIONS,

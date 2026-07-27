@@ -1,0 +1,8 @@
+{
+  "field_stripping_retry": false,
+  "legacy_fallback": false,
+  "schema_version": 1,
+  "status": "passed",
+  "unknown_profile": "profile_verification/unsupported_profile",
+  "unknown_version": "version_verification/unsupported_version"
+}

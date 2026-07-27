@@ -1,0 +1,10 @@
+{
+  "cases": [
+    "voucher-as-binding",
+    "binding-as-voucher"
+  ],
+  "result": "type_verification/object_type_mismatch",
+  "schema_version": 1,
+  "shared_accepted_meaning": false,
+  "status": "passed"
+}

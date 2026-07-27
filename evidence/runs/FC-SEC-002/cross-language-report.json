@@ -1,0 +1,25 @@
+{
+  "agreement": {
+    "byte_length_when_computed": true,
+    "canonical_bytes_when_computed": true,
+    "decision_stage_code": true,
+    "economic_authority_lifecycle_effects": true,
+    "sha256_when_computed": true
+  },
+  "case_count": 23,
+  "expectation_vector": "contracts/channel/test-vectors/negative/fc-sec-002/signed-preimage-mutations-v1.json",
+  "implementations": [
+    "python",
+    "typescript",
+    "rust"
+  ],
+  "limitation": "The fixtures bind declared signed-preimage hashes but do not contain independently verifiable Ed25519 key material.",
+  "pinned_ci": {
+    "rust_job_url": "https://github.com/4LFR3Dv1/Foundry-Pay/actions/runs/30310061435/job/90123336132",
+    "validated_head": "e785dedd62b982cbe03a7b542534688ddc3b8370",
+    "workflow_run": 30310061435
+  },
+  "runner_reads_expectations": false,
+  "schema_version": 1,
+  "status": "passed"
+}
