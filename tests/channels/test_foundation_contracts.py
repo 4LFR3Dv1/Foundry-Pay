@@ -77,3 +77,38 @@ def test_fc_proto_007_integration_uses_governed_self_validation() -> None:
     assert by_id["FC-SEC-002"]["status"] == "ready"
     assert by_id["SA-CHAN-000"]["status"] == "blocked"
     assert by_id["SA-CHAN-000"]["dependencies"] == ["FC-PROTO-007", "FC-SEC-002"]
+
+
+def test_fc_sec_002_contract_matches_governed_experimental_scope() -> None:
+    work_items = yaml.safe_load(
+        (ROOT / "docs/channels/work-items.yaml").read_text(encoding="utf-8")
+    )["work_items"]
+    by_id = {item["id"]: item for item in work_items}
+
+    assert by_id["FC-CTRL-015"]["status"] == "done"
+    assert by_id["FC-CTRL-016"]["status"] == "done"
+
+    security = by_id["FC-SEC-002"]
+    assert security["dependencies"] == [
+        "FC-PROTO-002",
+        "FC-PROTO-006",
+        "FC-PROTO-007",
+        "FC-CTRL-016",
+    ]
+    assert security["maturity_gate"] == {
+        "implementation": "complete",
+        "self_validation": "passed",
+        "external_review": "not_performed",
+    }
+    assert security["deployment_authorization"] == {
+        "local_validator": "allowed",
+        "devnet_fixture": "blocked",
+        "mainnet": "blocked",
+        "real_value": "blocked",
+    }
+    assert security["external_review_requirement"] == {"required_before": ["mainnet", "real_value"]}
+    assert "Cloud statements cannot revoke cryptographic rights" in security["invariants"]
+    assert (
+        "an unknown version or profile falls back to an older interpretation"
+        in security["stop_conditions"]
+    )

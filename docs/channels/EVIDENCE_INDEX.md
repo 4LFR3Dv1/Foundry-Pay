@@ -43,6 +43,20 @@ README after the validation run.
 These merges authorize the next offline protocol work only. They do not prove
 ChannelVault, Solana execution, a deployed consumer frontend, or product demand.
 
+## Next security gate
+
+The frozen [FC-SEC-002 contract](security/FC-SEC-002-CONTRACT.md) separates:
+
+```text
+v1 replay resistance
+cross-type and cross-profile collision resistance
+version downgrade, rotation, revocation, and migration policy
+```
+
+FC-SEC-002 may be integrated as self-validated evidence, but that state permits
+only offline and local-validator experimentation. Devnet, mainnet, real-value
+use, and claims of independent external review remain blocked.
+
 ## Evidence maturity and authorization
 
 Evidence maturity and operational authorization are independent records under

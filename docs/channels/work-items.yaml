@@ -275,7 +275,7 @@ work_items:
       - the policy silently removes a previously recorded gate
 
   - id: FC-CTRL-015
-    status: active
+    status: done
     objective: record governed FC-PROTO-007 integration and reconcile the next security gate
     owner: program-integrator
     repository: 4LFR3Dv1/Foundry-Pay
@@ -311,6 +311,48 @@ work_items:
       - external review is represented as performed
       - a deployment authorization is broadened
       - SA-CHAN-000 becomes ready before FC-SEC-002 is done
+      - implementation paths change
+
+  - id: FC-CTRL-016
+    status: done
+    objective: freeze the FC-SEC-002 adversarial, lifecycle, maturity, and path contract
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-016.yaml
+      - .agents/tasks/FC-SEC-002.yaml
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - docs/channels/EVIDENCE_INDEX.md
+      - docs/channels/security/FC-SEC-002-CONTRACT.md
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-016/**
+    dependencies: [FC-CTRL-015, FC-GOV-001]
+    invariants:
+      - self-validation does not imply external review
+      - local-validator authorization does not authorize devnet, mainnet, or real value
+      - FC-SEC-002 cannot silently change frozen v1 preimages
+      - SA-CHAN-000 remains blocked until FC-SEC-002 is done
+    acceptance:
+      - replay, semantic collision, and version lifecycle are separate proof classes
+      - structurally valid single-field mutations reject with zero ledger effect
+      - unknown versions and profiles fail closed without fallback
+      - external review remains required before mainnet or real-value authorization
+    tests:
+      - foundation work-graph validation
+      - frozen FC-SEC-002 contract assertions
+      - full regression
+      - secret scan
+    evidence:
+      - evidence/runs/FC-CTRL-016/README.md
+      - evidence/runs/FC-CTRL-016/validation-report.json
+      - evidence/runs/FC-CTRL-016/artifact-manifest.json
+    security_review: self-validated governance and scope review; external review required before mainnet or real-value authorization
+    stop_conditions:
+      - external review is represented as performed
+      - deployment authorization is broadened
+      - a Cloud-controlled revocation authority is introduced
+      - a v1 preimage changes without an ADR and version decision
       - implementation paths change
 
   - id: FC-PROTO-001
@@ -503,17 +545,60 @@ work_items:
 
   - id: FC-SEC-002
     status: ready
-    objective: prove replay resistance and domain separation with properties and negative vectors
+    objective: prove replay, semantic-collision, downgrade, and lifecycle resistance for signed channel authority
     owner: security-engineer
     repository: 4LFR3Dv1/Foundry-Pay
-    allowed_paths: [packages/channel-protocol/**, tests/channels/security/replay/**, contracts/channel/test-vectors/negative/**, evidence/runs/FC-SEC-002/**]
-    dependencies: [FC-PROTO-002, FC-PROTO-006]
-    invariants: [signatures are unusable across every domain dimension]
-    acceptance: [mutation of each domain field invalidates verification and creates no effect]
-    tests: [property-based domain mutation and replay suite]
-    evidence: [mutation coverage report]
-    security_review: mandatory-independent-security-review
-    stop_conditions: [any signed field is semantically material but not cryptographically bound]
+    allowed_paths:
+      - packages/channel-protocol/**
+      - tests/channels/security/replay/**
+      - contracts/channel/test-vectors/negative/**
+      - docs/channels/security/FC-SEC-002/**
+      - evidence/runs/FC-SEC-002/**
+    dependencies: [FC-PROTO-002, FC-PROTO-006, FC-PROTO-007, FC-CTRL-016]
+    invariants:
+      - signatures are unusable across every bound domain dimension
+      - semantically distinct authority types cannot share an accepted signed meaning
+      - unknown versions and profiles fail closed without fallback
+      - rejected mutations create no reference-ledger effect
+      - Cloud statements cannot revoke cryptographic rights
+      - v1 objects remain v1 and are never rewritten in transit
+    acceptance:
+      - every signed authority object has a material-field mutation matrix
+      - structurally valid single-field mutations invalidate the original signature
+      - all applicable language runners agree on decision, stage, and stable code
+      - cross-type and cross-profile reinterpretation attempts reject
+      - downgrade, rotation, revocation, and migration policy is explicit
+      - property seeds and minimized counterexamples are preserved
+    tests:
+      - property-based single-domain mutation and replay suite
+      - cross-type and cross-profile semantic-collision suite
+      - downgrade and unsupported-version suite
+      - zero-effect reference-ledger assertions
+    evidence:
+      - threat and domain-dimension matrices
+      - mutation cases and cross-language streams
+      - semantic-collision and downgrade reports
+      - version-lifecycle and no-effect reports
+      - artifact manifest
+    maturity_gate:
+      implementation: complete
+      self_validation: passed
+      external_review: not_performed
+    deployment_authorization:
+      local_validator: allowed
+      devnet_fixture: blocked
+      mainnet: blocked
+      real_value: blocked
+    external_review_requirement:
+      required_before: [mainnet, real_value]
+    security_review: self-validated cryptographic and lifecycle review; external review required before mainnet or real-value authorization
+    stop_conditions:
+      - a material authority dimension is not cryptographically bound
+      - equivalent implementations reject at different semantic stages or codes
+      - an unknown version or profile falls back to an older interpretation
+      - rotation or revocation depends on an unverifiable Cloud assertion
+      - a rejected mutation changes reference-ledger state
+      - a v1 preimage changes without an ADR and explicit version migration
 
   - id: FC-SEC-003
     status: done

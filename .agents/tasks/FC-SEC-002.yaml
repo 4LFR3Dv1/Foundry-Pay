@@ -1,0 +1,69 @@
+work_item: FC-SEC-002
+objective: prove replay, semantic-collision, downgrade, and lifecycle resistance for signed channel authority
+owner: security-engineer
+branch: agent/security/FC-SEC-002
+allowed_paths:
+  - packages/channel-protocol/**
+  - tests/channels/security/replay/**
+  - contracts/channel/test-vectors/negative/**
+  - docs/channels/security/FC-SEC-002/**
+  - evidence/runs/FC-SEC-002/**
+dependencies:
+  - FC-PROTO-002
+  - FC-PROTO-006
+  - FC-PROTO-007
+  - FC-CTRL-016
+invariants:
+  - signatures are unusable across every bound domain dimension
+  - semantically distinct authority types cannot share an accepted signed meaning
+  - unknown versions and profiles fail closed without legacy fallback
+  - rejected mutations create no reference-ledger effect
+  - Cloud statements cannot revoke cryptographic rights
+  - v1 objects remain v1 and are never rewritten in transit
+acceptance:
+  - every registered signed authority object has a material-field mutation matrix
+  - structurally valid single-field mutations invalidate the original signature
+  - Python, TypeScript, and Rust agree on decision, stage, and stable code where applicable
+  - cross-type and cross-profile reinterpretation attempts reject
+  - downgrade, rotation, revocation, and migration policy is explicit
+  - deterministic property seeds and minimized counterexamples are preserved
+verification_commands:
+  - python -m pytest tests/channels/security/replay
+  - python -m pytest
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+evidence:
+  - evidence/runs/FC-SEC-002/README.md
+  - evidence/runs/FC-SEC-002/threat-matrix.json
+  - evidence/runs/FC-SEC-002/domain-dimension-registry.json
+  - evidence/runs/FC-SEC-002/mutation-cases.jsonl
+  - evidence/runs/FC-SEC-002/cross-language-report.json
+  - evidence/runs/FC-SEC-002/semantic-collision-report.json
+  - evidence/runs/FC-SEC-002/downgrade-report.json
+  - evidence/runs/FC-SEC-002/version-lifecycle-report.json
+  - evidence/runs/FC-SEC-002/no-effect-report.json
+  - evidence/runs/FC-SEC-002/artifact-manifest.json
+maturity_gate:
+  implementation: complete
+  self_validation: passed
+  external_review: not_performed
+deployment_authorization:
+  local_validator: allowed
+  devnet_fixture: blocked
+  mainnet: blocked
+  real_value: blocked
+external_review_requirement:
+  required_before:
+    - mainnet
+    - real_value
+provenance:
+  - reuse only the frozen FC-PROTO-006 registry, vectors, and independent FC-PROTO-007 runners
+stop_conditions:
+  - a material authority dimension is not cryptographically bound
+  - equivalent implementations reject at different semantic stages or codes
+  - unknown version or profile falls back to an older interpretation
+  - rotation or revocation depends on an unverifiable Cloud assertion
+  - a rejected mutation changes reference-ledger state
+  - a v1 preimage changes without an ADR and explicit version migration
