@@ -1,0 +1,39 @@
+work_item: FC-PROTO-007
+baseline_commit: 6207df8d4291f8e832fe3758a39ffd267524b447
+frozen_specification_commit: 17b656cbdd6ae53cece9cebb9123058c03e67b82
+implementation_commit: cc962ee2277e80b74b39e7d35a1967b7addf84ca
+governance_adaptation_commit: ef9a99949bae3d2088a7b51cd55ef4efb14124c7
+validated_head: ef9a99949bae3d2088a7b51cd55ef4efb14124c7
+scope:
+  - independent Python conformance runner
+  - independent TypeScript conformance runner
+  - independent Rust conformance runner
+  - passive exact-result comparator
+  - expected-output poisoning proof
+acceptance:
+  positive:
+    vectors: 8
+    required_agreement: [canonical_bytes, byte_length, sha256]
+  negative:
+    vectors: 20
+    required_agreement: [rejection_stage, rejection_code]
+  toolchains_exact: true
+  frozen_registry_unchanged: true
+non_goals:
+  - ChannelVault
+  - Solana execution
+  - wallet or signer integration
+  - Cloud
+  - mainnet
+  - production readiness
+review_gate:
+  self_validation_required_before_merge: true
+  external_review_status: not_performed
+  external_review_required_before:
+    - mainnet authorization
+    - real-value authorization
+deployment_authorization:
+  local_validator: allowed
+  devnet_fixture: blocked
+  mainnet: blocked
+  real_value: blocked

@@ -227,7 +227,7 @@ work_items:
       - a rejection is compared only as generic accept or reject
 
   - id: FC-GOV-001
-    status: active
+    status: done
     objective: introduce a version-bound evidence maturity and deployment authorization model
     owner: program-integrator
     repository: 4LFR3Dv1/Foundry-Pay
@@ -381,7 +381,7 @@ work_items:
     stop_conditions: [Rust and JSON domains cannot map byte-for-byte]
 
   - id: FC-PROTO-007
-    status: blocked
+    status: review
     objective: publish cross-language Python, TypeScript, and Rust conformance vectors
     owner: conformance-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -398,18 +398,22 @@ work_items:
       - evidence/runs/FC-PROTO-007/**
       - provenance/REUSE_LEDGER.yaml
       - provenance/THIRD_PARTY_NOTICES.md
-    dependencies: [FC-PROTO-006, FC-CTRL-014]
+    dependencies: [FC-PROTO-006, FC-CTRL-014, FC-GOV-001]
     invariants:
       - all implementations produce identical bytes and hashes for positive vectors
       - all implementations produce identical rejection stages and codes for negative vectors
       - runners compute from source inputs and never echo expected result fields
       - runners do not import, invoke, generate, or read another language implementation
       - the comparator never canonicalizes, normalizes, or repairs runner output
+      - external review remains explicit and cannot be inferred from self-validation
+      - devnet, mainnet, and real-value authorization remain blocked
     acceptance:
       - all eight frozen positive vectors agree byte-for-byte in three implementations
       - all twenty frozen negative vectors agree on exact stage and code in three implementations
       - poisoning expected bytes, lengths, and hashes does not change computed runner output
       - CI runs each runner independently and compares only after all outputs exist
+      - maturity records implementation complete and self-validation passed
+      - external review is recorded as not_performed
     tests:
       - per-language runner tests
       - cross-language comparator
@@ -420,13 +424,15 @@ work_items:
       - three result streams
       - cross-language comparison report
       - artifact manifest and full regression
-    security_review: independent-conformance-review
+    security_review: self-validated-conformance; external exact-version review required before mainnet or real-value authorization
     stop_conditions:
       - any implementation silently normalizes differently
       - a positive vector agrees only on decision but not bytes and hash
       - a negative vector agrees only on rejection but not stage and code
       - expected result fields are used as computation inputs
       - one runner delegates to another implementation
+      - self-validation is represented as external review
+      - any deployment or real-value authorization is introduced
 
   - id: FC-SEC-001
     status: done
@@ -574,12 +580,12 @@ work_items:
     owner: protocol-integration-engineer
     repository: 4LFR3Dv1/Foundry-Pay
     allowed_paths: [packages/channel-protocol/**, services/fake-executor/**, contracts/channel/capabilities/**, tests/channels/conformance/fake-adapter/**, evidence/runs/SA-CHAN-000/**]
-    dependencies: [FC-PROTO-007]
+    dependencies: [FC-PROTO-007, FC-SEC-002]
     invariants: [draft capabilities grant no authority and do not claim compatibility with unimplemented ChannelVault instructions]
     acceptance: [closed draft descriptors and fake adapter exercise public protocol contracts without Solana, RPC, wallet, or signer]
     tests: [unsupported capability, version mismatch, exact commitment, fake recovery, and authority-boundary cases]
     evidence: [draft capability manifest and fake conformance report]
-    security_review: independent-cryptographic-and-authority-review
+    security_review: self-validated cryptographic and authority review; external review required before mainnet or real-value authorization
     stop_conditions: [draft contract is represented as SA-CHAN-001 or as compatible with real ChannelVault instructions]
 
   - id: SA-CHAN-001

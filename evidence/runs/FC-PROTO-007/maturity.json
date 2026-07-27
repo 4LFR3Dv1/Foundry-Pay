@@ -1,0 +1,58 @@
+{
+  "component": "FC-PROTO-007",
+  "current_commit": "ef9a99949bae3d2088a7b51cd55ef4efb14124c7",
+  "deployment_authorization": {
+    "devnet_fixture": {
+      "artifact_commit": null,
+      "constraints": {},
+      "decision_ref": null,
+      "reason": "requires FC-SEC-002 and explicit deployment authorization",
+      "scope": "fixture-only devnet",
+      "status": "blocked"
+    },
+    "local_validator": {
+      "artifact_commit": "ef9a99949bae3d2088a7b51cd55ef4efb14124c7",
+      "constraints": {},
+      "decision_ref": "FC-ADR-009",
+      "reason": null,
+      "scope": "offline conformance and local-validator experimentation only",
+      "status": "allowed"
+    },
+    "mainnet": {
+      "artifact_commit": null,
+      "constraints": {},
+      "decision_ref": null,
+      "reason": "requires passed exact-version external review",
+      "scope": "Solana mainnet",
+      "status": "blocked"
+    },
+    "real_value": {
+      "artifact_commit": null,
+      "constraints": {},
+      "decision_ref": null,
+      "reason": "requires passed review and explicit economic authorization",
+      "scope": "assets with economic value on any cluster",
+      "status": "blocked"
+    }
+  },
+  "maturity": {
+    "external_review": {
+      "completed_at": null,
+      "report": null,
+      "reviewed_commit": null,
+      "reviewer": null,
+      "status": "not_performed"
+    },
+    "implementation": {
+      "commit": "ef9a99949bae3d2088a7b51cd55ef4efb14124c7",
+      "status": "complete"
+    },
+    "self_validation": {
+      "evidence": "evidence/runs/FC-PROTO-007",
+      "status": "passed",
+      "validated_commit": "ef9a99949bae3d2088a7b51cd55ef4efb14124c7"
+    }
+  },
+  "schema_version": 1,
+  "work_item_status": "review"
+}

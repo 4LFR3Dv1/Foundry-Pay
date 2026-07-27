@@ -23,7 +23,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-CTRL-012 | done | FC-CTRL-011 | authorize the canonicalization test package marker |
 | FC-CTRL-013 | done | FC-PROTO-006 | record reviewed canonicalization integration and reconcile the graph |
 | FC-CTRL-014 | done | FC-CTRL-013 | freeze FC-PROTO-007 toolchains, runner contract, rejection matrix, independence, and paths |
-| FC-GOV-001 | active | FC-CTRL-014 | separate work completion, evidence maturity, external review, and deployment authorization |
+| FC-GOV-001 | done | FC-CTRL-014 | separate work completion, evidence maturity, external review, and deployment authorization |
 
 ## Epic B — Channel protocol
 
@@ -35,7 +35,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-PROTO-004 | done | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | settlement and receipt implementation |
 | FC-PROTO-005 | done | FC-PROTO-001, FC-PROTO-002 | close, expiry, epoch, and refund implementation |
 | FC-PROTO-006 | done | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | normative canonicalization and hashes |
-| FC-PROTO-007 | blocked | FC-PROTO-006, FC-CTRL-014 | Python/TypeScript/Rust cross-language conformance |
+| FC-PROTO-007 | review | FC-PROTO-006, FC-CTRL-014, FC-GOV-001 | self-validated Python/TypeScript/Rust cross-language conformance |
 
 ## Epic C — Security
 
@@ -63,7 +63,7 @@ No program implementation is authorized by `FOUNDATIONS-001`.
 
 | Work item | Status | Depends on | Outcome |
 |---|---|---|---|
-| SA-CHAN-000 | blocked | FC-PROTO-007 + independent cryptographic review | draft capability contracts and fake conformance adapter; no ChannelVault compatibility claim |
+| SA-CHAN-000 | blocked | FC-PROTO-007, FC-SEC-002 | draft capability contracts and fake conformance adapter; no ChannelVault compatibility claim |
 | SA-CHAN-001 | blocked | FC-PROTO-006, FC-SOL-003 | generic channel capability discovery |
 | SA-CHAN-002 | blocked | SA-CHAN-001, FC-SOL-003 | open/top-up/activation preparation |
 | SA-CHAN-003 | blocked | SA-CHAN-001, FC-SOL-003 | settlement preparation |
