@@ -167,14 +167,14 @@
       "sha256": "sha256:9aadb9640640a5249b6b20bf85d1306f8734e51f2041454102711891b36a2b25"
     },
     {
-      "bytes": 3068,
+      "bytes": 3067,
       "path": "docs/channels/CANONICALIZATION.md",
-      "sha256": "sha256:8c5bf524e5abd517739a920cca0fd1e69cb5017034519bb1b92b53d1a3eb1dbd"
+      "sha256": "sha256:261d60a17645d202f234c10b7a9d20cc1b39c6f14b04bced8c8ef8ebf4b7495c"
     },
     {
-      "bytes": 2166,
+      "bytes": 2165,
       "path": "docs/channels/HASH_PROFILES.md",
-      "sha256": "sha256:0a4660f6a21ca2585f27086e1f19679eed535fc4dabd7e52c76b88987609562d"
+      "sha256": "sha256:4153cc810e74ba2b495712bcfa05a5cec531866fc0c1d95147c6d4e6cc4b7f55"
     },
     {
       "bytes": 3357,
@@ -228,6 +228,6 @@
     }
   ],
   "baseline_commit": "ac10151b74cdfb33638d3c28fb3607a134234057",
-  "implementation_commit": "d21af6c778bde185628b717e2aed4a82a09d45bd",
+  "implementation_commit": "194a39d2c936a1b5841cbb1fcfc7be465f5b569b",
   "work_item": "FC-PROTO-006"
 }
