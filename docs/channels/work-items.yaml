@@ -128,6 +128,20 @@ work_items:
     security_review: program-governance-review
     stop_conditions: [unrelated scripts or test suites are broadened]
 
+  - id: FC-CTRL-010
+    status: done
+    objective: record independently reviewed FC-PROTO-005 integration and reconcile the work graph
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths: [docs/channels/WORK_GRAPH.md, docs/channels/work-items.yaml, tests/channels/test_foundation_contracts.py, evidence/runs/FC-CTRL-010/**]
+    dependencies: [FC-PROTO-005]
+    invariants: [done status is backed by immutable reviewed head, evidence head, merge commit, and green main CI]
+    acceptance: [FC-PROTO-005 is done without advancing any blocked on-chain or product gate]
+    tests: [foundation work-graph validator]
+    evidence: [PR 26 review history, final approval, merge commit, and main CI]
+    security_review: program-governance-review
+    stop_conditions: [a rejected head is represented as approved or an unrelated gate changes state]
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -189,7 +203,7 @@ work_items:
       merge_commit: 74359f6ac81e75d595f934ed3e03428a45a2dafa
 
   - id: FC-PROTO-005
-    status: ready
+    status: done
     objective: implement close, expiry, epoch, and refund reference semantics
     owner: protocol-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -203,6 +217,12 @@ work_items:
     stop_conditions: [sender can refund value still owed to recipient]
     baseline_contains:
       - 74359f6ac81e75d595f934ed3e03428a45a2dafa
+    implementation:
+      pr: 26
+      reviewed_head: 5e0737aefa6d707f6236f527950b845773bf26a5
+      evidence_head: f39e3953692bb516745d7055ddd2c4f30775442a
+      merge_commit: 59f37870475df0f0ee9d7619be9d3eff7f5a16bd
+      main_ci_run: 30231971193
 
   - id: FC-PROTO-006
     status: ready
