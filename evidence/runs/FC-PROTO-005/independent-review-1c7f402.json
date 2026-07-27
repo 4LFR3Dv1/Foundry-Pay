@@ -1,0 +1,23 @@
+{
+  "work_item": "FC-PROTO-005",
+  "reviewed_head": "1c7f4027940e779335fc45175865ee5648f069c0",
+  "decision": "request_changes",
+  "review_type": "independent_read_only_adversarial_rereview",
+  "previous_findings_closed": 7,
+  "blocking_findings": [
+    {
+      "severity": "critical",
+      "id": "overlapping_completed_refund_intervals",
+      "reproduction": "two 20m refunds both reconciled from R=0 to R=20, allowing MAX(R_after) to undercount their aggregate effect",
+      "remediation": "reconciliation serializes against the current completed high-water and rejects an overlapping R_before as needs_review"
+    },
+    {
+      "severity": "high",
+      "id": "activated_total_without_voucher_progress",
+      "reproduction": "A advanced from 10m to 40m while sequence and latest voucher hash remained unchanged",
+      "remediation": "increased A requires sequence advance; sequence and hash changes must occur together"
+    }
+  ],
+  "second_remediation_commit": "286eb823fe09fab8d75492b33fae726a1b238534",
+  "final_rereview_status": "pending"
+}

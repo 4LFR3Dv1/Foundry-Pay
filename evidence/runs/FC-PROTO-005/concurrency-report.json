@@ -28,6 +28,13 @@
       "refunded_high_water_preserved": true
     },
     {
+      "case": "two_completed_refunds_with_overlapping_R_intervals",
+      "first_result": "completed",
+      "second_result": "overlapping_refund_interval",
+      "second_state": "needs_review",
+      "reconciled_high_water_serialized": true
+    },
+    {
       "case": "restart_after_unknown_result",
       "submit_intent_count": 1,
       "automatic_second_submission_count": 0,
