@@ -1,0 +1,77 @@
+work_item: FC-SOL-002
+objective: implement the versioned fixed-width ChannelVault account model, PDA derivation,
+  space, rent, and classic SPL Token vault relationship
+owner: solana-program-engineer
+branch: agent/solana/FC-SOL-002
+allowed_paths:
+- programs/foundry-channel-vault/**
+- docs/channels/solana/accounts/**
+- tests/channels/solana/accounts/**
+- evidence/runs/FC-SOL-002/**
+dependencies:
+- FC-PROTO-001
+- FC-SEC-002
+invariants:
+- the only state topology is one ChannelState PDA plus its vault token account
+- account serialization is fixed-width and versioned
+- all material fields have frozen encodings, ordering, offsets, and golden bytes
+- PDA seeds use raw bytes for channel, sender, mint, and a 32-byte channel nonce
+- vault owner, mint, authority, token program, and canonical address are checked
+- classic SPL Token is allowlisted and Token-2022 is unsupported
+- reserved bytes are zero and carry no v1 meaning
+acceptance:
+- ChannelState field ordering and primitive encodings are implemented without String,
+  Vec, or Option
+- CHANNEL_STATE_SPACE equals the real serialized byte length including the discriminator
+- account version, status, flags, reserved bytes, and malformed lengths fail closed
+- deterministic PDA and serialized-account golden vectors are reproducible
+- rent evidence distinguishes normative space from environment-dependent lamports
+- no economic instruction, CPI, transfer, Ed25519 verification, or deployment is added
+verification_commands:
+- cargo test --manifest-path programs/foundry-channel-vault/Cargo.toml
+- python -m pytest tests/channels/solana/accounts
+- python -m pytest
+- python -m ruff check .
+- python -m ruff format --check .
+- python scripts/check_secrets.py
+- git diff --check
+evidence:
+- evidence/runs/FC-SOL-002/README.md
+- evidence/runs/FC-SOL-002/TASK_CONTRACT.yaml
+- evidence/runs/FC-SOL-002/account-layout-v1.json
+- evidence/runs/FC-SOL-002/account-field-offsets-v1.json
+- evidence/runs/FC-SOL-002/pda-vectors-v1.json
+- evidence/runs/FC-SOL-002/serialized-golden-vectors-v1.json
+- evidence/runs/FC-SOL-002/malformed-account-matrix.json
+- evidence/runs/FC-SOL-002/token-account-authority-report.json
+- evidence/runs/FC-SOL-002/rent-space-report.json
+- evidence/runs/FC-SOL-002/toolchain-report.json
+- evidence/runs/FC-SOL-002/cargo-test.xml
+- evidence/runs/FC-SOL-002/validation-report.json
+- evidence/runs/FC-SOL-002/artifact-manifest.json
+maturity_gate:
+  implementation: complete
+  self_validation: passed
+  external_review: not_performed
+deployment_authorization:
+  local_validator: allowed
+  devnet_fixture: blocked
+  mainnet: blocked
+  real_value: blocked
+external_review_requirement:
+  required_before:
+  - mainnet
+  - real_value
+provenance:
+- reuse the public Channel accounting model and frozen FC-SEC-002 authority boundaries
+  without copying another runtime kernel
+stop_conditions:
+- variable-width account serialization is introduced
+- account_version or a material field encoding is absent
+- PDA derivation depends on Base58 text instead of raw bytes
+- PDA seed collision or ambiguity remains
+- Token-2022 enters scope implicitly
+- reserved bytes acquire meaning without a new version and ADR
+- open, fund, activate, bind, settle, close, refund, CPI, or transfer behavior is
+  implemented
+- local-validator-only authorization is broadened

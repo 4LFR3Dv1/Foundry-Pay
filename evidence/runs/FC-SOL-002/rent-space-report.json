@@ -1,0 +1,10 @@
+{
+  "environmental": {
+    "lamports_are_not_a_protocol_constant": true,
+    "minimum_balance_lamports": 4301280,
+    "model": "solana_rent::Rent::default()"
+  },
+  "normative": {
+    "channel_state_space": 490
+  }
+}
