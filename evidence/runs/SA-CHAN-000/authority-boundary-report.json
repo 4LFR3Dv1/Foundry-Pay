@@ -1,0 +1,17 @@
+{
+  "caller_selected_fields": [
+    "channel_id",
+    "epoch",
+    "sender",
+    "recipient",
+    "destination_wallet",
+    "mint",
+    "amount_base_units",
+    "authorization_commitment"
+  ],
+  "economic_authority": false,
+  "functional_commit": "7513587c556e7604d8b357c7d149fe30cfb28cef",
+  "signing_authority": false,
+  "solana_compatibility_claimed": false,
+  "technical_confirmation_is_economic_completion": false
+}

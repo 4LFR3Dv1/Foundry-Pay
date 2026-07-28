@@ -1,0 +1,24 @@
+work_item: SA-CHAN-000
+baseline: 818f565977766fbc3ddd05f24ad002ea04eb816e
+functional_commit: 7513587c556e7604d8b357c7d149fe30cfb28cef
+objective: implement transport-independent draft channel capabilities and an adversarial fake conformance adapter
+authority:
+  economic: none
+  signing: none
+  reconciliation: independent_fixture_observation_required
+invariants:
+  - technical confirmation is not economic reconciliation
+  - unknown outcomes never trigger automatic submission or rematerialization
+  - unsupported versions and capabilities fail closed without fallback
+  - same identifier plus different exact bytes is an idempotency conflict
+deployment_authorization:
+  offline_fixture: allowed
+  local_validator: not_required
+  devnet_fixture: blocked
+  mainnet: blocked
+  real_value: blocked
+external_review: not_performed
+non_goals:
+  - Solana SDK, RPC, wallet, signer, IDL, or program integration
+  - ChannelVault compatibility
+  - economic completion derived from a technical receipt

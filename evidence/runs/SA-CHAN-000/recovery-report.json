@@ -1,0 +1,10 @@
+{
+  "automatic_resubmission_count": 0,
+  "claim": "at-most-one submission attempt by the controlled offline fixture runtime",
+  "exactly_once_claimed": false,
+  "functional_commit": "7513587c556e7604d8b357c7d149fe30cfb28cef",
+  "repeated_recovery_tested": true,
+  "restart_tested": true,
+  "submit_intent_upper_bound": 1,
+  "unknown_can_reconcile_without_observation": false
+}
