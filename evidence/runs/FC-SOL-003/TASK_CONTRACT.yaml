@@ -1,0 +1,31 @@
+work_item: FC-SOL-003
+baseline: c0b32735ff5ac17dd88e3f3ca17ea5eb1819d2c5
+scope:
+  - isolated instruction-contract crate over immutable FC-SOL-002 account model
+  - instruction serialization
+  - account-meta registry
+  - exact Ed25519 precompile mapping
+  - derived lifecycle phases
+  - event and error registry
+  - deterministic positive and negative fixtures
+non_goals:
+  - entrypoint
+  - economic handlers
+  - CPI or token transfer
+  - deployment
+  - RPC or wallet integration
+  - consumer product
+maturity:
+  implementation: complete
+  self_validation: passed
+  external_review: not_performed
+deployment_authorization:
+  local_fixture: allowed
+  local_validator: allowed
+  devnet_fixture: blocked
+  mainnet: blocked
+  real_value: blocked
+stop_conditions:
+  - ambiguous Ed25519 offset, index, pubkey, or message boundary
+  - change to FC-PROTO-006 preimages or FC-SOL-002 account bytes
+  - runtime handler, CPI, transfer, or deployment enters scope

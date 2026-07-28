@@ -1,0 +1,50 @@
+[
+  {
+    "case": "initialize_channel_golden",
+    "decision": "accepted",
+    "projected_transition_only": true,
+    "success_event_after_full_validation": true
+  },
+  {
+    "case": "fund_channel_golden",
+    "decision": "accepted",
+    "projected_transition_only": true,
+    "success_event_after_full_validation": true
+  },
+  {
+    "case": "activate_voucher_golden",
+    "decision": "accepted",
+    "projected_transition_only": true,
+    "success_event_after_full_validation": true
+  },
+  {
+    "case": "bind_recipient_golden",
+    "decision": "accepted",
+    "projected_transition_only": true,
+    "success_event_after_full_validation": true
+  },
+  {
+    "case": "settle_golden",
+    "decision": "accepted",
+    "projected_transition_only": true,
+    "success_event_after_full_validation": true
+  },
+  {
+    "case": "request_close_golden",
+    "decision": "accepted",
+    "projected_transition_only": true,
+    "success_event_after_full_validation": true
+  },
+  {
+    "case": "refund_unallocated_golden",
+    "decision": "accepted",
+    "projected_transition_only": true,
+    "success_event_after_full_validation": true
+  },
+  {
+    "case": "finalize_close_golden",
+    "decision": "accepted",
+    "projected_transition_only": true,
+    "success_event_after_full_validation": true
+  }
+]

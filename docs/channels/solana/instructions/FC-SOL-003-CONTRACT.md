@@ -18,6 +18,10 @@ FC-SOL-004 remains responsible for proving arbitrary transition sequences.
 The fixed 490-byte `ChannelState` from FC-SOL-002 and all FC-PROTO-006
 canonical preimages are immutable inputs to this work item.
 
+The executable contract lives in an isolated crate that depends on the
+FC-SOL-002 account model. The account-model crate and its historical evidence
+remain byte-for-byte unchanged.
+
 ## Atomic v1 instruction registry
 
 The registry has exactly these operations:

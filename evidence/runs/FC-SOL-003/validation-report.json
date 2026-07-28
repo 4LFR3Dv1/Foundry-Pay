@@ -1,0 +1,11 @@
+{
+  "account_layout_bytes": 490,
+  "cpi_or_transfers": 0,
+  "deployment": "blocked",
+  "ed25519_profiles": 2,
+  "instruction_count": 8,
+  "negative_vectors": 25,
+  "positive_vectors": 8,
+  "runtime_handlers": 0,
+  "status": "passed"
+}
