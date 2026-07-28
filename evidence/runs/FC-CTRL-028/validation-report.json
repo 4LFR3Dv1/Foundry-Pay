@@ -1,0 +1,10 @@
+{
+  "work_item": "FC-CTRL-028",
+  "baseline": "4339e43a94cc9e38239d92660d13cc44d5ab5c55",
+  "historical_evidence_rewritten": false,
+  "fc_sol_003a_functional_head": "db1aeecc0ebc3777aac70fad998a92f7d511c41c",
+  "evidence_local_verification": "current_committed_bytes",
+  "source_verification": "git_blob_at_recorded_functional_head",
+  "shallow_checkout_resolution": "fetch_exact_recorded_commit",
+  "result": "passed"
+}

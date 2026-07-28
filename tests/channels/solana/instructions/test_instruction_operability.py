@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 
 
@@ -11,6 +12,22 @@ EVIDENCE = ROOT / "evidence/runs/FC-SOL-003A"
 
 def load(name: str):
     return json.loads((EVIDENCE / name).read_text(encoding="utf-8"))
+
+
+def ensure_commit_available(commit: str) -> None:
+    present = subprocess.run(
+        ["git", "cat-file", "-e", f"{commit}^{{commit}}"],
+        cwd=ROOT,
+        capture_output=True,
+    )
+    if present.returncode == 0:
+        return
+    subprocess.run(
+        ["git", "fetch", "--no-tags", "--depth=1", "origin", commit],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+    )
 
 
 def test_initialize_has_atomic_creation_program_metas() -> None:
@@ -68,8 +85,19 @@ def test_frozen_byte_contracts_are_unchanged() -> None:
 
 def test_operability_artifact_manifest_recalculates() -> None:
     manifest = load("artifact-manifest.json")
+    functional_head = load("validation-report.json")["functional_head"]
+    ensure_commit_available(functional_head)
     assert manifest["artifact_count"] == len(manifest["artifacts"])
     for artifact in manifest["artifacts"]:
-        raw = (ROOT / artifact["path"]).read_bytes()
+        path = artifact["path"]
+        if path.startswith("evidence/runs/FC-SOL-003A/"):
+            raw = (ROOT / path).read_bytes()
+        else:
+            raw = subprocess.run(
+                ["git", "show", f"{functional_head}:{path}"],
+                cwd=ROOT,
+                check=True,
+                capture_output=True,
+            ).stdout
         assert len(raw) == artifact["bytes"]
         assert f"sha256:{hashlib.sha256(raw).hexdigest()}" == artifact["sha256"]

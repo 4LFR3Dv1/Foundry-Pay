@@ -37,6 +37,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-CTRL-025 | done | FC-CTRL-024, FC-SOL-003 | freeze ABI implementability corrections before property testing or capability publication |
 | FC-CTRL-026 | done | FC-SOL-003A | record operability correction and release satisfied successors |
 | FC-CTRL-027 | done | FC-CTRL-026, FC-SOL-003A | freeze ownership-transition, settlement-correlation, and FC-SOL-004 validation semantics |
+| FC-CTRL-028 | done | FC-CTRL-027, FC-SOL-003A | make historical manifest verification commit-aware before registry evolution |
 
 ## Epic B — Channel protocol
 
