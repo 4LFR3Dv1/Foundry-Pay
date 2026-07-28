@@ -1,0 +1,22 @@
+[
+  {
+    "case": "exact-classic-vault",
+    "decision": "accepted",
+    "result": "Ok(())"
+  },
+  {
+    "case": "token-2022-owner",
+    "decision": "rejected",
+    "result": "Err(WrongOwnerProgram)"
+  },
+  {
+    "case": "wrong-mint",
+    "decision": "rejected",
+    "result": "Err(WrongMint)"
+  },
+  {
+    "case": "wrong-authority",
+    "decision": "rejected",
+    "result": "Err(WrongAuthority)"
+  }
+]

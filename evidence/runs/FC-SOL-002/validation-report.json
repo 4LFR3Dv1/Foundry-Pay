@@ -1,0 +1,19 @@
+{
+  "baseline": "beef6708ea7e21d07dcc4b693e22a8de1358e3e2",
+  "claim": "versioned fixed-width account model, deterministic PDA derivation, classic SPL Token vault boundary, and local-only golden vectors",
+  "cpi_implemented": false,
+  "deployment_authorization": {
+    "devnet_fixture": "blocked",
+    "local_validator": "allowed",
+    "mainnet": "blocked",
+    "real_value": "blocked"
+  },
+  "ed25519_implemented": false,
+  "external_review": "not_performed",
+  "functional_head": "d69336048de83b38ffa17385cc38def02d3717de",
+  "instructions_implemented": false,
+  "schema_version": 1,
+  "status": "passed",
+  "token_transfers_implemented": false,
+  "work_item": "FC-SOL-002"
+}

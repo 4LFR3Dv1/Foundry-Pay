@@ -1,0 +1,9 @@
+{
+  "cargo": "cargo 1.85.1 (d73d2caf9 2024-12-31)",
+  "environment": "local-validator-compatible account model; no deployment",
+  "python": "3.14.5",
+  "rustc": "rustc 1.85.1 (4eb161250 2025-03-15)",
+  "solana_pubkey": "2.1.21",
+  "solana_rent": "2.1.21",
+  "solders": "0.28.0"
+}

@@ -1,0 +1,221 @@
+{
+  "account": "ChannelState",
+  "account_version": 1,
+  "discriminator_rule": "sha256(account:ChannelState)[0:8]",
+  "encoding": "fixed-width little-endian",
+  "fields": [
+    {
+      "end_exclusive": 8,
+      "field": "discriminator",
+      "offset": 0,
+      "width": 8
+    },
+    {
+      "end_exclusive": 10,
+      "field": "account_version",
+      "offset": 8,
+      "width": 2
+    },
+    {
+      "end_exclusive": 11,
+      "field": "bump",
+      "offset": 10,
+      "width": 1
+    },
+    {
+      "end_exclusive": 12,
+      "field": "status",
+      "offset": 11,
+      "width": 1
+    },
+    {
+      "end_exclusive": 13,
+      "field": "environment",
+      "offset": 12,
+      "width": 1
+    },
+    {
+      "end_exclusive": 14,
+      "field": "network",
+      "offset": 13,
+      "width": 1
+    },
+    {
+      "end_exclusive": 16,
+      "field": "program_version",
+      "offset": 14,
+      "width": 2
+    },
+    {
+      "end_exclusive": 20,
+      "field": "policy_flags",
+      "offset": 16,
+      "width": 4
+    },
+    {
+      "end_exclusive": 52,
+      "field": "genesis_hash",
+      "offset": 20,
+      "width": 32
+    },
+    {
+      "end_exclusive": 84,
+      "field": "channel_nonce",
+      "offset": 52,
+      "width": 32
+    },
+    {
+      "end_exclusive": 116,
+      "field": "channel_id_hash",
+      "offset": 84,
+      "width": 32
+    },
+    {
+      "end_exclusive": 124,
+      "field": "epoch",
+      "offset": 116,
+      "width": 8
+    },
+    {
+      "end_exclusive": 156,
+      "field": "sender",
+      "offset": 124,
+      "width": 32
+    },
+    {
+      "end_exclusive": 188,
+      "field": "recipient_claim_pubkey",
+      "offset": 156,
+      "width": 32
+    },
+    {
+      "end_exclusive": 220,
+      "field": "recipient_wallet",
+      "offset": 188,
+      "width": 32
+    },
+    {
+      "end_exclusive": 221,
+      "field": "recipient_bound",
+      "offset": 220,
+      "width": 1
+    },
+    {
+      "end_exclusive": 253,
+      "field": "binding_nonce",
+      "offset": 221,
+      "width": 32
+    },
+    {
+      "end_exclusive": 285,
+      "field": "mint",
+      "offset": 253,
+      "width": 32
+    },
+    {
+      "end_exclusive": 317,
+      "field": "vault_token_account",
+      "offset": 285,
+      "width": 32
+    },
+    {
+      "end_exclusive": 318,
+      "field": "decimals",
+      "offset": 317,
+      "width": 1
+    },
+    {
+      "end_exclusive": 326,
+      "field": "funded_total",
+      "offset": 318,
+      "width": 8
+    },
+    {
+      "end_exclusive": 334,
+      "field": "activated_authorized_total",
+      "offset": 326,
+      "width": 8
+    },
+    {
+      "end_exclusive": 342,
+      "field": "settled_total",
+      "offset": 334,
+      "width": 8
+    },
+    {
+      "end_exclusive": 350,
+      "field": "refunded_total",
+      "offset": 342,
+      "width": 8
+    },
+    {
+      "end_exclusive": 358,
+      "field": "latest_activated_sequence",
+      "offset": 350,
+      "width": 8
+    },
+    {
+      "end_exclusive": 390,
+      "field": "latest_activated_voucher_hash",
+      "offset": 358,
+      "width": 32
+    },
+    {
+      "end_exclusive": 391,
+      "field": "channel_expiry_set",
+      "offset": 390,
+      "width": 1
+    },
+    {
+      "end_exclusive": 399,
+      "field": "channel_expiry",
+      "offset": 391,
+      "width": 8
+    },
+    {
+      "end_exclusive": 400,
+      "field": "voucher_expiry_set",
+      "offset": 399,
+      "width": 1
+    },
+    {
+      "end_exclusive": 408,
+      "field": "voucher_expiry",
+      "offset": 400,
+      "width": 8
+    },
+    {
+      "end_exclusive": 409,
+      "field": "close_requested",
+      "offset": 408,
+      "width": 1
+    },
+    {
+      "end_exclusive": 417,
+      "field": "close_requested_at",
+      "offset": 409,
+      "width": 8
+    },
+    {
+      "end_exclusive": 418,
+      "field": "claim_deadline_set",
+      "offset": 417,
+      "width": 1
+    },
+    {
+      "end_exclusive": 426,
+      "field": "claim_deadline",
+      "offset": 418,
+      "width": 8
+    },
+    {
+      "end_exclusive": 490,
+      "field": "reserved",
+      "offset": 426,
+      "width": 64
+    }
+  ],
+  "reserved_bytes": 64,
+  "space": 490,
+  "variable_width_fields": false
+}

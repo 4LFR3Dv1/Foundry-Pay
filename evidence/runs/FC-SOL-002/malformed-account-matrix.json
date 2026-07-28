@@ -1,0 +1,54 @@
+[
+  {
+    "case": "wrong_program_owner",
+    "expected": "WrongProgramOwner"
+  },
+  {
+    "case": "wrong_discriminator",
+    "expected": "WrongDiscriminator"
+  },
+  {
+    "case": "unknown_version",
+    "expected": "UnknownVersion"
+  },
+  {
+    "case": "short_length",
+    "expected": "WrongLength"
+  },
+  {
+    "case": "long_length",
+    "expected": "WrongLength"
+  },
+  {
+    "case": "unknown_status",
+    "expected": "UnknownStatus"
+  },
+  {
+    "case": "unknown_environment",
+    "expected": "UnknownEnvironment"
+  },
+  {
+    "case": "unknown_network",
+    "expected": "UnknownNetwork"
+  },
+  {
+    "case": "unknown_policy_flag",
+    "expected": "UnknownPolicyFlags"
+  },
+  {
+    "case": "invalid_boolean",
+    "expected": "InvalidBoolean"
+  },
+  {
+    "case": "recipient_binding_mismatch",
+    "expected": "RecipientBindingMismatch"
+  },
+  {
+    "case": "flag_value_mismatch",
+    "expected": "FlagValueMismatch"
+  },
+  {
+    "case": "reserved_nonzero",
+    "expected": "ReservedBytesNonZero"
+  }
+]

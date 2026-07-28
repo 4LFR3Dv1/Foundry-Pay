@@ -1,0 +1,107 @@
+{
+  "artifacts": [
+    {
+      "byte_length": 3963,
+      "path": "evidence/runs/FC-SOL-002/account-field-offsets-v1.json",
+      "sha256": "sha256:63c13cb823000bba1c6ef12a7e77e069c3ce228f6442452ee406dabd8aa72b48"
+    },
+    {
+      "byte_length": 4156,
+      "path": "evidence/runs/FC-SOL-002/account-layout-v1.json",
+      "sha256": "sha256:08a7d25c3a52de4c7fa93ba6525e3266e178e29743a2310ebc2fa679f3ae761c"
+    },
+    {
+      "byte_length": 1003,
+      "path": "evidence/runs/FC-SOL-002/malformed-account-matrix.json",
+      "sha256": "sha256:83c5c503f4db810f8f2387a8f86b46d5234382d302cb3043d5d4ebc2f97cb564"
+    },
+    {
+      "byte_length": 1651,
+      "path": "evidence/runs/FC-SOL-002/pda-vectors-v1.json",
+      "sha256": "sha256:414e55df51f70f8e96e87bbc5fe4194b1c76e29193174f466844ae1e2e21e169"
+    },
+    {
+      "byte_length": 217,
+      "path": "evidence/runs/FC-SOL-002/rent-space-report.json",
+      "sha256": "sha256:a454c38cb0c1424844e9bfc2e09f5e3ed24db35e5ad9b3e9a236bc1cc1e6613c"
+    },
+    {
+      "byte_length": 10543,
+      "path": "evidence/runs/FC-SOL-002/serialized-golden-vectors-v1.json",
+      "sha256": "sha256:2a40361f9832260a4f66bec7683d85c386ce09ac3bb74b427e70d01ff23d9998"
+    },
+    {
+      "byte_length": 404,
+      "path": "evidence/runs/FC-SOL-002/token-account-authority-report.json",
+      "sha256": "sha256:370f03efcc9e35cf2c6490b1964374e22751e1d3bd036d0b9c64ecd30d9c53e5"
+    },
+    {
+      "byte_length": 280,
+      "path": "evidence/runs/FC-SOL-002/toolchain-report.json",
+      "sha256": "sha256:c7987a27f3f865ac16c9a6cf3e716300103c4da2fd45dbe46a1068c270b74028"
+    },
+    {
+      "byte_length": 678,
+      "path": "evidence/runs/FC-SOL-002/validation-report.json",
+      "sha256": "sha256:7aa4494f6c9a82438d5b03a8c604eb5a1364ebf9f2bd9494684318a8a2f43688"
+    },
+    {
+      "byte_length": 3316,
+      "path": "evidence/runs/FC-SOL-002/TASK_CONTRACT.yaml",
+      "sha256": "sha256:12ea735d5c2eeedacc1c5eb72d325870c360315585fa145bde96b5ad099fbc3d"
+    },
+    {
+      "byte_length": 139,
+      "path": "evidence/runs/FC-SOL-002/cargo-test.xml",
+      "sha256": "sha256:a157c5a2287e0b359a5e14a097078b50e462b003a91ed92bdb43772107b0f7a6"
+    },
+    {
+      "byte_length": 783,
+      "path": "programs/foundry-channel-vault/src/lib.rs",
+      "sha256": "sha256:1da8fdeb0d35458e8760b3233febb533f793c4a804ead7d9e788a550403df9f5"
+    },
+    {
+      "byte_length": 2675,
+      "path": "programs/foundry-channel-vault/src/pda.rs",
+      "sha256": "sha256:81fc4829f05b7efb5696fc0c4893ddf6fdd335ba5c238fd45c3e8b7bd59ca7ff"
+    },
+    {
+      "byte_length": 19560,
+      "path": "programs/foundry-channel-vault/src/state.rs",
+      "sha256": "sha256:660e7dd93a04f22d7e42076db07da4185734134155c951b2c9ac0358a4b48351"
+    },
+    {
+      "byte_length": 7681,
+      "path": "programs/foundry-channel-vault/src/vault.rs",
+      "sha256": "sha256:0e387434dbd28cdd24df8b659669472f6527a4021c983f2a78cb52ad10e2ed7e"
+    },
+    {
+      "byte_length": 12225,
+      "path": "programs/foundry-channel-vault/examples/generate_vectors.rs",
+      "sha256": "sha256:5895b203613f9fc23dc32a8ab0d6c2912c189cf122710def2630cd15cdc41454"
+    },
+    {
+      "byte_length": 5006,
+      "path": "tests/channels/solana/accounts/test_account_model.py",
+      "sha256": "sha256:44fa3edbb771f9eefe711719ee8b524bce8166d9acb7c7b8b8fb7357c396693f"
+    },
+    {
+      "byte_length": 492,
+      "path": "programs/foundry-channel-vault/Cargo.toml",
+      "sha256": "sha256:46b0d859a0bfe3795a832afded430c2c52bce767e8d8e2b0dab1db07ced47784"
+    },
+    {
+      "byte_length": 21610,
+      "path": "programs/foundry-channel-vault/Cargo.lock",
+      "sha256": "sha256:72d0e5b0b7d576cded55c635dd7b9bd400277d7507d6e7edf40aefca942ed3ab"
+    },
+    {
+      "byte_length": 4830,
+      "path": "evidence/runs/FC-SOL-002/generate_evidence.py",
+      "sha256": "sha256:be33308bb45a12430415ef44fd5f81450b125fa930de85231c76f14a86796dc4"
+    }
+  ],
+  "baseline": "beef6708ea7e21d07dcc4b693e22a8de1358e3e2",
+  "functional_head": "d69336048de83b38ffa17385cc38def02d3717de",
+  "schema_version": 1
+}

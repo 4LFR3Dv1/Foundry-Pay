@@ -1,0 +1,38 @@
+[
+  {
+    "vector_id": "base",
+    "program_id": "cGfHiC6Kgg3FpFZvgwGcswsCRtp4aBP2fzuXRQPizuN",
+    "sender": "GgBaCs3NCBuZN12kCJgAW63ydqohFkHEdfdEXBPzLHq",
+    "mint": "US517G5965aydkZ46HS38QLi7UQiSojurfbQfKCELFx",
+    "channel_nonce_hex": "0202020202020202020202020202020202020202020202020202020202020202",
+    "expected_pda": "DikEJjS2b2RwvCJ2oRBB8o8r8yzK1K53xgY6oksnTgc3",
+    "expected_bump": 255
+  },
+  {
+    "vector_id": "sender-mutated",
+    "program_id": "cGfHiC6Kgg3FpFZvgwGcswsCRtp4aBP2fzuXRQPizuN",
+    "sender": "ws91DX9HBAAxGW77BZs5FogRDwpRtcUpiLBpKdPTfWu",
+    "mint": "US517G5965aydkZ46HS38QLi7UQiSojurfbQfKCELFx",
+    "channel_nonce_hex": "0202020202020202020202020202020202020202020202020202020202020202",
+    "expected_pda": "BHPSFE1eM9RpxNcJBxwLrtfVQ1CoLHggdkXHPoV5kiXh",
+    "expected_bump": 255
+  },
+  {
+    "vector_id": "mint-mutated",
+    "program_id": "cGfHiC6Kgg3FpFZvgwGcswsCRtp4aBP2fzuXRQPizuN",
+    "sender": "GgBaCs3NCBuZN12kCJgAW63ydqohFkHEdfdEXBPzLHq",
+    "mint": "21nS9Wz9sUTQ6MkcYUtnN8aSfPA26xJJP7zqshfzCzqc",
+    "channel_nonce_hex": "0202020202020202020202020202020202020202020202020202020202020202",
+    "expected_pda": "EwaiDYCSLfuHrR4iBsBKoJe7mFfLVN82GnA6jttoe3B5",
+    "expected_bump": 255
+  },
+  {
+    "vector_id": "nonce-mutated",
+    "program_id": "cGfHiC6Kgg3FpFZvgwGcswsCRtp4aBP2fzuXRQPizuN",
+    "sender": "GgBaCs3NCBuZN12kCJgAW63ydqohFkHEdfdEXBPzLHq",
+    "mint": "US517G5965aydkZ46HS38QLi7UQiSojurfbQfKCELFx",
+    "channel_nonce_hex": "1010101010101010101010101010101010101010101010101010101010101010",
+    "expected_pda": "4JLA5UUMQqEHS8jzpmTGWZXjK5DBGGDRrNb4F7WGoL4k",
+    "expected_bump": 255
+  }
+]
