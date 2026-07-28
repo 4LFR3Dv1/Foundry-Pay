@@ -58,7 +58,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 |---|---|---|---|
 | FC-SOL-001 | done | FOUNDATIONS-001 | ChannelVault design specification |
 | FC-SOL-002 | done | FC-PROTO-001, FC-SEC-002 | fixed-width ChannelState PDA and classic SPL Token vault layout; local validator only |
-| FC-SOL-003 | ready | FC-PROTO-002, FC-PROTO-003, FC-PROTO-004, FC-PROTO-005, FC-SOL-002 | instruction and error contract |
+| FC-SOL-003 | ready | FC-PROTO-002, FC-PROTO-003, FC-PROTO-004, FC-PROTO-005, FC-SOL-002, FC-SEC-002 | atomic instruction, account-meta, exact Ed25519, lifecycle, event, and error contracts; local fixtures only |
 | FC-SOL-004 | blocked | FC-SOL-003, FC-SEC-002 | on-chain invariants and property/formal harness |
 | FC-SOL-005 | blocked | FC-SOL-003 | upgrade, migration, and governance policy |
 

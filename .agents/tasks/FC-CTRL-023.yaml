@@ -1,0 +1,44 @@
+work_item: FC-CTRL-023
+objective: freeze the FC-SOL-003 instruction, account-meta, Ed25519, lifecycle, event, error, maturity, and reserved-path contract
+owner: program-integrator
+branch: agent/control/FC-CTRL-023
+allowed_paths:
+  - .agents/tasks/FC-CTRL-023.yaml
+  - .agents/tasks/FC-SOL-003.yaml
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - docs/channels/solana/instructions/FC-SOL-003-CONTRACT.md
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-023/**
+dependencies:
+  - FC-CTRL-022
+  - FC-SOL-002
+  - FC-SEC-002
+invariants:
+  - FC-SOL-003 freezes contracts and deterministic fixtures without implementing economic handlers
+  - the 490-byte ChannelState layout and FC-PROTO-006 preimages remain unchanged
+  - Ed25519 evidence is self-contained, immediately preceding, exact-byte, and type-specific
+  - self-validation does not imply external Solana instruction or Ed25519 review
+acceptance:
+  - eight atomic v1 instruction names and account-meta requirements are frozen
+  - closing_open and closing_frozen are derived without changing ChannelState layout
+  - stable lifecycle, event, error, signature-precompile, and negative-vector requirements are frozen
+  - local fixtures are allowed while devnet, mainnet, real value, transfers, and deployment remain blocked
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+evidence:
+  - evidence/runs/FC-CTRL-023/README.md
+  - evidence/runs/FC-CTRL-023/validation-report.json
+provenance:
+  - FC-SEC-002 merge 0d203389052a78d6cdec5b565ca28e605dad13fb
+  - FC-SOL-002 merge 818f565977766fbc3ddd05f24ad002ea04eb816e
+  - FC-CTRL-022 merge bbe22320fa26a312dac8a179b6c40a6695adda3f
+stop_conditions:
+  - an economic handler, CPI, transfer, entrypoint, or deployment is implemented
+  - an Ed25519 offset, instruction index, pubkey, or message boundary remains implicit
+  - the fixed-width account layout or a frozen protocol preimage changes
+  - external review is inferred or deployment authorization is broadened

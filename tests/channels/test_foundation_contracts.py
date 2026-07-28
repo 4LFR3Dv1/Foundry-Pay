@@ -265,3 +265,68 @@ def test_sa_chan_000_contract_is_offline_authority_free_and_adversarial() -> Non
     assert by_id["SA-CHAN-002"]["status"] == "blocked"
     assert by_id["SA-CHAN-003"]["status"] == "blocked"
     assert by_id["SA-CHAN-004"]["status"] == "blocked"
+
+
+def test_fc_sol_003_contract_freezes_authority_without_runtime_or_deployment() -> None:
+    work_items = yaml.safe_load(
+        (ROOT / "docs/channels/work-items.yaml").read_text(encoding="utf-8")
+    )["work_items"]
+    by_id = {item["id"]: item for item in work_items}
+
+    assert by_id["FC-CTRL-023"]["status"] == "done"
+    instruction_contract = by_id["FC-SOL-003"]
+    assert instruction_contract["status"] == "ready"
+    assert instruction_contract["dependencies"] == [
+        "FC-PROTO-002",
+        "FC-PROTO-003",
+        "FC-PROTO-004",
+        "FC-PROTO-005",
+        "FC-SOL-002",
+        "FC-SEC-002",
+    ]
+    assert instruction_contract["maturity_gate"] == {
+        "implementation": "complete",
+        "self_validation": "passed",
+        "external_review": "not_performed",
+    }
+    assert instruction_contract["deployment_authorization"] == {
+        "local_fixture": "allowed",
+        "local_validator": "allowed",
+        "devnet_fixture": "blocked",
+        "mainnet": "blocked",
+        "real_value": "blocked",
+    }
+    assert instruction_contract["external_review_requirement"] == {
+        "required_before": ["devnet_fixture", "mainnet", "real_value"]
+    }
+
+    task = yaml.safe_load((ROOT / ".agents/tasks/FC-SOL-003.yaml").read_text(encoding="utf-8"))
+    assert task["dependencies"] == instruction_contract["dependencies"]
+    assert task["maturity_gate"] == instruction_contract["maturity_gate"]
+    assert task["deployment_authorization"] == instruction_contract["deployment_authorization"]
+
+    contract = (ROOT / "docs/channels/solana/instructions/FC-SOL-003-CONTRACT.md").read_text(
+        encoding="utf-8"
+    )
+    for instruction in (
+        "initialize_channel",
+        "fund_channel",
+        "activate_voucher",
+        "bind_recipient",
+        "settle",
+        "request_close",
+        "refund_unallocated",
+        "finalize_close",
+    ):
+        assert f"`{instruction}`" in contract
+    assert "immediately preceding" in contract
+    assert "every instruction-index field is\n`u16::MAX`" in contract
+    assert "total length = H + 192 + (2 * M)" in contract
+    assert "closing_open" in contract and "closing_frozen" in contract
+    assert "The claim deadline is exclusive" in contract
+    assert "490-byte `ChannelState`" in contract
+    assert "does **not** implement an entrypoint" in contract
+    assert "Token-2022" in contract
+
+    assert by_id["FC-SOL-004"]["status"] == "blocked"
+    assert by_id["SA-CHAN-001"]["status"] == "blocked"
