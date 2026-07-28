@@ -1,0 +1,30 @@
+{
+  "work_item": "FC-CTRL-029",
+  "fc_sol_004": {
+    "functional_head": "da8baf5f008653f771c589adfa79f82503e1e2b4",
+    "evidence_head": "0efc701d54dba140c784b77555afd076f09d5777",
+    "merge_commit": "3f1740e70abb9ee67f7b83130fa5aef2a76befb8",
+    "main_ci_run": 30379326962,
+    "property_cases": 1536,
+    "bounded_visited_states": 703,
+    "bounded_attempted_transitions": 4732,
+    "invariant_violations": 0,
+    "formal_verification": "not_performed",
+    "external_review": "not_performed"
+  },
+  "released": [
+    "FC-SEC-004"
+  ],
+  "still_ready": [
+    "FC-SOL-005",
+    "SA-CHAN-001",
+    "FC-FAIL-003"
+  ],
+  "still_blocked": [
+    "ChannelVault handlers",
+    "local-validator execution",
+    "devnet",
+    "mainnet",
+    "real value"
+  ]
+}
