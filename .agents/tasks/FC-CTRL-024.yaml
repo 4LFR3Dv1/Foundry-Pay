@@ -1,0 +1,38 @@
+work_item: FC-CTRL-024
+objective: record FC-SOL-003 integration and release only successors whose dependencies are satisfied
+owner: program-integrator
+branch: agent/control/FC-CTRL-024
+allowed_paths:
+  - .agents/tasks/FC-CTRL-024.yaml
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - docs/channels/EVIDENCE_INDEX.md
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-024/**
+dependencies:
+  - FC-SOL-003
+invariants:
+  - integration records exact functional, evidence, merge, and main CI identifiers
+  - self-validation is not represented as external review
+  - local fixture authorization does not authorize devnet, mainnet, or real value
+  - only work items with satisfied dependencies become ready
+acceptance:
+  - FC-SOL-003 is done
+  - FC-SOL-004, FC-SOL-005, and SA-CHAN-001 are ready
+  - economic handlers, real Solana execution, deployment, and consumer integration remain blocked
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+evidence:
+  - evidence/runs/FC-CTRL-024/README.md
+  - evidence/runs/FC-CTRL-024/validation-report.json
+provenance:
+  - FC-SOL-003 PR 48
+stop_conditions:
+  - an unmet successor is marked ready
+  - external review is inferred
+  - deployment authorization is broadened
+  - FC-SOL-003 is represented as an operational program

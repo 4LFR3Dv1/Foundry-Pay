@@ -42,6 +42,7 @@ README after the validation run.
 | FC-SEC-002 | `0d203389052a78d6cdec5b565ca28e605dad13fb` | `evidence/runs/FC-SEC-002/` |
 | FC-SOL-002 | `818f565977766fbc3ddd05f24ad002ea04eb816e` | `evidence/runs/FC-SOL-002/` |
 | SA-CHAN-000 | `49c62b6cfab0344a870bb285512df1d494eb6f03` | `evidence/runs/SA-CHAN-000/` |
+| FC-SOL-003 | `192bd40245244cfd540c67f880104259b5190379` | `evidence/runs/FC-SOL-003/` |
 
 These merges authorize the next offline protocol work only. They do not prove
 ChannelVault, Solana execution, a deployed consumer frontend, or product demand.
@@ -53,6 +54,14 @@ head `7513587c...`, evidence head `c918ce1d...`, merge `49c62b6c...`, and green
 main CI run `30364372600`. Both remain self-validated with external review
 `not_performed`; devnet, mainnet, real assets, and production-security claims
 remain blocked.
+
+PR #48 integrated the experimental ChannelVault instruction contract with
+functional head `2b6b5e4c...`, evidence head `097a03c9...`, merge
+`192bd402...`, and green main CI run `30371165634`. It freezes serialization,
+account metas, exact Ed25519 layouts, lifecycle projections, events, errors,
+and deterministic negative fixtures. It does not implement an entrypoint,
+economic handler, CPI, token transfer, deployment, or consumer integration.
+External Solana instruction and Ed25519 review remains `not_performed`.
 
 ## Integrated security gate
 
