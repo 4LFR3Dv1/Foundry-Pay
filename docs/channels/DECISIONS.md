@@ -20,6 +20,9 @@ are binding for the MVP unless a later ADR explicitly supersedes them.
 | FC-D-013 | accepted | `initialize_channel` atomically creates the ChannelState PDA and canonical classic-token ATA with the sender as payer | the account metas include exact System, Token, and Associated Token programs | [ADR-010](ADR/FC-ADR-010-channelvault-v1-operability.md) |
 | FC-D-014 | accepted | v1 settlement is permissionless after binding and can pay only the bound recipient canonical ATA | keepers may deliver an existing right but cannot redirect value or create authority | [ADR-010](ADR/FC-ADR-010-channelvault-v1-operability.md) |
 | FC-D-015 | accepted | the exclusive claim window is bounded from 900 through 2,592,000 seconds using checked Solana Clock arithmetic | sender cannot collapse the presentation window to now or leave closure unbounded | [ADR-010](ADR/FC-ADR-010-channelvault-v1-operability.md) |
+| FC-D-016 | accepted | ChannelState initialization is an atomic modeled ownership transition from absent/System-owned to ChannelVault-owned | a single owner predicate cannot conflate initialization preconditions and postconditions | [ADR-011](ADR/FC-ADR-011-transition-model-preflight.md) |
+| FC-D-017 | accepted | settlement `obligation_hash` is opaque caller-provided correlation, not economic authority or proof of business outcome | permissionless callers cannot redirect value or manufacture business reconciliation through correlation metadata | [ADR-011](ADR/FC-ADR-011-transition-model-preflight.md) |
+| FC-D-018 | accepted | FC-SOL-004 uses property-based and bounded transition validation without a formal-verification claim | evidence is scoped to the published model, generators, and exploration bounds | [ADR-011](ADR/FC-ADR-011-transition-model-preflight.md) |
 
 ## Decisions intentionally deferred
 

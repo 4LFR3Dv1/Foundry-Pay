@@ -691,6 +691,41 @@ work_items:
       - stale recipient-signer or incomplete initialization requirements remain normative
       - an unmet execution or deployment gate advances
 
+  - id: FC-CTRL-027
+    status: done
+    objective: freeze ownership-transition, non-authoritative settlement correlation, and FC-SOL-004 validation semantics
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-027.yaml
+      - .agents/tasks/FC-SOL-004.yaml
+      - docs/channels/ADR/FC-ADR-011-transition-model-preflight.md
+      - docs/channels/solana/invariants/FC-SOL-004-CONTRACT.md
+      - docs/channels/DECISIONS.md
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-027/**
+    dependencies: [FC-CTRL-026, FC-SOL-003A]
+    invariants:
+      - initialize distinguishes absent or system-owned pre-state from program-owned post-state
+      - obligation_hash is caller-supplied non-authoritative correlation
+      - permissionless settlement economics are caller-independent
+      - property and bounded exploration are not represented as formal verification
+    acceptance:
+      - FC-SOL-004 remains ready under the new exact contract
+      - external review remains not_performed
+      - runtime and deployment authorization remain blocked
+    tests:
+      - executable decision, graph, maturity, and authorization assertions
+    evidence:
+      - evidence/runs/FC-CTRL-027/validation-report.json
+    security_review: self-validated coordination; external review remains not performed
+    stop_conditions:
+      - initialization owner transition remains ambiguous
+      - obligation_hash can be interpreted as authority or business outcome
+      - bounded testing is represented as formal verification
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -1151,17 +1186,48 @@ work_items:
 
   - id: FC-SOL-004
     status: ready
-    objective: implement property and formal harnesses for ChannelVault invariants
-    owner: formal-methods-engineer
+    objective: implement a pure ChannelVault transition model with property-based and bounded sequence validation
+    owner: protocol-model-engineer
     repository: 4LFR3Dv1/Foundry-Pay
-    allowed_paths: [programs/foundry-channel-vault/**, tests/channels/solana/invariants/**, formal/**, evidence/runs/FC-SOL-004/**]
-    dependencies: [FC-SOL-003A, FC-SEC-002]
-    invariants: [conservation, monotonicity, one-use binding, and lifecycle safety hold for all transitions]
-    acceptance: [property tests cover arbitrary sequences and formal review closes material uncertainty]
-    tests: [proptest, model-based transition suite, and selected formal proofs]
-    evidence: [property seeds, counterexample archive, and proof artifacts]
-    security_review: independent-formal-review
-    stop_conditions: [testing alone leaves material conservation or replay uncertainty]
+    allowed_paths: [programs/foundry-channel-vault/**, tests/channels/solana/invariants/**, evidence/runs/FC-SOL-004/**]
+    dependencies: [FC-SOL-003A, FC-SEC-002, FC-CTRL-027]
+    invariants:
+      - conservation, monotonicity, one-use binding, and lifecycle safety hold for every accepted modeled transition
+      - rejected transitions preserve modeled economic, authority, lifecycle, and topology state
+      - initialization ownership change is atomic in the model
+      - permissionless settlement is independent of caller identity and obligation_hash
+    acceptance:
+      - the pure model covers all eight frozen operations
+      - property tests publish seeds, cases, and counterexamples
+      - bounded exploration publishes domains, depth, state count, transitions, and rejections
+      - no violation is found within the published model and bounds
+    tests:
+      - deterministic transition tests
+      - proptest valid and rejected sequences
+      - bounded breadth-first exploration with state deduplication
+      - permissionless caller and obligation-hash independence
+      - initialization rollback model
+    evidence:
+      - property report
+      - bounded exploration report
+      - invariant matrix
+      - artifact manifest
+    maturity_gate:
+      implementation: complete
+      self_validation: passed
+      external_review: not_performed
+    deployment_authorization:
+      pure_model: allowed
+      local_validator: blocked
+      devnet_fixture: blocked
+      mainnet: blocked
+      real_value: blocked
+    security_review: self-validated property and bounded exploration; external review not performed
+    stop_conditions:
+      - material conservation, replay, lifecycle, or ownership uncertainty remains
+      - caller identity or obligation_hash affects settlement economics
+      - a runtime, CPI, transfer, RPC, or deployment enters scope
+      - bounded testing is represented as formal verification
 
   - id: FC-SOL-005
     status: ready

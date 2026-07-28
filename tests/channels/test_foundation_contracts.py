@@ -360,7 +360,11 @@ def test_fc_sol_003a_preflight_freezes_operable_authority_and_deadline_rules() -
     assert correction["status"] == "done"
     assert correction["dependencies"] == ["FC-SOL-003", "FC-CTRL-025"]
     assert by_id["FC-SOL-004"]["status"] == "ready"
-    assert by_id["FC-SOL-004"]["dependencies"] == ["FC-SOL-003A", "FC-SEC-002"]
+    assert by_id["FC-SOL-004"]["dependencies"] == [
+        "FC-SOL-003A",
+        "FC-SEC-002",
+        "FC-CTRL-027",
+    ]
     assert by_id["SA-CHAN-001"]["status"] == "ready"
     assert by_id["SA-CHAN-001"]["dependencies"] == ["FC-PROTO-006", "FC-SOL-003A"]
     assert by_id["FC-SOL-005"]["status"] == "ready"
@@ -396,3 +400,44 @@ def test_fc_sol_003a_preflight_freezes_operable_authority_and_deadline_rules() -
         "aaffd54d0712dc7b0add981d06923dab00e4aba1"
     )
     assert integration["fc_sol_003a"]["main_ci_run"] == 30375043779
+
+
+def test_fc_sol_004_preflight_freezes_precise_model_claims() -> None:
+    work_items = yaml.safe_load(
+        (ROOT / "docs/channels/work-items.yaml").read_text(encoding="utf-8")
+    )["work_items"]
+    by_id = {item["id"]: item for item in work_items}
+
+    assert by_id["FC-CTRL-027"]["status"] == "done"
+    model = by_id["FC-SOL-004"]
+    assert model["status"] == "ready"
+    assert model["dependencies"] == ["FC-SOL-003A", "FC-SEC-002", "FC-CTRL-027"]
+    assert model["maturity_gate"]["external_review"] == "not_performed"
+    assert model["deployment_authorization"] == {
+        "pure_model": "allowed",
+        "local_validator": "blocked",
+        "devnet_fixture": "blocked",
+        "mainnet": "blocked",
+        "real_value": "blocked",
+    }
+
+    adr = (ROOT / "docs/channels/ADR/FC-ADR-011-transition-model-preflight.md").read_text(
+        encoding="utf-8"
+    )
+    assert "absent_or_system_owned_zero_data" in adr
+    assert "caller-supplied opaque correlation value" in adr
+    assert "not formal verification" in adr
+
+    task = yaml.safe_load((ROOT / ".agents/tasks/FC-SOL-004.yaml").read_text(encoding="utf-8"))
+    assert task["dependencies"] == model["dependencies"]
+    assert task["maturity_gate"] == model["maturity_gate"]
+    assert task["deployment_authorization"] == model["deployment_authorization"]
+
+    report = json.loads(
+        (ROOT / "evidence/runs/FC-CTRL-027/validation-report.json").read_text(encoding="utf-8")
+    )
+    assert report["runtime_changes"] == 0
+    assert report["decisions"]["formal_verification_claimed"] is False
+    assert report["decisions"]["obligation_hash"] == (
+        "caller_supplied_non_authoritative_correlation"
+    )
