@@ -47,6 +47,7 @@ README after the validation run.
 | FC-SOL-004 | `3f1740e70abb9ee67f7b83130fa5aef2a76befb8` | `evidence/runs/FC-SOL-004/` |
 | FC-SEC-004 | `fbc5c43613d8c5535674eb398ad34387ce745854` | `evidence/runs/FC-SEC-004/` |
 | FC-SOL-005 | `102c9dfec61131ad1b6682ecc4c9fe70d7ff57f1` | `evidence/runs/FC-SOL-005/` |
+| SA-CHAN-001 | `0804965a25c8e5e52fc836b96f71929ac17c9198` | `Solana-Agent/evidence/runs/SA-CHAN-001/` |
 
 These merges authorize the next offline protocol work only. They do not prove
 ChannelVault, Solana execution, a deployed consumer frontend, or product demand.
@@ -90,6 +91,15 @@ compatible versus isolated semantic changes, exit-preserving pause policy, and
 active-right migration preservation. It does not test the Solana loader,
 ProgramData, a real multisig/timelock, deployed-build reproduction, or any
 deployment environment.
+
+Solana-Agent PR #14 integrated descriptive ChannelVault discovery with
+functional head `3d8b71a7...`, evidence head `1a588b6a...`, merge
+`0804965a...`, and green main CI run `30403768939`. It pins Foundry-Pay commit
+`7c718c42...` plus raw hashes `08a7d25c...` (490-byte account layout),
+`ba09713e...` (instruction registry), and `4a5a7fc5...` (signed-message
+registry). It reports preparation, execution, status, recovery, and deployment
+support as false. No Program ID, network, genesis, handler, transaction,
+local-validator run, or external review is inferred.
 
 ## Integrated security gate
 
