@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "work_item": "FC-CTRL-021",
+  "baseline": "cb901c77b596e94e207f3ea99fbd4b3646998dfc",
+  "sa_chan_000": {
+    "status": "ready",
+    "scope": "transport-independent offline fixture",
+    "channelvault_compatibility": "not_claimed",
+    "economic_authority": false,
+    "automatic_retry_after_unknown": false,
+    "external_review": "not_performed",
+    "devnet_fixture": "blocked",
+    "mainnet": "blocked",
+    "real_value": "blocked"
+  },
+  "runtime_changes": false
+}

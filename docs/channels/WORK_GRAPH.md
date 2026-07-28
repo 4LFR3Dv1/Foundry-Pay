@@ -68,7 +68,7 @@ No program implementation is authorized by `FOUNDATIONS-001`.
 
 | Work item | Status | Depends on | Outcome |
 |---|---|---|---|
-| SA-CHAN-000 | ready | FC-PROTO-007, FC-SEC-002 | draft capability contracts and fake conformance adapter; no ChannelVault compatibility claim |
+| SA-CHAN-000 | ready | FC-PROTO-007, FC-SEC-002, FC-CTRL-021 | draft capability contracts and adversarial fake adapter; offline fixture only, no ChannelVault compatibility claim |
 | SA-CHAN-001 | blocked | FC-PROTO-006, FC-SOL-003 | generic channel capability discovery |
 | SA-CHAN-002 | blocked | SA-CHAN-001, FC-SOL-003 | open/top-up/activation preparation |
 | SA-CHAN-003 | blocked | SA-CHAN-001, FC-SOL-003 | settlement preparation |

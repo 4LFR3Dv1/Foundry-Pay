@@ -1,0 +1,66 @@
+work_item: SA-CHAN-000
+objective: implement transport-independent draft channel capabilities and an adversarial fake conformance adapter
+owner: protocol-integration-engineer
+branch: agent/integration/SA-CHAN-000
+allowed_paths:
+  - packages/channel-protocol/**
+  - services/fake-executor/**
+  - contracts/channel/capabilities/**
+  - tests/channels/conformance/fake-adapter/**
+  - evidence/runs/SA-CHAN-000/**
+dependencies:
+  - FC-PROTO-007
+  - FC-SEC-002
+  - FC-CTRL-021
+invariants:
+  - capability discovery describes support and never grants authority
+  - the adapter cannot choose channel, sender, recipient, mint, amount, or destination
+  - exact-byte commitments bind requests to deterministic fake execution material
+  - technical confirmation is distinct from independently reconciled economic completion
+  - unknown submission results never trigger automatic retry or rematerialization
+  - no descriptor claims compatibility with unimplemented ChannelVault instructions
+acceptance:
+  - closed versioned capability, request, response, status, recovery, and receipt contracts exist
+  - fake scenarios cover prepared, authorized, submitted, unknown, recovered, confirmed, reconciled, disputed, needs-review, and definitive failure
+  - unsupported capability and version mismatch fail closed
+  - restart and repeated recovery preserve at-most-one controlled submission attempt
+  - consumer-safe fixtures expose protocol states without RPC, wallet, signer, or Cloud authority
+verification_commands:
+  - python -m pytest tests/channels/conformance/fake-adapter
+  - python -m pytest
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+evidence:
+  - evidence/runs/SA-CHAN-000/README.md
+  - evidence/runs/SA-CHAN-000/TASK_CONTRACT.yaml
+  - evidence/runs/SA-CHAN-000/capability-manifest.json
+  - evidence/runs/SA-CHAN-000/scenario-matrix.json
+  - evidence/runs/SA-CHAN-000/authority-boundary-report.json
+  - evidence/runs/SA-CHAN-000/recovery-report.json
+  - evidence/runs/SA-CHAN-000/validation-report.json
+  - evidence/runs/SA-CHAN-000/artifact-manifest.json
+maturity_gate:
+  implementation: complete
+  self_validation: passed
+  external_review: not_performed
+deployment_authorization:
+  offline_fixture: allowed
+  local_validator: not_required
+  devnet_fixture: blocked
+  mainnet: blocked
+  real_value: blocked
+external_review_requirement:
+  required_before:
+    - mainnet
+    - real_value
+provenance:
+  - reuse frozen public protocol contracts and existing fake execution boundaries without importing the Solana-Agent kernel
+stop_conditions:
+  - Solana RPC, wallet, signer, SDK, program instruction, or ChannelVault IDL enters scope
+  - the fake adapter gains economic authority
+  - technical confirmation becomes economic completion
+  - unknown outcome causes automatic resubmission
+  - unsupported version or capability falls back
+  - the work item is represented as SA-CHAN-001
