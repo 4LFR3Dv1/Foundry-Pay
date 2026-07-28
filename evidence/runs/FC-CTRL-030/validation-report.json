@@ -1,0 +1,17 @@
+{
+  "work_item": "FC-CTRL-030",
+  "baseline": "ebca6fdbea410f8d1417673f2c5199be1b890054",
+  "fc_sec_004_status": "ready",
+  "model": "versioned_snapshot_conditional_commit",
+  "commit_time_revalidation": true,
+  "serial_witness_required": true,
+  "solana_runtime_claim": false,
+  "external_review": "not_performed",
+  "deployment_authorization": {
+    "offline_model": "allowed",
+    "local_validator": "blocked",
+    "devnet_fixture": "blocked",
+    "mainnet": "blocked",
+    "real_value": "blocked"
+  }
+}

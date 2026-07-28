@@ -1,0 +1,65 @@
+work_item: FC-SEC-004
+objective: prove offline linearizability and stale-snapshot safety for concurrent channel transitions
+owner: concurrency-security-engineer
+branch: agent/security/FC-SEC-004
+allowed_paths:
+  - services/failure_lab/channel-concurrency/**
+  - tests/channels/security/concurrency/**
+  - evidence/runs/FC-SEC-004/**
+dependencies:
+  - FC-PROTO-004
+  - FC-SOL-004
+  - FC-CTRL-030
+invariants:
+  - commit succeeds only when current_version equals candidate read_version
+  - stale or duplicate candidates cause zero economic, authority, lifecycle, and version effect
+  - every commit increments version exactly once
+  - every accepted operation_id is unique
+  - every accepted history replays to the same final state in its recorded serial order
+  - aggregate settled never exceeds activated right
+  - derived vault_balance plus settled plus refunded equals funded
+  - lifecycle and time are revalidated at commit
+acceptance:
+  - two-settlement oversubscription cannot commit twice
+  - safe partial settlements can commit after explicit stale re-preparation
+  - duplicate operation IDs have at-most-one economic effect
+  - refund, activation, freeze, settle, finalize, and close races publish witnesses
+  - bounded schedules and property tests find no violation within published limits
+tests:
+  - two settlements from one snapshot
+  - duplicate IDs and distinct IDs
+  - refund versus settlement
+  - activation versus refund and deadline
+  - settlement and refund versus finalize
+  - close versus activation
+  - property-based candidate schedules
+  - bounded schedule exploration
+evidence:
+  - race matrix
+  - linearization witnesses
+  - stale-snapshot report
+  - property report
+  - bounded schedule report
+  - artifact manifest
+maturity_gate:
+  implementation: complete
+  self_validation: passed
+  external_review: not_performed
+deployment_authorization:
+  offline_model: allowed
+  local_validator: blocked
+  devnet_fixture: blocked
+  mainnet: blocked
+  real_value: blocked
+external_review_requirement:
+  required_before:
+    - mainnet
+    - real_value
+security_review: self-validated offline concurrency model; external review not performed
+stop_conditions:
+  - an accepted history lacks a serial witness
+  - a stale candidate changes modeled state or version
+  - time is not revalidated at commit
+  - the harness duplicates the FC-SOL-004 transition function as its oracle
+  - handlers, CPI, RPC, local validator, or deployment enters scope
+  - Solana runtime race safety is claimed
