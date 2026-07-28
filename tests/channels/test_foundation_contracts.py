@@ -42,7 +42,8 @@ def test_foundation_contracts_and_gates_pass() -> None:
     assert result["checks"]["work_graph"]["ready_items"] == [
         "FC-FAIL-003",
         "FC-VAL-003",
-        "SA-CHAN-001A",
+        "SA-CHAN-002",
+        "SA-CHAN-003",
     ]
     assert result["checks"]["work_graph"]["ready_with_incomplete_dependencies"] == {}
     assert result["checks"]["accounting"] == {
@@ -263,8 +264,8 @@ def test_sa_chan_000_contract_is_offline_authority_free_and_adversarial() -> Non
     assert "This is not an exactly-once blockchain claim." in contract
 
     assert by_id["SA-CHAN-001"]["status"] == "done"
-    assert by_id["SA-CHAN-002"]["status"] == "blocked"
-    assert by_id["SA-CHAN-003"]["status"] == "blocked"
+    assert by_id["SA-CHAN-002"]["status"] == "ready"
+    assert by_id["SA-CHAN-003"]["status"] == "ready"
     assert by_id["SA-CHAN-004"]["status"] == "blocked"
 
 
@@ -451,7 +452,7 @@ def test_fc_sol_004_integration_releases_only_concurrency_model_work() -> None:
     assert by_id["FC-SOL-005"]["status"] == "done"
     assert by_id["SA-CHAN-001"]["status"] == "done"
     assert by_id["FC-FAIL-003"]["status"] == "ready"
-    assert by_id["SA-CHAN-002"]["status"] == "blocked"
+    assert by_id["SA-CHAN-002"]["status"] == "ready"
 
     report = json.loads(
         (ROOT / "evidence/runs/FC-CTRL-029/validation-report.json").read_text(encoding="utf-8")
@@ -512,8 +513,8 @@ def test_fc_sec_004_integration_releases_no_runtime_or_deployment_gate() -> None
     assert by_id["FC-SOL-005"]["status"] == "done"
     assert by_id["SA-CHAN-001"]["status"] == "done"
     assert by_id["FC-FAIL-003"]["status"] == "ready"
-    assert by_id["SA-CHAN-002"]["status"] == "blocked"
-    assert by_id["SA-CHAN-003"]["status"] == "blocked"
+    assert by_id["SA-CHAN-002"]["status"] == "ready"
+    assert by_id["SA-CHAN-003"]["status"] == "ready"
 
     coordination = by_id["FC-CTRL-031"]
     assert coordination["status"] == "done"
@@ -589,8 +590,8 @@ def test_fc_sol_005_integration_releases_no_handler_or_deployment_gate() -> None
     assert by_id["FC-SOL-005"]["status"] == "done"
     assert by_id["SA-CHAN-001"]["status"] == "done"
     assert by_id["FC-FAIL-003"]["status"] == "ready"
-    assert by_id["SA-CHAN-002"]["status"] == "blocked"
-    assert by_id["SA-CHAN-003"]["status"] == "blocked"
+    assert by_id["SA-CHAN-002"]["status"] == "ready"
+    assert by_id["SA-CHAN-003"]["status"] == "ready"
 
     report = json.loads(
         (ROOT / "evidence/runs/FC-CTRL-033/validation-report.json").read_text(encoding="utf-8")
@@ -635,7 +636,7 @@ def test_sa_chan_001_integration_releases_only_operation_commitment_gate() -> No
     }
 
     commitment = by_id["SA-CHAN-001A"]
-    assert commitment["status"] == "ready"
+    assert commitment["status"] == "done"
     assert commitment["dependencies"] == [
         "SA-CHAN-001",
         "FC-PROTO-006",
@@ -655,8 +656,8 @@ def test_sa_chan_001_integration_releases_only_operation_commitment_gate() -> No
         "SA-CHAN-001A",
         "FC-SOL-003",
     ]
-    assert by_id["SA-CHAN-002"]["status"] == "blocked"
-    assert by_id["SA-CHAN-003"]["status"] == "blocked"
+    assert by_id["SA-CHAN-002"]["status"] == "ready"
+    assert by_id["SA-CHAN-003"]["status"] == "ready"
 
     report = json.loads(
         (ROOT / "evidence/runs/FC-CTRL-034/validation-report.json").read_text(encoding="utf-8")
@@ -672,3 +673,61 @@ def test_sa_chan_001_integration_releases_only_operation_commitment_gate() -> No
     assert report["newly_released"] == ["SA-CHAN-001A"]
     assert report["sa_chan_001"]["execution_supported"] is False
     assert report["sa_chan_001"]["deployment_authorized"] is False
+
+
+def test_sa_chan_001a_integration_releases_only_preparation_contracts() -> None:
+    work_items = yaml.safe_load(
+        (ROOT / "docs/channels/work-items.yaml").read_text(encoding="utf-8")
+    )["work_items"]
+    by_id = {item["id"]: item for item in work_items}
+
+    commitment = by_id["SA-CHAN-001A"]
+    assert commitment["status"] == "done"
+    assert commitment["implementation"] == {
+        "pr": 15,
+        "baseline": "0804965a25c8e5e52fc836b96f71929ac17c9198",
+        "functional_head": "c71a70639a0d1b986bc11bda84f3fa93eeea5ebc",
+        "evidence_head": "4fd44664a9affdeae3c9e6467f096f76cbf4e04a",
+        "merge_commit": "4ab25fad32ceec8013d6a771225b3f48d4f611db",
+        "main_ci_run": 30406359874,
+    }
+    assert commitment["maturity_gate"] == {
+        "implementation": "complete",
+        "self_validation": "passed",
+        "external_review": "not_performed",
+    }
+    assert commitment["deployment_authorization"] == {
+        "local_validator": "blocked",
+        "devnet_fixture": "blocked",
+        "mainnet": "blocked",
+        "real_value": "blocked",
+    }
+    assert by_id["SA-CHAN-002"]["status"] == "ready"
+    assert by_id["SA-CHAN-003"]["status"] == "ready"
+    assert by_id["SA-CHAN-004"]["status"] == "blocked"
+
+    coordination = by_id["FC-CTRL-035"]
+    assert coordination["status"] == "done"
+    assert coordination["dependencies"] == ["SA-CHAN-001A"]
+
+    report = json.loads(
+        (ROOT / "evidence/runs/FC-CTRL-035/validation-report.json").read_text(encoding="utf-8")
+    )
+    assert report["sa_chan_001a"]["merge_commit"] == ("4ab25fad32ceec8013d6a771225b3f48d4f611db")
+    assert report["sa_chan_001a"]["main_ci_run"] == 30406359874
+    assert report["sa_chan_001a"]["identity_rules"] == {
+        "same_id_same_bytes": "idempotent_replay",
+        "same_id_different_bytes": "OPERATION_CONFLICT",
+        "different_id_same_semantics": "OPERATION_ALIAS_CONFLICT",
+    }
+    assert report["newly_released"] == ["SA-CHAN-002", "SA-CHAN-003"]
+    assert report["still_blocked"] == [
+        "SA-CHAN-004",
+        "ChannelVault handlers",
+        "signer access",
+        "RPC execution",
+        "local-validator execution",
+        "devnet",
+        "mainnet",
+        "real value",
+    ]

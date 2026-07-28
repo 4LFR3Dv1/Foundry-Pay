@@ -1,0 +1,52 @@
+{
+  "work_item": "FC-CTRL-035",
+  "sa_chan_001a": {
+    "repository": "4LFR3Dv1/Solana-Agent",
+    "pr": 15,
+    "baseline": "0804965a25c8e5e52fc836b96f71929ac17c9198",
+    "functional_head": "c71a70639a0d1b986bc11bda84f3fa93eeea5ebc",
+    "evidence_head": "4fd44664a9affdeae3c9e6467f096f76cbf4e04a",
+    "merge_commit": "4ab25fad32ceec8013d6a771225b3f48d4f611db",
+    "main_ci_run": 30406359874,
+    "targeted_tests": 30,
+    "full_tests": 213,
+    "full_passed": 211,
+    "full_skipped": 2,
+    "implementation": "complete",
+    "self_validation": "passed",
+    "external_review": "not_performed",
+    "identity_rules": {
+      "same_id_same_bytes": "idempotent_replay",
+      "same_id_different_bytes": "OPERATION_CONFLICT",
+      "different_id_same_semantics": "OPERATION_ALIAS_CONFLICT"
+    },
+    "preparation_supported": false,
+    "execution_supported": false,
+    "deployment_authorized": false
+  },
+  "newly_released": [
+    "SA-CHAN-002",
+    "SA-CHAN-003"
+  ],
+  "coordination_validation": {
+    "foundation_contract_tests": 15,
+    "full_passed": 562,
+    "full_skipped": 12,
+    "ruff": "passed",
+    "secret_guard": "passed"
+  },
+  "still_ready": [
+    "FC-FAIL-003",
+    "FC-VAL-003"
+  ],
+  "still_blocked": [
+    "SA-CHAN-004",
+    "ChannelVault handlers",
+    "signer access",
+    "RPC execution",
+    "local-validator execution",
+    "devnet",
+    "mainnet",
+    "real value"
+  ]
+}

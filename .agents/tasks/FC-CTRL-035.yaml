@@ -1,0 +1,30 @@
+work_item: FC-CTRL-035
+objective: record SA-CHAN-001A integration and release only satisfied preparation contracts
+owner: program-integrator
+branch: agent/control/FC-CTRL-035
+allowed_paths:
+  - .agents/tasks/FC-CTRL-035.yaml
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - docs/channels/EVIDENCE_INDEX.md
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-035/**
+dependencies:
+  - SA-CHAN-001A
+invariants:
+  - operation and transaction commitments remain separate
+  - operation identity conflict handling is durable and fail closed
+  - preparation readiness grants no execution or deployment authority
+acceptance:
+  - SA-CHAN-001A is done at the exact Solana-Agent integration identifiers
+  - SA-CHAN-002 and SA-CHAN-003 are ready
+  - SA-CHAN-004, handlers, signer, RPC, and deployment remain blocked
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python scripts/check_channel_foundation.py
+  - python -m ruff check .
+  - python scripts/check_secrets.py
+stop_conditions:
+  - operation commitment is represented as transaction authorization
+  - preparation readiness is represented as execution support
+  - a handler, signer, RPC, or deployment gate advances
