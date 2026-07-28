@@ -1,0 +1,36 @@
+work_item: FC-CTRL-032
+objective: freeze the FC-SOL-005 governance, upgrade, migration, and rights-preservation contract
+owner: program-integrator
+branch: agent/control/FC-CTRL-032
+allowed_paths:
+  - .agents/tasks/FC-CTRL-032.yaml
+  - .agents/tasks/FC-SOL-005.yaml
+  - docs/channels/solana/governance/FC-SOL-005-CONTRACT.md
+  - docs/channels/OPEN_QUESTIONS.md
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-032/**
+dependencies:
+  - FC-SOL-003A
+  - FC-SEC-004
+invariants:
+  - governance cannot silently rewrite an activated economic right
+  - emergency controls pause ingress while preserving eligible exits
+  - semantic changes require a new program or explicit protocol version
+  - active-channel migration preserves outstanding and unallocated value separately
+  - operation identity conflicts remain blocked before handlers or execution preparation
+acceptance:
+  - FC-SOL-005 remains ready under an exact offline governance contract
+  - upgrade, authority, timelock, pause, compatibility, migration, and evidence rules are frozen
+  - handlers and deployment remain blocked
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+stop_conditions:
+  - a governance action can reduce or redirect an activated right
+  - an emergency pause blocks all safe exits
+  - a deployment environment is authorized

@@ -72,7 +72,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-SOL-003 | done | FC-PROTO-002, FC-PROTO-003, FC-PROTO-004, FC-PROTO-005, FC-SOL-002, FC-SEC-002 | atomic instruction, account-meta, exact Ed25519, lifecycle, event, and error contracts; local fixtures only |
 | FC-SOL-003A | done | FC-SOL-003, FC-CTRL-025 | correct initialization metas; freeze permissionless settlement and bounded claim window |
 | FC-SOL-004 | done | FC-SOL-003A, FC-SEC-002, FC-CTRL-027 | pure transition invariants with property-based and bounded exploration |
-| FC-SOL-005 | ready | FC-SOL-003 | upgrade, migration, and governance policy |
+| FC-SOL-005 | ready | FC-SOL-003A, FC-SEC-004, FC-CTRL-032 | upgrade, migration, rights-preservation, and governance policy |
 
 No program implementation is authorized by `FOUNDATIONS-001`.
 

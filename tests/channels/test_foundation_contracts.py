@@ -535,3 +535,48 @@ def test_fc_sec_004_integration_releases_no_runtime_or_deployment_gate() -> None
     assert integration["formal_verification"] == "not_performed"
     assert integration["external_review"] == "not_performed"
     assert report["newly_released"] == []
+
+
+def test_fc_sol_005_contract_preserves_rights_and_blocks_deployment() -> None:
+    work_items = yaml.safe_load(
+        (ROOT / "docs/channels/work-items.yaml").read_text(encoding="utf-8")
+    )["work_items"]
+    by_id = {item["id"]: item for item in work_items}
+
+    governance = by_id["FC-SOL-005"]
+    assert governance["status"] == "ready"
+    assert governance["dependencies"] == [
+        "FC-SOL-003A",
+        "FC-SEC-004",
+        "FC-CTRL-032",
+    ]
+    assert governance["deployment_authorization"] == {
+        "offline_model": "allowed",
+        "local_validator": "blocked",
+        "devnet_fixture": "blocked",
+        "mainnet": "blocked",
+        "real_value": "blocked",
+    }
+
+    contract = (ROOT / "docs/channels/solana/governance/FC-SOL-005-CONTRACT.md").read_text(
+        encoding="utf-8"
+    )
+    assert "cannot silently rewrite economic" in contract
+    assert "pause ingress" in contract
+    assert "preserve activated rights" in contract
+    assert "no automatic active-channel migration" in contract
+    assert "OPERATION_CONFLICT" in contract
+    assert "same operation_id + different commitment" in contract
+
+    task = yaml.safe_load((ROOT / ".agents/tasks/FC-SOL-005.yaml").read_text(encoding="utf-8"))
+    assert task["dependencies"] == governance["dependencies"]
+    assert task["deployment_authorization"] == governance["deployment_authorization"]
+
+    report = json.loads(
+        (ROOT / "evidence/runs/FC-CTRL-032/validation-report.json").read_text(encoding="utf-8")
+    )
+    assert report["baseline"] == "d7583eb9e805a0affb702f9e58ec78eb9adeded4"
+    assert report["runtime_changes"] == 0
+    assert report["decisions"]["activated_rights_rewritable_by_governance"] is False
+    assert report["decisions"]["pause_ingress_preserve_exits"] is True
+    assert report["decisions"]["operation_identity_conflict_gate_required_before_execution"] is True

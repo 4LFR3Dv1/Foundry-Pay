@@ -1,0 +1,19 @@
+{
+  "work_item": "FC-CTRL-032",
+  "baseline": "d7583eb9e805a0affb702f9e58ec78eb9adeded4",
+  "fc_sol_005": {
+    "status": "ready",
+    "scope": "offline_governance_model",
+    "external_review": "not_performed",
+    "deployment_authorized": false
+  },
+  "decisions": {
+    "activated_rights_rewritable_by_governance": false,
+    "pause_ingress_preserve_exits": true,
+    "automatic_active_channel_migration": false,
+    "same_program_id_semantic_change_allowed_by_default": false,
+    "reserved_v1_bytes_may_be_reinterpreted": false,
+    "operation_identity_conflict_gate_required_before_execution": true
+  },
+  "runtime_changes": 0
+}

@@ -17,6 +17,7 @@ implementation choice.
 | FC-OQ-010 | L2 provider and eventual L3 source | two independent devnet providers | FC-SEC-005 / validation | evidence claims independence without diverse source |
 | FC-OQ-011 | Sponsored activation fee policy | product convenience only | private product | relay fee logic changes signed amount/right |
 | FC-OQ-012 | Formal verification toolchain | property tests first; formal methods required before production claim | FC-SOL-004 | conservation/replay uncertainty remains material |
+| FC-OQ-013 | Durable operation ID collision semantics | persist `operation_id → canonical operation commitment hash`; same ID with different bytes is `OPERATION_CONFLICT` | future execution-preparation coordination | handler or SA-CHAN-002/003 proceeds with ID-only deduplication |
 
 ## Resolved by foundation
 

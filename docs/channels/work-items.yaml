@@ -849,6 +849,39 @@ work_items:
       - formal verification or external review is inferred
       - handlers, local validator, or deployment advances
 
+  - id: FC-CTRL-032
+    status: done
+    objective: freeze the FC-SOL-005 governance, upgrade, migration, and rights-preservation contract
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-032.yaml
+      - .agents/tasks/FC-SOL-005.yaml
+      - docs/channels/solana/governance/FC-SOL-005-CONTRACT.md
+      - docs/channels/OPEN_QUESTIONS.md
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-032/**
+    dependencies: [FC-SOL-003A, FC-SEC-004]
+    invariants:
+      - governance cannot silently rewrite an activated economic right
+      - emergency controls preserve exits and activated rights
+      - semantic changes require explicit versioning
+      - operation identity conflict handling is required before execution preparation
+    acceptance:
+      - FC-SOL-005 remains ready under an exact offline contract
+      - handlers and deployment remain blocked
+    tests:
+      - executable dependency, rights, pause, migration, and authorization assertions
+    evidence:
+      - evidence/runs/FC-CTRL-032/validation-report.json
+    security_review: self-validated coordination
+    stop_conditions:
+      - governance can reduce or redirect activated rights
+      - emergency pause blocks all exits
+      - deployment advances
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -1391,14 +1424,47 @@ work_items:
     objective: define upgrade authority, migration, verification, and governance policy
     owner: protocol-governance-owner
     repository: 4LFR3Dv1/Foundry-Pay
-    allowed_paths: [docs/channels/solana/governance/**, programs/foundry-channel-vault/**, evidence/runs/FC-SOL-005/**]
-    dependencies: [FC-SOL-003]
-    invariants: [users can identify program version and authority before signing]
-    acceptance: [devnet authority, production multisig/timelock or immutability, migrations, and rollback limits are explicit]
-    tests: [program-data and incompatible-upgrade fixtures]
-    evidence: [program authority and verified-build report]
-    security_review: mandatory-governance-review
-    stop_conditions: [mainnet discussion without approved upgrade policy]
+    allowed_paths:
+      - docs/channels/solana/governance/**
+      - programs/foundry-channel-vault/governance-model/**
+      - tests/channels/solana/governance/**
+      - evidence/runs/FC-SOL-005/**
+    dependencies: [FC-SOL-003A, FC-SEC-004, FC-CTRL-032]
+    invariants:
+      - governance cannot silently rewrite an activated economic right
+      - emergency controls pause ingress while preserving exits
+      - migration preserves outstanding rights and unallocated capacity separately
+      - reserved v1 bytes acquire no new meaning
+      - semantic changes require an explicit protocol version and normally a new Program ID
+    acceptance:
+      - authority, threshold, timelock, artifact verification, and authority transfer are explicit
+      - compatibility and migration classifications are machine-readable
+      - emergency controls preserve activated-right settlement
+      - deployment remains blocked
+    tests:
+      - authority and timelock boundaries
+      - compatibility and migration matrices
+      - pause and activated-right preservation
+      - upgrade manifest completeness
+    evidence:
+      - governance, compatibility, migration, pause, and reproducible-build reports
+    maturity_gate:
+      implementation: complete
+      self_validation: passed
+      external_review: not_performed
+    deployment_authorization:
+      offline_model: allowed
+      local_validator: blocked
+      devnet_fixture: blocked
+      mainnet: blocked
+      real_value: blocked
+    security_review: self-validated offline governance model; external review not performed
+    stop_conditions:
+      - upgrade or migration can reduce or redirect activated rights
+      - emergency pause blocks settlement or every safe exit
+      - reserved bytes are reinterpreted under v1
+      - semantic change silently preserves the same version
+      - deployment or external review is inferred
 
   - id: SA-CHAN-000
     status: done
