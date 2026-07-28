@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundrypay.dev/contracts/channel/capabilities/channel-status-recovery.v0.schema.json",
+  "title": "SA-CHAN-000 status and recovery contracts",
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    }
+  },
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type", "protocol_version", "capability_id", "request_id", "operation_id",
+        "recovery_id", "requested_at"
+      ],
+      "properties": {
+        "type": {"const": "channel_recovery_request"},
+        "protocol_version": {"const": "0.1.0-draft"},
+        "capability_id": {"const": "foundry.channels.fixture.operation.v0"},
+        "request_id": {"$ref": "#/$defs/identifier"},
+        "operation_id": {"$ref": "#/$defs/identifier"},
+        "recovery_id": {"$ref": "#/$defs/identifier"},
+        "requested_at": {"$ref": "#/$defs/timestamp"}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type", "protocol_version", "capability_id", "request_id", "operation_id",
+        "state", "submit_intent_count", "automatic_resubmission_count", "updated_at"
+      ],
+      "properties": {
+        "type": {"const": "channel_operation_status"},
+        "protocol_version": {"const": "0.1.0-draft"},
+        "capability_id": {"const": "foundry.channels.fixture.operation.v0"},
+        "request_id": {"$ref": "#/$defs/identifier"},
+        "operation_id": {"$ref": "#/$defs/identifier"},
+        "state": {
+          "enum": [
+            "draft", "prepared", "authorized", "submitted", "needs_recovery",
+            "confirmed", "reconciled", "needs_review", "disputed", "failed_definitive"
+          ]
+        },
+        "submit_intent_count": {"type": "integer", "minimum": 0, "maximum": 1},
+        "automatic_resubmission_count": {"const": 0},
+        "updated_at": {"$ref": "#/$defs/timestamp"}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type", "protocol_version", "capability_id", "request_id", "operation_id",
+        "outcome", "new_submission_attempted", "may_rematerialize", "observed_at"
+      ],
+      "properties": {
+        "type": {"const": "channel_recovery_result"},
+        "protocol_version": {"const": "0.1.0-draft"},
+        "capability_id": {"const": "foundry.channels.fixture.operation.v0"},
+        "request_id": {"$ref": "#/$defs/identifier"},
+        "operation_id": {"$ref": "#/$defs/identifier"},
+        "outcome": {"enum": ["confirmed", "unknown"]},
+        "new_submission_attempted": {"const": false},
+        "may_rematerialize": {"const": false},
+        "observed_at": {"$ref": "#/$defs/timestamp"},
+        "technical_receipt_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    }
+  ]
+}

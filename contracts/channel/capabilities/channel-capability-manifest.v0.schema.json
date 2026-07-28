@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundrypay.dev/contracts/channel/capabilities/channel-capability-manifest.v0.schema.json",
+  "title": "SA-CHAN-000 fixture capability manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "protocol_version", "executor_id", "capabilities", "limitation"],
+  "properties": {
+    "type": {"const": "channel_capability_manifest"},
+    "protocol_version": {"const": "0.1.0-draft"},
+    "executor_id": {"const": "foundry.channels.fixture-adapter"},
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "capability_id",
+          "actions",
+          "authority",
+          "economic_completion",
+          "solana_compatibility"
+        ],
+        "properties": {
+          "capability_id": {"const": "foundry.channels.fixture.operation.v0"},
+          "actions": {
+            "const": ["authorize", "evidence", "prepare", "recover", "status", "submit"]
+          },
+          "authority": {"const": "none"},
+          "economic_completion": {"const": false},
+          "solana_compatibility": {"const": "not_claimed"}
+        }
+      }
+    },
+    "limitation": {
+      "const": "Fixture environment. No real assets. No production custody or security claim."
+    }
+  }
+}

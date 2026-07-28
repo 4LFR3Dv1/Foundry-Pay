@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundrypay.dev/contracts/channel/capabilities/channel-operation.v0.schema.json",
+  "title": "SA-CHAN-000 operation contracts",
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol_version", "capability_id", "request_id", "operation_id"],
+      "properties": {
+        "protocol_version": {"const": "0.1.0-draft"},
+        "capability_id": {"const": "foundry.channels.fixture.operation.v0"},
+        "request_id": {"$ref": "#/$defs/identifier"},
+        "operation_id": {"$ref": "#/$defs/identifier"}
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type", "protocol_version", "capability_id", "request_id", "operation_id",
+        "idempotency_key", "operation_kind", "channel_id", "epoch", "sender",
+        "recipient", "destination_wallet", "mint", "amount_base_units",
+        "authorization_commitment", "expires_at"
+      ],
+      "properties": {
+        "type": {"const": "channel_operation_request"},
+        "protocol_version": {"const": "0.1.0-draft"},
+        "capability_id": {"const": "foundry.channels.fixture.operation.v0"},
+        "request_id": {"$ref": "#/$defs/identifier"},
+        "operation_id": {"$ref": "#/$defs/identifier"},
+        "idempotency_key": {"$ref": "#/$defs/identifier"},
+        "operation_kind": {"enum": ["open", "top_up", "settle", "close", "refund"]},
+        "channel_id": {"$ref": "#/$defs/identifier"},
+        "epoch": {"type": "integer", "minimum": 0},
+        "sender": {"$ref": "#/$defs/identifier"},
+        "recipient": {"$ref": "#/$defs/identifier"},
+        "destination_wallet": {"$ref": "#/$defs/identifier"},
+        "mint": {"$ref": "#/$defs/identifier"},
+        "amount_base_units": {"type": "string", "pattern": "^(0|[1-9][0-9]*)$"},
+        "authorization_commitment": {"$ref": "#/$defs/hash"},
+        "expires_at": {"$ref": "#/$defs/timestamp"}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type", "protocol_version", "capability_id", "request_id", "operation_id",
+        "request_hash", "prepared_material_base64", "prepared_material_hash",
+        "operation_commitment", "executor_id", "expires_at"
+      ],
+      "properties": {
+        "type": {"const": "prepared_channel_operation"},
+        "protocol_version": {"const": "0.1.0-draft"},
+        "capability_id": {"const": "foundry.channels.fixture.operation.v0"},
+        "request_id": {"$ref": "#/$defs/identifier"},
+        "operation_id": {"$ref": "#/$defs/identifier"},
+        "request_hash": {"$ref": "#/$defs/hash"},
+        "prepared_material_base64": {"type": "string", "contentEncoding": "base64"},
+        "prepared_material_hash": {"$ref": "#/$defs/hash"},
+        "operation_commitment": {"$ref": "#/$defs/hash"},
+        "executor_id": {"const": "foundry.channels.fixture-adapter"},
+        "expires_at": {"$ref": "#/$defs/timestamp"}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type", "protocol_version", "capability_id", "request_id", "operation_id",
+        "prepared_material_hash", "operation_commitment", "authorization_id", "expires_at"
+      ],
+      "properties": {
+        "type": {"const": "channel_operation_authorization"},
+        "protocol_version": {"const": "0.1.0-draft"},
+        "capability_id": {"const": "foundry.channels.fixture.operation.v0"},
+        "request_id": {"$ref": "#/$defs/identifier"},
+        "operation_id": {"$ref": "#/$defs/identifier"},
+        "prepared_material_hash": {"$ref": "#/$defs/hash"},
+        "operation_commitment": {"$ref": "#/$defs/hash"},
+        "authorization_id": {"$ref": "#/$defs/identifier"},
+        "expires_at": {"$ref": "#/$defs/timestamp"}
+      }
+    }
+  ]
+}
