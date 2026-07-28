@@ -882,6 +882,36 @@ work_items:
       - emergency pause blocks all exits
       - deployment advances
 
+  - id: FC-CTRL-033
+    status: done
+    objective: record FC-SOL-005 integration without authorizing handlers or deployment
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-033.yaml
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - docs/channels/EVIDENCE_INDEX.md
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-033/**
+    dependencies: [FC-SOL-005]
+    invariants:
+      - exact integration identifiers are recorded
+      - offline governance evidence does not authorize deployment
+      - operation commitment conflict remains required before handlers
+    acceptance:
+      - FC-SOL-005 is done
+      - SA-CHAN-001 and FC-FAIL-003 remain ready
+      - no new runtime or deployment item becomes ready
+    tests:
+      - executable exact-SHA, graph, maturity, and authorization assertions
+    evidence:
+      - evidence/runs/FC-CTRL-033/validation-report.json
+    security_review: self-validated coordination
+    stop_conditions:
+      - external review or deployed behavior is inferred
+      - handlers or deployment advance
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -1420,7 +1450,7 @@ work_items:
       - bounded testing is represented as formal verification
 
   - id: FC-SOL-005
-    status: ready
+    status: done
     objective: define upgrade authority, migration, verification, and governance policy
     owner: protocol-governance-owner
     repository: 4LFR3Dv1/Foundry-Pay

@@ -41,7 +41,6 @@ def test_foundation_contracts_and_gates_pass() -> None:
     )
     assert result["checks"]["work_graph"]["ready_items"] == [
         "FC-FAIL-003",
-        "FC-SOL-005",
         "FC-VAL-003",
         "SA-CHAN-001",
     ]
@@ -331,7 +330,7 @@ def test_fc_sol_003_contract_freezes_authority_without_runtime_or_deployment() -
     assert "Token-2022" in contract
 
     assert by_id["FC-SOL-004"]["status"] == "done"
-    assert by_id["FC-SOL-005"]["status"] == "ready"
+    assert by_id["FC-SOL-005"]["status"] == "done"
     assert by_id["SA-CHAN-001"]["status"] == "ready"
 
     coordination = by_id["FC-CTRL-024"]
@@ -366,7 +365,7 @@ def test_fc_sol_003a_preflight_freezes_operable_authority_and_deadline_rules() -
     ]
     assert by_id["SA-CHAN-001"]["status"] == "ready"
     assert by_id["SA-CHAN-001"]["dependencies"] == ["FC-PROTO-006", "FC-SOL-003A"]
-    assert by_id["FC-SOL-005"]["status"] == "ready"
+    assert by_id["FC-SOL-005"]["status"] == "done"
     assert by_id["FC-FAIL-003"]["status"] == "ready"
 
     adr = (ROOT / "docs/channels/ADR/FC-ADR-010-channelvault-v1-operability.md").read_text(
@@ -449,7 +448,7 @@ def test_fc_sol_004_integration_releases_only_concurrency_model_work() -> None:
     by_id = {item["id"]: item for item in work_items}
     assert by_id["FC-SOL-004"]["status"] == "done"
     assert by_id["FC-SEC-004"]["status"] == "done"
-    assert by_id["FC-SOL-005"]["status"] == "ready"
+    assert by_id["FC-SOL-005"]["status"] == "done"
     assert by_id["SA-CHAN-001"]["status"] == "ready"
     assert by_id["FC-FAIL-003"]["status"] == "ready"
     assert by_id["SA-CHAN-002"]["status"] == "blocked"
@@ -510,7 +509,7 @@ def test_fc_sec_004_integration_releases_no_runtime_or_deployment_gate() -> None
     by_id = {item["id"]: item for item in work_items}
 
     assert by_id["FC-SEC-004"]["status"] == "done"
-    assert by_id["FC-SOL-005"]["status"] == "ready"
+    assert by_id["FC-SOL-005"]["status"] == "done"
     assert by_id["SA-CHAN-001"]["status"] == "ready"
     assert by_id["FC-FAIL-003"]["status"] == "ready"
     assert by_id["SA-CHAN-002"]["status"] == "blocked"
@@ -544,7 +543,7 @@ def test_fc_sol_005_contract_preserves_rights_and_blocks_deployment() -> None:
     by_id = {item["id"]: item for item in work_items}
 
     governance = by_id["FC-SOL-005"]
-    assert governance["status"] == "ready"
+    assert governance["status"] == "done"
     assert governance["dependencies"] == [
         "FC-SOL-003A",
         "FC-SEC-004",
@@ -580,3 +579,28 @@ def test_fc_sol_005_contract_preserves_rights_and_blocks_deployment() -> None:
     assert report["decisions"]["activated_rights_rewritable_by_governance"] is False
     assert report["decisions"]["pause_ingress_preserve_exits"] is True
     assert report["decisions"]["operation_identity_conflict_gate_required_before_execution"] is True
+
+
+def test_fc_sol_005_integration_releases_no_handler_or_deployment_gate() -> None:
+    work_items = yaml.safe_load(
+        (ROOT / "docs/channels/work-items.yaml").read_text(encoding="utf-8")
+    )["work_items"]
+    by_id = {item["id"]: item for item in work_items}
+    assert by_id["FC-SOL-005"]["status"] == "done"
+    assert by_id["SA-CHAN-001"]["status"] == "ready"
+    assert by_id["FC-FAIL-003"]["status"] == "ready"
+    assert by_id["SA-CHAN-002"]["status"] == "blocked"
+    assert by_id["SA-CHAN-003"]["status"] == "blocked"
+
+    report = json.loads(
+        (ROOT / "evidence/runs/FC-CTRL-033/validation-report.json").read_text(encoding="utf-8")
+    )
+    integration = report["fc_sol_005"]
+    assert integration["functional_head"] == ("8664401ba6f9367986960b3049340c7a90966ce2")
+    assert integration["evidence_head"] == ("3e913c17d05f8201927386de75b58623503ab3eb")
+    assert integration["merge_commit"] == ("102c9dfec61131ad1b6682ecc4c9fe70d7ff57f1")
+    assert integration["main_ci_run"] == 30394123710
+    assert integration["external_review"] == "not_performed"
+    assert integration["deployed_build_reproduced"] is False
+    assert integration["deployment_authorized"] is False
+    assert report["newly_released"] == []
