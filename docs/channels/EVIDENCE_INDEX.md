@@ -40,9 +40,19 @@ README after the validation run.
 | FC-GOV-001 | `6207df8d4291f8e832fe3758a39ffd267524b447` | `evidence/runs/FC-GOV-001/` |
 | FC-PROTO-007 | `63da85549bcd247a0510e8af18cddc30d8c53bb2` | `evidence/runs/FC-PROTO-007/` |
 | FC-SEC-002 | `0d203389052a78d6cdec5b565ca28e605dad13fb` | `evidence/runs/FC-SEC-002/` |
+| FC-SOL-002 | `818f565977766fbc3ddd05f24ad002ea04eb816e` | `evidence/runs/FC-SOL-002/` |
+| SA-CHAN-000 | `49c62b6cfab0344a870bb285512df1d494eb6f03` | `evidence/runs/SA-CHAN-000/` |
 
 These merges authorize the next offline protocol work only. They do not prove
 ChannelVault, Solana execution, a deployed consumer frontend, or product demand.
+
+PR #44 integrated the local-validator-only account model with functional head
+`d6933604...`, evidence head `d84cea1f...`, merge `818f5659...`, and green main
+CI run `30362592323`. PR #45 integrated the offline fake adapter with functional
+head `7513587c...`, evidence head `c918ce1d...`, merge `49c62b6c...`, and green
+main CI run `30364372600`. Both remain self-validated with external review
+`not_performed`; devnet, mainnet, real assets, and production-security claims
+remain blocked.
 
 ## Integrated security gate
 

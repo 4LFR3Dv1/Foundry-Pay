@@ -57,8 +57,8 @@ after this foundation PR is merged without reopening accepted ADRs.
 | Work item | Status | Depends on | Outcome |
 |---|---|---|---|
 | FC-SOL-001 | done | FOUNDATIONS-001 | ChannelVault design specification |
-| FC-SOL-002 | ready | FC-PROTO-001, FC-SEC-002 | fixed-width ChannelState PDA and classic SPL Token vault layout; local validator only |
-| FC-SOL-003 | blocked | FC-PROTO-002, FC-PROTO-003, FC-PROTO-004, FC-PROTO-005, FC-SOL-002 | instruction and error contract |
+| FC-SOL-002 | done | FC-PROTO-001, FC-SEC-002 | fixed-width ChannelState PDA and classic SPL Token vault layout; local validator only |
+| FC-SOL-003 | ready | FC-PROTO-002, FC-PROTO-003, FC-PROTO-004, FC-PROTO-005, FC-SOL-002 | instruction and error contract |
 | FC-SOL-004 | blocked | FC-SOL-003, FC-SEC-002 | on-chain invariants and property/formal harness |
 | FC-SOL-005 | blocked | FC-SOL-003 | upgrade, migration, and governance policy |
 
@@ -68,7 +68,7 @@ No program implementation is authorized by `FOUNDATIONS-001`.
 
 | Work item | Status | Depends on | Outcome |
 |---|---|---|---|
-| SA-CHAN-000 | ready | FC-PROTO-007, FC-SEC-002, FC-CTRL-021 | draft capability contracts and adversarial fake adapter; offline fixture only, no ChannelVault compatibility claim |
+| SA-CHAN-000 | done | FC-PROTO-007, FC-SEC-002, FC-CTRL-021 | draft capability contracts and adversarial fake adapter; offline fixture only, no ChannelVault compatibility claim |
 | SA-CHAN-001 | blocked | FC-PROTO-006, FC-SOL-003 | generic channel capability discovery |
 | SA-CHAN-002 | blocked | SA-CHAN-001, FC-SOL-003 | open/top-up/activation preparation |
 | SA-CHAN-003 | blocked | SA-CHAN-001, FC-SOL-003 | settlement preparation |
@@ -111,7 +111,7 @@ fixtures and UX contracts remain in Foundry-Pay.
 
 | Work item | Status | Depends on | Outcome |
 |---|---|---|---|
-| FC-FAIL-003 | blocked | FC-PROTO-004, FC-PROTO-005, SA-CHAN-000 | offline settlement/lifecycle failure lab without on-chain claims |
+| FC-FAIL-003 | ready | FC-PROTO-004, FC-PROTO-005, SA-CHAN-000 | offline settlement/lifecycle failure lab without on-chain claims |
 
 `FC-FAIL-003` validates only the controlled reference model. It cannot satisfy
 `FC-SEC-004` or `FC-SEC-005`, whose on-chain and real-executor dependencies
