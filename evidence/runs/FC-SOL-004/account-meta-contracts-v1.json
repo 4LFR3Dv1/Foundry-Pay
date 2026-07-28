@@ -1,0 +1,306 @@
+[
+  {
+    "accounts": [
+      {
+        "address_rule": "pda(channel,sender,mint,channel_nonce)",
+        "name": "channel",
+        "post_owner_rule": "foundry_channel_vault_program",
+        "pre_owner_rule": "absent_or_system_owned_zero_data",
+        "signer": false,
+        "writable": true
+      },
+      {
+        "address_rule": "sender_and_rent_payer",
+        "name": "sender",
+        "post_owner_rule": "system_account_or_wallet",
+        "pre_owner_rule": "system_account_or_wallet",
+        "signer": true,
+        "writable": true
+      },
+      {
+        "address_rule": "equals_channel_mint",
+        "name": "mint",
+        "post_owner_rule": "classic_spl_token_program",
+        "pre_owner_rule": "classic_spl_token_program",
+        "signer": false,
+        "writable": false
+      },
+      {
+        "address_rule": "canonical_vault_for_channel_pda_and_mint",
+        "name": "vault",
+        "post_owner_rule": "classic_spl_token_program",
+        "pre_owner_rule": "absent_or_classic_spl_token_program",
+        "signer": false,
+        "writable": true
+      },
+      {
+        "address_rule": "solana_system_program_id",
+        "name": "system_program",
+        "post_owner_rule": "executable",
+        "pre_owner_rule": "executable",
+        "signer": false,
+        "writable": false
+      },
+      {
+        "address_rule": "classic_spl_token_program_id",
+        "name": "token_program",
+        "post_owner_rule": "executable",
+        "pre_owner_rule": "executable",
+        "signer": false,
+        "writable": false
+      },
+      {
+        "address_rule": "spl_associated_token_program_id",
+        "name": "associated_token_program",
+        "post_owner_rule": "executable",
+        "pre_owner_rule": "executable",
+        "signer": false,
+        "writable": false
+      }
+    ],
+    "instruction": "initialize_channel"
+  },
+  {
+    "accounts": [
+      {
+        "address_rule": "pda(channel,sender,mint,channel_nonce)",
+        "name": "channel",
+        "post_owner_rule": "foundry_channel_vault_program",
+        "pre_owner_rule": "foundry_channel_vault_program",
+        "signer": false,
+        "writable": true
+      },
+      {
+        "address_rule": "equals_channel_sender_when_channel_exists",
+        "name": "sender",
+        "post_owner_rule": "system_account_or_wallet",
+        "pre_owner_rule": "system_account_or_wallet",
+        "signer": true,
+        "writable": false
+      },
+      {
+        "address_rule": "canonical_ata(channel_sender,channel_mint)",
+        "name": "sender_token_account",
+        "post_owner_rule": "classic_spl_token_program",
+        "pre_owner_rule": "classic_spl_token_program",
+        "signer": false,
+        "writable": true
+      },
+      {
+        "address_rule": "canonical_vault_for_channel_pda_and_mint",
+        "name": "vault",
+        "post_owner_rule": "classic_spl_token_program",
+        "pre_owner_rule": "absent_or_classic_spl_token_program",
+        "signer": false,
+        "writable": true
+      },
+      {
+        "address_rule": "equals_channel_mint",
+        "name": "mint",
+        "post_owner_rule": "classic_spl_token_program",
+        "pre_owner_rule": "classic_spl_token_program",
+        "signer": false,
+        "writable": false
+      },
+      {
+        "address_rule": "classic_spl_token_program_id",
+        "name": "token_program",
+        "post_owner_rule": "executable",
+        "pre_owner_rule": "executable",
+        "signer": false,
+        "writable": false
+      }
+    ],
+    "instruction": "fund_channel"
+  },
+  {
+    "accounts": [
+      {
+        "address_rule": "pda(channel,sender,mint,channel_nonce)",
+        "name": "channel",
+        "post_owner_rule": "foundry_channel_vault_program",
+        "pre_owner_rule": "foundry_channel_vault_program",
+        "signer": false,
+        "writable": true
+      },
+      {
+        "address_rule": "solana_instructions_sysvar_id",
+        "name": "instructions_sysvar",
+        "post_owner_rule": "sysvar",
+        "pre_owner_rule": "sysvar",
+        "signer": false,
+        "writable": false
+      }
+    ],
+    "instruction": "activate_voucher"
+  },
+  {
+    "accounts": [
+      {
+        "address_rule": "pda(channel,sender,mint,channel_nonce)",
+        "name": "channel",
+        "post_owner_rule": "foundry_channel_vault_program",
+        "pre_owner_rule": "foundry_channel_vault_program",
+        "signer": false,
+        "writable": true
+      },
+      {
+        "address_rule": "solana_instructions_sysvar_id",
+        "name": "instructions_sysvar",
+        "post_owner_rule": "sysvar",
+        "pre_owner_rule": "sysvar",
+        "signer": false,
+        "writable": false
+      }
+    ],
+    "instruction": "bind_recipient"
+  },
+  {
+    "accounts": [
+      {
+        "address_rule": "pda(channel,sender,mint,channel_nonce)",
+        "name": "channel",
+        "post_owner_rule": "foundry_channel_vault_program",
+        "pre_owner_rule": "foundry_channel_vault_program",
+        "signer": false,
+        "writable": true
+      },
+      {
+        "address_rule": "canonical_vault_for_channel_pda_and_mint",
+        "name": "vault",
+        "post_owner_rule": "classic_spl_token_program",
+        "pre_owner_rule": "absent_or_classic_spl_token_program",
+        "signer": false,
+        "writable": true
+      },
+      {
+        "address_rule": "canonical_ata(bound_recipient_wallet,channel_mint)",
+        "name": "recipient_token_account",
+        "post_owner_rule": "classic_spl_token_program",
+        "pre_owner_rule": "classic_spl_token_program",
+        "signer": false,
+        "writable": true
+      },
+      {
+        "address_rule": "equals_channel_mint",
+        "name": "mint",
+        "post_owner_rule": "classic_spl_token_program",
+        "pre_owner_rule": "classic_spl_token_program",
+        "signer": false,
+        "writable": false
+      },
+      {
+        "address_rule": "classic_spl_token_program_id",
+        "name": "token_program",
+        "post_owner_rule": "executable",
+        "pre_owner_rule": "executable",
+        "signer": false,
+        "writable": false
+      }
+    ],
+    "instruction": "settle"
+  },
+  {
+    "accounts": [
+      {
+        "address_rule": "pda(channel,sender,mint,channel_nonce)",
+        "name": "channel",
+        "post_owner_rule": "foundry_channel_vault_program",
+        "pre_owner_rule": "foundry_channel_vault_program",
+        "signer": false,
+        "writable": true
+      },
+      {
+        "address_rule": "equals_channel_sender_when_channel_exists",
+        "name": "sender",
+        "post_owner_rule": "system_account_or_wallet",
+        "pre_owner_rule": "system_account_or_wallet",
+        "signer": true,
+        "writable": false
+      }
+    ],
+    "instruction": "request_close"
+  },
+  {
+    "accounts": [
+      {
+        "address_rule": "pda(channel,sender,mint,channel_nonce)",
+        "name": "channel",
+        "post_owner_rule": "foundry_channel_vault_program",
+        "pre_owner_rule": "foundry_channel_vault_program",
+        "signer": false,
+        "writable": true
+      },
+      {
+        "address_rule": "equals_channel_sender_when_channel_exists",
+        "name": "sender",
+        "post_owner_rule": "system_account_or_wallet",
+        "pre_owner_rule": "system_account_or_wallet",
+        "signer": true,
+        "writable": false
+      },
+      {
+        "address_rule": "canonical_vault_for_channel_pda_and_mint",
+        "name": "vault",
+        "post_owner_rule": "classic_spl_token_program",
+        "pre_owner_rule": "absent_or_classic_spl_token_program",
+        "signer": false,
+        "writable": true
+      },
+      {
+        "address_rule": "canonical_ata(channel_sender,channel_mint)",
+        "name": "sender_token_account",
+        "post_owner_rule": "classic_spl_token_program",
+        "pre_owner_rule": "classic_spl_token_program",
+        "signer": false,
+        "writable": true
+      },
+      {
+        "address_rule": "equals_channel_mint",
+        "name": "mint",
+        "post_owner_rule": "classic_spl_token_program",
+        "pre_owner_rule": "classic_spl_token_program",
+        "signer": false,
+        "writable": false
+      },
+      {
+        "address_rule": "classic_spl_token_program_id",
+        "name": "token_program",
+        "post_owner_rule": "executable",
+        "pre_owner_rule": "executable",
+        "signer": false,
+        "writable": false
+      }
+    ],
+    "instruction": "refund_unallocated"
+  },
+  {
+    "accounts": [
+      {
+        "address_rule": "pda(channel,sender,mint,channel_nonce)",
+        "name": "channel",
+        "post_owner_rule": "foundry_channel_vault_program",
+        "pre_owner_rule": "foundry_channel_vault_program",
+        "signer": false,
+        "writable": true
+      },
+      {
+        "address_rule": "equals_channel_sender_when_channel_exists",
+        "name": "sender",
+        "post_owner_rule": "system_account_or_wallet",
+        "pre_owner_rule": "system_account_or_wallet",
+        "signer": true,
+        "writable": false
+      },
+      {
+        "address_rule": "canonical_vault_for_channel_pda_and_mint",
+        "name": "vault",
+        "post_owner_rule": "classic_spl_token_program",
+        "pre_owner_rule": "absent_or_classic_spl_token_program",
+        "signer": false,
+        "writable": true
+      }
+    ],
+    "instruction": "finalize_close"
+  }
+]

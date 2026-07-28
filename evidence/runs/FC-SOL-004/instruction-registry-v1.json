@@ -1,0 +1,110 @@
+[
+  {
+    "allowed_phases": [
+      "uninitialized"
+    ],
+    "authority": "SenderTransactionSigner",
+    "code": 0,
+    "contract_version": 1,
+    "correlation_policy": null,
+    "discriminator_hex": "e85bb1d47a5ee3fa",
+    "name": "initialize_channel",
+    "runtime_handler_implemented": false,
+    "success_event": "ChannelInitialized"
+  },
+  {
+    "allowed_phases": [
+      "active"
+    ],
+    "authority": "SenderTransactionSigner",
+    "code": 1,
+    "contract_version": 1,
+    "correlation_policy": null,
+    "discriminator_hex": "32430347bea914cf",
+    "name": "fund_channel",
+    "runtime_handler_implemented": false,
+    "success_event": "ChannelFunded"
+  },
+  {
+    "allowed_phases": [
+      "active",
+      "closing_open"
+    ],
+    "authority": "SenderVoucherEd25519",
+    "code": 2,
+    "contract_version": 1,
+    "correlation_policy": null,
+    "discriminator_hex": "0aa1962dddab20cf",
+    "name": "activate_voucher",
+    "runtime_handler_implemented": false,
+    "success_event": "VoucherActivated"
+  },
+  {
+    "allowed_phases": [
+      "active",
+      "closing_open"
+    ],
+    "authority": "ClaimAndDestinationEd25519",
+    "code": 3,
+    "contract_version": 1,
+    "correlation_policy": null,
+    "discriminator_hex": "90cd51a1dfda9d86",
+    "name": "bind_recipient",
+    "runtime_handler_implemented": false,
+    "success_event": "RecipientBound"
+  },
+  {
+    "allowed_phases": [
+      "active",
+      "closing_open",
+      "closing_frozen"
+    ],
+    "authority": "PermissionlessBoundRecipientSettlement",
+    "code": 4,
+    "contract_version": 1,
+    "correlation_policy": "obligation_hash:caller_supplied_non_authoritative_correlation",
+    "discriminator_hex": "af2ab957908366d4",
+    "name": "settle",
+    "runtime_handler_implemented": false,
+    "success_event": "SettlementExecuted"
+  },
+  {
+    "allowed_phases": [
+      "active"
+    ],
+    "authority": "SenderTransactionSigner",
+    "code": 5,
+    "contract_version": 1,
+    "correlation_policy": null,
+    "discriminator_hex": "52a8a7560e0fc7b4",
+    "name": "request_close",
+    "runtime_handler_implemented": false,
+    "success_event": "CloseRequested"
+  },
+  {
+    "allowed_phases": [
+      "closing_frozen"
+    ],
+    "authority": "SenderTransactionSigner",
+    "code": 6,
+    "contract_version": 1,
+    "correlation_policy": null,
+    "discriminator_hex": "9969c702195284b0",
+    "name": "refund_unallocated",
+    "runtime_handler_implemented": false,
+    "success_event": "RefundExecuted"
+  },
+  {
+    "allowed_phases": [
+      "closing_frozen"
+    ],
+    "authority": "SenderTransactionSigner",
+    "code": 7,
+    "contract_version": 1,
+    "correlation_policy": null,
+    "discriminator_hex": "09ce2a43e88fa5f6",
+    "name": "finalize_close",
+    "runtime_handler_implemented": false,
+    "success_event": "ChannelFinalized"
+  }
+]

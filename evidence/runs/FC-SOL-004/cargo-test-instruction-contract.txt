@@ -1,0 +1,29 @@
+
+running 16 tests
+test contract::tests::error_codes_are_unique ... ok
+test contract::tests::initialize_metas_can_create_channel_pda_and_canonical_vault ... ok
+test ed25519::tests::voucher_layout_is_exact_and_self_contained ... ok
+test contract::tests::every_instruction_has_one_closed_contract_and_fact_event ... ok
+test lifecycle::tests::claim_window_uses_checked_time_arithmetic ... ok
+test ed25519::tests::fixed_program_id_matches_solana_ed25519_precompile ... ok
+test ed25519::tests::rejects_position_program_offset_key_message_and_trailing_mutations ... ok
+test contract::tests::settlement_is_permissionless_but_destination_is_fixed ... ok
+test generate_instruction_vectors::tests::generate_from_test_harness_when_requested ... ok
+test instruction::tests::rejects_unknown_version_discriminator_and_trailing_bytes ... ok
+test ed25519::tests::binding_layout_duplicates_exact_message_without_overlap ... ok
+test lifecycle::tests::deadline_is_exclusive_for_activation ... ok
+test lifecycle::tests::finalized_is_explicit_and_terminal ... ok
+test lifecycle::tests::claim_window_accepts_exact_bounds_and_rejects_outside ... ok
+test instruction::tests::all_instructions_round_trip_exactly ... ok
+test ed25519::tests::rejects_external_instruction_reference_before_generic_offset_error ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+     Running unittests src\lib.rs (programs\foundry-channel-vault\instruction-contract\target\debug\deps\foundry_channel_vault_instruction_contract-aecc35de14f59def.exe)
+   Doc-tests foundry_channel_vault_instruction_contract

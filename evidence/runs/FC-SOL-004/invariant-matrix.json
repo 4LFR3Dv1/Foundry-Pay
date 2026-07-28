@@ -1,0 +1,25 @@
+{
+  "authority": [
+    "sequence strictly advances",
+    "binding nonce is consumed at most once",
+    "recipient is immutable after binding",
+    "caller identity and obligation_hash do not affect settlement economics"
+  ],
+  "economic": [
+    "settled <= activated",
+    "activated + refunded <= funded",
+    "funded, activated, settled, and refunded are monotonic"
+  ],
+  "lifecycle": [
+    "finalized is terminal",
+    "activation is allowed only before the exclusive claim deadline",
+    "activated rights remain settleable after the deadline"
+  ],
+  "result": "passed",
+  "topology": [
+    "initialize pre-owner is absent or system-owned with zero data",
+    "initialize post-owner is ChannelVault with 490-byte state",
+    "vault post-owner is classic SPL Token",
+    "modeled initialization failure preserves the complete pre-state"
+  ]
+}

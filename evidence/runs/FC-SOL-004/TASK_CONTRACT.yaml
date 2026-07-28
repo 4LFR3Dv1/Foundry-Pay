@@ -1,0 +1,27 @@
+work_item: FC-SOL-004
+baseline: 399d9706702a04ea399d5e35fb4f4fae31c20180
+implementation_commit: da8baf5f008653f771c589adfa79f82503e1e2b4
+model:
+  type: pure_transition_model
+  operations: 8
+  solana_runtime: false
+validation:
+  deterministic_tests: true
+  property_based: true
+  bounded_exploration: true
+  formal_verification: false
+maturity:
+  implementation: complete
+  self_validation: passed
+  external_review: not_performed
+deployment_authorization:
+  pure_model: allowed
+  local_validator: blocked
+  devnet_fixture: blocked
+  mainnet: blocked
+  real_value: blocked
+stop_conditions:
+  - invariant violation
+  - caller or obligation_hash affects settlement economics
+  - rejected transition mutates modeled state
+  - runtime, CPI, SPL transfer, RPC, or deployment enters scope

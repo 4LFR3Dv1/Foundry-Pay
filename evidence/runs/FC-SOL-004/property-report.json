@@ -1,0 +1,18 @@
+{
+  "configuration": {
+    "cases_per_property": 512,
+    "failure_persistence": "proptest-regressions when a counterexample exists",
+    "max_shrink_iterations": 4096
+  },
+  "framework": "proptest",
+  "minimized_counterexamples": [],
+  "properties": [
+    "arbitrary_valid_economic_path_preserves_invariants",
+    "rejected_settlement_never_changes_input_state",
+    "arbitrary_instruction_sequences_preserve_invariants_or_reject_atomically"
+  ],
+  "result": "passed",
+  "total_generated_cases": 1536,
+  "version": "1.6.0",
+  "work_item": "FC-SOL-004"
+}

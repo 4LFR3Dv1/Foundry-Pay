@@ -1,0 +1,57 @@
+{
+  "baseline": "399d9706702a04ea399d5e35fb4f4fae31c20180",
+  "bounded_exploration": {
+    "accepted_transitions": 1713,
+    "amount_domain": [
+      0,
+      1,
+      2,
+      18446744073709551615
+    ],
+    "attempted_transitions": 4732,
+    "claim": "bounded transition exploration found no violation within the published model and bounds",
+    "error_counts": {
+      "AlreadyInitialized": 352,
+      "BindingNonceConsumed": 128,
+      "ClaimWindowOpen": 162,
+      "Finalized": 143,
+      "LifecycleViolation": 1280,
+      "OutstandingRight": 245,
+      "RecipientNotBound": 448,
+      "UnallocatedCapacity": 89,
+      "Uninitialized": 12,
+      "ZeroAmount": 160
+    },
+    "invariant_violations": 0,
+    "max_depth": 7,
+    "rejected_transitions": 3019,
+    "state_deduplication": "sha256(serde_json(ModelState))",
+    "time_domain": [
+      899,
+      900,
+      901,
+      2592000,
+      2592001
+    ],
+    "visited_states": 703,
+    "work_item": "FC-SOL-004"
+  },
+  "claim": "bounded transition exploration and property-based validation found no violation within the published model and bounds",
+  "deployment_authorization": {
+    "devnet_fixture": "blocked",
+    "local_validator": "blocked",
+    "mainnet": "blocked",
+    "pure_model": "allowed",
+    "real_value": "blocked"
+  },
+  "deterministic_tests": 4,
+  "external_review": "not_performed",
+  "formal_verification": "not_performed",
+  "implementation_commit": "da8baf5f008653f771c589adfa79f82503e1e2b4",
+  "instruction_contract_tests": 16,
+  "model_operations": 8,
+  "property_cases": 1536,
+  "property_tests": 3,
+  "runtime_program_implemented": false,
+  "work_item": "FC-SOL-004"
+}
