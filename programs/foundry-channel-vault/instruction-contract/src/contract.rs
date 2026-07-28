@@ -15,7 +15,8 @@ pub struct AccountRequirement {
     pub name: &'static str,
     pub signer: bool,
     pub writable: bool,
-    pub owner_rule: &'static str,
+    pub pre_owner_rule: &'static str,
+    pub post_owner_rule: &'static str,
     pub address_rule: &'static str,
 }
 
@@ -26,6 +27,7 @@ pub struct InstructionContract {
     pub allowed_phases: &'static [&'static str],
     pub accounts: &'static [AccountRequirement],
     pub success_event: ChannelEventCode,
+    pub correlation_policy: Option<&'static str>,
 }
 
 pub type AccountContract = InstructionContract;
@@ -34,82 +36,101 @@ const CHANNEL_RW: AccountRequirement = AccountRequirement {
     name: "channel",
     signer: false,
     writable: true,
-    owner_rule: "foundry_channel_vault_program",
+    pre_owner_rule: "foundry_channel_vault_program",
+    post_owner_rule: "foundry_channel_vault_program",
+    address_rule: "pda(channel,sender,mint,channel_nonce)",
+};
+const CHANNEL_INITIALIZE: AccountRequirement = AccountRequirement {
+    name: "channel",
+    signer: false,
+    writable: true,
+    pre_owner_rule: "absent_or_system_owned_zero_data",
+    post_owner_rule: "foundry_channel_vault_program",
     address_rule: "pda(channel,sender,mint,channel_nonce)",
 };
 const SENDER_SIGNER: AccountRequirement = AccountRequirement {
     name: "sender",
     signer: true,
     writable: false,
-    owner_rule: "system_account_or_wallet",
+    pre_owner_rule: "system_account_or_wallet",
+    post_owner_rule: "system_account_or_wallet",
     address_rule: "equals_channel_sender_when_channel_exists",
 };
 const SENDER_PAYER: AccountRequirement = AccountRequirement {
     name: "sender",
     signer: true,
     writable: true,
-    owner_rule: "system_account_or_wallet",
+    pre_owner_rule: "system_account_or_wallet",
+    post_owner_rule: "system_account_or_wallet",
     address_rule: "sender_and_rent_payer",
 };
 const VAULT_RW: AccountRequirement = AccountRequirement {
     name: "vault",
     signer: false,
     writable: true,
-    owner_rule: "classic_spl_token_program",
+    pre_owner_rule: "absent_or_classic_spl_token_program",
+    post_owner_rule: "classic_spl_token_program",
     address_rule: "canonical_vault_for_channel_pda_and_mint",
 };
 const MINT_RO: AccountRequirement = AccountRequirement {
     name: "mint",
     signer: false,
     writable: false,
-    owner_rule: "classic_spl_token_program",
+    pre_owner_rule: "classic_spl_token_program",
+    post_owner_rule: "classic_spl_token_program",
     address_rule: "equals_channel_mint",
 };
 const TOKEN_PROGRAM: AccountRequirement = AccountRequirement {
     name: "token_program",
     signer: false,
     writable: false,
-    owner_rule: "executable",
+    pre_owner_rule: "executable",
+    post_owner_rule: "executable",
     address_rule: "classic_spl_token_program_id",
 };
 const SYSTEM_PROGRAM: AccountRequirement = AccountRequirement {
     name: "system_program",
     signer: false,
     writable: false,
-    owner_rule: "executable",
+    pre_owner_rule: "executable",
+    post_owner_rule: "executable",
     address_rule: "solana_system_program_id",
 };
 const ASSOCIATED_TOKEN_PROGRAM: AccountRequirement = AccountRequirement {
     name: "associated_token_program",
     signer: false,
     writable: false,
-    owner_rule: "executable",
+    pre_owner_rule: "executable",
+    post_owner_rule: "executable",
     address_rule: "spl_associated_token_program_id",
 };
 const INSTRUCTIONS_SYSVAR: AccountRequirement = AccountRequirement {
     name: "instructions_sysvar",
     signer: false,
     writable: false,
-    owner_rule: "sysvar",
+    pre_owner_rule: "sysvar",
+    post_owner_rule: "sysvar",
     address_rule: "solana_instructions_sysvar_id",
 };
 const RECIPIENT_TOKEN_RW: AccountRequirement = AccountRequirement {
     name: "recipient_token_account",
     signer: false,
     writable: true,
-    owner_rule: "classic_spl_token_program",
+    pre_owner_rule: "classic_spl_token_program",
+    post_owner_rule: "classic_spl_token_program",
     address_rule: "canonical_ata(bound_recipient_wallet,channel_mint)",
 };
 const SENDER_TOKEN_RW: AccountRequirement = AccountRequirement {
     name: "sender_token_account",
     signer: false,
     writable: true,
-    owner_rule: "classic_spl_token_program",
+    pre_owner_rule: "classic_spl_token_program",
+    post_owner_rule: "classic_spl_token_program",
     address_rule: "canonical_ata(channel_sender,channel_mint)",
 };
 
 const INITIALIZE: &[AccountRequirement] = &[
-    CHANNEL_RW,
+    CHANNEL_INITIALIZE,
     SENDER_PAYER,
     MINT_RO,
     VAULT_RW,
@@ -152,6 +173,7 @@ pub const ACCOUNT_CONTRACTS: [InstructionContract; 8] = [
         allowed_phases: &["uninitialized"],
         accounts: INITIALIZE,
         success_event: ChannelEventCode::ChannelInitialized,
+        correlation_policy: None,
     },
     InstructionContract {
         kind: InstructionKind::FundChannel,
@@ -159,6 +181,7 @@ pub const ACCOUNT_CONTRACTS: [InstructionContract; 8] = [
         allowed_phases: &["active"],
         accounts: FUND,
         success_event: ChannelEventCode::ChannelFunded,
+        correlation_policy: None,
     },
     InstructionContract {
         kind: InstructionKind::ActivateVoucher,
@@ -166,6 +189,7 @@ pub const ACCOUNT_CONTRACTS: [InstructionContract; 8] = [
         allowed_phases: &["active", "closing_open"],
         accounts: ACTIVATE,
         success_event: ChannelEventCode::VoucherActivated,
+        correlation_policy: None,
     },
     InstructionContract {
         kind: InstructionKind::BindRecipient,
@@ -173,6 +197,7 @@ pub const ACCOUNT_CONTRACTS: [InstructionContract; 8] = [
         allowed_phases: &["active", "closing_open"],
         accounts: BIND,
         success_event: ChannelEventCode::RecipientBound,
+        correlation_policy: None,
     },
     InstructionContract {
         kind: InstructionKind::Settle,
@@ -180,6 +205,7 @@ pub const ACCOUNT_CONTRACTS: [InstructionContract; 8] = [
         allowed_phases: &["active", "closing_open", "closing_frozen"],
         accounts: SETTLE,
         success_event: ChannelEventCode::SettlementExecuted,
+        correlation_policy: Some("obligation_hash:caller_supplied_non_authoritative_correlation"),
     },
     InstructionContract {
         kind: InstructionKind::RequestClose,
@@ -187,6 +213,7 @@ pub const ACCOUNT_CONTRACTS: [InstructionContract; 8] = [
         allowed_phases: &["active"],
         accounts: REQUEST_CLOSE,
         success_event: ChannelEventCode::CloseRequested,
+        correlation_policy: None,
     },
     InstructionContract {
         kind: InstructionKind::RefundUnallocated,
@@ -194,6 +221,7 @@ pub const ACCOUNT_CONTRACTS: [InstructionContract; 8] = [
         allowed_phases: &["closing_frozen"],
         accounts: REFUND,
         success_event: ChannelEventCode::RefundExecuted,
+        correlation_policy: None,
     },
     InstructionContract {
         kind: InstructionKind::FinalizeClose,
@@ -201,6 +229,7 @@ pub const ACCOUNT_CONTRACTS: [InstructionContract; 8] = [
         allowed_phases: &["closing_frozen"],
         accounts: FINALIZE,
         success_event: ChannelEventCode::ChannelFinalized,
+        correlation_policy: None,
     },
 ];
 
@@ -412,8 +441,16 @@ mod tests {
                 .iter()
                 .find(|account| account.name == required)
                 .unwrap();
-            assert_eq!(account.owner_rule, "executable");
+            assert_eq!(account.pre_owner_rule, "executable");
+            assert_eq!(account.post_owner_rule, "executable");
         }
+        let channel = initialize
+            .accounts
+            .iter()
+            .find(|account| account.name == "channel")
+            .unwrap();
+        assert_eq!(channel.pre_owner_rule, "absent_or_system_owned_zero_data");
+        assert_eq!(channel.post_owner_rule, "foundry_channel_vault_program");
     }
 
     #[test]
@@ -424,6 +461,10 @@ mod tests {
             AuthorityKind::PermissionlessBoundRecipientSettlement
         );
         assert!(!settlement.accounts.iter().any(|account| account.signer));
+        assert_eq!(
+            settlement.correlation_policy,
+            Some("obligation_hash:caller_supplied_non_authoritative_correlation")
+        );
         let destination = settlement
             .accounts
             .iter()

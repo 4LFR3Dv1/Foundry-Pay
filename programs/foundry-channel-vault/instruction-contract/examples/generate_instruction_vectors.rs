@@ -65,6 +65,7 @@ fn generate(output: &Path) {
                     "authority": format!("{:?}", contract.authority),
                     "allowed_phases": contract.allowed_phases,
                     "success_event": event_contract(contract.success_event),
+                    "correlation_policy": contract.correlation_policy,
                     "runtime_handler_implemented": false
                 })
             })
@@ -82,7 +83,8 @@ fn generate(output: &Path) {
                         "name": account.name,
                         "signer": account.signer,
                         "writable": account.writable,
-                        "owner_rule": account.owner_rule,
+                        "pre_owner_rule": account.pre_owner_rule,
+                        "post_owner_rule": account.post_owner_rule,
                         "address_rule": account.address_rule
                     })).collect::<Vec<_>>()
                 })
