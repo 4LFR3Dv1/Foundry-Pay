@@ -1,0 +1,13 @@
+{
+  "rule": "pause_ingress_preserve_exits",
+  "operations": [
+    {"operation": "initialize", "allowed_while_paused": false},
+    {"operation": "fund", "allowed_while_paused": false},
+    {"operation": "activate_voucher", "allowed_while_paused": false},
+    {"operation": "settle_activated_right", "allowed_while_paused": true},
+    {"operation": "refund_eligible_unallocated", "allowed_while_paused": true},
+    {"operation": "finalize_resolved_channel", "allowed_while_paused": true},
+    {"operation": "rebind_recipient", "allowed_while_paused": false},
+    {"operation": "governance_sweep", "allowed_while_paused": false}
+  ]
+}

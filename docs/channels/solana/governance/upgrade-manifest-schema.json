@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundrypay.dev/schemas/channels/upgrade-manifest-v1.json",
+  "title": "Foundry Channels Upgrade Manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "manifest_version",
+    "change_class",
+    "current_program_id",
+    "proposed_program_id",
+    "current_protocol_version",
+    "proposed_protocol_version",
+    "current_binary_sha256",
+    "proposed_binary_sha256",
+    "source_commit",
+    "toolchain",
+    "lockfile_sha256",
+    "current_account_layout_sha256",
+    "proposed_account_layout_sha256",
+    "current_instruction_registry_sha256",
+    "proposed_instruction_registry_sha256",
+    "current_signed_message_registry_sha256",
+    "proposed_signed_message_registry_sha256",
+    "approved_at",
+    "earliest_execution_at",
+    "authority_members",
+    "threshold",
+    "approvals",
+    "execution_status",
+    "verification_status"
+  ],
+  "properties": {
+    "manifest_version": {"const": 1},
+    "change_class": {"enum": ["compatible", "versioned", "forbidden"]},
+    "current_program_id": {"type": "string", "minLength": 32, "maxLength": 44},
+    "proposed_program_id": {"type": "string", "minLength": 32, "maxLength": 44},
+    "current_protocol_version": {"type": "integer", "minimum": 1, "maximum": 65535},
+    "proposed_protocol_version": {"type": "integer", "minimum": 1, "maximum": 65535},
+    "current_binary_sha256": {"$ref": "#/$defs/hash"},
+    "proposed_binary_sha256": {"$ref": "#/$defs/hash"},
+    "source_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "toolchain": {"type": "string", "minLength": 1},
+    "lockfile_sha256": {"$ref": "#/$defs/hash"},
+    "current_account_layout_sha256": {"$ref": "#/$defs/hash"},
+    "proposed_account_layout_sha256": {"$ref": "#/$defs/hash"},
+    "current_instruction_registry_sha256": {"$ref": "#/$defs/hash"},
+    "proposed_instruction_registry_sha256": {"$ref": "#/$defs/hash"},
+    "current_signed_message_registry_sha256": {"$ref": "#/$defs/hash"},
+    "proposed_signed_message_registry_sha256": {"$ref": "#/$defs/hash"},
+    "approved_at": {"$ref": "#/$defs/timestamp"},
+    "earliest_execution_at": {"$ref": "#/$defs/timestamp"},
+    "authority_members": {
+      "type": "array",
+      "minItems": 3,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 32, "maxLength": 44}
+    },
+    "threshold": {"type": "integer", "minimum": 2},
+    "approvals": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 32, "maxLength": 44}
+    },
+    "execution_status": {"enum": ["not_executed", "executed", "failed"]},
+    "verification_status": {"enum": ["not_performed", "passed", "failed"]}
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    }
+  }
+}

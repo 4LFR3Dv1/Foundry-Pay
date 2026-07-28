@@ -1,0 +1,8 @@
+{
+  "vectors": [
+    {"id": "two_of_three", "members": 3, "threshold": 2, "approvals": 2, "accepted": true},
+    {"id": "one_of_three", "members": 3, "threshold": 2, "approvals": 1, "accepted": false},
+    {"id": "unknown_approver", "members": 3, "threshold": 2, "approvals": 2, "contains_unknown": true, "accepted": false},
+    {"id": "single_wallet", "members": 1, "threshold": 1, "approvals": 1, "accepted": false}
+  ]
+}
