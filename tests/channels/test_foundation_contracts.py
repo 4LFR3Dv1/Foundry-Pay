@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 from pathlib import Path
 from types import ModuleType
 
@@ -40,8 +41,10 @@ def test_foundation_contracts_and_gates_pass() -> None:
     )
     assert result["checks"]["work_graph"]["ready_items"] == [
         "FC-FAIL-003",
-        "FC-SOL-003",
+        "FC-SOL-004",
+        "FC-SOL-005",
         "FC-VAL-003",
+        "SA-CHAN-001",
     ]
     assert result["checks"]["work_graph"]["ready_with_incomplete_dependencies"] == {}
     assert result["checks"]["accounting"] == {
@@ -151,8 +154,8 @@ def test_fc_sec_002_contract_matches_governed_experimental_scope() -> None:
     assert task["dependencies"] == security["dependencies"]
 
     assert by_id["FC-SOL-002"]["status"] == "done"
-    assert by_id["FC-SOL-003"]["status"] == "ready"
-    assert by_id["FC-SOL-004"]["status"] == "blocked"
+    assert by_id["FC-SOL-003"]["status"] == "done"
+    assert by_id["FC-SOL-004"]["status"] == "ready"
     assert by_id["SA-CHAN-000"]["status"] == "done"
     assert by_id["FC-FAIL-003"]["status"] == "ready"
 
@@ -206,8 +209,8 @@ def test_fc_sol_002_contract_is_fixed_width_and_local_validator_only() -> None:
     assert "Token-2022" in contract
     assert "performs no token transfer or CPI" in contract
 
-    assert by_id["FC-SOL-003"]["status"] == "ready"
-    assert by_id["FC-SOL-004"]["status"] == "blocked"
+    assert by_id["FC-SOL-003"]["status"] == "done"
+    assert by_id["FC-SOL-004"]["status"] == "ready"
     assert by_id["FC-FAIL-003"]["status"] == "ready"
 
 
@@ -261,7 +264,7 @@ def test_sa_chan_000_contract_is_offline_authority_free_and_adversarial() -> Non
     assert "automatic second submission count = 0" in contract
     assert "This is not an exactly-once blockchain claim." in contract
 
-    assert by_id["SA-CHAN-001"]["status"] == "blocked"
+    assert by_id["SA-CHAN-001"]["status"] == "ready"
     assert by_id["SA-CHAN-002"]["status"] == "blocked"
     assert by_id["SA-CHAN-003"]["status"] == "blocked"
     assert by_id["SA-CHAN-004"]["status"] == "blocked"
@@ -275,7 +278,7 @@ def test_fc_sol_003_contract_freezes_authority_without_runtime_or_deployment() -
 
     assert by_id["FC-CTRL-023"]["status"] == "done"
     instruction_contract = by_id["FC-SOL-003"]
-    assert instruction_contract["status"] == "ready"
+    assert instruction_contract["status"] == "done"
     assert instruction_contract["dependencies"] == [
         "FC-PROTO-002",
         "FC-PROTO-003",
@@ -328,5 +331,20 @@ def test_fc_sol_003_contract_freezes_authority_without_runtime_or_deployment() -
     assert "does **not** implement an entrypoint" in contract
     assert "Token-2022" in contract
 
-    assert by_id["FC-SOL-004"]["status"] == "blocked"
-    assert by_id["SA-CHAN-001"]["status"] == "blocked"
+    assert by_id["FC-SOL-004"]["status"] == "ready"
+    assert by_id["FC-SOL-005"]["status"] == "ready"
+    assert by_id["SA-CHAN-001"]["status"] == "ready"
+
+    coordination = by_id["FC-CTRL-024"]
+    assert coordination["status"] == "done"
+    report = json.loads(
+        (ROOT / "evidence/runs/FC-CTRL-024/validation-report.json").read_text(encoding="utf-8")
+    )
+    assert report["fc_sol_003"]["functional_head"] == ("2b6b5e4c8440571bf49f7917a088f861fd46d46e")
+    assert report["fc_sol_003"]["evidence_head"] == ("097a03c99ad4a0fb27827fc655b0ff775675480a")
+    assert report["fc_sol_003"]["merge_commit"] == ("192bd40245244cfd540c67f880104259b5190379")
+    assert report["fc_sol_003"]["main_ci_run"] == 30371165634
+    assert report["fc_sol_003"]["external_review"] == "not_performed"
+    assert report["fc_sol_003"]["deployment_authorization"]["devnet_fixture"] == "blocked"
+    assert report["fc_sol_003"]["deployment_authorization"]["mainnet"] == "blocked"
+    assert report["fc_sol_003"]["deployment_authorization"]["real_value"] == "blocked"

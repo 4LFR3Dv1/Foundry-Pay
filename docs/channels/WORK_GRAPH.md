@@ -29,6 +29,11 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-CTRL-017 | done | FC-CTRL-016 | distinguish forbidden economic/authority effects from permitted rejection audit effects |
 | FC-CTRL-018 | done | FC-CTRL-017 | align the FC-SEC-002 task contract dependency with the integrated effect taxonomy |
 | FC-CTRL-019 | done | FC-SEC-002 | record self-validated security integration and release only satisfied experimental successors |
+| FC-CTRL-020 | done | FC-CTRL-019, FC-SEC-002 | freeze the fixed-width FC-SOL-002 account-model contract |
+| FC-CTRL-021 | done | FC-CTRL-019, SA-CHAN-000 | freeze the authority-free SA-CHAN-000 fake-adapter contract |
+| FC-CTRL-022 | done | FC-SOL-002, SA-CHAN-000 | record account-model and fake-adapter integration |
+| FC-CTRL-023 | done | FC-CTRL-022, FC-SOL-002, FC-SEC-002 | freeze the FC-SOL-003 instruction-contract boundary |
+| FC-CTRL-024 | done | FC-SOL-003 | record instruction-contract integration and release satisfied successors |
 
 ## Epic B — Channel protocol
 
@@ -58,9 +63,9 @@ after this foundation PR is merged without reopening accepted ADRs.
 |---|---|---|---|
 | FC-SOL-001 | done | FOUNDATIONS-001 | ChannelVault design specification |
 | FC-SOL-002 | done | FC-PROTO-001, FC-SEC-002 | fixed-width ChannelState PDA and classic SPL Token vault layout; local validator only |
-| FC-SOL-003 | ready | FC-PROTO-002, FC-PROTO-003, FC-PROTO-004, FC-PROTO-005, FC-SOL-002, FC-SEC-002 | atomic instruction, account-meta, exact Ed25519, lifecycle, event, and error contracts; local fixtures only |
-| FC-SOL-004 | blocked | FC-SOL-003, FC-SEC-002 | on-chain invariants and property/formal harness |
-| FC-SOL-005 | blocked | FC-SOL-003 | upgrade, migration, and governance policy |
+| FC-SOL-003 | done | FC-PROTO-002, FC-PROTO-003, FC-PROTO-004, FC-PROTO-005, FC-SOL-002, FC-SEC-002 | atomic instruction, account-meta, exact Ed25519, lifecycle, event, and error contracts; local fixtures only |
+| FC-SOL-004 | ready | FC-SOL-003, FC-SEC-002 | on-chain invariants and property/formal harness |
+| FC-SOL-005 | ready | FC-SOL-003 | upgrade, migration, and governance policy |
 
 No program implementation is authorized by `FOUNDATIONS-001`.
 
@@ -69,7 +74,7 @@ No program implementation is authorized by `FOUNDATIONS-001`.
 | Work item | Status | Depends on | Outcome |
 |---|---|---|---|
 | SA-CHAN-000 | done | FC-PROTO-007, FC-SEC-002, FC-CTRL-021 | draft capability contracts and adversarial fake adapter; offline fixture only, no ChannelVault compatibility claim |
-| SA-CHAN-001 | blocked | FC-PROTO-006, FC-SOL-003 | generic channel capability discovery |
+| SA-CHAN-001 | ready | FC-PROTO-006, FC-SOL-003 | generic channel capability discovery |
 | SA-CHAN-002 | blocked | SA-CHAN-001, FC-SOL-003 | open/top-up/activation preparation |
 | SA-CHAN-003 | blocked | SA-CHAN-001, FC-SOL-003 | settlement preparation |
 | SA-CHAN-004 | blocked | SA-CHAN-002, SA-CHAN-003 | inspect/status/recovery |
@@ -80,8 +85,9 @@ repository.
 
 `SA-CHAN-000` is deliberately a public-protocol/fake-adapter precursor in
 Foundry-Pay. It cannot complete or rename `SA-CHAN-001`; the real capability
-discovery gate remains blocked until the ChannelVault instruction contracts
-exist.
+discovery gate is now ready in the independent Solana-Agent repository because
+the ChannelVault instruction contracts exist. Preparation and execution remain
+blocked.
 
 ## Epic F — Product and experience
 
