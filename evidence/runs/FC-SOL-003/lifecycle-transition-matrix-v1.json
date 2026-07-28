@@ -1,0 +1,34 @@
+{
+  "activated_rights_expire": false,
+  "deadline_is_exclusive": true,
+  "known_phase_codes": [
+    "Active",
+    "ClosingOpen",
+    "ClosingFrozen",
+    "Finalized"
+  ],
+  "layout_changed": false,
+  "phases": [
+    {
+      "derivation": "account absent",
+      "phase": "uninitialized"
+    },
+    {
+      "derivation": "StatusCode::Active",
+      "phase": "active"
+    },
+    {
+      "derivation": "StatusCode::Closing && now < claim_deadline",
+      "phase": "closing_open"
+    },
+    {
+      "derivation": "StatusCode::Closing && now >= claim_deadline",
+      "phase": "closing_frozen"
+    },
+    {
+      "derivation": "StatusCode::Closed",
+      "phase": "finalized",
+      "terminal": true
+    }
+  ]
+}

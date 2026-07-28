@@ -1,0 +1,50 @@
+[
+  {
+    "authority": "onchain_fact_only",
+    "business_completion_claim": false,
+    "code": 1,
+    "name": "ChannelInitialized"
+  },
+  {
+    "authority": "onchain_fact_only",
+    "business_completion_claim": false,
+    "code": 2,
+    "name": "ChannelFunded"
+  },
+  {
+    "authority": "onchain_fact_only",
+    "business_completion_claim": false,
+    "code": 3,
+    "name": "VoucherActivated"
+  },
+  {
+    "authority": "onchain_fact_only",
+    "business_completion_claim": false,
+    "code": 4,
+    "name": "RecipientBound"
+  },
+  {
+    "authority": "onchain_fact_only",
+    "business_completion_claim": false,
+    "code": 5,
+    "name": "SettlementExecuted"
+  },
+  {
+    "authority": "onchain_fact_only",
+    "business_completion_claim": false,
+    "code": 6,
+    "name": "CloseRequested"
+  },
+  {
+    "authority": "onchain_fact_only",
+    "business_completion_claim": false,
+    "code": 7,
+    "name": "RefundExecuted"
+  },
+  {
+    "authority": "onchain_fact_only",
+    "business_completion_claim": false,
+    "code": 8,
+    "name": "ChannelFinalized"
+  }
+]

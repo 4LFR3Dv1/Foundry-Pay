@@ -1,0 +1,74 @@
+[
+  {
+    "byte_length": 83,
+    "bytes_hex": "e85bb1d47a5ee3fa0100010101010101010101010101010101010101010101010101010101010101010102020202020202020202020202020202020202020202020202020202020202020600d2496b00000000",
+    "contract_version": 1,
+    "discriminator_hex": "e85bb1d47a5ee3fa",
+    "instruction": "initialize_channel",
+    "round_trip": "passed",
+    "sha256": "sha256:8b051111e540fed9dc7261e54b6928639aee9e27ef2565aa3fad6632f5bcf308"
+  },
+  {
+    "byte_length": 18,
+    "bytes_hex": "32430347bea914cf010000e1f50500000000",
+    "contract_version": 1,
+    "discriminator_hex": "32430347bea914cf",
+    "instruction": "fund_channel",
+    "round_trip": "passed",
+    "sha256": "sha256:e09ef8d66a2675c7a71996f1202a07e31cf8573d070e2bff24154e24c1bf9d6d"
+  },
+  {
+    "byte_length": 66,
+    "bytes_hex": "0aa1962dddab20cf01000300000000000000005a620200000000030303030303030303030303030303030303030303030303030303030303030380e14e6800000000",
+    "contract_version": 1,
+    "discriminator_hex": "0aa1962dddab20cf",
+    "instruction": "activate_voucher",
+    "round_trip": "passed",
+    "sha256": "sha256:a34ba0f2e08874ce3b82fbedc751470a6587bc5e03086c394b1138d36cd18081"
+  },
+  {
+    "byte_length": 106,
+    "bytes_hex": "90cd51a1dfda9d860100040404040404040404040404040404040404040404040404040404040404040405050505050505050505050505050505050505050505050505050505050505050606060606060606060606060606060606060606060606060606060606060606",
+    "contract_version": 1,
+    "discriminator_hex": "90cd51a1dfda9d86",
+    "instruction": "bind_recipient",
+    "round_trip": "passed",
+    "sha256": "sha256:367770cc12df045a96d1e6565e3468be763b13d5fcc817a384fd7a56e0c7871a"
+  },
+  {
+    "byte_length": 50,
+    "bytes_hex": "af2ab957908366d4010040787d01000000000707070707070707070707070707070707070707070707070707070707070707",
+    "contract_version": 1,
+    "discriminator_hex": "af2ab957908366d4",
+    "instruction": "settle",
+    "round_trip": "passed",
+    "sha256": "sha256:cc3a843637907d3d3a2635bbbbf122fb4f3c95ed6afeb594c6a0c85071e6bd26"
+  },
+  {
+    "byte_length": 18,
+    "bytes_hex": "52a8a7560e0fc7b401008042556500000000",
+    "contract_version": 1,
+    "discriminator_hex": "52a8a7560e0fc7b4",
+    "instruction": "request_close",
+    "round_trip": "passed",
+    "sha256": "sha256:5e9cc4c943c969dc6264eb7977678439817e3910dab0dd285e10add23f650b6c"
+  },
+  {
+    "byte_length": 50,
+    "bytes_hex": "9969c702195284b0010000879303000000000808080808080808080808080808080808080808080808080808080808080808",
+    "contract_version": 1,
+    "discriminator_hex": "9969c702195284b0",
+    "instruction": "refund_unallocated",
+    "round_trip": "passed",
+    "sha256": "sha256:15ca6ee92698181a1329daa28412bb30f6c716c547ca11d098583c1948c3568d"
+  },
+  {
+    "byte_length": 42,
+    "bytes_hex": "09ce2a43e88fa5f601000909090909090909090909090909090909090909090909090909090909090909",
+    "contract_version": 1,
+    "discriminator_hex": "09ce2a43e88fa5f6",
+    "instruction": "finalize_close",
+    "round_trip": "passed",
+    "sha256": "sha256:92f4efcfe34d5344ce0e64822a2f589f831e07eb237564978b7efb4ee8e8dab8"
+  }
+]

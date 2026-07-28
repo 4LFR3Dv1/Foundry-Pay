@@ -1,0 +1,7 @@
+{
+  "cargo": "cargo 1.97.1 (c980f4866 2026-06-30)",
+  "generation_test": "   Compiling foundry-channel-vault-instruction-contract v0.1.0 (C:\\tmp\\foundry-pay-fc-proto-006\\programs\\foundry-channel-vault\\instruction-contract)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.67s\n     Running unittests src\\lib.rs (programs\\foundry-channel-vault\\instruction-contract\\target\\debug\\deps\\foundry_channel_vault_instruction_contract-9dfba7ac13c0541a.exe)\n\nrunning 1 test\ntest generate_instruction_vectors::tests::generate_from_test_harness_when_requested ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.01s\n\n",
+  "pytest_summary": "........                                                                 [100%]\n- generated xml file: C:\\tmp\\foundry-pay-fc-proto-006\\evidence\\runs\\FC-SOL-003\\pytest-full.xml -\n8 passed, 1 deselected in 0.30s\n",
+  "rust_toolchain_file": "[toolchain]\nchannel = \"1.85.1\"\nprofile = \"minimal\"\ncomponents = [\"cargo\", \"rustfmt\", \"clippy\"]\n",
+  "rustc": "rustc 1.97.1 (8bab26f4f 2026-07-14)"
+}

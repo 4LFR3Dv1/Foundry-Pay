@@ -1,0 +1,20 @@
+[package]
+name = "foundry-channel-vault-instruction-contract"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85.1"
+license = "Apache-2.0"
+publish = false
+
+[dependencies]
+foundry-channel-vault-account-model = { path = ".." }
+hex = "=0.4.3"
+serde = { version = "=1.0.219", features = ["derive"] }
+serde_json = "=1.0.140"
+sha2 = "=0.10.8"
+solana-pubkey = { version = "=2.1.21", features = ["curve25519"] }
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
