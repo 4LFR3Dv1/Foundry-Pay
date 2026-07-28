@@ -38,6 +38,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-CTRL-026 | done | FC-SOL-003A | record operability correction and release satisfied successors |
 | FC-CTRL-027 | done | FC-CTRL-026, FC-SOL-003A | freeze ownership-transition, settlement-correlation, and FC-SOL-004 validation semantics |
 | FC-CTRL-028 | done | FC-CTRL-027, FC-SOL-003A | make historical manifest verification commit-aware before registry evolution |
+| FC-CTRL-029 | done | FC-SOL-004 | record transition-model integration and release only satisfied offline work |
 
 ## Epic B — Channel protocol
 
@@ -58,7 +59,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-SEC-001 | done | FOUNDATIONS-001 | comprehensive design threat model |
 | FC-SEC-002 | done | FC-PROTO-002, FC-PROTO-006, FC-PROTO-007, FC-CTRL-017 | replay, semantic-collision, downgrade, and lifecycle property suite |
 | FC-SEC-003 | done | FOUNDATIONS-001 | claim-link handling and secret non-disclosure test kit |
-| FC-SEC-004 | blocked | FC-PROTO-004, FC-SOL-004 | concurrent settlement adversarial proof |
+| FC-SEC-004 | ready | FC-PROTO-004, FC-SOL-004 | concurrent settlement adversarial proof |
 | FC-SEC-005 | blocked | FC-PROTO-004, SA-CHAN-004 | Cloud outage and self-recovery proof |
 
 ## Epic D — Solana program
@@ -69,7 +70,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-SOL-002 | done | FC-PROTO-001, FC-SEC-002 | fixed-width ChannelState PDA and classic SPL Token vault layout; local validator only |
 | FC-SOL-003 | done | FC-PROTO-002, FC-PROTO-003, FC-PROTO-004, FC-PROTO-005, FC-SOL-002, FC-SEC-002 | atomic instruction, account-meta, exact Ed25519, lifecycle, event, and error contracts; local fixtures only |
 | FC-SOL-003A | done | FC-SOL-003, FC-CTRL-025 | correct initialization metas; freeze permissionless settlement and bounded claim window |
-| FC-SOL-004 | ready | FC-SOL-003A, FC-SEC-002, FC-CTRL-027 | pure transition invariants with property-based and bounded exploration |
+| FC-SOL-004 | done | FC-SOL-003A, FC-SEC-002, FC-CTRL-027 | pure transition invariants with property-based and bounded exploration |
 | FC-SOL-005 | ready | FC-SOL-003 | upgrade, migration, and governance policy |
 
 No program implementation is authorized by `FOUNDATIONS-001`.

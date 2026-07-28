@@ -44,6 +44,7 @@ README after the validation run.
 | SA-CHAN-000 | `49c62b6cfab0344a870bb285512df1d494eb6f03` | `evidence/runs/SA-CHAN-000/` |
 | FC-SOL-003 | `192bd40245244cfd540c67f880104259b5190379` | `evidence/runs/FC-SOL-003/` |
 | FC-SOL-003A | `aaffd54d0712dc7b0add981d06923dab00e4aba1` | `evidence/runs/FC-SOL-003A/` |
+| FC-SOL-004 | `3f1740e70abb9ee67f7b83130fa5aef2a76befb8` | `evidence/runs/FC-SOL-004/` |
 
 These merges authorize the next offline protocol work only. They do not prove
 ChannelVault, Solana execution, a deployed consumer frontend, or product demand.
@@ -63,6 +64,14 @@ account metas, exact Ed25519 layouts, lifecycle projections, events, errors,
 and deterministic negative fixtures. It does not implement an entrypoint,
 economic handler, CPI, token transfer, deployment, or consumer integration.
 External Solana instruction and Ed25519 review remains `not_performed`.
+
+PR #55 integrated the pure ChannelVault transition model with functional head
+`da8baf5f...`, evidence head `0efc701d...`, merge `3f1740e7...`, and green
+main CI run `30379326962`. Its 1,536 generated property cases and bounded
+exploration of 703 states and 4,732 transitions found zero invariant
+violations within the published model and bounds. It is not formal
+verification, a Solana runtime program, local-validator execution, deployment,
+or external review.
 
 ## Integrated security gate
 

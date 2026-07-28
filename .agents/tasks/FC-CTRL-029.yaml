@@ -1,0 +1,33 @@
+work_item: FC-CTRL-029
+objective: record FC-SOL-004 integration and release only its satisfied offline successor
+owner: program-integrator
+branch: agent/control/FC-CTRL-029
+allowed_paths:
+  - .agents/tasks/FC-CTRL-029.yaml
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - docs/channels/EVIDENCE_INDEX.md
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-029/**
+dependencies:
+  - FC-SOL-004
+invariants:
+  - functional, evidence, merge, and main CI identifiers are exact
+  - self-validation is not represented as formal verification or external review
+  - only FC-SEC-004 advances because its declared dependencies are satisfied
+  - handlers, runtime execution, and deployment remain blocked
+acceptance:
+  - FC-SOL-004 is done
+  - FC-SEC-004 is ready
+  - FC-SOL-005, SA-CHAN-001, and FC-FAIL-003 remain ready
+  - local validator, devnet, mainnet, and real value remain blocked
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+stop_conditions:
+  - bounded validation is called formal verification
+  - external review is inferred
+  - a runtime or deployment gate advances

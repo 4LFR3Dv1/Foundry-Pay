@@ -756,6 +756,36 @@ work_items:
       - historical evidence is rewritten
       - mutable current source is substituted for reviewed historical source
 
+  - id: FC-CTRL-029
+    status: done
+    objective: record FC-SOL-004 integration and release only its satisfied offline successor
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-029.yaml
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - docs/channels/EVIDENCE_INDEX.md
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-029/**
+    dependencies: [FC-SOL-004]
+    invariants:
+      - exact integration identifiers are recorded
+      - self-validation does not imply formal verification or external review
+      - only successors with completed dependencies advance
+    acceptance:
+      - FC-SOL-004 is done
+      - FC-SEC-004 is ready
+      - runtime execution and deployment remain blocked
+    tests:
+      - exact-SHA, graph, maturity, and authorization assertions
+    evidence:
+      - evidence/runs/FC-CTRL-029/validation-report.json
+    security_review: self-validated coordination
+    stop_conditions:
+      - formal verification or external review is inferred
+      - an unmet runtime or deployment gate advances
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -1031,7 +1061,7 @@ work_items:
     stop_conditions: [frontend stack or analytics requires claim secret transmission]
 
   - id: FC-SEC-004
-    status: blocked
+    status: ready
     objective: prove safety under concurrent settlements and lifecycle races
     owner: security-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -1215,7 +1245,7 @@ work_items:
       - permissionless settlement accepts a non-canonical recipient destination
 
   - id: FC-SOL-004
-    status: ready
+    status: done
     objective: implement a pure ChannelVault transition model with property-based and bounded sequence validation
     owner: protocol-model-engineer
     repository: 4LFR3Dv1/Foundry-Pay
