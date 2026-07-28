@@ -786,6 +786,37 @@ work_items:
       - formal verification or external review is inferred
       - an unmet runtime or deployment gate advances
 
+  - id: FC-CTRL-030
+    status: done
+    objective: freeze the FC-SEC-004 offline concurrency and linearizability contract
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-030.yaml
+      - .agents/tasks/FC-SEC-004.yaml
+      - docs/channels/security/concurrency/FC-SEC-004-CONTRACT.md
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-030/**
+    dependencies: [FC-CTRL-029, FC-SOL-004]
+    invariants:
+      - concurrency uses versioned snapshots and conditional commit
+      - stale candidates cause zero effect
+      - lifecycle and time are revalidated at commit
+      - every accepted history has a serial witness
+    acceptance:
+      - FC-SEC-004 remains ready under an exact offline contract
+      - handlers and deployment remain blocked
+    tests:
+      - executable dependency, maturity, authorization, and claim assertions
+    evidence:
+      - evidence/runs/FC-CTRL-030/validation-report.json
+    security_review: self-validated coordination
+    stop_conditions:
+      - sequential permutations are represented as concurrency proof
+      - Solana runtime race safety is inferred
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -1062,17 +1093,51 @@ work_items:
 
   - id: FC-SEC-004
     status: ready
-    objective: prove safety under concurrent settlements and lifecycle races
-    owner: security-engineer
+    objective: prove offline linearizability and stale-snapshot safety for concurrent channel transitions
+    owner: concurrency-security-engineer
     repository: 4LFR3Dv1/Foundry-Pay
-    allowed_paths: [tests/channels/security/concurrency/**, services/failure_lab/**, evidence/runs/FC-SEC-004/**]
-    dependencies: [FC-PROTO-004, FC-SOL-004]
-    invariants: [aggregate settled total never exceeds activated right]
-    acceptance: [two-process and two-transaction races preserve conservation]
-    tests: [concurrent partial, full, close, top-up, activation, and restart tests]
-    evidence: [race matrix and account snapshots]
-    security_review: mandatory-independent-security-review
-    stop_conditions: [test-only locking differs materially from Solana account locking]
+    allowed_paths: [services/failure_lab/channel-concurrency/**, tests/channels/security/concurrency/**, evidence/runs/FC-SEC-004/**]
+    dependencies: [FC-PROTO-004, FC-SOL-004, FC-CTRL-030]
+    invariants:
+      - commit succeeds only against the candidate read version
+      - stale and duplicate candidates cause zero effect
+      - every accepted operation ID is unique
+      - every accepted history has a serial replay witness
+      - aggregate settled never exceeds activated right
+      - derived vault balance preserves conservation
+      - lifecycle and time are revalidated at commit
+    acceptance:
+      - oversubscribed settlements cannot both commit
+      - safe candidates may advance only after explicit stale re-preparation
+      - duplicate operation IDs have at-most-one economic effect
+      - lifecycle race matrices publish serial witnesses
+      - bounded schedules find no violation within published limits
+    tests:
+      - settlement oversubscription and duplication
+      - refund, activation, deadline, close, and finalization races
+      - property-based candidate schedules
+      - bounded schedule exploration
+    evidence:
+      - race matrix and linearization witnesses
+      - stale-snapshot and property reports
+      - bounded schedule report and artifact manifest
+    maturity_gate:
+      implementation: complete
+      self_validation: passed
+      external_review: not_performed
+    deployment_authorization:
+      offline_model: allowed
+      local_validator: blocked
+      devnet_fixture: blocked
+      mainnet: blocked
+      real_value: blocked
+    security_review: self-validated offline concurrency model; external review not performed
+    stop_conditions:
+      - an accepted history lacks a serial witness
+      - a stale candidate changes state or version
+      - time is not revalidated at commit
+      - the harness duplicates the transition oracle
+      - Solana runtime race safety is claimed
 
   - id: FC-SEC-005
     status: blocked

@@ -1,0 +1,37 @@
+work_item: FC-CTRL-030
+objective: freeze the FC-SEC-004 offline concurrency and linearizability contract
+owner: program-integrator
+branch: agent/control/FC-CTRL-030
+allowed_paths:
+  - .agents/tasks/FC-CTRL-030.yaml
+  - .agents/tasks/FC-SEC-004.yaml
+  - docs/channels/security/concurrency/FC-SEC-004-CONTRACT.md
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-030/**
+dependencies:
+  - FC-CTRL-029
+  - FC-SOL-004
+invariants:
+  - concurrency uses versioned snapshots and conditional commit
+  - stale candidates produce no effect and require explicit re-preparation
+  - every accepted history has a serial witness
+  - commit-time validation controls lifecycle and time
+  - the model does not claim Solana account locking or runtime behavior
+acceptance:
+  - FC-SEC-004 remains ready under an exact offline contract
+  - settlement and lifecycle race matrices are closed
+  - self-validation may integrate without external review
+  - handlers and deployment remain blocked
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+stop_conditions:
+  - sequential permutations are represented as concurrency proof
+  - stale candidates can mutate state
+  - prepare-time validation grants durable temporal authority
+  - Solana runtime race safety is claimed

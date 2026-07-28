@@ -467,3 +467,38 @@ def test_fc_sol_004_integration_releases_only_concurrency_model_work() -> None:
     assert integration["formal_verification"] == "not_performed"
     assert integration["external_review"] == "not_performed"
     assert report["released"] == ["FC-SEC-004"]
+
+
+def test_fc_sec_004_contract_requires_real_snapshot_concurrency() -> None:
+    work_items = yaml.safe_load(
+        (ROOT / "docs/channels/work-items.yaml").read_text(encoding="utf-8")
+    )["work_items"]
+    by_id = {item["id"]: item for item in work_items}
+    concurrency = by_id["FC-SEC-004"]
+    assert concurrency["status"] == "ready"
+    assert concurrency["dependencies"] == [
+        "FC-PROTO-004",
+        "FC-SOL-004",
+        "FC-CTRL-030",
+    ]
+    assert concurrency["deployment_authorization"] == {
+        "offline_model": "allowed",
+        "local_validator": "blocked",
+        "devnet_fixture": "blocked",
+        "mainnet": "blocked",
+        "real_value": "blocked",
+    }
+    assert "every accepted history has a serial replay witness" in concurrency["invariants"]
+    assert "lifecycle and time are revalidated at commit" in concurrency["invariants"]
+
+    contract = (ROOT / "docs/channels/security/concurrency/FC-SEC-004-CONTRACT.md").read_text(
+        encoding="utf-8"
+    )
+    assert "current_version == N" in contract
+    assert "explicit re-preparation" in contract
+    assert "authoritative commit time" in contract
+    assert "ChannelVault runtime race-safety" in contract
+
+    task = yaml.safe_load((ROOT / ".agents/tasks/FC-SEC-004.yaml").read_text(encoding="utf-8"))
+    assert task["dependencies"] == concurrency["dependencies"]
+    assert task["deployment_authorization"] == concurrency["deployment_authorization"]
