@@ -1,0 +1,38 @@
+work_item: FC-CTRL-027
+objective: freeze the FC-SOL-004 transition-model contract and close residual ABI semantics before implementation
+owner: program-integrator
+branch: agent/control/FC-CTRL-027
+allowed_paths:
+  - .agents/tasks/FC-CTRL-027.yaml
+  - .agents/tasks/FC-SOL-004.yaml
+  - docs/channels/ADR/FC-ADR-011-transition-model-preflight.md
+  - docs/channels/solana/invariants/FC-SOL-004-CONTRACT.md
+  - docs/channels/DECISIONS.md
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-027/**
+dependencies:
+  - FC-CTRL-026
+  - FC-SOL-003A
+invariants:
+  - initialize_channel distinguishes absent or system-owned pre-state from program-owned post-state
+  - obligation_hash is caller-supplied non-authoritative correlation material
+  - settlement economics and destination are independent of caller identity and obligation_hash
+  - FC-SOL-004 claims property-based and bounded transition validation, not formal verification
+acceptance:
+  - FC-SOL-004 remains ready under a closed implementation and evidence contract
+  - ownership transition and settlement correlation semantics are normative
+  - external review remains not_performed
+  - execution and all deployment environments remain blocked
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+stop_conditions:
+  - a single owner rule is treated as both initialize precondition and postcondition
+  - obligation_hash is treated as economic authority or proof of business outcome
+  - testing is described as formal verification
+  - a handler, CPI, transfer, entrypoint, or deployment enters scope

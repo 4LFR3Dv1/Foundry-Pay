@@ -1,0 +1,20 @@
+{
+  "work_item": "FC-CTRL-027",
+  "baseline": "31cfca0f8ec1e952ccd61dbf96bec741cfab0175",
+  "decisions": {
+    "initialize_pre_owner": "absent_or_system_owned_zero_data",
+    "initialize_post_owner": "foundry_channel_vault_program",
+    "obligation_hash": "caller_supplied_non_authoritative_correlation",
+    "validation": "property_based_and_bounded_transition_exploration",
+    "formal_verification_claimed": false
+  },
+  "external_review": "not_performed",
+  "deployment_authorization": {
+    "pure_model": "allowed",
+    "local_validator": "blocked",
+    "devnet_fixture": "blocked",
+    "mainnet": "blocked",
+    "real_value": "blocked"
+  },
+  "runtime_changes": 0
+}

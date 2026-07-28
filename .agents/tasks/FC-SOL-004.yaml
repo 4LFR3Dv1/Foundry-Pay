@@ -1,0 +1,60 @@
+work_item: FC-SOL-004
+objective: implement a pure ChannelVault transition model with property-based and bounded sequence validation
+owner: protocol-model-engineer
+branch: agent/solana/FC-SOL-004
+allowed_paths:
+  - programs/foundry-channel-vault/**
+  - tests/channels/solana/invariants/**
+  - evidence/runs/FC-SOL-004/**
+dependencies:
+  - FC-SOL-003A
+  - FC-SEC-002
+  - FC-CTRL-027
+invariants:
+  - settled_total never exceeds activated_authorized_total
+  - activated_authorized_total plus refunded_total never exceeds funded_total
+  - cumulative economic totals never decrease
+  - recipient binding and binding nonce advance at most once
+  - finalized is terminal
+  - rejected transitions preserve economic, authority, and lifecycle state
+  - initialization is modeled atomically from absent or system-owned to program-owned state
+  - permissionless settlement always derives the bound-recipient ATA and is caller-independent
+  - obligation_hash has no economic, authority, or business-outcome effect
+acceptance:
+  - pure transition model covers all eight FC-SOL-003A operations
+  - property tests publish seeds, case counts, and minimized counterexamples
+  - bounded exploration publishes bounds, state deduplication, transitions, and rejections
+  - boundary cases cover u64 and claim-window arithmetic
+  - no violation is found within the published model and bounds
+tests:
+  - deterministic transition unit tests
+  - property-based valid and rejected sequences
+  - bounded breadth-first transition exploration
+  - permissionless caller and obligation-hash independence
+  - atomic initialization rollback model
+evidence:
+  - evidence/runs/FC-SOL-004/property-report.json
+  - evidence/runs/FC-SOL-004/bounded-exploration-report.json
+  - evidence/runs/FC-SOL-004/invariant-matrix.json
+  - evidence/runs/FC-SOL-004/artifact-manifest.json
+maturity_gate:
+  implementation: complete
+  self_validation: passed
+  external_review: not_performed
+deployment_authorization:
+  pure_model: allowed
+  local_validator: blocked
+  devnet_fixture: blocked
+  mainnet: blocked
+  real_value: blocked
+external_review_requirement:
+  required_before:
+    - mainnet
+    - real_value
+security_review: self-validated property and bounded exploration; external review not performed
+stop_conditions:
+  - a conservation, replay, lifecycle, or account-ownership ambiguity remains
+  - caller identity or obligation_hash affects settlement economics
+  - rejected operations mutate the modeled state
+  - a Solana runtime, AccountInfo, CPI, SPL transfer, RPC, or deployment enters scope
+  - bounded testing is represented as formal verification
