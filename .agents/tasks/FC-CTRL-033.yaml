@@ -1,0 +1,29 @@
+work_item: FC-CTRL-033
+objective: record FC-SOL-005 integration without authorizing handlers or deployment
+owner: program-integrator
+branch: agent/control/FC-CTRL-033
+allowed_paths:
+  - .agents/tasks/FC-CTRL-033.yaml
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - docs/channels/EVIDENCE_INDEX.md
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-033/**
+dependencies:
+  - FC-SOL-005
+invariants:
+  - functional, evidence, merge, and main CI identifiers are exact
+  - self-validation is not external governance review
+  - an offline governance model does not authorize deployment
+  - operation commitment conflict remains a precondition before handlers
+acceptance:
+  - FC-SOL-005 is done
+  - SA-CHAN-001 and FC-FAIL-003 remain ready
+  - no handler or deployment gate advances
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python -m ruff check .
+  - python scripts/check_secrets.py
+stop_conditions:
+  - multisig, loader, or deployed build behavior is inferred
+  - a deployment environment advances
