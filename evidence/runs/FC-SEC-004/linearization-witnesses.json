@@ -1,0 +1,170 @@
+[
+  {
+    "accepted_order": [
+      "1414141414141414141414141414141414141414141414141414141414141414"
+    ],
+    "commit_order": [
+      0,
+      1
+    ],
+    "final_version": 1,
+    "scenario": "settle_30_vs_settle_30",
+    "serial_witness": true
+  },
+  {
+    "accepted_order": [
+      "1515151515151515151515151515151515151515151515151515151515151515"
+    ],
+    "commit_order": [
+      1,
+      0
+    ],
+    "final_version": 1,
+    "scenario": "settle_30_vs_settle_30",
+    "serial_witness": true
+  },
+  {
+    "accepted_order": [
+      "1616161616161616161616161616161616161616161616161616161616161616"
+    ],
+    "commit_order": [
+      0,
+      1
+    ],
+    "final_version": 1,
+    "scenario": "settle_10_vs_settle_30",
+    "serial_witness": true
+  },
+  {
+    "accepted_order": [
+      "1717171717171717171717171717171717171717171717171717171717171717"
+    ],
+    "commit_order": [
+      1,
+      0
+    ],
+    "final_version": 1,
+    "scenario": "settle_10_vs_settle_30",
+    "serial_witness": true
+  },
+  {
+    "accepted_order": [
+      "1818181818181818181818181818181818181818181818181818181818181818"
+    ],
+    "commit_order": [
+      0,
+      1
+    ],
+    "final_version": 1,
+    "scenario": "duplicate_settlement_id",
+    "serial_witness": true
+  },
+  {
+    "accepted_order": [
+      "1818181818181818181818181818181818181818181818181818181818181818"
+    ],
+    "commit_order": [
+      1,
+      0
+    ],
+    "final_version": 1,
+    "scenario": "duplicate_settlement_id",
+    "serial_witness": true
+  },
+  {
+    "accepted_order": [
+      "1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e"
+    ],
+    "commit_order": [
+      0,
+      1
+    ],
+    "final_version": 1,
+    "scenario": "refund_60_vs_settle_40",
+    "serial_witness": true
+  },
+  {
+    "accepted_order": [
+      "1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f"
+    ],
+    "commit_order": [
+      1,
+      0
+    ],
+    "final_version": 1,
+    "scenario": "refund_60_vs_settle_40",
+    "serial_witness": true
+  },
+  {
+    "accepted_order": [
+      "2929292929292929292929292929292929292929292929292929292929292929"
+    ],
+    "commit_order": [
+      0,
+      1
+    ],
+    "final_version": 1,
+    "scenario": "activation_pre_deadline_vs_refund_at_deadline",
+    "serial_witness": true
+  },
+  {
+    "accepted_order": [
+      "2929292929292929292929292929292929292929292929292929292929292929"
+    ],
+    "commit_order": [
+      1,
+      0
+    ],
+    "final_version": 1,
+    "scenario": "activation_pre_deadline_vs_refund_at_deadline",
+    "serial_witness": true
+  },
+  {
+    "accepted_order": [
+      "3232323232323232323232323232323232323232323232323232323232323232"
+    ],
+    "commit_order": [
+      0,
+      1
+    ],
+    "final_version": 1,
+    "scenario": "close_vs_activation",
+    "serial_witness": true
+  },
+  {
+    "accepted_order": [
+      "3333333333333333333333333333333333333333333333333333333333333333"
+    ],
+    "commit_order": [
+      1,
+      0
+    ],
+    "final_version": 1,
+    "scenario": "close_vs_activation",
+    "serial_witness": true
+  },
+  {
+    "accepted_order": [
+      "3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c"
+    ],
+    "commit_order": [
+      0,
+      1
+    ],
+    "final_version": 1,
+    "scenario": "same_sequence_activation",
+    "serial_witness": true
+  },
+  {
+    "accepted_order": [
+      "3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d"
+    ],
+    "commit_order": [
+      1,
+      0
+    ],
+    "final_version": 1,
+    "scenario": "same_sequence_activation",
+    "serial_witness": true
+  }
+]

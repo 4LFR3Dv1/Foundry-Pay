@@ -1,0 +1,21 @@
+work_item: FC-SEC-004
+baseline: 39e067965955f5389153eb05d4fe436cf5d13444
+implementation_commit: 2458885917eb917e263538397a601f0c81a1e855
+model: offline_versioned_snapshot_conditional_commit
+validation:
+  unit_tests: 8
+  property_tests: 1
+  property_cases: 512
+  bounded_schedules: 14
+  serial_witness_required: true
+  formal_verification: false
+maturity:
+  implementation: complete
+  self_validation: passed
+  external_review: not_performed
+deployment_authorization:
+  offline_model: allowed
+  local_validator: blocked
+  devnet_fixture: blocked
+  mainnet: blocked
+  real_value: blocked

@@ -1,0 +1,9 @@
+{
+  "cases": 512,
+  "counterexamples": [],
+  "framework": "proptest",
+  "max_shrink_iterations": 4096,
+  "property": "concurrent_settlement_pairs_are_linearizable",
+  "result": "passed",
+  "version": "1.6.0"
+}

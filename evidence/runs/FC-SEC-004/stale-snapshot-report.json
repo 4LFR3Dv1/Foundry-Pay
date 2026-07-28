@@ -1,0 +1,12 @@
+{
+  "duplicate_effect_count": 0,
+  "duplicate_rejections": 2,
+  "explicit_repreparation_tests": [
+    "safe_partial_settlements_require_explicit_repreparation",
+    "refund_and_settlement_linearize_after_stale_repreparation"
+  ],
+  "result": "passed",
+  "schedules": 14,
+  "stale_effect_count": 0,
+  "stale_rejections": 11
+}
