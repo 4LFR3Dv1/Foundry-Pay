@@ -1,0 +1,25 @@
+{
+  "compatible": [
+    "internal_bugfix_preserving_normative_bytes",
+    "compute_optimization_preserving_effects",
+    "non_normative_human_message",
+    "non_authoritative_observability"
+  ],
+  "forbidden_over_v1": [
+    "reinterpret_reserved_bytes",
+    "reduce_activated_right",
+    "redirect_outstanding_right",
+    "merge_outstanding_and_unallocated",
+    "unilateral_recipient_rebind",
+    "refund_reserved_capacity",
+    "third_party_settlement_control"
+  ],
+  "versioned": [
+    "new_instruction",
+    "new_account_field",
+    "changed_preimage",
+    "changed_authority",
+    "changed_lifecycle",
+    "changed_temporal_bound"
+  ]
+}

@@ -1,0 +1,19 @@
+work_item: FC-SOL-005
+baseline: 4642fac08e137ab991e13dc2ca743c008609f191
+implementation_commit: 8664401ba6f9367986960b3049340c7a90966ce2
+scope: offline_governance_and_migration_model
+maturity:
+  implementation: complete
+  self_validation: passed
+  external_review: not_performed
+deployment_authorization:
+  offline_model: allowed
+  local_validator: blocked
+  devnet_fixture: blocked
+  mainnet: blocked
+  real_value: blocked
+claims:
+  solana_loader_tested: false
+  multisig_executed: false
+  deployed_build_reproduced: false
+  formal_verification: false

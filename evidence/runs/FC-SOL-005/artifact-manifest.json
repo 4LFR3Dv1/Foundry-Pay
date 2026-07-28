@@ -1,0 +1,117 @@
+{
+  "artifacts": [
+    {
+      "bytes": 280,
+      "path": "programs/foundry-channel-vault/governance-model/Cargo.toml",
+      "sha256": "sha256:6fe7a318d36572e911bcd67cc93cd40c80a7048c33235d09dd743fa9b358fc42"
+    },
+    {
+      "bytes": 11279,
+      "path": "programs/foundry-channel-vault/governance-model/Cargo.lock",
+      "sha256": "sha256:33b310db2c63dd6e8438afdcd158192961d38a657281bba81b09353796689728"
+    },
+    {
+      "bytes": 86,
+      "path": "programs/foundry-channel-vault/governance-model/rust-toolchain.toml",
+      "sha256": "sha256:24e1453b4e314d5d4407c1da60e7c7eac3914e7483b5098efd436cdd5978fccd"
+    },
+    {
+      "bytes": 14933,
+      "path": "programs/foundry-channel-vault/governance-model/src/lib.rs",
+      "sha256": "sha256:22399eab4a364ba3a62d96fe5c93654684aeda0dd96952e0359d12d6efc74c8c"
+    },
+    {
+      "bytes": 5295,
+      "path": "docs/channels/solana/governance/FC-SOL-005-CONTRACT.md",
+      "sha256": "sha256:b447761c8fe1f3e11cae954009a83833414ba0c2ae0d90b4f8672f623849638b"
+    },
+    {
+      "bytes": 5421,
+      "path": "tests/channels/solana/governance/test_fc_sol_005.py",
+      "sha256": "sha256:95328b16699da92ac318116bff10ff5a5a3760eda1e9c676985f861556ac1961"
+    },
+    {
+      "bytes": 487,
+      "path": "evidence/runs/FC-SOL-005/README.md",
+      "sha256": "sha256:45c1ae5aaf8c98fbfadd07e6c2e4f2f29b1af7a72724cd70bb3a2265310cf481"
+    },
+    {
+      "bytes": 553,
+      "path": "evidence/runs/FC-SOL-005/TASK_CONTRACT.yaml",
+      "sha256": "sha256:b1974bba2efaa390d1b82166e3987b75d50327f60601f55e87e09511a2646715"
+    },
+    {
+      "bytes": 4398,
+      "path": "evidence/runs/FC-SOL-005/generate_evidence.py",
+      "sha256": "sha256:51e36865ac857830a71fae27c3508b9789278fb1de3664b4096e6cd4fe4114c0"
+    },
+    {
+      "bytes": 62,
+      "path": "evidence/runs/FC-SOL-005/cargo-test.txt",
+      "sha256": "sha256:75c1e4a1000e05bf478cc655149aad08601100037ea721760c7d478bfe0365f6"
+    },
+    {
+      "bytes": 633,
+      "path": "evidence/runs/FC-SOL-005/validation-report.json",
+      "sha256": "sha256:d316e2e234525afc3677922d9e4ba3c8c0d319f3ddeb3fda58c0ce01fcb15a2c"
+    },
+    {
+      "bytes": 146,
+      "path": "evidence/runs/FC-SOL-005/toolchain-report.json",
+      "sha256": "sha256:ab510bb85bdc5145254025693785e0e7210966dbb67ab3272d1d705ca22774c0"
+    },
+    {
+      "bytes": 661,
+      "path": "evidence/runs/FC-SOL-005/governance-policy-v1.json",
+      "sha256": "sha256:b5ab0b5a6bfdcdea54c2b9e9a50cb604141985e9c3c007ae85ebcacf0b9bb3ff"
+    },
+    {
+      "bytes": 3466,
+      "path": "evidence/runs/FC-SOL-005/upgrade-manifest-schema.json",
+      "sha256": "sha256:b88e73d56bab0f21e7a81e0dda70149c38b08ecba9d438970b7c65d4f40a259c"
+    },
+    {
+      "bytes": 642,
+      "path": "evidence/runs/FC-SOL-005/compatibility-classification.json",
+      "sha256": "sha256:fd82f9681addb6dc4b3f260c9a29535ba221905e5c1ba70ff781a045e75f0dae"
+    },
+    {
+      "bytes": 699,
+      "path": "evidence/runs/FC-SOL-005/migration-matrix-v1.json",
+      "sha256": "sha256:29acdb7698d29460d6711048263633e5477114de3263ff2636f7d8930f66d066"
+    },
+    {
+      "bytes": 574,
+      "path": "evidence/runs/FC-SOL-005/authority-transition-vectors.json",
+      "sha256": "sha256:cebcbabad03a876cd90e3c47abbe72e160ba287202429c69cde581e03c1b68b5"
+    },
+    {
+      "bytes": 442,
+      "path": "evidence/runs/FC-SOL-005/timelock-vectors.json",
+      "sha256": "sha256:82e02a53c585b3c28c3721b7ab2c3c573cabfabea84cd03055b47d0f14b65be2"
+    },
+    {
+      "bytes": 776,
+      "path": "evidence/runs/FC-SOL-005/emergency-pause-matrix.json",
+      "sha256": "sha256:0d6f4f1fc76a22f6609c2ea4e1fad17c52d593e8aba5bc3dd02144a00acb6c9b"
+    },
+    {
+      "bytes": 646,
+      "path": "evidence/runs/FC-SOL-005/activated-right-preservation-vectors.json",
+      "sha256": "sha256:bcd6014099ecd14fed03d2254c847b1fa9929daede2cc629b7c222b37f1e0547"
+    },
+    {
+      "bytes": 397,
+      "path": "evidence/runs/FC-SOL-005/reproducible-build-contract.json",
+      "sha256": "sha256:ff24a711601397493160d266214c5a6d9c7a170e28f347e91e1cd71258c860fc"
+    },
+    {
+      "bytes": 303,
+      "path": "evidence/runs/FC-SOL-005/deployment-authorization.json",
+      "sha256": "sha256:605d396fab399fda84b9380fe6bf2d639f6421c32ef269994dda83978f46030e"
+    }
+  ],
+  "baseline": "4642fac08e137ab991e13dc2ca743c008609f191",
+  "implementation_commit": "8664401ba6f9367986960b3049340c7a90966ce2",
+  "work_item": "FC-SOL-005"
+}

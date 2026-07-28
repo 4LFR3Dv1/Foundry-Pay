@@ -1,0 +1,17 @@
+{
+  "activated_rights_rewritable": false,
+  "automatic_active_channel_migration": false,
+  "baseline": "4642fac08e137ab991e13dc2ca743c008609f191",
+  "compatible_same_program_policy": "allowed_after_threshold_timelock_and_verification",
+  "deployed_build_reproduced": false,
+  "deployment_authorized": false,
+  "external_review": "not_performed",
+  "implementation_commit": "8664401ba6f9367986960b3049340c7a90966ce2",
+  "pause_preserves_exits": true,
+  "property_cases": 512,
+  "rust_tests": 7,
+  "semantic_same_program_policy": "rejected_by_default",
+  "solana_loader_tested": false,
+  "violations": 0,
+  "work_item": "FC-SOL-005"
+}
