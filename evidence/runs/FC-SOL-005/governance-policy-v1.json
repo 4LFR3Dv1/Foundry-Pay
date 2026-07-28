@@ -1,0 +1,25 @@
+{
+  "external_review": "not_performed",
+  "policy_version": 1,
+  "production_authority": {
+    "kind": "multisig",
+    "minimum_members": 3,
+    "minimum_threshold": 2,
+    "single_wallet_allowed": false,
+    "solana_agent_may_be_unilateral_authority": false
+  },
+  "rights": {
+    "activated_may_decrease_by_governance": false,
+    "outstanding_and_unallocated_may_be_merged": false,
+    "outstanding_may_be_redirected": false
+  },
+  "same_program_id": {
+    "compatible_changes_only": true,
+    "semantic_change_allowed_by_default": false
+  },
+  "timelock": {
+    "emergency_bypass": "not_authorized",
+    "minimum_seconds": 86400,
+    "required": true
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "default": "no_automatic_active_channel_migration",
+  "cases": [
+    {
+      "state": "finalized",
+      "decision": "eligible_for_explicit_archival_or_new_channel",
+      "automatic": false
+    },
+    {
+      "state": "active_with_rights",
+      "decision": "keep_v1_exits_available",
+      "automatic": false
+    },
+    {
+      "state": "closing_with_rights",
+      "decision": "settle_refund_finalize_under_v1",
+      "automatic": false
+    }
+  ],
+  "preserved_fields": [
+    "funded",
+    "activated",
+    "settled",
+    "refunded",
+    "outstanding_right",
+    "unallocated_capacity",
+    "latest_sequence",
+    "latest_voucher_hash",
+    "recipient_binding",
+    "mint",
+    "epoch"
+  ]
+}

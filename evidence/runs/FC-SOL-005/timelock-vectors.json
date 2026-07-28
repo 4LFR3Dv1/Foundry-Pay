@@ -1,0 +1,25 @@
+{
+  "minimum_seconds": 86400,
+  "vectors": [
+    {
+      "accepted": false,
+      "delta_seconds": 86399,
+      "id": "one_second_early"
+    },
+    {
+      "accepted": true,
+      "delta_seconds": 86400,
+      "id": "exact_boundary"
+    },
+    {
+      "accepted": true,
+      "delta_seconds": 86401,
+      "id": "after_boundary"
+    },
+    {
+      "accepted": false,
+      "approved_at": "i64_max",
+      "id": "checked_overflow"
+    }
+  ]
+}

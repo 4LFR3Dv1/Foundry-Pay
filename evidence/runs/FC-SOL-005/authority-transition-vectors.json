@@ -1,0 +1,33 @@
+{
+  "vectors": [
+    {
+      "accepted": true,
+      "approvals": 2,
+      "id": "two_of_three",
+      "members": 3,
+      "threshold": 2
+    },
+    {
+      "accepted": false,
+      "approvals": 1,
+      "id": "one_of_three",
+      "members": 3,
+      "threshold": 2
+    },
+    {
+      "accepted": false,
+      "approvals": 2,
+      "contains_unknown": true,
+      "id": "unknown_approver",
+      "members": 3,
+      "threshold": 2
+    },
+    {
+      "accepted": false,
+      "approvals": 1,
+      "id": "single_wallet",
+      "members": 1,
+      "threshold": 1
+    }
+  ]
+}

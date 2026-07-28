@@ -1,0 +1,3 @@
+cargo test --locked: passed
+rust_tests: 7
+property_cases: 512

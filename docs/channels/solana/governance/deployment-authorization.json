@@ -1,0 +1,10 @@
+{
+  "artifact_commit": null,
+  "offline_model": "allowed",
+  "local_validator": "blocked",
+  "devnet_fixture": "blocked",
+  "mainnet": "blocked",
+  "real_value": "blocked",
+  "external_review": "not_performed",
+  "reason": "FC-SOL-005 defines an offline governance model and authorizes no deployment"
+}

@@ -1,0 +1,36 @@
+{
+  "baseline": {
+    "activated": 40,
+    "funded": 100,
+    "outstanding_right": 25,
+    "refunded": 0,
+    "settled": 15,
+    "unallocated_capacity": 60
+  },
+  "vectors": [
+    {
+      "accepted": true,
+      "mutation": "none"
+    },
+    {
+      "accepted": false,
+      "mutation": "activated_minus_one"
+    },
+    {
+      "accepted": false,
+      "mutation": "recipient_substitution"
+    },
+    {
+      "accepted": false,
+      "mutation": "outstanding_moved_to_unallocated"
+    },
+    {
+      "accepted": false,
+      "mutation": "latest_sequence_changed"
+    },
+    {
+      "accepted": false,
+      "mutation": "mint_changed"
+    }
+  ]
+}

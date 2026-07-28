@@ -1,0 +1,16 @@
+{
+  "required_bindings": [
+    "current_binary_sha256",
+    "proposed_binary_sha256",
+    "source_commit",
+    "toolchain",
+    "lockfile_sha256",
+    "account_layout_sha256",
+    "instruction_registry_sha256",
+    "signed_message_registry_sha256",
+    "program_id"
+  ],
+  "execution_is_verification": false,
+  "verification_required_after_execution": true,
+  "deployed_build_reproduced": false
+}
