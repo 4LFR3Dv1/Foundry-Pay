@@ -1,0 +1,32 @@
+work_item: FC-CTRL-028
+objective: make historical evidence verification commit-aware before evolving the instruction registry
+owner: program-integrator
+branch: agent/control/FC-CTRL-028
+allowed_paths:
+  - .agents/tasks/FC-CTRL-028.yaml
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - tests/channels/solana/instructions/test_instruction_operability.py
+  - evidence/runs/FC-CTRL-028/**
+dependencies:
+  - FC-CTRL-027
+  - FC-SOL-003A
+invariants:
+  - historical artifacts are never regenerated to match current mutable source
+  - evidence-local artifacts are verified from the committed evidence directory
+  - source and test artifacts are verified from the recorded functional commit
+  - shallow checkouts fetch only the exact recorded commit when it is unavailable
+acceptance:
+  - FC-SOL-003A manifest verifies after legitimate source evolution
+  - a historical source mismatch still fails verification
+  - FC-SOL-004 remains ready
+verification_commands:
+  - python -m pytest tests/channels/solana/instructions/test_instruction_operability.py
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+stop_conditions:
+  - historical evidence is rewritten
+  - current source is treated as the source analyzed by an older commit

@@ -726,6 +726,36 @@ work_items:
       - obligation_hash can be interpreted as authority or business outcome
       - bounded testing is represented as formal verification
 
+  - id: FC-CTRL-028
+    status: done
+    objective: make historical evidence verification commit-aware before evolving the instruction registry
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-028.yaml
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - tests/channels/solana/instructions/test_instruction_operability.py
+      - evidence/runs/FC-CTRL-028/**
+    dependencies: [FC-CTRL-027, FC-SOL-003A]
+    invariants:
+      - historical evidence is never regenerated to match current source
+      - evidence-local artifacts use current immutable bytes
+      - source artifacts use the recorded functional commit
+      - shallow checkouts fetch only the exact recorded commit when unavailable
+    acceptance:
+      - FC-SOL-003A manifest survives legitimate source evolution
+      - historical source mismatch remains detectable
+      - FC-SOL-004 remains ready
+    tests:
+      - commit-aware artifact hash and byte-length verification
+    evidence:
+      - evidence/runs/FC-CTRL-028/validation-report.json
+    security_review: self-validated provenance correction
+    stop_conditions:
+      - historical evidence is rewritten
+      - mutable current source is substituted for reviewed historical source
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
