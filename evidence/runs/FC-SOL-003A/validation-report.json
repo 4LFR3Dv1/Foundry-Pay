@@ -1,13 +1,17 @@
 {
   "account_layout_bytes": 490,
+  "baseline": "65c8f89c7d4c86defea00152c1067d041db5528c",
+  "cargo_tests": 16,
   "cpi_or_transfers": 0,
   "deployment": "blocked",
   "ed25519_profiles": 2,
   "external_review": "not_performed",
+  "functional_head": "db1aeecc0ebc3777aac70fad998a92f7d511c41c",
   "instruction_count": 8,
   "negative_vectors": 29,
   "positive_vectors": 8,
   "runtime_handlers": 0,
+  "self_validation": "passed",
   "status": "passed",
   "work_item": "FC-SOL-003A"
 }
