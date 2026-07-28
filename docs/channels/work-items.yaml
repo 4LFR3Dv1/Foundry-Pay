@@ -944,6 +944,38 @@ work_items:
       - operation-commitment conflict handling is skipped
       - handler or deployment authorization advances
 
+  - id: FC-CTRL-035
+    status: done
+    objective: record SA-CHAN-001A integration and release only satisfied preparation contracts
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-035.yaml
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - docs/channels/EVIDENCE_INDEX.md
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-035/**
+    dependencies: [SA-CHAN-001A]
+    invariants:
+      - exact Solana-Agent functional, evidence, merge, and main CI identifiers are recorded
+      - operation commitment and transaction commitment remain separate
+      - idempotent replay, operation conflict, and semantic alias conflict remain distinct
+      - preparation readiness grants no execution, handler, signer, RPC, or deployment authority
+    acceptance:
+      - SA-CHAN-001A is done with self-validation passed and external review not performed
+      - SA-CHAN-002 and SA-CHAN-003 are ready because their declared dependencies are done
+      - SA-CHAN-004, handlers, local validator, and deployment remain blocked
+    tests:
+      - executable exact-SHA, graph, maturity, identity, and authorization assertions
+    evidence:
+      - evidence/runs/FC-CTRL-035/validation-report.json
+    security_review: self-validated cross-repository coordination
+    stop_conditions:
+      - a descriptive operation commitment is represented as execution authorization
+      - preparation readiness is represented as a deployed or executable ChannelVault
+      - handler, signer, RPC, local-validator, or deployment authorization advances
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -1621,7 +1653,7 @@ work_items:
       - discovery is represented as preparation, execution, deployment, status, or recovery support
 
   - id: SA-CHAN-001A
-    status: ready
+    status: done
     objective: persist canonical operation commitments and distinguish idempotent replay from operation ID conflict
     owner: solana-agent-maintainer
     repository: 4LFR3Dv1/Solana-Agent
@@ -1646,9 +1678,16 @@ work_items:
       - operation versus transaction commitment separation
     evidence:
       - immutable Solana-Agent PR and operation-commitment conformance result
+    implementation:
+      pr: 15
+      baseline: 0804965a25c8e5e52fc836b96f71929ac17c9198
+      functional_head: c71a70639a0d1b986bc11bda84f3fa93eeea5ebc
+      evidence_head: 4fd44664a9affdeae3c9e6467f096f76cbf4e04a
+      merge_commit: 4ab25fad32ceec8013d6a771225b3f48d4f611db
+      main_ci_run: 30406359874
     maturity_gate:
-      implementation: required
-      self_validation: required
+      implementation: complete
+      self_validation: passed
       external_review: not_performed
     deployment_authorization:
       local_validator: blocked
@@ -1663,7 +1702,7 @@ work_items:
       - handler, CPI, RPC, wallet, signer, or deployment enters scope
 
   - id: SA-CHAN-002
-    status: blocked
+    status: ready
     objective: prepare and simulate channel open, top-up, activation, and binding
     owner: solana-agent-maintainer
     repository: 4LFR3Dv1/Solana-Agent
@@ -1677,7 +1716,7 @@ work_items:
     stop_conditions: [adapter must infer economic intent]
 
   - id: SA-CHAN-003
-    status: blocked
+    status: ready
     objective: prepare and simulate exact partial and total ChannelVault settlements
     owner: solana-agent-maintainer
     repository: 4LFR3Dv1/Solana-Agent

@@ -101,6 +101,17 @@ registry). It reports preparation, execution, status, recovery, and deployment
 support as false. No Program ID, network, genesis, handler, transaction,
 local-validator run, or external review is inferred.
 
+Solana-Agent PR #15 integrated the durable channel operation-commitment gate
+with functional head `c71a7063...`, evidence head `4fd44664...`, merge
+`4ab25fad...`, and green main CI run `30406359874`. It binds all eight
+descriptive capabilities to closed RFC 8785 canonical preimages, persists
+reservations atomically in SQLite, distinguishes identical replay from
+`OPERATION_CONFLICT`, and rejects semantic aliases under different operation
+IDs. It also keeps exact raw transaction-message hashes separate from stable
+operation commitments. Preparation, execution, signer access, RPC, handlers,
+local-validator execution, and deployment are not implemented or authorized.
+External review remains `not_performed`.
+
 ## Integrated security gate
 
 The frozen [FC-SEC-002 contract](security/FC-SEC-002-CONTRACT.md) separates:
