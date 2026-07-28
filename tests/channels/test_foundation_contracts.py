@@ -713,9 +713,7 @@ def test_sa_chan_001a_integration_releases_only_preparation_contracts() -> None:
     report = json.loads(
         (ROOT / "evidence/runs/FC-CTRL-035/validation-report.json").read_text(encoding="utf-8")
     )
-    assert report["sa_chan_001a"]["merge_commit"] == (
-        "4ab25fad32ceec8013d6a771225b3f48d4f611db"
-    )
+    assert report["sa_chan_001a"]["merge_commit"] == ("4ab25fad32ceec8013d6a771225b3f48d4f611db")
     assert report["sa_chan_001a"]["main_ci_run"] == 30406359874
     assert report["sa_chan_001a"]["identity_rules"] == {
         "same_id_same_bytes": "idempotent_replay",
