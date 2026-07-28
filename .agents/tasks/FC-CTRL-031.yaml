@@ -1,0 +1,33 @@
+work_item: FC-CTRL-031
+objective: record FC-SEC-004 integration without authorizing ChannelVault handlers or deployment
+owner: program-integrator
+branch: agent/control/FC-CTRL-031
+allowed_paths:
+  - .agents/tasks/FC-CTRL-031.yaml
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - docs/channels/EVIDENCE_INDEX.md
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-031/**
+dependencies:
+  - FC-SEC-004
+invariants:
+  - functional, evidence, merge, and main CI identifiers are exact
+  - offline linearizability is not represented as Solana runtime race safety
+  - self-validation is not represented as formal verification or external review
+  - handler and deployment authorization require a later explicit coordination
+acceptance:
+  - FC-SEC-004 is done
+  - FC-SOL-005, SA-CHAN-001, and FC-FAIL-003 remain ready
+  - no new runtime or deployment work item becomes ready
+  - local validator, devnet, mainnet, and real value remain blocked
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+stop_conditions:
+  - Solana account locking or CPI rollback is inferred
+  - external review or formal verification is inferred
+  - handlers, local validator, or deployment advances

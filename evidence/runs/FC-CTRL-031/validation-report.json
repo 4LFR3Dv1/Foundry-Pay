@@ -1,0 +1,29 @@
+{
+  "work_item": "FC-CTRL-031",
+  "fc_sec_004": {
+    "functional_head": "2458885917eb917e263538397a601f0c81a1e855",
+    "evidence_head": "9fd8f17edb46d458db95cb045f53a32de5e8fb68",
+    "merge_commit": "fbc5c43613d8c5535674eb398ad34387ce745854",
+    "main_ci_run": 30390747057,
+    "property_cases": 512,
+    "bounded_schedules": 14,
+    "serial_witnesses": 14,
+    "violations": 0,
+    "solana_runtime_proved": false,
+    "formal_verification": "not_performed",
+    "external_review": "not_performed"
+  },
+  "newly_released": [],
+  "still_ready": [
+    "FC-SOL-005",
+    "SA-CHAN-001",
+    "FC-FAIL-003"
+  ],
+  "still_blocked": [
+    "ChannelVault handlers",
+    "local-validator execution",
+    "devnet",
+    "mainnet",
+    "real value"
+  ]
+}

@@ -817,6 +817,38 @@ work_items:
       - sequential permutations are represented as concurrency proof
       - Solana runtime race safety is inferred
 
+  - id: FC-CTRL-031
+    status: done
+    objective: record FC-SEC-004 integration without authorizing ChannelVault handlers or deployment
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-031.yaml
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - docs/channels/EVIDENCE_INDEX.md
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-031/**
+    dependencies: [FC-SEC-004]
+    invariants:
+      - exact functional, evidence, merge, and main CI identifiers are recorded
+      - offline linearizability does not imply Solana runtime race safety
+      - self-validation does not imply formal verification or external review
+      - runtime and deployment require a later explicit coordination
+    acceptance:
+      - FC-SEC-004 is done
+      - FC-SOL-005, SA-CHAN-001, and FC-FAIL-003 remain ready
+      - no new runtime or deployment work item becomes ready
+    tests:
+      - executable exact-SHA, graph, maturity, authorization, and claim assertions
+    evidence:
+      - evidence/runs/FC-CTRL-031/validation-report.json
+    security_review: self-validated coordination
+    stop_conditions:
+      - Solana account locking or CPI rollback is inferred
+      - formal verification or external review is inferred
+      - handlers, local validator, or deployment advances
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -1092,7 +1124,7 @@ work_items:
     stop_conditions: [frontend stack or analytics requires claim secret transmission]
 
   - id: FC-SEC-004
-    status: ready
+    status: done
     objective: prove offline linearizability and stale-snapshot safety for concurrent channel transitions
     owner: concurrency-security-engineer
     repository: 4LFR3Dv1/Foundry-Pay

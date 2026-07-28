@@ -60,7 +60,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-SEC-001 | done | FOUNDATIONS-001 | comprehensive design threat model |
 | FC-SEC-002 | done | FC-PROTO-002, FC-PROTO-006, FC-PROTO-007, FC-CTRL-017 | replay, semantic-collision, downgrade, and lifecycle property suite |
 | FC-SEC-003 | done | FOUNDATIONS-001 | claim-link handling and secret non-disclosure test kit |
-| FC-SEC-004 | ready | FC-PROTO-004, FC-SOL-004, FC-CTRL-030 | offline concurrency and linearizability proof |
+| FC-SEC-004 | done | FC-PROTO-004, FC-SOL-004, FC-CTRL-030 | offline concurrency and linearizability proof |
 | FC-SEC-005 | blocked | FC-PROTO-004, SA-CHAN-004 | Cloud outage and self-recovery proof |
 
 ## Epic D — Solana program
