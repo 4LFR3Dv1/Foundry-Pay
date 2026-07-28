@@ -45,6 +45,7 @@ README after the validation run.
 | FC-SOL-003 | `192bd40245244cfd540c67f880104259b5190379` | `evidence/runs/FC-SOL-003/` |
 | FC-SOL-003A | `aaffd54d0712dc7b0add981d06923dab00e4aba1` | `evidence/runs/FC-SOL-003A/` |
 | FC-SOL-004 | `3f1740e70abb9ee67f7b83130fa5aef2a76befb8` | `evidence/runs/FC-SOL-004/` |
+| FC-SEC-004 | `fbc5c43613d8c5535674eb398ad34387ce745854` | `evidence/runs/FC-SEC-004/` |
 
 These merges authorize the next offline protocol work only. They do not prove
 ChannelVault, Solana execution, a deployed consumer frontend, or product demand.
@@ -72,6 +73,14 @@ exploration of 703 states and 4,732 transitions found zero invariant
 violations within the published model and bounds. It is not formal
 verification, a Solana runtime program, local-validator execution, deployment,
 or external review.
+
+PR #58 integrated the offline concurrent transition harness with functional
+head `24588859...`, evidence head `9fd8f17e...`, merge `fbc5c436...`, and
+green main CI run `30390747057`. Its 14 bounded schedules all have explicit
+serial witnesses, and 512 property cases found no violation within the
+published versioned-snapshot model and bounds. It does not prove Solana
+runtime account locking, CPI rollback, validator scheduling, formal
+verification, or external review. No handler or deployment gate was released.
 
 ## Integrated security gate
 

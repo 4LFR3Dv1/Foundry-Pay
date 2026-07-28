@@ -41,7 +41,6 @@ def test_foundation_contracts_and_gates_pass() -> None:
     )
     assert result["checks"]["work_graph"]["ready_items"] == [
         "FC-FAIL-003",
-        "FC-SEC-004",
         "FC-SOL-005",
         "FC-VAL-003",
         "SA-CHAN-001",
@@ -449,7 +448,7 @@ def test_fc_sol_004_integration_releases_only_concurrency_model_work() -> None:
     )["work_items"]
     by_id = {item["id"]: item for item in work_items}
     assert by_id["FC-SOL-004"]["status"] == "done"
-    assert by_id["FC-SEC-004"]["status"] == "ready"
+    assert by_id["FC-SEC-004"]["status"] == "done"
     assert by_id["FC-SOL-005"]["status"] == "ready"
     assert by_id["SA-CHAN-001"]["status"] == "ready"
     assert by_id["FC-FAIL-003"]["status"] == "ready"
@@ -475,7 +474,7 @@ def test_fc_sec_004_contract_requires_real_snapshot_concurrency() -> None:
     )["work_items"]
     by_id = {item["id"]: item for item in work_items}
     concurrency = by_id["FC-SEC-004"]
-    assert concurrency["status"] == "ready"
+    assert concurrency["status"] == "done"
     assert concurrency["dependencies"] == [
         "FC-PROTO-004",
         "FC-SOL-004",
@@ -502,3 +501,37 @@ def test_fc_sec_004_contract_requires_real_snapshot_concurrency() -> None:
     task = yaml.safe_load((ROOT / ".agents/tasks/FC-SEC-004.yaml").read_text(encoding="utf-8"))
     assert task["dependencies"] == concurrency["dependencies"]
     assert task["deployment_authorization"] == concurrency["deployment_authorization"]
+
+
+def test_fc_sec_004_integration_releases_no_runtime_or_deployment_gate() -> None:
+    work_items = yaml.safe_load(
+        (ROOT / "docs/channels/work-items.yaml").read_text(encoding="utf-8")
+    )["work_items"]
+    by_id = {item["id"]: item for item in work_items}
+
+    assert by_id["FC-SEC-004"]["status"] == "done"
+    assert by_id["FC-SOL-005"]["status"] == "ready"
+    assert by_id["SA-CHAN-001"]["status"] == "ready"
+    assert by_id["FC-FAIL-003"]["status"] == "ready"
+    assert by_id["SA-CHAN-002"]["status"] == "blocked"
+    assert by_id["SA-CHAN-003"]["status"] == "blocked"
+
+    coordination = by_id["FC-CTRL-031"]
+    assert coordination["status"] == "done"
+    assert coordination["dependencies"] == ["FC-SEC-004"]
+
+    report = json.loads(
+        (ROOT / "evidence/runs/FC-CTRL-031/validation-report.json").read_text(encoding="utf-8")
+    )
+    integration = report["fc_sec_004"]
+    assert integration["functional_head"] == ("2458885917eb917e263538397a601f0c81a1e855")
+    assert integration["evidence_head"] == ("9fd8f17edb46d458db95cb045f53a32de5e8fb68")
+    assert integration["merge_commit"] == ("fbc5c43613d8c5535674eb398ad34387ce745854")
+    assert integration["main_ci_run"] == 30390747057
+    assert integration["bounded_schedules"] == 14
+    assert integration["serial_witnesses"] == 14
+    assert integration["violations"] == 0
+    assert integration["solana_runtime_proved"] is False
+    assert integration["formal_verification"] == "not_performed"
+    assert integration["external_review"] == "not_performed"
+    assert report["newly_released"] == []
