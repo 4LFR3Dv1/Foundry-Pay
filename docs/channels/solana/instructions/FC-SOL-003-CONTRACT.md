@@ -1,6 +1,6 @@
 # FC-SOL-003 — ChannelVault instruction contract
 
-Status: ready for experimental contract implementation  
+Status: integrated; FC-SOL-003A operability correction applied
 Authority: deterministic local fixtures and local validator only  
 External Solana instruction/Ed25519 review: not performed
 
@@ -58,6 +58,16 @@ The claim deadline is exclusive: activation is allowed only while
 `now < claim_deadline`; freeze/refund eligibility starts at
 `now >= claim_deadline`. `finalized` is terminal.
 
+The future `request_close` handler must validate checked fixed bounds:
+
+```text
+900 <= claim_deadline - now <= 2_592_000
+```
+
+Exact minimum and maximum values are accepted. Overflow, a shorter window, or
+a longer window is rejected. Tests inject `now`; a future handler reads it from
+the Solana Clock.
+
 The existing `Funding`, `Settling`, and exceptional status codes remain valid
 account encodings, but FC-SOL-003 cannot invent persistent intermediate
 transitions for atomic handlers. Any later use requires its own transition
@@ -86,6 +96,13 @@ and substituted token programs are rejected.
 The v1 topology remains one program-owned `ChannelState` PDA and its canonical
 classic SPL Token vault. No recipient, settlement, or closure PDA is added.
 
+`initialize_channel` creates both accounts atomically. Its exact account list
+includes the absent/expected ChannelState PDA, writable sender signer and rent
+payer, mint, canonical vault ATA, System Program, classic SPL Token Program,
+and Associated Token Program. The future handler obtains rent for the 490-byte
+account at runtime, uses `invoke_signed` for PDA creation, and creates the ATA
+idempotently. This contract does not implement those CPIs.
+
 ## Authority map
 
 | Operation | Authority |
@@ -94,7 +111,7 @@ classic SPL Token vault. No recipient, settlement, or closure PDA is added.
 | fund | sender transaction signer and exact classic-token accounts |
 | activate voucher | sender Ed25519 signature over the exact registered voucher preimage |
 | bind recipient | claim key and destination wallet Ed25519 signatures over the same exact binding preimage |
-| settle | bound destination account plus validated channel state; no voucher reinterpretation |
+| settle | permissionless caller; validated state fixes the bound destination canonical ATA |
 | request close | sender transaction signer |
 | refund unallocated | sender transaction signer after the exclusive deadline |
 | finalize close | sender transaction signer after all terminal guards |
@@ -102,6 +119,11 @@ classic SPL Token vault. No recipient, settlement, or closure PDA is added.
 A voucher signature authorizes only cumulative activation. A binding signature
 authorizes only recipient binding. No signed object may be interpreted under a
 different domain, profile, type, version, or instruction.
+
+Settlement is intentionally permissionless in v1. No caller or recipient
+transaction signer is required. The caller cannot select the beneficiary:
+`recipient_token_account` must equal the canonical classic-token ATA derived
+from `channel.recipient_wallet` and `channel.mint`.
 
 ## Canonical Ed25519 instruction mapping
 

@@ -7,7 +7,7 @@ pub enum AuthorityKind {
     SenderTransactionSigner,
     SenderVoucherEd25519,
     ClaimAndDestinationEd25519,
-    BoundRecipientState,
+    PermissionlessBoundRecipientSettlement,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -44,6 +44,13 @@ const SENDER_SIGNER: AccountRequirement = AccountRequirement {
     owner_rule: "system_account_or_wallet",
     address_rule: "equals_channel_sender_when_channel_exists",
 };
+const SENDER_PAYER: AccountRequirement = AccountRequirement {
+    name: "sender",
+    signer: true,
+    writable: true,
+    owner_rule: "system_account_or_wallet",
+    address_rule: "sender_and_rent_payer",
+};
 const VAULT_RW: AccountRequirement = AccountRequirement {
     name: "vault",
     signer: false,
@@ -64,6 +71,20 @@ const TOKEN_PROGRAM: AccountRequirement = AccountRequirement {
     writable: false,
     owner_rule: "executable",
     address_rule: "classic_spl_token_program_id",
+};
+const SYSTEM_PROGRAM: AccountRequirement = AccountRequirement {
+    name: "system_program",
+    signer: false,
+    writable: false,
+    owner_rule: "executable",
+    address_rule: "solana_system_program_id",
+};
+const ASSOCIATED_TOKEN_PROGRAM: AccountRequirement = AccountRequirement {
+    name: "associated_token_program",
+    signer: false,
+    writable: false,
+    owner_rule: "executable",
+    address_rule: "spl_associated_token_program_id",
 };
 const INSTRUCTIONS_SYSVAR: AccountRequirement = AccountRequirement {
     name: "instructions_sysvar",
@@ -87,7 +108,15 @@ const SENDER_TOKEN_RW: AccountRequirement = AccountRequirement {
     address_rule: "canonical_ata(channel_sender,channel_mint)",
 };
 
-const INITIALIZE: &[AccountRequirement] = &[CHANNEL_RW, SENDER_SIGNER, MINT_RO, VAULT_RW];
+const INITIALIZE: &[AccountRequirement] = &[
+    CHANNEL_RW,
+    SENDER_PAYER,
+    MINT_RO,
+    VAULT_RW,
+    SYSTEM_PROGRAM,
+    TOKEN_PROGRAM,
+    ASSOCIATED_TOKEN_PROGRAM,
+];
 const FUND: &[AccountRequirement] = &[
     CHANNEL_RW,
     SENDER_SIGNER,
@@ -147,7 +176,7 @@ pub const ACCOUNT_CONTRACTS: [InstructionContract; 8] = [
     },
     InstructionContract {
         kind: InstructionKind::Settle,
-        authority: AuthorityKind::BoundRecipientState,
+        authority: AuthorityKind::PermissionlessBoundRecipientSettlement,
         allowed_phases: &["active", "closing_open", "closing_frozen"],
         accounts: SETTLE,
         success_event: ChannelEventCode::SettlementExecuted,
@@ -360,5 +389,49 @@ mod tests {
         codes.sort_unstable();
         codes.dedup();
         assert_eq!(codes.len(), original_len);
+    }
+
+    #[test]
+    fn initialize_metas_can_create_channel_pda_and_canonical_vault() {
+        let initialize = account_contract(InstructionKind::InitializeChannel);
+        assert_eq!(initialize.accounts.len(), 7);
+        let sender = initialize
+            .accounts
+            .iter()
+            .find(|account| account.name == "sender")
+            .unwrap();
+        assert!(sender.signer);
+        assert!(sender.writable);
+        for required in [
+            "system_program",
+            "token_program",
+            "associated_token_program",
+        ] {
+            let account = initialize
+                .accounts
+                .iter()
+                .find(|account| account.name == required)
+                .unwrap();
+            assert_eq!(account.owner_rule, "executable");
+        }
+    }
+
+    #[test]
+    fn settlement_is_permissionless_but_destination_is_fixed() {
+        let settlement = account_contract(InstructionKind::Settle);
+        assert_eq!(
+            settlement.authority,
+            AuthorityKind::PermissionlessBoundRecipientSettlement
+        );
+        assert!(!settlement.accounts.iter().any(|account| account.signer));
+        let destination = settlement
+            .accounts
+            .iter()
+            .find(|account| account.name == "recipient_token_account")
+            .unwrap();
+        assert_eq!(
+            destination.address_rule,
+            "canonical_ata(bound_recipient_wallet,channel_mint)"
+        );
     }
 }

@@ -1,0 +1,13 @@
+{
+  "channel_state_layout_bytes": 490,
+  "ed25519_layouts_byte_identical": true,
+  "historical_source_manifest": {
+    "current_source_binding": "FC-SOL-003A artifact-manifest.json",
+    "functional_head": "2b6b5e4c8440571bf49f7917a088f861fd46d46e",
+    "preserved": true,
+    "work_item": "FC-SOL-003"
+  },
+  "instruction_serialization_byte_identical": true,
+  "pda_derivation_changed": false,
+  "signed_message_mapping_unchanged": true
+}

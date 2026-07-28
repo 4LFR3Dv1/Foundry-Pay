@@ -1,0 +1,122 @@
+[
+  {
+    "code": 1000,
+    "name": "INVALID_INSTRUCTION_LENGTH"
+  },
+  {
+    "code": 1001,
+    "name": "UNKNOWN_INSTRUCTION"
+  },
+  {
+    "code": 1002,
+    "name": "UNSUPPORTED_INSTRUCTION_VERSION"
+  },
+  {
+    "code": 1003,
+    "name": "UNSUPPORTED_PROFILE"
+  },
+  {
+    "code": 2000,
+    "name": "MISSING_SIGNER"
+  },
+  {
+    "code": 2001,
+    "name": "WRONG_ACCOUNT_OWNER"
+  },
+  {
+    "code": 2002,
+    "name": "WRONG_PDA"
+  },
+  {
+    "code": 2003,
+    "name": "WRONG_ACCOUNT_ADDRESS"
+  },
+  {
+    "code": 3000,
+    "name": "WRONG_MINT"
+  },
+  {
+    "code": 3001,
+    "name": "WRONG_VAULT"
+  },
+  {
+    "code": 3002,
+    "name": "WRONG_VAULT_AUTHORITY"
+  },
+  {
+    "code": 3003,
+    "name": "UNSUPPORTED_TOKEN_PROGRAM"
+  },
+  {
+    "code": 4000,
+    "name": "LIFECYCLE_VIOLATION"
+  },
+  {
+    "code": 4001,
+    "name": "EXPIRED_AUTHORITY"
+  },
+  {
+    "code": 4002,
+    "name": "FINALIZED_CHANNEL"
+  },
+  {
+    "code": 5000,
+    "name": "WRONG_ED25519_PROGRAM"
+  },
+  {
+    "code": 5001,
+    "name": "ED25519_NOT_IMMEDIATELY_PRECEDING"
+  },
+  {
+    "code": 5002,
+    "name": "NON_CANONICAL_ED25519_HEADER"
+  },
+  {
+    "code": 5003,
+    "name": "EXTERNAL_ED25519_REFERENCE"
+  },
+  {
+    "code": 5004,
+    "name": "NON_CANONICAL_ED25519_OFFSETS"
+  },
+  {
+    "code": 5005,
+    "name": "WRONG_ED25519_PUBLIC_KEY"
+  },
+  {
+    "code": 5006,
+    "name": "WRONG_ED25519_MESSAGE"
+  },
+  {
+    "code": 6000,
+    "name": "SEQUENCE_REPLAY"
+  },
+  {
+    "code": 6001,
+    "name": "SEQUENCE_REGRESSION"
+  },
+  {
+    "code": 6002,
+    "name": "BINDING_NONCE_CONSUMED"
+  },
+  {
+    "code": 6003,
+    "name": "RECIPIENT_SUBSTITUTION"
+  },
+  {
+    "code": 7000,
+    "name": "CONSERVATION_VIOLATION"
+  },
+  {
+    "code": 7001,
+    "name": "INSUFFICIENT_UNALLOCATED_CAPACITY"
+  },
+  {
+    "code": 7002,
+    "name": "INSUFFICIENT_ACTIVATED_RIGHT"
+  },
+  {
+    "code": 7003,
+    "name": "CHECKED_ARITHMETIC_FAILURE"
+  }
+]

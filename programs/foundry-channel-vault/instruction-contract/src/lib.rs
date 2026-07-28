@@ -21,7 +21,10 @@ pub use instruction::{
     instruction_discriminator, ChannelInstruction, InstructionDecodeError, InstructionKind,
     INSTRUCTION_CONTRACT_VERSION_V1,
 };
-pub use lifecycle::{derive_lifecycle_phase, LifecycleContractError, LifecyclePhase};
+pub use lifecycle::{
+    derive_lifecycle_phase, validate_claim_deadline, LifecycleContractError, LifecyclePhase,
+    MAX_CLAIM_WINDOW_SECONDS, MIN_CLAIM_WINDOW_SECONDS,
+};
 
 // The maintainer's Windows application-control policy permits crate test
 // binaries but can block newly built example executables. Including the same

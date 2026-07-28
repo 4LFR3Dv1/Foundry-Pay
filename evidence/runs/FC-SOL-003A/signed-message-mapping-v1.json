@@ -1,0 +1,21 @@
+[
+  {
+    "authority_scope": "cumulative activation only",
+    "instruction": "activate_voucher",
+    "object": "ChannelVoucher",
+    "preimage": "FC-PROTO-006 voucher signed payload",
+    "signature_count": 1,
+    "signer": "channel.sender"
+  },
+  {
+    "authority_scope": "recipient binding only",
+    "instruction": "bind_recipient",
+    "object": "RecipientBinding",
+    "preimage": "FC-PROTO-006 recipient binding signed payload duplicated exactly",
+    "signature_count": 2,
+    "signers": [
+      "channel.recipient_claim_pubkey",
+      "destination_wallet"
+    ]
+  }
+]

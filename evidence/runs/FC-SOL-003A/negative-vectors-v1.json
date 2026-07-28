@@ -1,0 +1,234 @@
+[
+  {
+    "case": "account_substitution",
+    "code": "WRONG_ACCOUNT_ADDRESS",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "account_validation",
+    "success_event_count": 0
+  },
+  {
+    "case": "missing_signer",
+    "code": "MISSING_SIGNER",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "account_validation",
+    "success_event_count": 0
+  },
+  {
+    "case": "missing_system_program",
+    "code": "WRONG_ACCOUNT_ADDRESS",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "account_validation",
+    "success_event_count": 0
+  },
+  {
+    "case": "substituted_associated_token_program",
+    "code": "WRONG_ACCOUNT_ADDRESS",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "account_validation",
+    "success_event_count": 0
+  },
+  {
+    "case": "wrong_pda",
+    "code": "WRONG_PDA",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "account_validation",
+    "success_event_count": 0
+  },
+  {
+    "case": "wrong_owner",
+    "code": "WRONG_ACCOUNT_OWNER",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "account_validation",
+    "success_event_count": 0
+  },
+  {
+    "case": "wrong_mint",
+    "code": "WRONG_MINT",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "token_validation",
+    "success_event_count": 0
+  },
+  {
+    "case": "token_2022",
+    "code": "UNSUPPORTED_TOKEN_PROGRAM",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "token_validation",
+    "success_event_count": 0
+  },
+  {
+    "case": "wrong_vault_authority",
+    "code": "WRONG_VAULT_AUTHORITY",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "token_validation",
+    "success_event_count": 0
+  },
+  {
+    "case": "wrong_lifecycle",
+    "code": "LIFECYCLE_VIOLATION",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "lifecycle",
+    "success_event_count": 0
+  },
+  {
+    "case": "sequence_replay",
+    "code": "SEQUENCE_REPLAY",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "authority",
+    "success_event_count": 0
+  },
+  {
+    "case": "cumulative_regression",
+    "code": "SEQUENCE_REGRESSION",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "authority",
+    "success_event_count": 0
+  },
+  {
+    "case": "above_funding",
+    "code": "CONSERVATION_VIOLATION",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "conservation",
+    "success_event_count": 0
+  },
+  {
+    "case": "binding_nonce_replay",
+    "code": "BINDING_NONCE_CONSUMED",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "binding",
+    "success_event_count": 0
+  },
+  {
+    "case": "recipient_substitution",
+    "code": "RECIPIENT_SUBSTITUTION",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "binding",
+    "success_event_count": 0
+  },
+  {
+    "case": "voucher_expired",
+    "code": "EXPIRED_AUTHORITY",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "expiry",
+    "success_event_count": 0
+  },
+  {
+    "case": "claim_deadline_too_soon",
+    "code": "LIFECYCLE_VIOLATION",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "lifecycle",
+    "success_event_count": 0
+  },
+  {
+    "case": "claim_deadline_too_late",
+    "code": "LIFECYCLE_VIOLATION",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "lifecycle",
+    "success_event_count": 0
+  },
+  {
+    "case": "unknown_version",
+    "code": "UNSUPPORTED_INSTRUCTION_VERSION",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "instruction_decode",
+    "success_event_count": 0
+  },
+  {
+    "case": "unknown_profile",
+    "code": "UNSUPPORTED_PROFILE",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "domain_verification",
+    "success_event_count": 0
+  },
+  {
+    "case": "ed25519_missing",
+    "code": "ED25519_NOT_IMMEDIATELY_PRECEDING",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "ed25519",
+    "success_event_count": 0
+  },
+  {
+    "case": "ed25519_after",
+    "code": "ED25519_NOT_IMMEDIATELY_PRECEDING",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "ed25519",
+    "success_event_count": 0
+  },
+  {
+    "case": "ed25519_external_reference",
+    "code": "EXTERNAL_ED25519_REFERENCE",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "ed25519",
+    "success_event_count": 0
+  },
+  {
+    "case": "ed25519_offset_mutated",
+    "code": "NON_CANONICAL_ED25519_OFFSETS",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "ed25519",
+    "success_event_count": 0
+  },
+  {
+    "case": "ed25519_pubkey_mutated",
+    "code": "WRONG_ED25519_PUBLIC_KEY",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "ed25519",
+    "success_event_count": 0
+  },
+  {
+    "case": "ed25519_message_length_mutated",
+    "code": "NON_CANONICAL_ED25519_OFFSETS",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "ed25519",
+    "success_event_count": 0
+  },
+  {
+    "case": "preimage_one_byte_mutated",
+    "code": "WRONG_ED25519_MESSAGE",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "ed25519",
+    "success_event_count": 0
+  },
+  {
+    "case": "trailing_ed25519_bytes",
+    "code": "NON_CANONICAL_ED25519_HEADER",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "ed25519",
+    "success_event_count": 0
+  },
+  {
+    "case": "success_event_before_validation",
+    "code": "LIFECYCLE_VIOLATION",
+    "decision": "rejected",
+    "projected_transition_count": 0,
+    "stage": "event",
+    "success_event_count": 0
+  }
+]
