@@ -1,0 +1,21 @@
+work_item: FC-SOL-003A
+baseline: 65c8f89c7d4c86defea00152c1067d041db5528c
+scope:
+  - initialize account-meta implementability
+  - permissionless fixed-destination settlement
+  - bounded exclusive claim window
+frozen_unchanged:
+  - instruction bytes and discriminators
+  - canonical protocol preimages
+  - Ed25519 layouts
+  - PDA seeds
+  - ChannelState layout
+forbidden:
+  - entrypoint
+  - handler
+  - CPI
+  - token transfer
+  - deployment
+  - consumer integration
+external_review: not_performed
+

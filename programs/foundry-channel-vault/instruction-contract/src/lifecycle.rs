@@ -14,6 +14,31 @@ pub enum LifecyclePhase {
 pub enum LifecycleContractError {
     UnsupportedPersistentStatus(StatusCode),
     ClosingDeadlineMissing,
+    ClaimDeadlineTooSoon,
+    ClaimDeadlineTooLate,
+    CheckedArithmeticFailure,
+}
+
+pub const MIN_CLAIM_WINDOW_SECONDS: i64 = 900;
+pub const MAX_CLAIM_WINDOW_SECONDS: i64 = 2_592_000;
+
+pub fn validate_claim_deadline(
+    now: i64,
+    claim_deadline: i64,
+) -> Result<(), LifecycleContractError> {
+    let minimum = now
+        .checked_add(MIN_CLAIM_WINDOW_SECONDS)
+        .ok_or(LifecycleContractError::CheckedArithmeticFailure)?;
+    let maximum = now
+        .checked_add(MAX_CLAIM_WINDOW_SECONDS)
+        .ok_or(LifecycleContractError::CheckedArithmeticFailure)?;
+    if claim_deadline < minimum {
+        return Err(LifecycleContractError::ClaimDeadlineTooSoon);
+    }
+    if claim_deadline > maximum {
+        return Err(LifecycleContractError::ClaimDeadlineTooLate);
+    }
+    Ok(())
 }
 
 pub fn derive_lifecycle_phase(
@@ -63,6 +88,35 @@ mod tests {
             Err(LifecycleContractError::UnsupportedPersistentStatus(
                 StatusCode::Settling
             ))
+        );
+    }
+
+    #[test]
+    fn claim_window_accepts_exact_bounds_and_rejects_outside() {
+        let now = 1_700_000_000;
+        assert_eq!(
+            validate_claim_deadline(now, now + MIN_CLAIM_WINDOW_SECONDS),
+            Ok(())
+        );
+        assert_eq!(
+            validate_claim_deadline(now, now + MAX_CLAIM_WINDOW_SECONDS),
+            Ok(())
+        );
+        assert_eq!(
+            validate_claim_deadline(now, now + MIN_CLAIM_WINDOW_SECONDS - 1),
+            Err(LifecycleContractError::ClaimDeadlineTooSoon)
+        );
+        assert_eq!(
+            validate_claim_deadline(now, now + MAX_CLAIM_WINDOW_SECONDS + 1),
+            Err(LifecycleContractError::ClaimDeadlineTooLate)
+        );
+    }
+
+    #[test]
+    fn claim_window_uses_checked_time_arithmetic() {
+        assert_eq!(
+            validate_claim_deadline(i64::MAX, i64::MAX),
+            Err(LifecycleContractError::CheckedArithmeticFailure)
         );
     }
 }

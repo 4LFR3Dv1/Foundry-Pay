@@ -1,0 +1,13 @@
+{
+  "account_layout_bytes": 490,
+  "cpi_or_transfers": 0,
+  "deployment": "blocked",
+  "ed25519_profiles": 2,
+  "external_review": "not_performed",
+  "instruction_count": 8,
+  "negative_vectors": 29,
+  "positive_vectors": 8,
+  "runtime_handlers": 0,
+  "status": "passed",
+  "work_item": "FC-SOL-003A"
+}

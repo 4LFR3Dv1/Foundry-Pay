@@ -1,0 +1,25 @@
+{
+  "claim_window": {
+    "checked_arithmetic": true,
+    "deadline_exclusive": true,
+    "maximum_seconds": 2592000,
+    "minimum_seconds": 900
+  },
+  "initialize": {
+    "creates": [
+      "ChannelState PDA",
+      "canonical classic-token ATA"
+    ],
+    "required_programs": [
+      "system_program",
+      "token_program",
+      "associated_token_program"
+    ],
+    "sender_is_writable_signer_payer": true
+  },
+  "settlement": {
+    "caller_signer_required": false,
+    "destination": "canonical_ata(bound_recipient_wallet,channel_mint)",
+    "permissionless": true
+  }
+}

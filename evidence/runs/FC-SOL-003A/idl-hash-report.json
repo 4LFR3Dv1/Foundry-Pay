@@ -1,0 +1,58 @@
+{
+  "anchor_idl_generated": false,
+  "artifacts": [
+    {
+      "bytes": 2509,
+      "path": "instruction-registry-v1.json",
+      "sha256": "sha256:ba09713e496ff7ddadf3defcd768508b7ec4095ab36c264921ef41dfebdd0c38"
+    },
+    {
+      "bytes": 7384,
+      "path": "account-meta-contracts-v1.json",
+      "sha256": "sha256:750e9713705ec689f6ed1530251ebda43a8dc408be299a3ff9ea43f955cd135c"
+    },
+    {
+      "bytes": 577,
+      "path": "signed-message-mapping-v1.json",
+      "sha256": "sha256:4a5a7fc5940d65e9792d00ce64ec470016200c694405cac9cb7c435dd9ac4b70"
+    },
+    {
+      "bytes": 1996,
+      "path": "ed25519-offset-vectors-v1.json",
+      "sha256": "sha256:ce30b6453b54b782b2d77b110445ffd90a504def244746424e0ffd54163838f0"
+    },
+    {
+      "bytes": 3093,
+      "path": "instruction-serialization-v1.json",
+      "sha256": "sha256:5941422c2a9a94d1a466bb2ba413b92485f456d1a21fb91ac56f2ef153e4f71a"
+    },
+    {
+      "bytes": 1062,
+      "path": "event-registry-v1.json",
+      "sha256": "sha256:a89cd2c766659fa57c591a72de090ae5cae7575b4eaaca723aed4a4b4c904946"
+    },
+    {
+      "bytes": 1910,
+      "path": "error-registry-v1.json",
+      "sha256": "sha256:313f1ae1f7098a90099b27c1e4713d8f84fff97986f2e5989a5a66b276ab7e21"
+    },
+    {
+      "bytes": 825,
+      "path": "lifecycle-transition-matrix-v1.json",
+      "sha256": "sha256:53b609b922449b64bf0c8dc3946a87f8bb93a3723cd655456e093210a6e0ff7c"
+    },
+    {
+      "bytes": 1290,
+      "path": "positive-vectors-v1.json",
+      "sha256": "sha256:95105a6f748e15a44042a4ab977510f014795847b7e6dba4eaa26b847a279ec7"
+    },
+    {
+      "bytes": 5925,
+      "path": "negative-vectors-v1.json",
+      "sha256": "sha256:91318a60faa0fdc45e9e8d5e13c26d4df1fcbc6faf5c39e7ae73652faea5aed7"
+    }
+  ],
+  "deployable_entrypoint_exists": false,
+  "registry_hash_kind": "transport-neutral experimental instruction contract",
+  "registry_sha256": "sha256:5d3770259294a351265b40d8ec97b11a9f89fc853dcf998973578d4ff64cf85a"
+}

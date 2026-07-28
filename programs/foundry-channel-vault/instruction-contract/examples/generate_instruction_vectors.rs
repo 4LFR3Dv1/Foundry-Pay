@@ -3,14 +3,14 @@ use crate::{
     account_contract, build_binding_ed25519_data, build_voucher_ed25519_data, event_contract,
     instruction_discriminator, ChannelInstruction, InstructionKind, LifecyclePhase,
     ACCOUNT_CONTRACTS, ED25519_PROGRAM_ID_BYTES, ERROR_REGISTRY, EVENT_CONTRACTS,
-    INSTRUCTION_CONTRACT_VERSION_V1,
+    INSTRUCTION_CONTRACT_VERSION_V1, MAX_CLAIM_WINDOW_SECONDS, MIN_CLAIM_WINDOW_SECONDS,
 };
 #[cfg(not(test))]
 use foundry_channel_vault_instruction_contract::{
     account_contract, build_binding_ed25519_data, build_voucher_ed25519_data, event_contract,
     instruction_discriminator, ChannelInstruction, InstructionKind, LifecyclePhase,
     ACCOUNT_CONTRACTS, ED25519_PROGRAM_ID_BYTES, ERROR_REGISTRY, EVENT_CONTRACTS,
-    INSTRUCTION_CONTRACT_VERSION_V1,
+    INSTRUCTION_CONTRACT_VERSION_V1, MAX_CLAIM_WINDOW_SECONDS, MIN_CLAIM_WINDOW_SECONDS,
 };
 use serde::Serialize;
 use serde_json::{json, Value};
@@ -188,6 +188,9 @@ fn generate(output: &Path) {
                 {"phase": "finalized", "derivation": "StatusCode::Closed", "terminal": true}
             ],
             "deadline_is_exclusive": true,
+            "minimum_claim_window_seconds": MIN_CLAIM_WINDOW_SECONDS,
+            "maximum_claim_window_seconds": MAX_CLAIM_WINDOW_SECONDS,
+            "deadline_arithmetic": "checked",
             "activated_rights_expire": false,
             "known_phase_codes": [
                 format!("{:?}", LifecyclePhase::Active),
@@ -308,6 +311,16 @@ fn negative_cases() -> Vec<Value> {
             "WRONG_ACCOUNT_ADDRESS",
         ),
         ("missing_signer", "account_validation", "MISSING_SIGNER"),
+        (
+            "missing_system_program",
+            "account_validation",
+            "WRONG_ACCOUNT_ADDRESS",
+        ),
+        (
+            "substituted_associated_token_program",
+            "account_validation",
+            "WRONG_ACCOUNT_ADDRESS",
+        ),
         ("wrong_pda", "account_validation", "WRONG_PDA"),
         ("wrong_owner", "account_validation", "WRONG_ACCOUNT_OWNER"),
         ("wrong_mint", "token_validation", "WRONG_MINT"),
@@ -332,6 +345,16 @@ fn negative_cases() -> Vec<Value> {
             "RECIPIENT_SUBSTITUTION",
         ),
         ("voucher_expired", "expiry", "EXPIRED_AUTHORITY"),
+        (
+            "claim_deadline_too_soon",
+            "lifecycle",
+            "LIFECYCLE_VIOLATION",
+        ),
+        (
+            "claim_deadline_too_late",
+            "lifecycle",
+            "LIFECYCLE_VIOLATION",
+        ),
         (
             "unknown_version",
             "instruction_decode",
