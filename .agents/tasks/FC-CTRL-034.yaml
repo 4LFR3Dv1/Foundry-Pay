@@ -1,0 +1,32 @@
+work_item: FC-CTRL-034
+objective: record SA-CHAN-001 integration and freeze the separate operation-commitment gate
+owner: program-integrator
+branch: agent/control/FC-CTRL-034
+allowed_paths:
+  - .agents/tasks/FC-CTRL-034.yaml
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - docs/channels/EVIDENCE_INDEX.md
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-034/**
+dependencies:
+  - SA-CHAN-001
+invariants:
+  - exact Solana-Agent PR, heads, merge, CI, descriptor source, and artifact hashes are recorded
+  - descriptive discovery grants no preparation, execution, status, recovery, or deployment authority
+  - operation and transaction commitments remain distinct
+  - same operation ID with different canonical operation bytes is OPERATION_CONFLICT
+acceptance:
+  - SA-CHAN-001 is done
+  - SA-CHAN-001A is ready
+  - SA-CHAN-002 and SA-CHAN-003 remain blocked on SA-CHAN-001A
+  - handlers and every deployment environment remain blocked
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python scripts/check_channel_foundation.py
+  - python -m ruff check .
+  - python scripts/check_secrets.py
+stop_conditions:
+  - discovery is represented as execution support
+  - operation-commitment conflict handling is skipped
+  - a handler or deployment gate advances

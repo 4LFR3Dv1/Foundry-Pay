@@ -912,6 +912,38 @@ work_items:
       - external review or deployed behavior is inferred
       - handlers or deployment advance
 
+  - id: FC-CTRL-034
+    status: done
+    objective: record SA-CHAN-001 integration and freeze the separate operation-commitment gate
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-034.yaml
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - docs/channels/EVIDENCE_INDEX.md
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-034/**
+    dependencies: [SA-CHAN-001]
+    invariants:
+      - exact cross-repository descriptor, source commit, and registry hashes are recorded
+      - discovery grants no preparation, execution, status, recovery, or deployment authority
+      - operation identity and exact transaction-message identity remain separate commitments
+      - same operation ID with different canonical operation bytes is OPERATION_CONFLICT
+    acceptance:
+      - SA-CHAN-001 is done with exact Solana-Agent PR, heads, merge, and main CI
+      - SA-CHAN-001A is the only newly ready Solana-Agent work item
+      - SA-CHAN-002, SA-CHAN-003, handlers, local validator, and deployment remain blocked
+    tests:
+      - executable exact-SHA, artifact-pin, graph, maturity, and authorization assertions
+    evidence:
+      - evidence/runs/FC-CTRL-034/validation-report.json
+    security_review: self-validated cross-repository coordination
+    stop_conditions:
+      - descriptive discovery is represented as execution support
+      - operation-commitment conflict handling is skipped
+      - handler or deployment authorization advances
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -1548,18 +1580,87 @@ work_items:
       - the work item is represented as SA-CHAN-001
 
   - id: SA-CHAN-001
-    status: ready
+    status: done
     objective: add generic capability discovery for supported channel operations
     owner: solana-agent-maintainer
     repository: 4LFR3Dv1/Solana-Agent
     allowed_paths: [gateway/**, contracts/capabilities/**, tests/channel_gateway/**, docs/**]
     dependencies: [FC-PROTO-006, FC-SOL-003A]
-    invariants: [capability discovery describes support but grants no authority]
-    acceptance: [descriptor binds network, genesis, program, IDL, account/instruction versions, and recovery support]
-    tests: [closed descriptor, unsupported version, mismatch, and default-deny tests]
-    evidence: [immutable Solana-Agent PR and conformance result]
-    security_review: local-policy-boundary-review
-    stop_conditions: [Foundry business logic enters Solana-Agent]
+    implementation:
+      pr: 14
+      functional_head: 3d8b71a70df46595513bbb9f115ac81c4e6879cc
+      evidence_head: 1a588b6a1319ff0f781312abb3dd16c9cbebb75a
+      merge_commit: 0804965a25c8e5e52fc836b96f71929ac17c9198
+      main_ci_run: 30403768939
+    invariants:
+      - capability discovery describes support but grants no authority
+      - no capability is published until every descriptor and artifact check passes
+      - the not-deployed profile rejects Program ID, network, genesis, and IDL claims
+    acceptance:
+      - descriptor pins Foundry-Pay commit 7c718c425a74936b47ee83c3db6c1efe3c425fd7
+      - descriptor pins the 490-byte account layout and exact instruction and signed-message registries
+      - preparation, execution, status, recovery, and deployment support remain false
+      - changed registry bytes and unsupported versions, profiles, or capabilities fail closed
+    tests:
+      - 24 targeted descriptor, poisoning, mismatch, duplicate, and default-deny tests
+      - full Solana-Agent regression on Python 3.11 and 3.13
+    evidence:
+      - immutable Solana-Agent PR 14 and evidence/runs/SA-CHAN-001
+    maturity_gate:
+      implementation: complete
+      self_validation: passed
+      external_review: not_performed
+    deployment_authorization:
+      local_validator: blocked
+      devnet_fixture: blocked
+      mainnet: blocked
+      real_value: blocked
+    security_review: self-validated local policy boundary; external review not performed
+    stop_conditions:
+      - Foundry business logic enters Solana-Agent
+      - discovery is represented as preparation, execution, deployment, status, or recovery support
+
+  - id: SA-CHAN-001A
+    status: ready
+    objective: persist canonical operation commitments and distinguish idempotent replay from operation ID conflict
+    owner: solana-agent-maintainer
+    repository: 4LFR3Dv1/Solana-Agent
+    allowed_paths: [gateway/**, contracts/capabilities/**, tests/channel_gateway/**, docs/**]
+    dependencies: [SA-CHAN-001, FC-PROTO-006, FC-SOL-003A]
+    invariants:
+      - operation commitment is stable across transaction rematerialization
+      - transaction commitment hashes exact Solana message bytes separately
+      - same operation ID and same operation commitment is idempotent
+      - same operation ID and different operation commitment is OPERATION_CONFLICT
+      - an unknown outcome requires recovery and never authorizes automatic rematerialization
+    acceptance:
+      - canonical operation preimage binds capability, protocol, registries, expected Program ID, channel, instruction bytes, ordered accounts, authority, and economic parameters
+      - operation ID to commitment is persisted before materialization
+      - exact transaction-message commitment is a distinct record
+      - conflict and restart behavior fail closed
+    tests:
+      - identical replay
+      - operation ID conflict
+      - field and ordered-account mutations
+      - restart and unknown-outcome recovery
+      - operation versus transaction commitment separation
+    evidence:
+      - immutable Solana-Agent PR and operation-commitment conformance result
+    maturity_gate:
+      implementation: required
+      self_validation: required
+      external_review: not_performed
+    deployment_authorization:
+      local_validator: blocked
+      devnet_fixture: blocked
+      mainnet: blocked
+      real_value: blocked
+    security_review: mandatory exact-byte and idempotency self-review
+    stop_conditions:
+      - operation ID is deduplicated without binding canonical operation bytes
+      - transaction rematerialization silently changes economic intent
+      - unknown outcome authorizes automatic preparation or submission
+      - handler, CPI, RPC, wallet, signer, or deployment enters scope
 
   - id: SA-CHAN-002
     status: blocked
@@ -1567,7 +1668,7 @@ work_items:
     owner: solana-agent-maintainer
     repository: 4LFR3Dv1/Solana-Agent
     allowed_paths: [gateway/**, tests/channel_gateway/**, docs/**]
-    dependencies: [SA-CHAN-001, FC-SOL-003]
+    dependencies: [SA-CHAN-001, SA-CHAN-001A, FC-SOL-003]
     invariants: [executor cannot change channel, mint, participant, voucher, or amount]
     acceptance: [exact messages and simulations match public vectors and fail closed]
     tests: [account substitution, wrong program/mint/network, fee, expiry, and simulation failures]
@@ -1581,7 +1682,7 @@ work_items:
     owner: solana-agent-maintainer
     repository: 4LFR3Dv1/Solana-Agent
     allowed_paths: [gateway/**, tests/channel_gateway/**, docs/**]
-    dependencies: [SA-CHAN-001, FC-SOL-003]
+    dependencies: [SA-CHAN-001, SA-CHAN-001A, FC-SOL-003]
     invariants: [destination and delta equal the Foundry obligation and bound state]
     acceptance: [prepared settlement matches exact expected pre/post totals and program accounts]
     tests: [partial, total, over-limit, stale state, destination substitution, and concurrent preparation]

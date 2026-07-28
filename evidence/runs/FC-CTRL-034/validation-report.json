@@ -1,0 +1,36 @@
+{
+  "work_item": "FC-CTRL-034",
+  "sa_chan_001": {
+    "repository": "4LFR3Dv1/Solana-Agent",
+    "pr": 14,
+    "baseline": "275106dc4f692da1ff625e9925ec925072bbd19a",
+    "functional_head": "3d8b71a70df46595513bbb9f115ac81c4e6879cc",
+    "evidence_head": "1a588b6a1319ff0f781312abb3dd16c9cbebb75a",
+    "merge_commit": "0804965a25c8e5e52fc836b96f71929ac17c9198",
+    "main_ci_run": 30403768939,
+    "foundry_pay_source_commit": "7c718c425a74936b47ee83c3db6c1efe3c425fd7",
+    "artifact_hashes": {
+      "account_layout": "sha256:08a7d25c3a52de4c7fa93ba6525e3266e178e29743a2310ebc2fa679f3ae761c",
+      "instruction_registry": "sha256:ba09713e496ff7ddadf3defcd768508b7ec4095ab36c264921ef41dfebdd0c38",
+      "signed_message_registry": "sha256:4a5a7fc5940d65e9792d00ce64ec470016200c694405cac9cb7c435dd9ac4b70"
+    },
+    "targeted_tests": 24,
+    "external_review": "not_performed",
+    "preparation_supported": false,
+    "execution_supported": false,
+    "status_supported": false,
+    "recovery_supported": false,
+    "deployment_authorized": false
+  },
+  "newly_released": ["SA-CHAN-001A"],
+  "still_ready": ["FC-FAIL-003", "FC-VAL-003"],
+  "still_blocked": [
+    "SA-CHAN-002",
+    "SA-CHAN-003",
+    "ChannelVault handlers",
+    "local-validator execution",
+    "devnet",
+    "mainnet",
+    "real value"
+  ]
+}

@@ -40,6 +40,10 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-CTRL-028 | done | FC-CTRL-027, FC-SOL-003A | make historical manifest verification commit-aware before registry evolution |
 | FC-CTRL-029 | done | FC-SOL-004 | record transition-model integration and release only satisfied offline work |
 | FC-CTRL-030 | done | FC-CTRL-029, FC-SOL-004 | freeze offline concurrency, stale-snapshot, and linearization contract |
+| FC-CTRL-031 | done | FC-SEC-004 | record concurrency integration without releasing runtime work |
+| FC-CTRL-032 | done | FC-SEC-004, FC-SOL-003A | freeze governance, migration, and operation-identity preconditions |
+| FC-CTRL-033 | done | FC-SOL-005 | record governance integration without authorizing deployment |
+| FC-CTRL-034 | done | SA-CHAN-001 | record descriptive discovery and release only the operation-commitment gate |
 
 ## Epic B — Channel protocol
 
@@ -81,9 +85,10 @@ No program implementation is authorized by `FOUNDATIONS-001`.
 | Work item | Status | Depends on | Outcome |
 |---|---|---|---|
 | SA-CHAN-000 | done | FC-PROTO-007, FC-SEC-002, FC-CTRL-021 | draft capability contracts and adversarial fake adapter; offline fixture only, no ChannelVault compatibility claim |
-| SA-CHAN-001 | ready | FC-PROTO-006, FC-SOL-003A | generic channel capability discovery |
-| SA-CHAN-002 | blocked | SA-CHAN-001, FC-SOL-003 | open/top-up/activation preparation |
-| SA-CHAN-003 | blocked | SA-CHAN-001, FC-SOL-003 | settlement preparation |
+| SA-CHAN-001 | done | FC-PROTO-006, FC-SOL-003A | pinned fail-closed ChannelVault descriptor and descriptive capability discovery |
+| SA-CHAN-001A | ready | SA-CHAN-001, FC-PROTO-006, FC-SOL-003A | durable canonical operation commitment and operation-ID conflict gate |
+| SA-CHAN-002 | blocked | SA-CHAN-001, SA-CHAN-001A, FC-SOL-003 | open/top-up/activation preparation |
+| SA-CHAN-003 | blocked | SA-CHAN-001, SA-CHAN-001A, FC-SOL-003 | settlement preparation |
 | SA-CHAN-004 | blocked | SA-CHAN-002, SA-CHAN-003 | inspect/status/recovery |
 | SA-CHAN-005 | blocked | SA-CHAN-004, FC-PROTO-007 | channel evidence and conformance |
 
@@ -91,9 +96,16 @@ No program implementation is authorized by `FOUNDATIONS-001`.
 repository.
 
 `SA-CHAN-000` is deliberately a public-protocol/fake-adapter precursor in
-Foundry-Pay. It cannot complete or rename `SA-CHAN-001`; the real capability
-discovery gate is ready because FC-SOL-003A republished an operationally
-implementable account-meta registry. Preparation and execution remain blocked.
+Foundry-Pay. Solana-Agent PR #14 independently completed `SA-CHAN-001` by
+pinning the exact Foundry-Pay source commit and public registry bytes. The
+result remains descriptive: it publishes no Program ID and reports
+preparation, execution, status, recovery, and deployment support as false.
+
+`SA-CHAN-001A` is the only newly ready integration item. It must persist
+`operation_id → canonical operation commitment`, distinguish identical replay
+from `OPERATION_CONFLICT`, and keep the stable economic-operation commitment
+separate from exact ephemeral Solana transaction-message bytes. Preparation,
+handlers, local-validator execution, and deployment remain blocked.
 
 ## Epic F — Product and experience
 

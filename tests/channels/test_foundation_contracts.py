@@ -42,7 +42,7 @@ def test_foundation_contracts_and_gates_pass() -> None:
     assert result["checks"]["work_graph"]["ready_items"] == [
         "FC-FAIL-003",
         "FC-VAL-003",
-        "SA-CHAN-001",
+        "SA-CHAN-001A",
     ]
     assert result["checks"]["work_graph"]["ready_with_incomplete_dependencies"] == {}
     assert result["checks"]["accounting"] == {
@@ -262,7 +262,7 @@ def test_sa_chan_000_contract_is_offline_authority_free_and_adversarial() -> Non
     assert "automatic second submission count = 0" in contract
     assert "This is not an exactly-once blockchain claim." in contract
 
-    assert by_id["SA-CHAN-001"]["status"] == "ready"
+    assert by_id["SA-CHAN-001"]["status"] == "done"
     assert by_id["SA-CHAN-002"]["status"] == "blocked"
     assert by_id["SA-CHAN-003"]["status"] == "blocked"
     assert by_id["SA-CHAN-004"]["status"] == "blocked"
@@ -331,7 +331,7 @@ def test_fc_sol_003_contract_freezes_authority_without_runtime_or_deployment() -
 
     assert by_id["FC-SOL-004"]["status"] == "done"
     assert by_id["FC-SOL-005"]["status"] == "done"
-    assert by_id["SA-CHAN-001"]["status"] == "ready"
+    assert by_id["SA-CHAN-001"]["status"] == "done"
 
     coordination = by_id["FC-CTRL-024"]
     assert coordination["status"] == "done"
@@ -363,7 +363,7 @@ def test_fc_sol_003a_preflight_freezes_operable_authority_and_deadline_rules() -
         "FC-SEC-002",
         "FC-CTRL-027",
     ]
-    assert by_id["SA-CHAN-001"]["status"] == "ready"
+    assert by_id["SA-CHAN-001"]["status"] == "done"
     assert by_id["SA-CHAN-001"]["dependencies"] == ["FC-PROTO-006", "FC-SOL-003A"]
     assert by_id["FC-SOL-005"]["status"] == "done"
     assert by_id["FC-FAIL-003"]["status"] == "ready"
@@ -449,7 +449,7 @@ def test_fc_sol_004_integration_releases_only_concurrency_model_work() -> None:
     assert by_id["FC-SOL-004"]["status"] == "done"
     assert by_id["FC-SEC-004"]["status"] == "done"
     assert by_id["FC-SOL-005"]["status"] == "done"
-    assert by_id["SA-CHAN-001"]["status"] == "ready"
+    assert by_id["SA-CHAN-001"]["status"] == "done"
     assert by_id["FC-FAIL-003"]["status"] == "ready"
     assert by_id["SA-CHAN-002"]["status"] == "blocked"
 
@@ -510,7 +510,7 @@ def test_fc_sec_004_integration_releases_no_runtime_or_deployment_gate() -> None
 
     assert by_id["FC-SEC-004"]["status"] == "done"
     assert by_id["FC-SOL-005"]["status"] == "done"
-    assert by_id["SA-CHAN-001"]["status"] == "ready"
+    assert by_id["SA-CHAN-001"]["status"] == "done"
     assert by_id["FC-FAIL-003"]["status"] == "ready"
     assert by_id["SA-CHAN-002"]["status"] == "blocked"
     assert by_id["SA-CHAN-003"]["status"] == "blocked"
@@ -587,7 +587,7 @@ def test_fc_sol_005_integration_releases_no_handler_or_deployment_gate() -> None
     )["work_items"]
     by_id = {item["id"]: item for item in work_items}
     assert by_id["FC-SOL-005"]["status"] == "done"
-    assert by_id["SA-CHAN-001"]["status"] == "ready"
+    assert by_id["SA-CHAN-001"]["status"] == "done"
     assert by_id["FC-FAIL-003"]["status"] == "ready"
     assert by_id["SA-CHAN-002"]["status"] == "blocked"
     assert by_id["SA-CHAN-003"]["status"] == "blocked"
@@ -604,3 +604,71 @@ def test_fc_sol_005_integration_releases_no_handler_or_deployment_gate() -> None
     assert integration["deployed_build_reproduced"] is False
     assert integration["deployment_authorized"] is False
     assert report["newly_released"] == []
+
+
+def test_sa_chan_001_integration_releases_only_operation_commitment_gate() -> None:
+    work_items = yaml.safe_load(
+        (ROOT / "docs/channels/work-items.yaml").read_text(encoding="utf-8")
+    )["work_items"]
+    by_id = {item["id"]: item for item in work_items}
+
+    discovery = by_id["SA-CHAN-001"]
+    assert discovery["status"] == "done"
+    assert discovery["dependencies"] == ["FC-PROTO-006", "FC-SOL-003A"]
+    assert discovery["implementation"] == {
+        "pr": 14,
+        "functional_head": "3d8b71a70df46595513bbb9f115ac81c4e6879cc",
+        "evidence_head": "1a588b6a1319ff0f781312abb3dd16c9cbebb75a",
+        "merge_commit": "0804965a25c8e5e52fc836b96f71929ac17c9198",
+        "main_ci_run": 30403768939,
+    }
+    assert discovery["maturity_gate"] == {
+        "implementation": "complete",
+        "self_validation": "passed",
+        "external_review": "not_performed",
+    }
+    assert discovery["deployment_authorization"] == {
+        "local_validator": "blocked",
+        "devnet_fixture": "blocked",
+        "mainnet": "blocked",
+        "real_value": "blocked",
+    }
+
+    commitment = by_id["SA-CHAN-001A"]
+    assert commitment["status"] == "ready"
+    assert commitment["dependencies"] == [
+        "SA-CHAN-001",
+        "FC-PROTO-006",
+        "FC-SOL-003A",
+    ]
+    assert (
+        "same operation ID and different operation commitment is OPERATION_CONFLICT"
+        in commitment["invariants"]
+    )
+    assert by_id["SA-CHAN-002"]["dependencies"] == [
+        "SA-CHAN-001",
+        "SA-CHAN-001A",
+        "FC-SOL-003",
+    ]
+    assert by_id["SA-CHAN-003"]["dependencies"] == [
+        "SA-CHAN-001",
+        "SA-CHAN-001A",
+        "FC-SOL-003",
+    ]
+    assert by_id["SA-CHAN-002"]["status"] == "blocked"
+    assert by_id["SA-CHAN-003"]["status"] == "blocked"
+
+    report = json.loads(
+        (ROOT / "evidence/runs/FC-CTRL-034/validation-report.json").read_text(encoding="utf-8")
+    )
+    assert report["sa_chan_001"]["foundry_pay_source_commit"] == (
+        "7c718c425a74936b47ee83c3db6c1efe3c425fd7"
+    )
+    assert report["sa_chan_001"]["artifact_hashes"] == {
+        "account_layout": "sha256:08a7d25c3a52de4c7fa93ba6525e3266e178e29743a2310ebc2fa679f3ae761c",
+        "instruction_registry": "sha256:ba09713e496ff7ddadf3defcd768508b7ec4095ab36c264921ef41dfebdd0c38",
+        "signed_message_registry": "sha256:4a5a7fc5940d65e9792d00ce64ec470016200c694405cac9cb7c435dd9ac4b70",
+    }
+    assert report["newly_released"] == ["SA-CHAN-001A"]
+    assert report["sa_chan_001"]["execution_supported"] is False
+    assert report["sa_chan_001"]["deployment_authorized"] is False
