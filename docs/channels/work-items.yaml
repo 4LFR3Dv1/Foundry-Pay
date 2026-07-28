@@ -622,6 +622,43 @@ work_items:
       - deployment authorization is broadened
       - FC-SOL-003 is represented as an operational program
 
+  - id: FC-CTRL-025
+    status: done
+    objective: freeze the FC-SOL-003A ABI implementability correction before property testing or capability publication
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-025.yaml
+      - .agents/tasks/FC-SOL-003A.yaml
+      - docs/channels/ADR/FC-ADR-010-channelvault-v1-operability.md
+      - docs/channels/solana/instructions/FC-SOL-003A-PREFLIGHT.md
+      - docs/channels/DECISIONS.md
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-025/**
+    dependencies: [FC-CTRL-024, FC-SOL-003]
+    invariants:
+      - instruction bytes, preimages, Ed25519 layouts, PDA seeds, and account layout remain unchanged
+      - initialize creates the ChannelState PDA and canonical classic-token ATA atomically
+      - settlement is permissionless but can only pay the bound recipient canonical ATA
+      - request-close uses checked fixed minimum and maximum claim-window bounds
+    acceptance:
+      - FC-SOL-003A is ready
+      - FC-SOL-004 and SA-CHAN-001 are blocked on FC-SOL-003A
+      - FC-SOL-005 and FC-FAIL-003 remain ready
+      - no runtime or deployment authorization is broadened
+    tests:
+      - executable decision, graph, dependency, maturity, and authorization assertions
+    evidence:
+      - evidence/runs/FC-CTRL-025/validation-report.json
+    security_review: self-validated coordination; external Solana review remains not performed
+    stop_conditions:
+      - account creation remains unimplementable from the frozen metas
+      - settlement caller can redirect value
+      - claim deadline can collapse to now or grow without bound
+      - a frozen byte contract changes in coordination
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -1035,13 +1072,58 @@ work_items:
       - an existing preimage, profile, domain, account layout, or PDA derivation changes
       - the program is represented as operational, deployed, audited, or safe for value
 
-  - id: FC-SOL-004
+  - id: FC-SOL-003A
     status: ready
+    objective: correct ChannelVault v1 initialization metas and freeze permissionless settlement and bounded close-window guards
+    owner: solana-program-engineer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - programs/foundry-channel-vault/instruction-contract/**
+      - docs/channels/solana/instructions/**
+      - tests/channels/solana/instructions/**
+      - evidence/runs/FC-SOL-003/**
+      - evidence/runs/FC-SOL-003A/**
+    dependencies: [FC-SOL-003, FC-CTRL-025]
+    invariants:
+      - instruction serialization, canonical preimages, Ed25519 layouts, PDA seeds, and account layout are byte-stable
+      - initialize account metas are sufficient for atomic PDA and canonical ATA creation
+      - permissionless settlement cannot redirect value away from the bound recipient ATA
+      - close-window arithmetic is checked and bounded from 900 through 2592000 seconds
+    acceptance:
+      - initialize meta contract includes writable payer and exact System, Token, and Associated Token programs
+      - settlement authority is explicitly permissionless-bound-recipient
+      - exact deadline boundary tests pass
+      - deterministic evidence and full regression pass
+    tests:
+      - account-meta implementability and program substitution
+      - permissionless caller and recipient destination substitution
+      - deadline minimum, maximum, exact boundary, and overflow
+      - frozen-byte compatibility
+    evidence:
+      - corrected account-meta registry, decision report, compatibility report, validation report, and artifact manifest
+    maturity_gate:
+      implementation: complete
+      self_validation: passed
+      external_review: not_performed
+    deployment_authorization:
+      local_fixture: allowed
+      local_validator: allowed
+      devnet_fixture: blocked
+      mainnet: blocked
+      real_value: blocked
+    security_review: self-validated ABI implementability correction; external review not performed
+    stop_conditions:
+      - an entrypoint, handler, CPI, transfer, deployment, or consumer integration enters scope
+      - an existing instruction payload, signed preimage, or Ed25519 layout changes
+      - permissionless settlement accepts a non-canonical recipient destination
+
+  - id: FC-SOL-004
+    status: blocked
     objective: implement property and formal harnesses for ChannelVault invariants
     owner: formal-methods-engineer
     repository: 4LFR3Dv1/Foundry-Pay
     allowed_paths: [programs/foundry-channel-vault/**, tests/channels/solana/invariants/**, formal/**, evidence/runs/FC-SOL-004/**]
-    dependencies: [FC-SOL-003, FC-SEC-002]
+    dependencies: [FC-SOL-003A, FC-SEC-002]
     invariants: [conservation, monotonicity, one-use binding, and lifecycle safety hold for all transitions]
     acceptance: [property tests cover arbitrary sequences and formal review closes material uncertainty]
     tests: [proptest, model-based transition suite, and selected formal proofs]
@@ -1115,12 +1197,12 @@ work_items:
       - the work item is represented as SA-CHAN-001
 
   - id: SA-CHAN-001
-    status: ready
+    status: blocked
     objective: add generic capability discovery for supported channel operations
     owner: solana-agent-maintainer
     repository: 4LFR3Dv1/Solana-Agent
     allowed_paths: [gateway/**, contracts/capabilities/**, tests/channel_gateway/**, docs/**]
-    dependencies: [FC-PROTO-006, FC-SOL-003]
+    dependencies: [FC-PROTO-006, FC-SOL-003A]
     invariants: [capability discovery describes support but grants no authority]
     acceptance: [descriptor binds network, genesis, program, IDL, account/instruction versions, and recovery support]
     tests: [closed descriptor, unsupported version, mismatch, and default-deny tests]

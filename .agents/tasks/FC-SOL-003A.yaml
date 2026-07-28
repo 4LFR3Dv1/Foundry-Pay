@@ -1,0 +1,38 @@
+work_item: FC-SOL-003A
+objective: correct ChannelVault v1 initialization metas and freeze permissionless settlement and bounded close-window guards
+owner: solana-program-engineer
+branch: agent/solana/FC-SOL-003A
+allowed_paths:
+  - programs/foundry-channel-vault/instruction-contract/**
+  - docs/channels/solana/instructions/**
+  - tests/channels/solana/instructions/**
+  - evidence/runs/FC-SOL-003/**
+  - evidence/runs/FC-SOL-003A/**
+dependencies:
+  - FC-SOL-003
+  - FC-CTRL-025
+invariants:
+  - instruction serialization, canonical preimages, Ed25519 layouts, PDA seeds, and account layout are byte-stable
+  - initialize account metas are sufficient for atomic PDA and canonical ATA creation
+  - permissionless settlement cannot redirect value away from the bound recipient ATA
+  - close-window arithmetic is checked and bounded from 900 through 2592000 seconds
+acceptance:
+  - initialize meta contract includes writable payer and exact System, Token, and Associated Token programs
+  - settlement authority is explicitly permissionless-bound-recipient
+  - exact deadline boundary tests pass
+  - deterministic evidence and full regression pass
+maturity_gate:
+  implementation: complete
+  self_validation: passed
+  external_review: not_performed
+deployment_authorization:
+  local_fixture: allowed
+  local_validator: allowed
+  devnet_fixture: blocked
+  mainnet: blocked
+  real_value: blocked
+stop_conditions:
+  - an entrypoint, handler, CPI, transfer, deployment, or consumer integration enters scope
+  - an existing instruction payload, signed preimage, or Ed25519 layout changes
+  - permissionless settlement accepts a non-canonical recipient destination
+

@@ -1,0 +1,41 @@
+work_item: FC-CTRL-025
+objective: freeze the FC-SOL-003A ABI implementability correction before property testing or capability publication
+owner: program-integrator
+branch: agent/control/FC-CTRL-025
+allowed_paths:
+  - .agents/tasks/FC-CTRL-025.yaml
+  - .agents/tasks/FC-SOL-003A.yaml
+  - docs/channels/ADR/FC-ADR-010-channelvault-v1-operability.md
+  - docs/channels/solana/instructions/FC-SOL-003A-PREFLIGHT.md
+  - docs/channels/DECISIONS.md
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-025/**
+dependencies:
+  - FC-CTRL-024
+  - FC-SOL-003
+invariants:
+  - instruction bytes, preimages, Ed25519 layouts, PDA seeds, and account layout remain unchanged
+  - initialize creates the ChannelState PDA and canonical classic-token ATA atomically
+  - settlement is permissionless but can only pay the bound recipient canonical ATA
+  - request-close uses checked fixed minimum and maximum claim-window bounds
+acceptance:
+  - FC-SOL-003A is ready
+  - FC-SOL-004 and SA-CHAN-001 are blocked on FC-SOL-003A
+  - FC-SOL-005 and FC-FAIL-003 remain ready
+  - no runtime or deployment authorization is broadened
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+evidence:
+  - evidence/runs/FC-CTRL-025/validation-report.json
+stop_conditions:
+  - account creation remains unimplementable from the frozen metas
+  - settlement caller can redirect value
+  - claim deadline can collapse to now or grow without bound
+  - a frozen byte contract changes in coordination
+

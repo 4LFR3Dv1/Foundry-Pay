@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "work_item": "FC-CTRL-025",
+  "decisions": {
+    "initialize_channel": "atomic_channel_pda_and_canonical_ata_creation",
+    "settlement": "permissionless_fixed_bound_recipient_ata",
+    "minimum_claim_window_seconds": 900,
+    "maximum_claim_window_seconds": 2592000
+  },
+  "ready": [
+    "FC-SOL-003A",
+    "FC-SOL-005",
+    "FC-FAIL-003",
+    "FC-VAL-003"
+  ],
+  "blocked": [
+    "FC-SOL-004",
+    "SA-CHAN-001",
+    "devnet_fixture",
+    "mainnet",
+    "real_value"
+  ],
+  "runtime_changes": 0,
+  "external_review": "not_performed"
+}
