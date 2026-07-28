@@ -1,0 +1,42 @@
+work_item: FC-CTRL-020
+objective: freeze the FC-SOL-002 account-layout, token-boundary, maturity, and reserved-path contract
+owner: program-integrator
+branch: agent/control/FC-CTRL-020
+allowed_paths:
+  - .agents/tasks/FC-CTRL-020.yaml
+  - .agents/tasks/FC-SOL-002.yaml
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - docs/channels/solana/accounts/FC-SOL-002-CONTRACT.md
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-020/**
+dependencies:
+  - FC-CTRL-019
+  - FC-SEC-002
+invariants:
+  - FC-SOL-002 depends explicitly on the integrated FC-SEC-002 boundary proof
+  - the account model contains only ChannelState PDA and its classic SPL Token vault
+  - coordination introduces no program instruction, CPI, transfer, signature verification, or deployment
+  - self-validation does not imply external Solana account review
+acceptance:
+  - the fixed-width account and raw-byte PDA contract is frozen before implementation
+  - classic SPL Token is allowlisted and Token-2022 is explicitly unsupported
+  - local-validator-only authorization is explicit
+  - FC-SOL-003, FC-SOL-004, devnet, mainnet, and real value remain blocked
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+evidence:
+  - evidence/runs/FC-CTRL-020/README.md
+  - evidence/runs/FC-CTRL-020/validation-report.json
+provenance:
+  - FC-SEC-002 merge 0d203389052a78d6cdec5b565ca28e605dad13fb
+  - FC-CTRL-019 merge c61c9e8beb6815ed656f60f04e71efa1e5bd7375
+stop_conditions:
+  - program runtime or instruction behavior is implemented
+  - a separate recipient, settlement, or closure account is introduced
+  - external review is inferred
+  - deployment authorization is broadened

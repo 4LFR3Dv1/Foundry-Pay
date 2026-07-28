@@ -151,3 +151,57 @@ def test_fc_sec_002_contract_matches_governed_experimental_scope() -> None:
     assert by_id["FC-SOL-004"]["status"] == "blocked"
     assert by_id["SA-CHAN-000"]["status"] == "ready"
     assert by_id["FC-FAIL-003"]["status"] == "blocked"
+
+
+def test_fc_sol_002_contract_is_fixed_width_and_local_validator_only() -> None:
+    work_items = yaml.safe_load(
+        (ROOT / "docs/channels/work-items.yaml").read_text(encoding="utf-8")
+    )["work_items"]
+    by_id = {item["id"]: item for item in work_items}
+
+    assert by_id["FC-CTRL-020"]["status"] == "done"
+
+    account_model = by_id["FC-SOL-002"]
+    assert account_model["status"] == "ready"
+    assert account_model["dependencies"] == ["FC-PROTO-001", "FC-SEC-002"]
+    assert account_model["maturity_gate"] == {
+        "implementation": "complete",
+        "self_validation": "passed",
+        "external_review": "not_performed",
+    }
+    assert account_model["deployment_authorization"] == {
+        "local_validator": "allowed",
+        "devnet_fixture": "blocked",
+        "mainnet": "blocked",
+        "real_value": "blocked",
+    }
+    assert account_model["external_review_requirement"] == {
+        "required_before": ["mainnet", "real_value"]
+    }
+    assert (
+        "the only state topology is one ChannelState PDA plus its vault token account"
+        in account_model["invariants"]
+    )
+    assert (
+        "classic SPL Token is allowlisted and Token-2022 is unsupported"
+        in account_model["invariants"]
+    )
+
+    task = yaml.safe_load((ROOT / ".agents/tasks/FC-SOL-002.yaml").read_text(encoding="utf-8"))
+    assert task["dependencies"] == account_model["dependencies"]
+    assert task["maturity_gate"] == account_model["maturity_gate"]
+    assert task["deployment_authorization"] == account_model["deployment_authorization"]
+    assert task["external_review_requirement"] == account_model["external_review_requirement"]
+
+    contract = (ROOT / "docs/channels/solana/accounts/FC-SOL-002-CONTRACT.md").read_text(
+        encoding="utf-8"
+    )
+    assert "ChannelState PDA" in contract
+    assert "classic SPL Token vault account" in contract
+    assert "String" in contract and "Vec<T>" in contract and "Option<T>" in contract
+    assert "Token-2022" in contract
+    assert "performs no token transfer or CPI" in contract
+
+    assert by_id["FC-SOL-003"]["status"] == "blocked"
+    assert by_id["FC-SOL-004"]["status"] == "blocked"
+    assert by_id["FC-FAIL-003"]["status"] == "blocked"
