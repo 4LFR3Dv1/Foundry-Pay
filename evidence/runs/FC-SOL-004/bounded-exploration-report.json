@@ -1,0 +1,36 @@
+{
+  "work_item": "FC-SOL-004",
+  "claim": "bounded transition exploration found no violation within the published model and bounds",
+  "max_depth": 7,
+  "amount_domain": [
+    0,
+    1,
+    2,
+    18446744073709551615
+  ],
+  "time_domain": [
+    899,
+    900,
+    901,
+    2592000,
+    2592001
+  ],
+  "visited_states": 703,
+  "attempted_transitions": 4732,
+  "accepted_transitions": 1713,
+  "rejected_transitions": 3019,
+  "invariant_violations": 0,
+  "error_counts": {
+    "UnallocatedCapacity": 89,
+    "AlreadyInitialized": 352,
+    "OutstandingRight": 245,
+    "Finalized": 143,
+    "Uninitialized": 12,
+    "ZeroAmount": 160,
+    "RecipientNotBound": 448,
+    "BindingNonceConsumed": 128,
+    "ClaimWindowOpen": 162,
+    "LifecycleViolation": 1280
+  },
+  "state_deduplication": "sha256(serde_json(ModelState))"
+}

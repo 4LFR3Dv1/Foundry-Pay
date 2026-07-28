@@ -1,0 +1,20 @@
+
+running 7 tests
+test tests::claim_window_boundaries_and_exclusive_deadline_hold ... ok
+test tests::close_refund_settle_finalize_preserves_activated_rights ... ok
+test tests::initialization_is_an_atomic_owner_transition ... ok
+test tests::permissionless_settlement_is_caller_and_correlation_independent ... ok
+test tests::arbitrary_valid_economic_path_preserves_invariants ... ok
+test tests::rejected_settlement_never_changes_input_state ... ok
+test tests::arbitrary_instruction_sequences_preserve_invariants_or_reject_atomically ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.31s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.11s
+     Running unittests src\lib.rs (programs\foundry-channel-vault\transition-model\target\debug\deps\foundry_channel_vault_transition_model-fa7db384239b539c.exe)
+   Doc-tests foundry_channel_vault_transition_model

@@ -1,0 +1,10 @@
+{
+  "authority": "PermissionlessBoundRecipientSettlement",
+  "caller_identity_economic_effect": false,
+  "destination": "canonical_ata(bound_recipient_wallet, channel.mint)",
+  "obligation_hash": "caller_supplied_non_authoritative_correlation",
+  "obligation_hash_business_outcome_proof": false,
+  "obligation_hash_economic_effect": false,
+  "property_test": "permissionless_settlement_is_caller_and_correlation_independent",
+  "result": "passed"
+}
