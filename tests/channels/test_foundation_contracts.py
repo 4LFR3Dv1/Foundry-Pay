@@ -77,7 +77,11 @@ def test_fc_proto_007_integration_uses_governed_self_validation() -> None:
 
     assert by_id["FC-SEC-002"]["status"] == "done"
     assert by_id["SA-CHAN-000"]["status"] == "ready"
-    assert by_id["SA-CHAN-000"]["dependencies"] == ["FC-PROTO-007", "FC-SEC-002"]
+    assert by_id["SA-CHAN-000"]["dependencies"] == [
+        "FC-PROTO-007",
+        "FC-SEC-002",
+        "FC-CTRL-021",
+    ]
 
 
 def test_fc_sec_002_contract_matches_governed_experimental_scope() -> None:
@@ -205,3 +209,59 @@ def test_fc_sol_002_contract_is_fixed_width_and_local_validator_only() -> None:
     assert by_id["FC-SOL-003"]["status"] == "blocked"
     assert by_id["FC-SOL-004"]["status"] == "blocked"
     assert by_id["FC-FAIL-003"]["status"] == "blocked"
+
+
+def test_sa_chan_000_contract_is_offline_authority_free_and_adversarial() -> None:
+    work_items = yaml.safe_load(
+        (ROOT / "docs/channels/work-items.yaml").read_text(encoding="utf-8")
+    )["work_items"]
+    by_id = {item["id"]: item for item in work_items}
+
+    assert by_id["FC-CTRL-021"]["status"] == "done"
+
+    fake_adapter = by_id["SA-CHAN-000"]
+    assert fake_adapter["status"] == "ready"
+    assert fake_adapter["dependencies"] == [
+        "FC-PROTO-007",
+        "FC-SEC-002",
+        "FC-CTRL-021",
+    ]
+    assert fake_adapter["maturity_gate"] == {
+        "implementation": "complete",
+        "self_validation": "passed",
+        "external_review": "not_performed",
+    }
+    assert fake_adapter["deployment_authorization"] == {
+        "offline_fixture": "allowed",
+        "local_validator": "not_required",
+        "devnet_fixture": "blocked",
+        "mainnet": "blocked",
+        "real_value": "blocked",
+    }
+    assert (
+        "technical confirmation is distinct from independently reconciled economic completion"
+        in fake_adapter["invariants"]
+    )
+    assert (
+        "unknown submission results never trigger automatic retry or rematerialization"
+        in fake_adapter["invariants"]
+    )
+
+    task = yaml.safe_load((ROOT / ".agents/tasks/SA-CHAN-000.yaml").read_text(encoding="utf-8"))
+    assert task["dependencies"] == fake_adapter["dependencies"]
+    assert task["maturity_gate"] == fake_adapter["maturity_gate"]
+    assert task["deployment_authorization"] == fake_adapter["deployment_authorization"]
+
+    contract = (ROOT / "docs/channels/capabilities/SA-CHAN-000-CONTRACT.md").read_text(
+        encoding="utf-8"
+    )
+    assert "technical confirmation" in contract
+    assert "independent observation" in contract
+    assert "reconciled economic completion" in contract
+    assert "automatic second submission count = 0" in contract
+    assert "This is not an exactly-once blockchain claim." in contract
+
+    assert by_id["SA-CHAN-001"]["status"] == "blocked"
+    assert by_id["SA-CHAN-002"]["status"] == "blocked"
+    assert by_id["SA-CHAN-003"]["status"] == "blocked"
+    assert by_id["SA-CHAN-004"]["status"] == "blocked"

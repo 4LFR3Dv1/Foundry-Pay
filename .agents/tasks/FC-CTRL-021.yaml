@@ -1,0 +1,44 @@
+work_item: FC-CTRL-021
+objective: freeze the SA-CHAN-000 transport-independent capability and adversarial fake-adapter contract
+owner: program-integrator
+branch: agent/control/FC-CTRL-021
+allowed_paths:
+  - .agents/tasks/FC-CTRL-021.yaml
+  - .agents/tasks/SA-CHAN-000.yaml
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - docs/channels/capabilities/SA-CHAN-000-CONTRACT.md
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-021/**
+dependencies:
+  - FC-CTRL-020
+  - FC-PROTO-007
+  - FC-SEC-002
+invariants:
+  - the fake adapter grants no economic or signing authority
+  - the contract is transport-independent and imports no Solana runtime
+  - fake behavior cannot claim compatibility with unimplemented ChannelVault instructions
+  - consumer fixtures use closed protocol states rather than improvised success flags
+acceptance:
+  - capability, request, response, status, recovery, and receipt surfaces are frozen
+  - ambiguous and disputed outcomes are first-class fake scenarios
+  - exact-byte commitments and unsupported version or capability cases fail closed
+  - SA-CHAN-001 and all real Solana integration gates remain blocked
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+evidence:
+  - evidence/runs/FC-CTRL-021/README.md
+  - evidence/runs/FC-CTRL-021/validation-report.json
+provenance:
+  - FC-PROTO-007 merge 63da85549bcd247a0510e8af18cddc30d8c53bb2
+  - FC-SEC-002 merge 0d203389052a78d6cdec5b565ca28e605dad13fb
+  - FC-CTRL-020 merge cb901c77b596e94e207f3ea99fbd4b3646998dfc
+stop_conditions:
+  - Solana RPC, wallet, signer, program instruction, or ChannelVault IDL enters scope
+  - fake confirmation is represented as economic reconciliation
+  - automatic retry follows an unknown submission result
+  - SA-CHAN-001 or a deployment gate is advanced

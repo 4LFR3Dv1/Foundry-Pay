@@ -486,6 +486,41 @@ work_items:
       - external review is inferred
       - deployment authorization is broadened
 
+  - id: FC-CTRL-021
+    status: done
+    objective: freeze the SA-CHAN-000 transport-independent capability and adversarial fake-adapter contract
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-021.yaml
+      - .agents/tasks/SA-CHAN-000.yaml
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - docs/channels/capabilities/SA-CHAN-000-CONTRACT.md
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-021/**
+    dependencies: [FC-CTRL-020, FC-PROTO-007, FC-SEC-002]
+    invariants:
+      - the fake adapter grants no economic or signing authority
+      - the contract is transport-independent and imports no Solana runtime
+      - fake behavior cannot claim compatibility with unimplemented ChannelVault instructions
+      - consumer fixtures use closed protocol states rather than improvised success flags
+    acceptance:
+      - capability, request, response, status, recovery, and receipt surfaces are frozen
+      - ambiguous and disputed outcomes are first-class fake scenarios
+      - exact-byte commitments and unsupported version or capability cases fail closed
+      - SA-CHAN-001 and all real Solana integration gates remain blocked
+    tests:
+      - executable dependency, authority, state, and authorization assertions
+    evidence:
+      - evidence/runs/FC-CTRL-021/validation-report.json
+    security_review: self-validated coordination; external review required before mainnet or real value
+    stop_conditions:
+      - Solana RPC, wallet, signer, program instruction, or ChannelVault IDL enters scope
+      - fake confirmation is represented as economic reconciliation
+      - automatic retry follows an unknown submission result
+      - SA-CHAN-001 or a deployment gate is advanced
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -902,13 +937,50 @@ work_items:
     owner: protocol-integration-engineer
     repository: 4LFR3Dv1/Foundry-Pay
     allowed_paths: [packages/channel-protocol/**, services/fake-executor/**, contracts/channel/capabilities/**, tests/channels/conformance/fake-adapter/**, evidence/runs/SA-CHAN-000/**]
-    dependencies: [FC-PROTO-007, FC-SEC-002]
-    invariants: [draft capabilities grant no authority and do not claim compatibility with unimplemented ChannelVault instructions]
-    acceptance: [closed draft descriptors and fake adapter exercise public protocol contracts without Solana, RPC, wallet, or signer]
-    tests: [unsupported capability, version mismatch, exact commitment, fake recovery, and authority-boundary cases]
-    evidence: [draft capability manifest and fake conformance report]
+    dependencies: [FC-PROTO-007, FC-SEC-002, FC-CTRL-021]
+    invariants:
+      - capability discovery describes support and never grants authority
+      - the adapter cannot choose channel, sender, recipient, mint, amount, or destination
+      - exact-byte commitments bind requests to deterministic fake execution material
+      - technical confirmation is distinct from independently reconciled economic completion
+      - unknown submission results never trigger automatic retry or rematerialization
+      - no descriptor claims compatibility with unimplemented ChannelVault instructions
+    acceptance:
+      - closed versioned capability, request, response, status, recovery, and receipt contracts exist
+      - adversarial fake states include ambiguity, recovery, reconciliation, review, dispute, and definitive failure
+      - unsupported capability and version mismatch fail closed
+      - restart and repeated recovery preserve at-most-one controlled submission attempt
+      - public contracts require no Solana, RPC, wallet, signer, or Cloud authority
+    tests:
+      - unsupported capability and version mismatch
+      - exact commitment mutation and idempotency conflict
+      - lost response, restart, repeated recovery, and zero automatic resubmission
+      - technical confirmation without reconciliation
+      - provider divergence, needs review, and dispute
+    evidence:
+      - capability manifest, scenario matrix, authority-boundary, recovery, validation, and artifact reports
+    maturity_gate:
+      implementation: complete
+      self_validation: passed
+      external_review: not_performed
+    deployment_authorization:
+      offline_fixture: allowed
+      local_validator: not_required
+      devnet_fixture: blocked
+      mainnet: blocked
+      real_value: blocked
+    external_review_requirement:
+      required_before:
+        - mainnet
+        - real_value
     security_review: self-validated cryptographic and authority review; external review required before mainnet or real-value authorization
-    stop_conditions: [draft contract is represented as SA-CHAN-001 or as compatible with real ChannelVault instructions]
+    stop_conditions:
+      - Solana RPC, wallet, signer, SDK, program instruction, or ChannelVault IDL enters scope
+      - the fake adapter gains economic authority
+      - technical confirmation becomes economic completion
+      - unknown outcome causes automatic resubmission
+      - unsupported version or capability falls back
+      - the work item is represented as SA-CHAN-001
 
   - id: SA-CHAN-001
     status: blocked
