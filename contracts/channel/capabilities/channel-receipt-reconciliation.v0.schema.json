@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundrypay.dev/contracts/channel/capabilities/channel-receipt-reconciliation.v0.schema.json",
+  "title": "SA-CHAN-000 technical receipt and reconciliation contracts",
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    }
+  },
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type", "protocol_version", "capability_id", "request_id", "operation_id",
+        "operation_commitment", "technical_identifier", "technical_state",
+        "executor_id", "observed_at", "technical_receipt_hash"
+      ],
+      "properties": {
+        "type": {"const": "technical_channel_receipt"},
+        "protocol_version": {"const": "0.1.0-draft"},
+        "capability_id": {"const": "foundry.channels.fixture.operation.v0"},
+        "request_id": {"$ref": "#/$defs/identifier"},
+        "operation_id": {"$ref": "#/$defs/identifier"},
+        "operation_commitment": {"$ref": "#/$defs/hash"},
+        "technical_identifier": {"$ref": "#/$defs/identifier"},
+        "technical_state": {"const": "confirmed"},
+        "executor_id": {"const": "foundry.channels.fixture-adapter"},
+        "observed_at": {"$ref": "#/$defs/timestamp"},
+        "technical_receipt_hash": {"$ref": "#/$defs/hash"}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type", "protocol_version", "capability_id", "request_id", "operation_id",
+        "technical_receipt_hash", "provider_ids", "economic_outcome", "observed_at"
+      ],
+      "properties": {
+        "type": {"const": "channel_economic_observation"},
+        "protocol_version": {"const": "0.1.0-draft"},
+        "capability_id": {"const": "foundry.channels.fixture.operation.v0"},
+        "request_id": {"$ref": "#/$defs/identifier"},
+        "operation_id": {"$ref": "#/$defs/identifier"},
+        "technical_receipt_hash": {"$ref": "#/$defs/hash"},
+        "provider_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/identifier"}
+        },
+        "economic_outcome": {"enum": ["matched", "mismatch", "divergent"]},
+        "observed_at": {"$ref": "#/$defs/timestamp"}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type", "protocol_version", "capability_id", "request_id", "operation_id",
+        "technical_receipt_hash", "observation_hash", "economic_outcome",
+        "reconciled_at", "result_hash"
+      ],
+      "properties": {
+        "type": {"const": "reconciled_channel_result"},
+        "protocol_version": {"const": "0.1.0-draft"},
+        "capability_id": {"const": "foundry.channels.fixture.operation.v0"},
+        "request_id": {"$ref": "#/$defs/identifier"},
+        "operation_id": {"$ref": "#/$defs/identifier"},
+        "technical_receipt_hash": {"$ref": "#/$defs/hash"},
+        "observation_hash": {"$ref": "#/$defs/hash"},
+        "economic_outcome": {"const": "matched"},
+        "reconciled_at": {"$ref": "#/$defs/timestamp"},
+        "result_hash": {"$ref": "#/$defs/hash"}
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "deployment_authorization": {
+    "devnet_fixture": "blocked",
+    "mainnet": "blocked",
+    "offline_fixture": "allowed",
+    "real_value": "blocked"
+  },
+  "external_review": "not_performed",
+  "focused_tests": {
+    "command": "python -m pytest tests/channels/conformance/fake-adapter",
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": ".....................                                                    [100%]\n- generated xml file: C:\\tmp\\foundry-sa-chan-000\\evidence\\runs\\SA-CHAN-000\\pytest-focused.xml -"
+  },
+  "full_regression": {
+    "command": "python -m pytest",
+    "failed": 0,
+    "passed": 519,
+    "skipped": 11
+  },
+  "functional_commit": "7513587c556e7604d8b357c7d149fe30cfb28cef",
+  "git_diff_check": "passed",
+  "ruff": "passed",
+  "secret_guard": "passed"
+}

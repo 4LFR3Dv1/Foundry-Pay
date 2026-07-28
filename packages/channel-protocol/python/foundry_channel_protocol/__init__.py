@@ -65,6 +65,20 @@ from .closure import (
     request_close,
     validate_finalization,
 )
+from .capabilities import (
+    CAPABILITY_ID,
+    EXECUTOR_ID,
+    LIMITATION,
+    PROTOCOL_VERSION as CAPABILITY_PROTOCOL_VERSION,
+    CapabilityContractError,
+    OperationStatus,
+    capability_manifest,
+    prepare_operation,
+    validate_authorization as validate_channel_operation_authorization,
+    validate_observation as validate_channel_operation_observation,
+    validate_operation_request,
+    validate_recovery_request,
+)
 
 __all__ = [
     "CanonicalizationError",
@@ -122,4 +136,16 @@ __all__ = [
     "project_refund",
     "request_close",
     "validate_finalization",
+    "CAPABILITY_ID",
+    "EXECUTOR_ID",
+    "LIMITATION",
+    "CAPABILITY_PROTOCOL_VERSION",
+    "CapabilityContractError",
+    "OperationStatus",
+    "capability_manifest",
+    "prepare_operation",
+    "validate_channel_operation_authorization",
+    "validate_channel_operation_observation",
+    "validate_operation_request",
+    "validate_recovery_request",
 ]

@@ -1,0 +1,96 @@
+{
+  "artifacts": [
+    {
+      "bytes": 3959,
+      "path": "packages/channel-protocol/python/foundry_channel_protocol/__init__.py",
+      "sha256": "sha256:9a7ab074a6e30f6634e3b0e2a5c3a812bf2739c2c8081ce0d7cdc5acbb9715c3"
+    },
+    {
+      "bytes": 12510,
+      "path": "packages/channel-protocol/python/foundry_channel_protocol/capabilities.py",
+      "sha256": "sha256:68305b98205db9929febac64560166ffb5bbce068ab6232645ed1428d10783ca"
+    },
+    {
+      "bytes": 17521,
+      "path": "services/fake-executor/channel_adapter.py",
+      "sha256": "sha256:51bbba86f215fef6c8c5240fa57e4d01406fc3adc41121e5844964d0f9468185"
+    },
+    {
+      "bytes": 15164,
+      "path": "tests/channels/conformance/fake-adapter/test_fake_channel_adapter.py",
+      "sha256": "sha256:13ecdd6aaf8bacd398548c31c45861e2599ffcea37b26d5322eba4c0a24d1079"
+    },
+    {
+      "bytes": 525,
+      "path": "contracts/channel/capabilities/capability-manifest.v0.json",
+      "sha256": "sha256:a6cf95e711872da9089753c7f546ece33b85ac4135acbcaf447ff66f4eca3a6e"
+    },
+    {
+      "bytes": 1427,
+      "path": "contracts/channel/capabilities/channel-capability-manifest.v0.schema.json",
+      "sha256": "sha256:7df9c11828aa713c2ad866865b6cc74f7057d782f0b58f72f466bc6ed9d7c280"
+    },
+    {
+      "bytes": 4251,
+      "path": "contracts/channel/capabilities/channel-operation.v0.schema.json",
+      "sha256": "sha256:7b3ebc66c4c1573d050af2f522fd8cffd90c4162d147703ecdae25641dbb1b72"
+    },
+    {
+      "bytes": 3472,
+      "path": "contracts/channel/capabilities/channel-receipt-reconciliation.v0.schema.json",
+      "sha256": "sha256:981c300b75183d33b54a1749a9871867ec39705d0f1e5ed38cd019e2a3eb3457"
+    },
+    {
+      "bytes": 3081,
+      "path": "contracts/channel/capabilities/channel-status-recovery.v0.schema.json",
+      "sha256": "sha256:d43d5464d23f7312e3011f9d60aea2147f93a3c106cd92c651394400333efa5f"
+    },
+    {
+      "bytes": 878,
+      "path": "evidence/runs/SA-CHAN-000/README.md",
+      "sha256": "sha256:4b0919d0926af8ead9cf01fb0ae064d2bef46832f103a0ef13fe3b70a1849284"
+    },
+    {
+      "bytes": 990,
+      "path": "evidence/runs/SA-CHAN-000/TASK_CONTRACT.yaml",
+      "sha256": "sha256:4b63fadd29625130b69d47073d25fd0581909e6654ba25090cd7a9990495c71e"
+    },
+    {
+      "bytes": 17352,
+      "path": "evidence/runs/SA-CHAN-000/generate_evidence.py",
+      "sha256": "sha256:496c716f82fd6c354ba98be51939dd58dfe7ae05f684b38ea52d6f1cae317c10"
+    },
+    {
+      "bytes": 581,
+      "path": "evidence/runs/SA-CHAN-000/capability-manifest.json",
+      "sha256": "sha256:5d906cd83dd220b7eb0371051fa61080a779119a71c01e7ee66cb5e20fcaaf2c"
+    },
+    {
+      "bytes": 3982,
+      "path": "evidence/runs/SA-CHAN-000/scenario-matrix.json",
+      "sha256": "sha256:e82c4e01d3519d68e617950ada74d04195ba2a6d50b68ba0b4e31247c0b5a9c9"
+    },
+    {
+      "bytes": 421,
+      "path": "evidence/runs/SA-CHAN-000/authority-boundary-report.json",
+      "sha256": "sha256:054d103fc7fd6352724244274fa3b4314b23275307b53f0f13770cdc1ea3d68f"
+    },
+    {
+      "bytes": 377,
+      "path": "evidence/runs/SA-CHAN-000/recovery-report.json",
+      "sha256": "sha256:53b103b8dc6fe7cc4b0a104c42e72457b52237ccc209c00652aa8b0e83dff777"
+    },
+    {
+      "bytes": 799,
+      "path": "evidence/runs/SA-CHAN-000/validation-report.json",
+      "sha256": "sha256:1a875742adb0955e889e67b7e75c3a433ed7b012b858bc670ffd0e5d34ac1837"
+    },
+    {
+      "bytes": 4041,
+      "path": "evidence/runs/SA-CHAN-000/pytest-focused.xml",
+      "sha256": "sha256:14010dfddc1bc0248175d3ab576282f6e006ac6e72104bfcd9311837fdcf3b35"
+    }
+  ],
+  "functional_commit": "7513587c556e7604d8b357c7d149fe30cfb28cef",
+  "hash_algorithm": "sha256"
+}

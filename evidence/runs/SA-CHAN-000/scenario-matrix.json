@@ -1,0 +1,144 @@
+{
+  "functional_commit": "7513587c556e7604d8b357c7d149fe30cfb28cef",
+  "scenarios": [
+    {
+      "automatic_resubmission_count": 0,
+      "decision": "accepted",
+      "reconciled_result_present": false,
+      "scenario": "preparation_only",
+      "state": "prepared",
+      "submit_intent_count": 0,
+      "technical_receipt_present": false
+    },
+    {
+      "automatic_resubmission_count": 0,
+      "code": "authorization_rejected",
+      "decision": "rejected",
+      "scenario": "authorization_rejected",
+      "state": "prepared",
+      "submit_intent_count": 0
+    },
+    {
+      "automatic_resubmission_count": 0,
+      "decision": "accepted",
+      "reconciled_result_present": false,
+      "scenario": "definitive_pre_submission_failure",
+      "state": "failed_definitive",
+      "submit_intent_count": 0,
+      "technical_receipt_present": false
+    },
+    {
+      "automatic_resubmission_count": 0,
+      "decision": "accepted",
+      "reconciled_result_present": false,
+      "scenario": "submitted",
+      "state": "submitted",
+      "submit_intent_count": 1,
+      "technical_receipt_present": false
+    },
+    {
+      "automatic_resubmission_count": 0,
+      "decision": "accepted",
+      "reconciled_result_present": false,
+      "scenario": "confirmed",
+      "state": "confirmed",
+      "submit_intent_count": 1,
+      "technical_receipt_present": true
+    },
+    {
+      "automatic_resubmission_count": 0,
+      "decision": "accepted",
+      "reconciled_result_present": false,
+      "scenario": "lost_response",
+      "state": "confirmed",
+      "submit_intent_count": 1,
+      "technical_receipt_present": true
+    },
+    {
+      "automatic_resubmission_count": 0,
+      "decision": "accepted",
+      "reconciled_result_present": false,
+      "scenario": "recovery_inconclusive",
+      "state": "needs_recovery",
+      "submit_intent_count": 1,
+      "technical_receipt_present": false
+    },
+    {
+      "automatic_resubmission_count": 0,
+      "decision": "accepted",
+      "reconciled_result_present": true,
+      "scenario": "reconciled",
+      "state": "reconciled",
+      "submit_intent_count": 1,
+      "technical_receipt_present": true
+    },
+    {
+      "automatic_resubmission_count": 0,
+      "decision": "accepted",
+      "reconciled_result_present": false,
+      "scenario": "needs_review",
+      "state": "needs_review",
+      "submit_intent_count": 1,
+      "technical_receipt_present": true
+    },
+    {
+      "automatic_resubmission_count": 0,
+      "decision": "accepted",
+      "reconciled_result_present": false,
+      "scenario": "disputed",
+      "state": "disputed",
+      "submit_intent_count": 1,
+      "technical_receipt_present": true
+    },
+    {
+      "code": "unsupported_version",
+      "decision": "rejected",
+      "scenario": "unsupported_version"
+    },
+    {
+      "code": "unsupported_capability",
+      "decision": "rejected",
+      "scenario": "unsupported_capability"
+    },
+    {
+      "code": "authorization_mismatch",
+      "decision": "rejected",
+      "scenario": "payload_changed_after_prepare",
+      "state": "prepared"
+    },
+    {
+      "code": "idempotency_conflict",
+      "decision": "rejected",
+      "scenario": "request_id_conflict"
+    },
+    {
+      "automatic_resubmission_count": 0,
+      "decision": "one_controlled_attempt",
+      "outcomes": [
+        "confirmed",
+        "invalid_state"
+      ],
+      "scenario": "two_concurrent_submissions",
+      "submit_intent_count": 1
+    },
+    {
+      "code": "authorization_replay",
+      "decision": "rejected",
+      "scenario": "authorization_replay",
+      "state": "prepared"
+    },
+    {
+      "code": "observation_mismatch",
+      "decision": "rejected",
+      "scenario": "receipt_incompatible_with_request",
+      "state": "confirmed"
+    },
+    {
+      "code": "invalid_providers",
+      "decision": "rejected",
+      "scenario": "invalid_provider_identifier",
+      "state": "confirmed"
+    }
+  ],
+  "success_is_implicit_default": false
+}

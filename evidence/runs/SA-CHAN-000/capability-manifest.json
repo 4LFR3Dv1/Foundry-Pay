@@ -1,0 +1,22 @@
+{
+  "capabilities": [
+    {
+      "actions": [
+        "authorize",
+        "evidence",
+        "prepare",
+        "recover",
+        "status",
+        "submit"
+      ],
+      "authority": "none",
+      "capability_id": "foundry.channels.fixture.operation.v0",
+      "economic_completion": false,
+      "solana_compatibility": "not_claimed"
+    }
+  ],
+  "executor_id": "foundry.channels.fixture-adapter",
+  "limitation": "Fixture environment. No real assets. No production custody or security claim.",
+  "protocol_version": "0.1.0-draft",
+  "type": "channel_capability_manifest"
+}
