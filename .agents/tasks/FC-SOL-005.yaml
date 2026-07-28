@@ -1,0 +1,60 @@
+work_item: FC-SOL-005
+objective: define and validate upgrade authority, migration, verification, and governance policy
+owner: protocol-governance-owner
+branch: agent/solana/FC-SOL-005
+allowed_paths:
+  - docs/channels/solana/governance/**
+  - programs/foundry-channel-vault/governance-model/**
+  - tests/channels/solana/governance/**
+  - evidence/runs/FC-SOL-005/**
+dependencies:
+  - FC-SOL-003A
+  - FC-SEC-004
+  - FC-CTRL-032
+invariants:
+  - governance may change software but cannot silently rewrite an existing economic right
+  - activated rights remain settleable through pause and migration policy
+  - unallocated capacity and outstanding rights are never merged during migration
+  - reserved bytes acquire no meaning without a new account version
+  - same-program upgrades are restricted to compatible changes
+  - semantic changes require a new program or protocol version
+  - executed artifacts are bound to source, toolchain, registries, and binary hashes
+acceptance:
+  - authority and threshold rules are closed and machine-readable
+  - proposal, approval, timelock, execution, and verification are distinct phases
+  - emergency controls preserve exits and activated rights
+  - compatibility and migration matrices reject forbidden changes
+  - deployment remains blocked
+tests:
+  - authority threshold and authority-transfer vectors
+  - timelock boundary and emergency-action vectors
+  - compatible, versioned, and forbidden change classification
+  - active-channel migration rights preservation
+  - manifest completeness and artifact binding
+evidence:
+  - governance policy and upgrade manifest schemas
+  - compatibility, migration, authority, timelock, and pause matrices
+  - activated-right preservation vectors
+  - reproducible-build and deployment-authorization reports
+maturity_gate:
+  implementation: complete
+  self_validation: passed
+  external_review: not_performed
+deployment_authorization:
+  offline_model: allowed
+  local_validator: blocked
+  devnet_fixture: blocked
+  mainnet: blocked
+  real_value: blocked
+external_review_requirement:
+  required_before:
+    - mainnet
+    - real_value
+security_review: self-validated offline governance model; external review not performed
+stop_conditions:
+  - upgrade or migration can reduce, redirect, or strand an activated right
+  - emergency pause blocks settlement or every safe exit
+  - reserved bytes are reinterpreted under account version 1
+  - semantic change preserves the same program and profile without explicit versioning
+  - a binary is not linked to source and pinned toolchain
+  - handlers, CPI, deployment, multisig execution, or real assets enter scope
