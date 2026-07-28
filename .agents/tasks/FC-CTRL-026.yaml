@@ -1,0 +1,33 @@
+work_item: FC-CTRL-026
+objective: record FC-SOL-003A integration, align the design specification, and release satisfied successors
+owner: program-integrator
+branch: agent/control/FC-CTRL-026
+allowed_paths:
+  - .agents/tasks/FC-CTRL-026.yaml
+  - docs/channels/SOLANA_CHANNEL_VAULT_SPEC.md
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - docs/channels/EVIDENCE_INDEX.md
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-026/**
+dependencies:
+  - FC-SOL-003A
+invariants:
+  - exact functional, evidence, merge, and main CI identifiers are recorded
+  - design specification and executable registry express the same authority and account model
+  - self-validation does not imply external review or deployment authorization
+acceptance:
+  - FC-SOL-003A is done
+  - FC-SOL-004 and SA-CHAN-001 are ready
+  - FC-SOL-005 and FC-FAIL-003 remain ready
+  - execution and deployment gates remain blocked
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python -m ruff check .
+  - python -m ruff format --check .
+  - python scripts/check_secrets.py
+  - git diff --check
+stop_conditions:
+  - stale recipient-signer or incomplete initialization requirements remain normative
+  - an unmet execution or deployment gate advances
+

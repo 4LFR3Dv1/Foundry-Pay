@@ -43,6 +43,7 @@ README after the validation run.
 | FC-SOL-002 | `818f565977766fbc3ddd05f24ad002ea04eb816e` | `evidence/runs/FC-SOL-002/` |
 | SA-CHAN-000 | `49c62b6cfab0344a870bb285512df1d494eb6f03` | `evidence/runs/SA-CHAN-000/` |
 | FC-SOL-003 | `192bd40245244cfd540c67f880104259b5190379` | `evidence/runs/FC-SOL-003/` |
+| FC-SOL-003A | `aaffd54d0712dc7b0add981d06923dab00e4aba1` | `evidence/runs/FC-SOL-003A/` |
 
 These merges authorize the next offline protocol work only. They do not prove
 ChannelVault, Solana execution, a deployed consumer frontend, or product demand.

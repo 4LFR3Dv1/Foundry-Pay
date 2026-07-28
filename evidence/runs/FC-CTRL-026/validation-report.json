@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "work_item": "FC-CTRL-026",
+  "fc_sol_003a": {
+    "pr": 51,
+    "functional_head": "db1aeecc0ebc3777aac70fad998a92f7d511c41c",
+    "evidence_head": "7a3a28b458f4e461748d43821887b8904b299393",
+    "merge_commit": "aaffd54d0712dc7b0add981d06923dab00e4aba1",
+    "main_ci_run": 30375043779,
+    "implementation": "complete",
+    "self_validation": "passed",
+    "external_review": "not_performed"
+  },
+  "ready": [
+    "FC-SOL-004",
+    "FC-SOL-005",
+    "SA-CHAN-001",
+    "FC-FAIL-003",
+    "FC-VAL-003"
+  ],
+  "blocked": [
+    "SA-CHAN-002",
+    "SA-CHAN-003",
+    "FC-SEC-004",
+    "devnet_fixture",
+    "mainnet",
+    "real_value"
+  ]
+}
+

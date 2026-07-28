@@ -659,6 +659,38 @@ work_items:
       - claim deadline can collapse to now or grow without bound
       - a frozen byte contract changes in coordination
 
+  - id: FC-CTRL-026
+    status: done
+    objective: record FC-SOL-003A integration, align the design specification, and release satisfied successors
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-026.yaml
+      - docs/channels/SOLANA_CHANNEL_VAULT_SPEC.md
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - docs/channels/EVIDENCE_INDEX.md
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-026/**
+    dependencies: [FC-SOL-003A]
+    invariants:
+      - exact functional, evidence, merge, and main CI identifiers are recorded
+      - design specification and executable registry express the same authority and account model
+      - self-validation does not imply external review or deployment authorization
+    acceptance:
+      - FC-SOL-003A is done
+      - FC-SOL-004 and SA-CHAN-001 are ready
+      - FC-SOL-005 and FC-FAIL-003 remain ready
+      - execution and deployment gates remain blocked
+    tests:
+      - exact-SHA, graph, specification, authority, and authorization assertions
+    evidence:
+      - evidence/runs/FC-CTRL-026/validation-report.json
+    security_review: self-validated coordination; external review remains not performed
+    stop_conditions:
+      - stale recipient-signer or incomplete initialization requirements remain normative
+      - an unmet execution or deployment gate advances
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -1073,7 +1105,7 @@ work_items:
       - the program is represented as operational, deployed, audited, or safe for value
 
   - id: FC-SOL-003A
-    status: ready
+    status: done
     objective: correct ChannelVault v1 initialization metas and freeze permissionless settlement and bounded close-window guards
     owner: solana-program-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -1118,7 +1150,7 @@ work_items:
       - permissionless settlement accepts a non-canonical recipient destination
 
   - id: FC-SOL-004
-    status: blocked
+    status: ready
     objective: implement property and formal harnesses for ChannelVault invariants
     owner: formal-methods-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -1197,7 +1229,7 @@ work_items:
       - the work item is represented as SA-CHAN-001
 
   - id: SA-CHAN-001
-    status: blocked
+    status: ready
     objective: add generic capability discovery for supported channel operations
     owner: solana-agent-maintainer
     repository: 4LFR3Dv1/Solana-Agent

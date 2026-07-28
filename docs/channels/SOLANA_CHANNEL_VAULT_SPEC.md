@@ -67,14 +67,16 @@ anti-enumeration before disclosure, not confidentiality.
 
 ## Instructions
 
-### `open_channel`
+### `initialize_channel`
 
 Inputs: nonce, claim public key, mint, expiry, policy, channel ID hash.
 
-Signers: sender.
+Signers: sender, which is also the writable rent payer.
 
-Effects: create Channel PDA and vault ATA; initialize genesis/latest voucher
-hash and zero totals; enter `funding`.
+Accounts also include the exact System Program, classic SPL Token Program, and
+Associated Token Program. Effects: create the 490-byte Channel PDA with
+`invoke_signed`, create its canonical vault ATA idempotently, initialize
+genesis/latest voucher hash and zero totals, and enter `funding`.
 
 ### `fund_channel`
 
@@ -112,11 +114,13 @@ persist recipient wallet.
 
 Inputs: requested amount, voucher sequence/hash.
 
-Signers: bound recipient wallet or explicitly authorized settlement authority
-under a future delegated mode. MVP requires bound wallet approval.
+Signers: none required by the ChannelVault instruction. Settlement is
+permissionless after binding.
 
 Effects: check activated state, lifecycle, expiry, totals, destination ATA, and
-conservation; transfer checked via PDA-signed CPI; increment settled total.
+conservation; require the destination to equal the canonical ATA of the bound
+recipient and fixed mint; transfer checked via PDA-signed CPI; increment
+settled total. A caller cannot redirect value or create a right.
 
 ### `request_close`
 
@@ -125,6 +129,12 @@ Signers: sender.
 Effects: stop top-up, store claim deadline and the activated snapshot at
 request time, and enter `closing`. Voucher activation and settlement remain
 allowed until the on-chain claim deadline. It cannot reduce a right.
+
+The deadline is exclusive and must satisfy checked fixed experimental bounds:
+
+```text
+900 <= claim_deadline - Clock::unix_timestamp <= 2_592_000
+```
 
 ### `activate_voucher` while closing
 

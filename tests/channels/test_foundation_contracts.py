@@ -41,9 +41,10 @@ def test_foundation_contracts_and_gates_pass() -> None:
     )
     assert result["checks"]["work_graph"]["ready_items"] == [
         "FC-FAIL-003",
-        "FC-SOL-003A",
+        "FC-SOL-004",
         "FC-SOL-005",
         "FC-VAL-003",
+        "SA-CHAN-001",
     ]
     assert result["checks"]["work_graph"]["ready_with_incomplete_dependencies"] == {}
     assert result["checks"]["accounting"] == {
@@ -154,7 +155,7 @@ def test_fc_sec_002_contract_matches_governed_experimental_scope() -> None:
 
     assert by_id["FC-SOL-002"]["status"] == "done"
     assert by_id["FC-SOL-003"]["status"] == "done"
-    assert by_id["FC-SOL-004"]["status"] == "blocked"
+    assert by_id["FC-SOL-004"]["status"] == "ready"
     assert by_id["SA-CHAN-000"]["status"] == "done"
     assert by_id["FC-FAIL-003"]["status"] == "ready"
 
@@ -209,7 +210,7 @@ def test_fc_sol_002_contract_is_fixed_width_and_local_validator_only() -> None:
     assert "performs no token transfer or CPI" in contract
 
     assert by_id["FC-SOL-003"]["status"] == "done"
-    assert by_id["FC-SOL-004"]["status"] == "blocked"
+    assert by_id["FC-SOL-004"]["status"] == "ready"
     assert by_id["FC-FAIL-003"]["status"] == "ready"
 
 
@@ -263,7 +264,7 @@ def test_sa_chan_000_contract_is_offline_authority_free_and_adversarial() -> Non
     assert "automatic second submission count = 0" in contract
     assert "This is not an exactly-once blockchain claim." in contract
 
-    assert by_id["SA-CHAN-001"]["status"] == "blocked"
+    assert by_id["SA-CHAN-001"]["status"] == "ready"
     assert by_id["SA-CHAN-002"]["status"] == "blocked"
     assert by_id["SA-CHAN-003"]["status"] == "blocked"
     assert by_id["SA-CHAN-004"]["status"] == "blocked"
@@ -330,9 +331,9 @@ def test_fc_sol_003_contract_freezes_authority_without_runtime_or_deployment() -
     assert "does **not** implement an entrypoint" in contract
     assert "Token-2022" in contract
 
-    assert by_id["FC-SOL-004"]["status"] == "blocked"
+    assert by_id["FC-SOL-004"]["status"] == "ready"
     assert by_id["FC-SOL-005"]["status"] == "ready"
-    assert by_id["SA-CHAN-001"]["status"] == "blocked"
+    assert by_id["SA-CHAN-001"]["status"] == "ready"
 
     coordination = by_id["FC-CTRL-024"]
     assert coordination["status"] == "done"
@@ -356,11 +357,11 @@ def test_fc_sol_003a_preflight_freezes_operable_authority_and_deadline_rules() -
     by_id = {item["id"]: item for item in work_items}
 
     correction = by_id["FC-SOL-003A"]
-    assert correction["status"] == "ready"
+    assert correction["status"] == "done"
     assert correction["dependencies"] == ["FC-SOL-003", "FC-CTRL-025"]
-    assert by_id["FC-SOL-004"]["status"] == "blocked"
+    assert by_id["FC-SOL-004"]["status"] == "ready"
     assert by_id["FC-SOL-004"]["dependencies"] == ["FC-SOL-003A", "FC-SEC-002"]
-    assert by_id["SA-CHAN-001"]["status"] == "blocked"
+    assert by_id["SA-CHAN-001"]["status"] == "ready"
     assert by_id["SA-CHAN-001"]["dependencies"] == ["FC-PROTO-006", "FC-SOL-003A"]
     assert by_id["FC-SOL-005"]["status"] == "ready"
     assert by_id["FC-FAIL-003"]["status"] == "ready"
@@ -381,3 +382,17 @@ def test_fc_sol_003a_preflight_freezes_operable_authority_and_deadline_rules() -
     assert report["external_review"] == "not_performed"
     assert report["decisions"]["minimum_claim_window_seconds"] == 900
     assert report["decisions"]["maximum_claim_window_seconds"] == 2_592_000
+
+    integration = json.loads(
+        (ROOT / "evidence/runs/FC-CTRL-026/validation-report.json").read_text(encoding="utf-8")
+    )
+    assert integration["fc_sol_003a"]["functional_head"] == (
+        "db1aeecc0ebc3777aac70fad998a92f7d511c41c"
+    )
+    assert integration["fc_sol_003a"]["evidence_head"] == (
+        "7a3a28b458f4e461748d43821887b8904b299393"
+    )
+    assert integration["fc_sol_003a"]["merge_commit"] == (
+        "aaffd54d0712dc7b0add981d06923dab00e4aba1"
+    )
+    assert integration["fc_sol_003a"]["main_ci_run"] == 30375043779
