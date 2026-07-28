@@ -17,13 +17,16 @@ are binding for the MVP unless a later ADR explicitly supersedes them.
 | FC-D-010 | accepted | unknown submission outcome permits status/recovery, never blind retransmission or rematerialization | the system offers controlled at-most-one broadcast, not exactly-once blockchain execution | [FAILURE_AND_RECOVERY](FAILURE_AND_RECOVERY.md) |
 | FC-D-011 | accepted | the initial public work remains in `docs/channels/` and `contracts/channel/` | Channels can evolve without prematurely restructuring the stable external-execution package | [ADR-005](ADR/FC-ADR-005-repository-topology.md) |
 | FC-D-012 | accepted | the first post-foundation PR is an offline Channel/ChannelFunding validator | implementation starts with conservation and schema semantics, not Cloud or program code | [WORK_GRAPH](WORK_GRAPH.md) |
+| FC-D-013 | accepted | `initialize_channel` atomically creates the ChannelState PDA and canonical classic-token ATA with the sender as payer | the account metas include exact System, Token, and Associated Token programs | [ADR-010](ADR/FC-ADR-010-channelvault-v1-operability.md) |
+| FC-D-014 | accepted | v1 settlement is permissionless after binding and can pay only the bound recipient canonical ATA | keepers may deliver an existing right but cannot redirect value or create authority | [ADR-010](ADR/FC-ADR-010-channelvault-v1-operability.md) |
+| FC-D-015 | accepted | the exclusive claim window is bounded from 900 through 2,592,000 seconds using checked Solana Clock arithmetic | sender cannot collapse the presentation window to now or leave closure unbounded | [ADR-010](ADR/FC-ADR-010-channelvault-v1-operability.md) |
 
 ## Decisions intentionally deferred
 
 - exact Borsh/Rust wire representation and cross-language hash vectors;
 - exact sequence gaps policy beyond the MVP default of `+1`;
 - browser claim-key storage and recovery;
-- claim expiry and close grace production values;
+- production claim-window policy beyond the fixed experimental v1 bounds;
 - ChannelVault upgrade governance;
 - production custody, identity, compliance, and operations.
 
