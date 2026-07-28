@@ -39,9 +39,9 @@ def test_foundation_contracts_and_gates_pass() -> None:
         is True
     )
     assert result["checks"]["work_graph"]["ready_items"] == [
-        "FC-SOL-002",
+        "FC-FAIL-003",
+        "FC-SOL-003",
         "FC-VAL-003",
-        "SA-CHAN-000",
     ]
     assert result["checks"]["work_graph"]["ready_with_incomplete_dependencies"] == {}
     assert result["checks"]["accounting"] == {
@@ -76,7 +76,7 @@ def test_fc_proto_007_integration_uses_governed_self_validation() -> None:
     }
 
     assert by_id["FC-SEC-002"]["status"] == "done"
-    assert by_id["SA-CHAN-000"]["status"] == "ready"
+    assert by_id["SA-CHAN-000"]["status"] == "done"
     assert by_id["SA-CHAN-000"]["dependencies"] == [
         "FC-PROTO-007",
         "FC-SEC-002",
@@ -150,11 +150,11 @@ def test_fc_sec_002_contract_matches_governed_experimental_scope() -> None:
     task = yaml.safe_load((ROOT / ".agents/tasks/FC-SEC-002.yaml").read_text(encoding="utf-8"))
     assert task["dependencies"] == security["dependencies"]
 
-    assert by_id["FC-SOL-002"]["status"] == "ready"
-    assert by_id["FC-SOL-003"]["status"] == "blocked"
+    assert by_id["FC-SOL-002"]["status"] == "done"
+    assert by_id["FC-SOL-003"]["status"] == "ready"
     assert by_id["FC-SOL-004"]["status"] == "blocked"
-    assert by_id["SA-CHAN-000"]["status"] == "ready"
-    assert by_id["FC-FAIL-003"]["status"] == "blocked"
+    assert by_id["SA-CHAN-000"]["status"] == "done"
+    assert by_id["FC-FAIL-003"]["status"] == "ready"
 
 
 def test_fc_sol_002_contract_is_fixed_width_and_local_validator_only() -> None:
@@ -166,7 +166,7 @@ def test_fc_sol_002_contract_is_fixed_width_and_local_validator_only() -> None:
     assert by_id["FC-CTRL-020"]["status"] == "done"
 
     account_model = by_id["FC-SOL-002"]
-    assert account_model["status"] == "ready"
+    assert account_model["status"] == "done"
     assert account_model["dependencies"] == ["FC-PROTO-001", "FC-SEC-002"]
     assert account_model["maturity_gate"] == {
         "implementation": "complete",
@@ -206,9 +206,9 @@ def test_fc_sol_002_contract_is_fixed_width_and_local_validator_only() -> None:
     assert "Token-2022" in contract
     assert "performs no token transfer or CPI" in contract
 
-    assert by_id["FC-SOL-003"]["status"] == "blocked"
+    assert by_id["FC-SOL-003"]["status"] == "ready"
     assert by_id["FC-SOL-004"]["status"] == "blocked"
-    assert by_id["FC-FAIL-003"]["status"] == "blocked"
+    assert by_id["FC-FAIL-003"]["status"] == "ready"
 
 
 def test_sa_chan_000_contract_is_offline_authority_free_and_adversarial() -> None:
@@ -220,7 +220,7 @@ def test_sa_chan_000_contract_is_offline_authority_free_and_adversarial() -> Non
     assert by_id["FC-CTRL-021"]["status"] == "done"
 
     fake_adapter = by_id["SA-CHAN-000"]
-    assert fake_adapter["status"] == "ready"
+    assert fake_adapter["status"] == "done"
     assert fake_adapter["dependencies"] == [
         "FC-PROTO-007",
         "FC-SEC-002",

@@ -521,6 +521,39 @@ work_items:
       - automatic retry follows an unknown submission result
       - SA-CHAN-001 or a deployment gate is advanced
 
+  - id: FC-CTRL-022
+    status: done
+    objective: record FC-SOL-002 and SA-CHAN-000 integration and release only satisfied successors
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-022.yaml
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - docs/channels/EVIDENCE_INDEX.md
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-022/**
+    dependencies: [FC-SOL-002, SA-CHAN-000]
+    invariants:
+      - integration records exact functional, evidence, merge, and main CI identifiers
+      - self-validation is not represented as external review
+      - local and offline fixture authorization does not authorize devnet, mainnet, or real value
+      - only work items with satisfied dependencies become ready
+    acceptance:
+      - FC-SOL-002 and SA-CHAN-000 are done
+      - FC-SOL-003 and FC-FAIL-003 are ready
+      - SA-CHAN-001 and all deployment gates remain blocked
+    tests:
+      - executable graph, dependency, maturity, and authorization assertions
+    evidence:
+      - evidence/runs/FC-CTRL-022/validation-report.json
+    security_review: self-validated coordination; external review remains not performed
+    stop_conditions:
+      - an unmet successor is marked ready
+      - external review is inferred
+      - deployment authorization is broadened
+      - the fake adapter is represented as ChannelVault compatible
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -838,7 +871,7 @@ work_items:
     stop_conditions: [program implementation begins in the foundation work item]
 
   - id: FC-SOL-002
-    status: ready
+    status: done
     objective: freeze ChannelVault account layout, PDA seeds, space, rent, and token accounts
     owner: solana-program-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -890,7 +923,7 @@ work_items:
       - local-validator-only authorization is broadened
 
   - id: FC-SOL-003
-    status: blocked
+    status: ready
     objective: freeze ChannelVault instruction, signature-precompile, event, and error contracts
     owner: solana-program-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -932,7 +965,7 @@ work_items:
     stop_conditions: [mainnet discussion without approved upgrade policy]
 
   - id: SA-CHAN-000
-    status: ready
+    status: done
     objective: draft transport-independent channel capability contracts and a fake conformance adapter
     owner: protocol-integration-engineer
     repository: 4LFR3Dv1/Foundry-Pay
@@ -1053,7 +1086,7 @@ work_items:
     stop_conditions: [claim secret, private key, credential, or customer data enters evidence]
 
   - id: FC-FAIL-003
-    status: blocked
+    status: ready
     objective: exercise offline channel settlement, lifecycle, ambiguity, and recovery failures against reference runtimes
     owner: reliability-protocol-engineer
     repository: 4LFR3Dv1/Foundry-Pay

@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "work_item": "FC-CTRL-022",
+  "fc_sol_002": {
+    "pr": 44,
+    "functional_head": "d69336048de83b38ffa17385cc38def02d3717de",
+    "evidence_head": "d84cea1fbfc44820598288eb3cd65547d6773139",
+    "merge_commit": "818f565977766fbc3ddd05f24ad002ea04eb816e",
+    "main_ci_run": 30362592323,
+    "implementation": "complete",
+    "self_validation": "passed",
+    "external_review": "not_performed",
+    "deployment_authorization": {
+      "local_validator": "allowed",
+      "devnet_fixture": "blocked",
+      "mainnet": "blocked",
+      "real_value": "blocked"
+    }
+  },
+  "sa_chan_000": {
+    "pr": 45,
+    "functional_head": "7513587c556e7604d8b357c7d149fe30cfb28cef",
+    "evidence_head": "c918ce1dea798f5531989308503d85fbd07bca54",
+    "merge_commit": "49c62b6cfab0344a870bb285512df1d494eb6f03",
+    "main_ci_run": 30364372600,
+    "implementation": "complete",
+    "self_validation": "passed",
+    "external_review": "not_performed",
+    "deployment_authorization": {
+      "offline_fixture": "allowed",
+      "devnet_fixture": "blocked",
+      "mainnet": "blocked",
+      "real_value": "blocked"
+    }
+  },
+  "ready": [
+    "FC-SOL-003",
+    "FC-FAIL-003"
+  ],
+  "blocked": [
+    "SA-CHAN-001",
+    "FC-SOL-004",
+    "devnet_fixture",
+    "mainnet",
+    "real_value"
+  ]
+}
