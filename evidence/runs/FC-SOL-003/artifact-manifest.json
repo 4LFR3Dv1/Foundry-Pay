@@ -1,0 +1,153 @@
+{
+  "artifact_count": 29,
+  "artifacts": [
+    {
+      "bytes": 6815,
+      "path": "evidence/runs/FC-SOL-003/account-meta-contracts-v1.json",
+      "sha256": "sha256:d8e6ff0bee4319830ee9522f5f272beebeac9409589a9312ad0616879f445dc5"
+    },
+    {
+      "bytes": 1996,
+      "path": "evidence/runs/FC-SOL-003/ed25519-offset-vectors-v1.json",
+      "sha256": "sha256:ce30b6453b54b782b2d77b110445ffd90a504def244746424e0ffd54163838f0"
+    },
+    {
+      "bytes": 1910,
+      "path": "evidence/runs/FC-SOL-003/error-registry-v1.json",
+      "sha256": "sha256:313f1ae1f7098a90099b27c1e4713d8f84fff97986f2e5989a5a66b276ab7e21"
+    },
+    {
+      "bytes": 1062,
+      "path": "evidence/runs/FC-SOL-003/event-registry-v1.json",
+      "sha256": "sha256:a89cd2c766659fa57c591a72de090ae5cae7575b4eaaca723aed4a4b4c904946"
+    },
+    {
+      "bytes": 1969,
+      "path": "evidence/runs/FC-SOL-003/idl-hash-report.json",
+      "sha256": "sha256:0adbc605fc4e23b2b3fc7f1f6b6e250be7504cc0e0df8edc83659c1c5aaa234e"
+    },
+    {
+      "bytes": 2490,
+      "path": "evidence/runs/FC-SOL-003/instruction-registry-v1.json",
+      "sha256": "sha256:c1b8a124a2226c784b4aba6492c3918dbe04fa8403b2881cb2558f5d3be6a503"
+    },
+    {
+      "bytes": 3093,
+      "path": "evidence/runs/FC-SOL-003/instruction-serialization-v1.json",
+      "sha256": "sha256:5941422c2a9a94d1a466bb2ba413b92485f456d1a21fb91ac56f2ef153e4f71a"
+    },
+    {
+      "bytes": 707,
+      "path": "evidence/runs/FC-SOL-003/lifecycle-transition-matrix-v1.json",
+      "sha256": "sha256:bd7716808782d74b4c100d4cffaee7dbde28bac8c8f0a3445286bf888953e2a0"
+    },
+    {
+      "bytes": 5079,
+      "path": "evidence/runs/FC-SOL-003/negative-vectors-v1.json",
+      "sha256": "sha256:50ae0992e1462a037e97263ec32910895cccd57bce284e6c3f6df9fc9c1f713b"
+    },
+    {
+      "bytes": 1290,
+      "path": "evidence/runs/FC-SOL-003/positive-vectors-v1.json",
+      "sha256": "sha256:95105a6f748e15a44042a4ab977510f014795847b7e6dba4eaa26b847a279ec7"
+    },
+    {
+      "bytes": 577,
+      "path": "evidence/runs/FC-SOL-003/signed-message-mapping-v1.json",
+      "sha256": "sha256:4a5a7fc5940d65e9792d00ce64ec470016200c694405cac9cb7c435dd9ac4b70"
+    },
+    {
+      "bytes": 1125,
+      "path": "evidence/runs/FC-SOL-003/toolchain-report.json",
+      "sha256": "sha256:d2dbb684da89c79fbd6e0ea6e6258b2deabecd39089350831cef9bb16dfa1ff3"
+    },
+    {
+      "bytes": 478,
+      "path": "evidence/runs/FC-SOL-003/validation-report.json",
+      "sha256": "sha256:254fd2dd7c67c3b49efa1e867c6c93d914ca4ca755fa67a5d7e5f0c03c05a8fa"
+    },
+    {
+      "bytes": 968,
+      "path": "evidence/runs/FC-SOL-003/README.md",
+      "sha256": "sha256:46b848018f7455d3dbe3ea32b6b13c3e4d82f064402b0bbeda4babc439c03e63"
+    },
+    {
+      "bytes": 951,
+      "path": "evidence/runs/FC-SOL-003/TASK_CONTRACT.yaml",
+      "sha256": "sha256:34ec556388ed163baced5972f999f4e5b08d38029038e072e64f6e8f372ee796"
+    },
+    {
+      "bytes": 1522,
+      "path": "evidence/runs/FC-SOL-003/cargo-test.xml",
+      "sha256": "sha256:d1d79578fda337d0b6cd000243491e664f5f605fb2b6171d609fc902cbda2267"
+    },
+    {
+      "bytes": 1494,
+      "path": "evidence/runs/FC-SOL-003/pytest-full.xml",
+      "sha256": "sha256:787fac7e8ea595ced662dba5230b28f29704a2d0503f63606aed54590a2bdb35"
+    },
+    {
+      "bytes": 5335,
+      "path": "evidence/runs/FC-SOL-003/generate_evidence.py",
+      "sha256": "sha256:e3e81f78fd188021fa583674f615b549fe1055acd09da9810b558e6000a9f858"
+    },
+    {
+      "bytes": 11573,
+      "path": "programs/foundry-channel-vault/instruction-contract/src/contract.rs",
+      "sha256": "sha256:ce07a366e125e4ffcb9e6428f82a847b9ab5cc43552587df576a68cd01c31756"
+    },
+    {
+      "bytes": 10811,
+      "path": "programs/foundry-channel-vault/instruction-contract/src/ed25519.rs",
+      "sha256": "sha256:ba6bb64cab6985bbc7c09e3a5b19d89c0b28928ef802b2d4ae895717e7e98563"
+    },
+    {
+      "bytes": 12503,
+      "path": "programs/foundry-channel-vault/instruction-contract/src/instruction.rs",
+      "sha256": "sha256:653816262527648beff10246ce2fc3ba57684049368c802c96f4be1f9f970d56"
+    },
+    {
+      "bytes": 1273,
+      "path": "programs/foundry-channel-vault/instruction-contract/src/lib.rs",
+      "sha256": "sha256:9281f7586f45f3049f49ada718a021b443f6dc1805de78975ff7c3af87da1991"
+    },
+    {
+      "bytes": 1946,
+      "path": "programs/foundry-channel-vault/instruction-contract/src/lifecycle.rs",
+      "sha256": "sha256:a566f686473e026125e25188abc6571eb39e111d6a21fe97e33b074a23484a84"
+    },
+    {
+      "bytes": 14830,
+      "path": "programs/foundry-channel-vault/instruction-contract/examples/generate_instruction_vectors.rs",
+      "sha256": "sha256:7fbfa5bfe2d5e4b3ad48405d727ae65b1043921c58842b35800927027853150c"
+    },
+    {
+      "bytes": 470,
+      "path": "programs/foundry-channel-vault/instruction-contract/Cargo.toml",
+      "sha256": "sha256:feb60523b8ac966144a3009fd0436b83e651aee931d85b82aad9e32f580ff409"
+    },
+    {
+      "bytes": 16225,
+      "path": "programs/foundry-channel-vault/instruction-contract/Cargo.lock",
+      "sha256": "sha256:f738147cde3d2fb3fa8769ff99d78c664bf014f3e3e7db06bbdf48c9aab17bfb"
+    },
+    {
+      "bytes": 95,
+      "path": "programs/foundry-channel-vault/rust-toolchain.toml",
+      "sha256": "sha256:4597c40dd4cdd800a7b05310cc6feacdb87cbbe057f9621957c6882b4d45874c"
+    },
+    {
+      "bytes": 5403,
+      "path": "tests/channels/solana/instructions/test_instruction_contract.py",
+      "sha256": "sha256:a473efbb2cb7ef5d2c8138049285ace12bc952f47056063e983dbbbc832d37bd"
+    },
+    {
+      "bytes": 9033,
+      "path": "docs/channels/solana/instructions/FC-SOL-003-CONTRACT.md",
+      "sha256": "sha256:48f51e6a50b1a7ae495346af6c0f8afe770d39c70e579048f4523cddc22e15d0"
+    }
+  ],
+  "functional_head": "2b6b5e4c8440571bf49f7917a088f861fd46d46e",
+  "schema_version": 1,
+  "work_item": "FC-SOL-003"
+}

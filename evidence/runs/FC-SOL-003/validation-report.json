@@ -1,11 +1,17 @@
 {
   "account_layout_bytes": 490,
+  "baseline": "c0b32735ff5ac17dd88e3f3ca17ea5eb1819d2c5",
+  "cargo_tests": 12,
   "cpi_or_transfers": 0,
   "deployment": "blocked",
   "ed25519_profiles": 2,
+  "external_review": "not_performed",
+  "functional_head": "2b6b5e4c8440571bf49f7917a088f861fd46d46e",
   "instruction_count": 8,
   "negative_vectors": 25,
   "positive_vectors": 8,
+  "python_evidence_tests": 9,
   "runtime_handlers": 0,
+  "self_validation": "passed",
   "status": "passed"
 }
