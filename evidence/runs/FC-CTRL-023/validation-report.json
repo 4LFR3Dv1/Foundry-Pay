@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "work_item": "FC-CTRL-023",
+  "baseline": "bbe22320fa26a312dac8a179b6c40a6695adda3f",
+  "fc_sol_003": {
+    "status": "ready",
+    "dependencies_include": [
+      "FC-SOL-002",
+      "FC-SEC-002"
+    ],
+    "instruction_count": 8,
+    "channel_state_bytes": 490,
+    "ed25519": {
+      "immediately_preceding": true,
+      "self_contained": true,
+      "exact_message": true,
+      "external_instruction_references": "rejected"
+    },
+    "maturity": {
+      "implementation": "pending",
+      "self_validation": "pending",
+      "external_review": "not_performed"
+    },
+    "deployment_authorization": {
+      "local_fixture": "allowed",
+      "local_validator": "allowed",
+      "devnet_fixture": "blocked",
+      "mainnet": "blocked",
+      "real_value": "blocked"
+    }
+  },
+  "unchanged": [
+    "FC-PROTO-006 preimages",
+    "FC-SOL-002 account layout",
+    "FC-SOL-002 PDA derivation",
+    "program runtime"
+  ]
+}

@@ -1,0 +1,55 @@
+work_item: FC-SOL-003
+objective: freeze executable ChannelVault instruction, account-meta, signed-message, lifecycle, event, and error contracts
+owner: solana-program-engineer
+branch: agent/solana/FC-SOL-003
+allowed_paths:
+  - programs/foundry-channel-vault/**
+  - docs/channels/solana/instructions/**
+  - tests/channels/solana/instructions/**
+  - evidence/runs/FC-SOL-003/**
+dependencies:
+  - FC-PROTO-002
+  - FC-PROTO-003
+  - FC-PROTO-004
+  - FC-PROTO-005
+  - FC-SOL-002
+  - FC-SEC-002
+invariants:
+  - every mutation maps to closed signed authority and checked accounts
+  - FC-PROTO-006 canonical bytes and FC-SOL-002 account bytes remain unchanged
+  - Ed25519 instructions are immediately preceding, self-contained, canonical, and exact-byte
+  - technical events report on-chain facts and never declare business completion
+  - finalized is terminal and activated rights remain reserved until reconciled settlement
+acceptance:
+  - initialize, fund, activate, bind, settle, request-close, refund, and finalize contracts are complete
+  - each account meta freezes signer, mutability, owner, PDA, mint, token-program, address, and lifecycle checks
+  - deterministic positive and negative serialization and Ed25519-offset vectors pass
+  - error and event registries are stable and closed
+tests:
+  - instruction and account-meta serialization
+  - exact Ed25519 offsets, instruction position, pubkeys, message bytes, and lengths
+  - substituted account, signer, PDA, owner, mint, vault, program, lifecycle, sequence, value, binding, expiry, version, and profile
+evidence:
+  - instruction, account-meta, signed-message, Ed25519, lifecycle, event, error, positive, and negative registries
+  - registry hash, validation report, and artifact manifest
+maturity_gate:
+  implementation: complete
+  self_validation: passed
+  external_review: not_performed
+deployment_authorization:
+  local_fixture: allowed
+  local_validator: allowed
+  devnet_fixture: blocked
+  mainnet: blocked
+  real_value: blocked
+external_review_requirement:
+  required_before:
+    - devnet_fixture
+    - mainnet
+    - real_value
+stop_conditions:
+  - Ed25519 instruction offsets, indices, message boundaries, or signed-object mapping are ambiguous
+  - runtime handlers, CPI, transfers, deployment, RPC, wallet, or consumer behavior enter scope
+  - Token-2022 or a variable-width account enters scope
+  - an existing preimage, profile, domain, account layout, or PDA derivation changes
+  - the program is represented as operational, deployed, audited, or safe for value
