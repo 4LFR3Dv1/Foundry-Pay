@@ -1,0 +1,102 @@
+{
+  "artifacts": [
+    {
+      "bytes": 476,
+      "path": "services/failure_lab/channel-concurrency/Cargo.toml",
+      "sha256": "sha256:56da11922b18825fb3f13b71a73c41a1ca1fc4ca2c44c4a9100a5bf0f071f6fd"
+    },
+    {
+      "bytes": 22209,
+      "path": "services/failure_lab/channel-concurrency/Cargo.lock",
+      "sha256": "sha256:128acfcf18fe06b9e432ec8aa996d6cc40c8a5d103b11dca491389a1274e500a"
+    },
+    {
+      "bytes": 95,
+      "path": "services/failure_lab/channel-concurrency/rust-toolchain.toml",
+      "sha256": "sha256:4597c40dd4cdd800a7b05310cc6feacdb87cbbe057f9621957c6882b4d45874c"
+    },
+    {
+      "bytes": 19020,
+      "path": "services/failure_lab/channel-concurrency/src/lib.rs",
+      "sha256": "sha256:215638bb091e11bafba5db160b5e11f57eb50f14b41798be563edd55a9cbd319"
+    },
+    {
+      "bytes": 9866,
+      "path": "services/failure_lab/channel-concurrency/examples/schedule_explorer.rs",
+      "sha256": "sha256:8a0f481fce40dc11045ad5de852141ed536e9706ab6fc27d6e22481a41268335"
+    },
+    {
+      "bytes": 2862,
+      "path": "docs/channels/security/concurrency/FC-SEC-004-CONTRACT.md",
+      "sha256": "sha256:033bbfe4ba3847f5a7ef10e970dea1b73c89c9c218423def70d0188eb784cc1e"
+    },
+    {
+      "bytes": 4260,
+      "path": "tests/channels/security/concurrency/test_fc_sec_004.py",
+      "sha256": "sha256:35b31c141bd486d136b2ff5f982d8b7f303771b6bfe1cedea1400424209d2e3f"
+    },
+    {
+      "bytes": 412,
+      "path": "evidence/runs/FC-SEC-004/authority-and-accounting-report.json",
+      "sha256": "sha256:aee9312ac5fef71938cd386dc0f53222cfdf17d59080dcf7552dd955e5b7a1bd"
+    },
+    {
+      "bytes": 7660,
+      "path": "evidence/runs/FC-SEC-004/bounded-schedule-report.json",
+      "sha256": "sha256:08b266c7f49d82ffa19eeb7222cf4eaf89b57565932eba951bcc731070147053"
+    },
+    {
+      "bytes": 1135,
+      "path": "evidence/runs/FC-SEC-004/cargo-test.txt",
+      "sha256": "sha256:85badb42c85996b8d5753bcedc32b68c63ff57d500a76d87da7f5f4552d15a21"
+    },
+    {
+      "bytes": 7626,
+      "path": "evidence/runs/FC-SEC-004/generate_evidence.py",
+      "sha256": "sha256:992ebee6451db19ecda2e1b526f037ed0b3c1fa108d8a34c806934617ddce1de"
+    },
+    {
+      "bytes": 3577,
+      "path": "evidence/runs/FC-SEC-004/linearization-witnesses.json",
+      "sha256": "sha256:44c3b9367ed3d2e80b4eaf962d8d893e225ec3f90560100e1ccd21ba0453f88f"
+    },
+    {
+      "bytes": 210,
+      "path": "evidence/runs/FC-SEC-004/property-report.json",
+      "sha256": "sha256:829a407cbebafc790f5ae0e2a9c22f7c08e6e40361449cbe6ac07aea7547ec62"
+    },
+    {
+      "bytes": 458,
+      "path": "evidence/runs/FC-SEC-004/race-matrix.json",
+      "sha256": "sha256:9ac844af41a18d7ea6f057e223d67d0563b0c18110d7f9cf105d22a48f265fd8"
+    },
+    {
+      "bytes": 641,
+      "path": "evidence/runs/FC-SEC-004/README.md",
+      "sha256": "sha256:473c4ebaaddbd603464a746a3c59405949407bf863049d4b1228c5a7207e67f2"
+    },
+    {
+      "bytes": 325,
+      "path": "evidence/runs/FC-SEC-004/stale-snapshot-report.json",
+      "sha256": "sha256:884e1f074fd79ff87d7b17fc69687caa898051bea1b55393b8c6dc7109c783d9"
+    },
+    {
+      "bytes": 586,
+      "path": "evidence/runs/FC-SEC-004/TASK_CONTRACT.yaml",
+      "sha256": "sha256:1ff4b73249d15dd341fd85dc3f614a211fa4f84262db6baa382f7afa1e3a5109"
+    },
+    {
+      "bytes": 191,
+      "path": "evidence/runs/FC-SEC-004/toolchain-report.json",
+      "sha256": "sha256:c69d9f92cb9489c8e62ea44d5164f8a2ec87075de8cd5e0b1761ceb9dd6039cd"
+    },
+    {
+      "bytes": 806,
+      "path": "evidence/runs/FC-SEC-004/validation-report.json",
+      "sha256": "sha256:d378fecd4c70a00c5955e2edbd3938cb0785e0f59f20a96d4b70d6dd0a0ab2f4"
+    }
+  ],
+  "baseline": "39e067965955f5389153eb05d4fe436cf5d13444",
+  "implementation_commit": "2458885917eb917e263538397a601f0c81a1e855",
+  "work_item": "FC-SEC-004"
+}

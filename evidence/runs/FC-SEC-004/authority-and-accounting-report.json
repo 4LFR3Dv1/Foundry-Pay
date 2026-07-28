@@ -1,0 +1,11 @@
+{
+  "caller_affects_destination": false,
+  "commit_time_revalidation": true,
+  "conditional_commit": "current_version == candidate.read_version",
+  "conservation": "vault_balance + settled + refunded == funded",
+  "modeled_vault_balance": "funded - refunded - settled",
+  "obligation_hash_affects_economics": false,
+  "operation_id_uniqueness": true,
+  "real_spl_balance_compared": false,
+  "result": "passed"
+}

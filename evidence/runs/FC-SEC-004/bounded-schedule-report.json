@@ -1,0 +1,303 @@
+{
+  "work_item": "FC-SEC-004",
+  "claim": "offline concurrent candidates were checked for conditional commit, stale rejection, conservation, and serial witnesses",
+  "scenarios": 7,
+  "schedules": 14,
+  "violations": 0,
+  "results": [
+    {
+      "scenario": "settle_30_vs_settle_30",
+      "commit_order": [
+        0,
+        1
+      ],
+      "prepared_count": 2,
+      "accepted_count": 1,
+      "stale_count": 1,
+      "duplicate_count": 0,
+      "model_rejection_count": 0,
+      "accepted_order": [
+        "1414141414141414141414141414141414141414141414141414141414141414"
+      ],
+      "final_version": 1,
+      "final_settled": 30,
+      "final_refunded": 0,
+      "final_activated": 40,
+      "serial_witness": true,
+      "conservation": true
+    },
+    {
+      "scenario": "settle_30_vs_settle_30",
+      "commit_order": [
+        1,
+        0
+      ],
+      "prepared_count": 2,
+      "accepted_count": 1,
+      "stale_count": 1,
+      "duplicate_count": 0,
+      "model_rejection_count": 0,
+      "accepted_order": [
+        "1515151515151515151515151515151515151515151515151515151515151515"
+      ],
+      "final_version": 1,
+      "final_settled": 30,
+      "final_refunded": 0,
+      "final_activated": 40,
+      "serial_witness": true,
+      "conservation": true
+    },
+    {
+      "scenario": "settle_10_vs_settle_30",
+      "commit_order": [
+        0,
+        1
+      ],
+      "prepared_count": 2,
+      "accepted_count": 1,
+      "stale_count": 1,
+      "duplicate_count": 0,
+      "model_rejection_count": 0,
+      "accepted_order": [
+        "1616161616161616161616161616161616161616161616161616161616161616"
+      ],
+      "final_version": 1,
+      "final_settled": 10,
+      "final_refunded": 0,
+      "final_activated": 40,
+      "serial_witness": true,
+      "conservation": true
+    },
+    {
+      "scenario": "settle_10_vs_settle_30",
+      "commit_order": [
+        1,
+        0
+      ],
+      "prepared_count": 2,
+      "accepted_count": 1,
+      "stale_count": 1,
+      "duplicate_count": 0,
+      "model_rejection_count": 0,
+      "accepted_order": [
+        "1717171717171717171717171717171717171717171717171717171717171717"
+      ],
+      "final_version": 1,
+      "final_settled": 30,
+      "final_refunded": 0,
+      "final_activated": 40,
+      "serial_witness": true,
+      "conservation": true
+    },
+    {
+      "scenario": "duplicate_settlement_id",
+      "commit_order": [
+        0,
+        1
+      ],
+      "prepared_count": 2,
+      "accepted_count": 1,
+      "stale_count": 0,
+      "duplicate_count": 1,
+      "model_rejection_count": 0,
+      "accepted_order": [
+        "1818181818181818181818181818181818181818181818181818181818181818"
+      ],
+      "final_version": 1,
+      "final_settled": 20,
+      "final_refunded": 0,
+      "final_activated": 40,
+      "serial_witness": true,
+      "conservation": true
+    },
+    {
+      "scenario": "duplicate_settlement_id",
+      "commit_order": [
+        1,
+        0
+      ],
+      "prepared_count": 2,
+      "accepted_count": 1,
+      "stale_count": 0,
+      "duplicate_count": 1,
+      "model_rejection_count": 0,
+      "accepted_order": [
+        "1818181818181818181818181818181818181818181818181818181818181818"
+      ],
+      "final_version": 1,
+      "final_settled": 20,
+      "final_refunded": 0,
+      "final_activated": 40,
+      "serial_witness": true,
+      "conservation": true
+    },
+    {
+      "scenario": "refund_60_vs_settle_40",
+      "commit_order": [
+        0,
+        1
+      ],
+      "prepared_count": 2,
+      "accepted_count": 1,
+      "stale_count": 1,
+      "duplicate_count": 0,
+      "model_rejection_count": 0,
+      "accepted_order": [
+        "1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e"
+      ],
+      "final_version": 1,
+      "final_settled": 0,
+      "final_refunded": 60,
+      "final_activated": 40,
+      "serial_witness": true,
+      "conservation": true
+    },
+    {
+      "scenario": "refund_60_vs_settle_40",
+      "commit_order": [
+        1,
+        0
+      ],
+      "prepared_count": 2,
+      "accepted_count": 1,
+      "stale_count": 1,
+      "duplicate_count": 0,
+      "model_rejection_count": 0,
+      "accepted_order": [
+        "1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f"
+      ],
+      "final_version": 1,
+      "final_settled": 40,
+      "final_refunded": 0,
+      "final_activated": 40,
+      "serial_witness": true,
+      "conservation": true
+    },
+    {
+      "scenario": "activation_pre_deadline_vs_refund_at_deadline",
+      "commit_order": [
+        0,
+        1
+      ],
+      "prepared_count": 2,
+      "accepted_count": 1,
+      "stale_count": 0,
+      "duplicate_count": 0,
+      "model_rejection_count": 1,
+      "accepted_order": [
+        "2929292929292929292929292929292929292929292929292929292929292929"
+      ],
+      "final_version": 1,
+      "final_settled": 0,
+      "final_refunded": 60,
+      "final_activated": 40,
+      "serial_witness": true,
+      "conservation": true
+    },
+    {
+      "scenario": "activation_pre_deadline_vs_refund_at_deadline",
+      "commit_order": [
+        1,
+        0
+      ],
+      "prepared_count": 2,
+      "accepted_count": 1,
+      "stale_count": 1,
+      "duplicate_count": 0,
+      "model_rejection_count": 0,
+      "accepted_order": [
+        "2929292929292929292929292929292929292929292929292929292929292929"
+      ],
+      "final_version": 1,
+      "final_settled": 0,
+      "final_refunded": 60,
+      "final_activated": 40,
+      "serial_witness": true,
+      "conservation": true
+    },
+    {
+      "scenario": "close_vs_activation",
+      "commit_order": [
+        0,
+        1
+      ],
+      "prepared_count": 2,
+      "accepted_count": 1,
+      "stale_count": 1,
+      "duplicate_count": 0,
+      "model_rejection_count": 0,
+      "accepted_order": [
+        "3232323232323232323232323232323232323232323232323232323232323232"
+      ],
+      "final_version": 1,
+      "final_settled": 0,
+      "final_refunded": 0,
+      "final_activated": 40,
+      "serial_witness": true,
+      "conservation": true
+    },
+    {
+      "scenario": "close_vs_activation",
+      "commit_order": [
+        1,
+        0
+      ],
+      "prepared_count": 2,
+      "accepted_count": 1,
+      "stale_count": 1,
+      "duplicate_count": 0,
+      "model_rejection_count": 0,
+      "accepted_order": [
+        "3333333333333333333333333333333333333333333333333333333333333333"
+      ],
+      "final_version": 1,
+      "final_settled": 0,
+      "final_refunded": 0,
+      "final_activated": 70,
+      "serial_witness": true,
+      "conservation": true
+    },
+    {
+      "scenario": "same_sequence_activation",
+      "commit_order": [
+        0,
+        1
+      ],
+      "prepared_count": 2,
+      "accepted_count": 1,
+      "stale_count": 1,
+      "duplicate_count": 0,
+      "model_rejection_count": 0,
+      "accepted_order": [
+        "3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c"
+      ],
+      "final_version": 1,
+      "final_settled": 0,
+      "final_refunded": 0,
+      "final_activated": 60,
+      "serial_witness": true,
+      "conservation": true
+    },
+    {
+      "scenario": "same_sequence_activation",
+      "commit_order": [
+        1,
+        0
+      ],
+      "prepared_count": 2,
+      "accepted_count": 1,
+      "stale_count": 1,
+      "duplicate_count": 0,
+      "model_rejection_count": 0,
+      "accepted_order": [
+        "3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d"
+      ],
+      "final_version": 1,
+      "final_settled": 0,
+      "final_refunded": 0,
+      "final_activated": 70,
+      "serial_witness": true,
+      "conservation": true
+    }
+  ]
+}

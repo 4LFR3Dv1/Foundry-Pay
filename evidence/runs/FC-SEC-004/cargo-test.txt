@@ -1,0 +1,22 @@
+
+running 9 tests
+test tests::activation_and_close_have_a_serial_witness ... ok
+test tests::activation_prepared_before_deadline_is_revalidated_at_commit ... ok
+test tests::duplicate_operation_id_has_one_economic_effect ... ok
+test tests::refund_and_settlement_linearize_after_stale_repreparation ... ok
+test tests::oversubscribed_settlements_from_one_snapshot_cannot_both_commit ... ok
+test tests::refund_then_finalize_requires_fresh_snapshot ... ok
+test tests::safe_partial_settlements_require_explicit_repreparation ... ok
+test tests::settlement_then_finalize_requires_fresh_snapshot ... ok
+test tests::concurrent_settlement_pairs_are_linearizable ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.10s
+     Running unittests src\lib.rs (services\failure_lab\channel-concurrency\target\debug\deps\foundry_channel_concurrency_model-ce74426079b60069.exe)
+   Doc-tests foundry_channel_concurrency_model

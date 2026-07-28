@@ -1,0 +1,16 @@
+{
+  "direct_schedule_orders": 14,
+  "result": "passed",
+  "scenarios": [
+    "settle_30_vs_settle_30",
+    "settle_10_vs_settle_30",
+    "duplicate_settlement_id",
+    "refund_60_vs_settle_40",
+    "activation_pre_deadline_vs_refund_at_deadline",
+    "close_vs_activation",
+    "same_sequence_activation",
+    "settlement_then_finalize_requires_fresh_snapshot",
+    "refund_then_finalize_requires_fresh_snapshot"
+  ],
+  "unit_only_dependency_scenarios": 2
+}

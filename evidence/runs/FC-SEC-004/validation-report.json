@@ -1,0 +1,23 @@
+{
+  "baseline": "39e067965955f5389153eb05d4fe436cf5d13444",
+  "bounded_scenarios": 7,
+  "bounded_schedules": 14,
+  "claim": "concurrent settlement and lifecycle interleavings were checked for linearizability, conservation, and stale-snapshot rejection within the published offline model",
+  "deployment_authorization": {
+    "devnet_fixture": "blocked",
+    "local_validator": "blocked",
+    "mainnet": "blocked",
+    "offline_model": "allowed",
+    "real_value": "blocked"
+  },
+  "external_review": "not_performed",
+  "formal_verification": "not_performed",
+  "implementation_commit": "2458885917eb917e263538397a601f0c81a1e855",
+  "property_cases": 512,
+  "property_tests": 1,
+  "serial_witnesses": 14,
+  "solana_runtime_proved": false,
+  "unit_tests": 8,
+  "violations": 0,
+  "work_item": "FC-SEC-004"
+}
