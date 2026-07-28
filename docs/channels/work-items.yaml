@@ -451,6 +451,41 @@ work_items:
       - external review is inferred
       - a deployment authorization is broadened
 
+  - id: FC-CTRL-020
+    status: done
+    objective: freeze the FC-SOL-002 account-layout, token-boundary, maturity, and reserved-path contract
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-020.yaml
+      - .agents/tasks/FC-SOL-002.yaml
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - docs/channels/solana/accounts/FC-SOL-002-CONTRACT.md
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-020/**
+    dependencies: [FC-CTRL-019, FC-SEC-002]
+    invariants:
+      - FC-SOL-002 depends explicitly on the integrated FC-SEC-002 boundary proof
+      - the account model contains only ChannelState PDA and its classic SPL Token vault
+      - coordination introduces no program instruction, CPI, transfer, signature verification, or deployment
+      - self-validation does not imply external Solana account review
+    acceptance:
+      - fixed-width account and raw-byte PDA contracts are frozen before implementation
+      - classic SPL Token is allowlisted and Token-2022 is explicitly unsupported
+      - local-validator-only authorization is explicit
+      - later instruction, invariant, and deployment gates remain blocked
+    tests:
+      - executable foundation, dependency, topology, and authorization assertions
+    evidence:
+      - evidence/runs/FC-CTRL-020/validation-report.json
+    security_review: self-validated coordination; external review required before mainnet or real value
+    stop_conditions:
+      - program runtime or instruction behavior is implemented
+      - a separate recipient, settlement, or closure account is introduced
+      - external review is inferred
+      - deployment authorization is broadened
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -773,13 +808,51 @@ work_items:
     owner: solana-program-engineer
     repository: 4LFR3Dv1/Foundry-Pay
     allowed_paths: [programs/foundry-channel-vault/**, docs/channels/solana/accounts/**, tests/channels/solana/accounts/**, evidence/runs/FC-SOL-002/**]
-    dependencies: [FC-PROTO-001]
-    invariants: [random channel nonce reduces pre-disclosure enumeration, fixed mint and PDA authority are checked]
-    acceptance: [account version and byte layout have golden vectors and migration reservation]
-    tests: [PDA, account size, discriminator, owner, mint, and malformed-account tests]
-    evidence: [account layout and PDA vector manifest]
-    security_review: mandatory-solana-account-review
-    stop_conditions: [PDA collisions or unversioned mutable layout]
+    dependencies: [FC-PROTO-001, FC-SEC-002]
+    invariants:
+      - the only state topology is one ChannelState PDA plus its vault token account
+      - account serialization is fixed-width and versioned
+      - all material fields have frozen encodings, ordering, offsets, and golden bytes
+      - PDA seeds use raw bytes for channel, sender, mint, and a 32-byte channel nonce
+      - vault owner, mint, authority, token program, and canonical address are checked
+      - classic SPL Token is allowlisted and Token-2022 is unsupported
+      - reserved bytes are zero and carry no v1 meaning
+    acceptance:
+      - ChannelState uses no String, Vec, or Option
+      - CHANNEL_STATE_SPACE equals real serialized length including discriminator
+      - deterministic PDA and serialized-account golden vectors are reproducible
+      - rent evidence separates normative space from environment-dependent lamports
+      - no economic instruction, CPI, transfer, Ed25519 verification, or deployment is added
+    tests:
+      - PDA one-field mutation and collision cases
+      - account size, offsets, discriminator, version, status, flags, and reserved bytes
+      - classic token-program owner, mint, PDA authority, canonical vault, and substitution cases
+      - zero, funded-active, closing-bound, and malformed-account vectors
+    evidence:
+      - account layout, field offsets, PDA, serialized golden, malformed account, token authority, rent, toolchain, test, and artifact manifests
+    maturity_gate:
+      implementation: complete
+      self_validation: passed
+      external_review: not_performed
+    deployment_authorization:
+      local_validator: allowed
+      devnet_fixture: blocked
+      mainnet: blocked
+      real_value: blocked
+    external_review_requirement:
+      required_before:
+        - mainnet
+        - real_value
+    security_review: self-validated Solana account-model review; external review required before mainnet or real value
+    stop_conditions:
+      - variable-width account serialization is introduced
+      - account_version or a material field encoding is absent
+      - PDA derivation depends on Base58 text instead of raw bytes
+      - PDA seed collision or ambiguity remains
+      - Token-2022 enters scope implicitly
+      - reserved bytes acquire meaning without a new version and ADR
+      - economic instructions, CPI, transfers, or deployment enter scope
+      - local-validator-only authorization is broadened
 
   - id: FC-SOL-003
     status: blocked

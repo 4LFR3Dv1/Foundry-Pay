@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "work_item": "FC-CTRL-020",
+  "baseline": "c61c9e8beb6815ed656f60f04e71efa1e5bd7375",
+  "fc_sol_002": {
+    "status": "ready",
+    "dependencies": [
+      "FC-PROTO-001",
+      "FC-SEC-002"
+    ],
+    "topology": [
+      "ChannelState PDA",
+      "classic SPL Token vault account"
+    ],
+    "external_review": "not_performed",
+    "local_validator": "allowed",
+    "devnet_fixture": "blocked",
+    "mainnet": "blocked",
+    "real_value": "blocked"
+  },
+  "runtime_changes": false
+}
