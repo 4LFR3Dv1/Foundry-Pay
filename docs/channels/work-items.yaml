@@ -976,6 +976,43 @@ work_items:
       - preparation readiness is represented as a deployed or executable ChannelVault
       - handler, signer, RPC, local-validator, or deployment authorization advances
 
+  - id: FC-CTRL-036
+    status: done
+    objective: freeze funding identity and the fixture-only preparation profile before functional preparation
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-036.yaml
+      - .agents/tasks/SA-CHAN-001B.yaml
+      - docs/channels/capabilities/SA-CHAN-001B-CONTRACT.md
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - scripts/check_channel_foundation.py
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-036/**
+    dependencies: [FC-CTRL-035, SA-CHAN-001A]
+    invariants:
+      - channel.fund v2 binds a unique funding request hash independent of amount
+      - not_deployed v1 operations are never promoted or reinterpreted
+      - fixture preparation uses a new domain and fixture_unexecuted profile
+      - per-capability support is explicit and no global preparation boolean overstates support
+      - shared preparation contracts are frozen before functional branches diverge
+    acceptance:
+      - SA-CHAN-001B is the only newly ready Solana-Agent work item
+      - SA-CHAN-002 and SA-CHAN-003 depend on SA-CHAN-001B and return to blocked
+      - remaining bind and lifecycle preparation has an explicit later owner
+      - execution, handlers, signer, RPC, local validator, and deployment remain blocked
+    tests:
+      - executable dependency, version, funding identity, capability matrix, and path assertions
+    evidence:
+      - evidence/runs/FC-CTRL-036/validation-report.json
+    security_review: self-validated coordination; external review not performed
+    stop_conditions:
+      - amount alone identifies a funding operation
+      - a v1 not_deployed commitment becomes preparation authority
+      - support for one capability is published as support for all capabilities
+      - handler, signer, RPC, local-validator, or deployment authorization advances
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -1701,13 +1738,68 @@ work_items:
       - unknown outcome authorizes automatic preparation or submission
       - handler, CPI, RPC, wallet, signer, or deployment enters scope
 
-  - id: SA-CHAN-002
+  - id: SA-CHAN-001B
     status: ready
-    objective: prepare and simulate channel open, top-up, activation, and binding
+    objective: publish the fixture-only preparation profile, funding identity correction, and common prepared-instruction contract
     owner: solana-agent-maintainer
     repository: 4LFR3Dv1/Solana-Agent
-    allowed_paths: [gateway/**, tests/channel_gateway/**, docs/**]
-    dependencies: [SA-CHAN-001, SA-CHAN-001A, FC-SOL-003]
+    allowed_paths:
+      - gateway/channel_preparation_common.py
+      - contracts/capabilities/foundry-channel-vault/channel-preparation-common.v1.schema.json
+      - contracts/capabilities/foundry-channel-vault/channel-operation.v2.schema.json
+      - tests/channel_gateway/test_channel_preparation_common.py
+      - docs/channel-preparation-contract.md
+      - docs/work-items/SA-CHAN-001B.md
+      - evidence/runs/SA-CHAN-001B/**
+    dependencies: [SA-CHAN-001A, FC-SOL-003A, FC-CTRL-036]
+    invariants:
+      - v1 not_deployed operations remain immutable and preparation-blocked
+      - v2 uses foundry.channels.operation.v2 and fixture_unexecuted
+      - channel.fund requires funding_request_hash in addition to amount
+      - preparation re-reads the durable operation reservation
+      - preparation and instruction commitments grant no execution authority
+    acceptance:
+      - common PreparedChannelInstruction and ordered account-meta contracts are closed
+      - fixture Program ID, network, genesis, PDA, instruction bytes, accounts, and authority profile are bound
+      - capability support distinguishes offline_preparation from descriptive_only
+      - transaction commitment remains absent until exact Solana message bytes exist
+      - common paths become read-only inputs for SA-CHAN-002 and SA-CHAN-003
+    tests:
+      - equal funding amounts with distinct request hashes are distinct operations
+      - reused funding request hash aliases fail closed
+      - v1 promotion and profile downgrade reject
+      - durable reservation mismatch rejects
+      - capability matrix and exact-byte mutations reject
+    evidence:
+      - immutable Solana-Agent PR and fixture-preparation contract evidence
+    maturity_gate:
+      implementation: required
+      self_validation: required
+      external_review: not_performed
+    deployment_authorization:
+      local_validator: blocked
+      devnet_fixture: blocked
+      mainnet: blocked
+      real_value: blocked
+    security_review: mandatory funding-identity and exact-byte self-review
+    stop_conditions:
+      - timestamp or amount alone identifies funding
+      - a v1 commitment is rewritten as v2
+      - a fixture commitment is represented as execution authorization
+      - handler, CPI, RPC, wallet, signer, or deployment enters scope
+
+  - id: SA-CHAN-002
+    status: blocked
+    objective: prepare fixture-only channel initialize, funding, and activation instructions
+    owner: solana-agent-maintainer
+    repository: 4LFR3Dv1/Solana-Agent
+    allowed_paths:
+      - gateway/channel_open_preparation.py
+      - contracts/capabilities/foundry-channel-vault/channel-open-preparation.v1.schema.json
+      - tests/channel_gateway/test_channel_open_preparation.py
+      - docs/work-items/SA-CHAN-002.md
+      - evidence/runs/SA-CHAN-002/**
+    dependencies: [SA-CHAN-001, SA-CHAN-001A, SA-CHAN-001B, FC-SOL-003]
     invariants: [executor cannot change channel, mint, participant, voucher, or amount]
     acceptance: [exact messages and simulations match public vectors and fail closed]
     tests: [account substitution, wrong program/mint/network, fee, expiry, and simulation failures]
@@ -1716,18 +1808,49 @@ work_items:
     stop_conditions: [adapter must infer economic intent]
 
   - id: SA-CHAN-003
-    status: ready
-    objective: prepare and simulate exact partial and total ChannelVault settlements
+    status: blocked
+    objective: prepare fixture-only exact partial and total ChannelVault settlement instructions
     owner: solana-agent-maintainer
     repository: 4LFR3Dv1/Solana-Agent
-    allowed_paths: [gateway/**, tests/channel_gateway/**, docs/**]
-    dependencies: [SA-CHAN-001, SA-CHAN-001A, FC-SOL-003]
+    allowed_paths:
+      - gateway/channel_settlement_preparation.py
+      - contracts/capabilities/foundry-channel-vault/channel-settlement-preparation.v1.schema.json
+      - tests/channel_gateway/test_channel_settlement_preparation.py
+      - docs/work-items/SA-CHAN-003.md
+      - evidence/runs/SA-CHAN-003/**
+    dependencies: [SA-CHAN-001, SA-CHAN-001A, SA-CHAN-001B, FC-SOL-003]
     invariants: [destination and delta equal the Foundry obligation and bound state]
     acceptance: [prepared settlement matches exact expected pre/post totals and program accounts]
     tests: [partial, total, over-limit, stale state, destination substitution, and concurrent preparation]
     evidence: [settlement preparation conformance bundle]
     security_review: mandatory-money-movement-review
     stop_conditions: [executor chooses recipient or settlement amount]
+
+  - id: SA-CHAN-003A
+    status: blocked
+    objective: prepare fixture-only binding, close, refund, and finalization instructions
+    owner: solana-agent-maintainer
+    repository: 4LFR3Dv1/Solana-Agent
+    allowed_paths:
+      - gateway/channel_lifecycle_preparation.py
+      - contracts/capabilities/foundry-channel-vault/channel-lifecycle-preparation.v1.schema.json
+      - tests/channel_gateway/test_channel_lifecycle_preparation.py
+      - docs/work-items/SA-CHAN-003A.md
+      - evidence/runs/SA-CHAN-003A/**
+    dependencies: [SA-CHAN-001B, SA-CHAN-002, SA-CHAN-003]
+    invariants:
+      - recipient binding and lifecycle authority remain exact-byte and capability-specific
+      - preparation grants no execution or deployment authority
+    acceptance:
+      - bind, request_close, refund_unallocated, and finalize_close use the common frozen profile
+      - capability support becomes offline_preparation only after each contract is integrated
+    tests:
+      - binding substitution, close deadline, refund reservation, and premature finalization reject
+    evidence:
+      - lifecycle preparation conformance bundle
+    security_review: mandatory lifecycle-preparation review
+    stop_conditions:
+      - lifecycle preparation is silently absorbed into SA-CHAN-002 or SA-CHAN-003
 
   - id: SA-CHAN-004
     status: blocked

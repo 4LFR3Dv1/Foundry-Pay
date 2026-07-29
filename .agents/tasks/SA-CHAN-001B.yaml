@@ -1,0 +1,33 @@
+work_item: SA-CHAN-001B
+objective: publish the fixture-only preparation profile, funding identity correction, and common prepared-instruction contract
+owner: solana-agent-maintainer
+branch: agent/integration/SA-CHAN-001B
+allowed_paths:
+  - gateway/channel_preparation_common.py
+  - contracts/capabilities/foundry-channel-vault/channel-preparation-common.v1.schema.json
+  - contracts/capabilities/foundry-channel-vault/channel-operation.v2.schema.json
+  - tests/channel_gateway/test_channel_preparation_common.py
+  - docs/channel-preparation-contract.md
+  - docs/work-items/SA-CHAN-001B.md
+  - evidence/runs/SA-CHAN-001B/**
+dependencies:
+  - SA-CHAN-001A
+  - FC-SOL-003A
+  - FC-CTRL-036
+invariants:
+  - v1 not_deployed operations remain immutable and preparation-blocked
+  - v2 fixture_unexecuted funding binds funding_request_hash
+  - preparation always re-reads the durable reservation
+  - no preparation artifact grants execution authority
+acceptance:
+  - common closed contracts and support matrix are reproducible
+  - exact fixture instruction bytes and ordered accounts are committed
+  - common paths are frozen before SA-CHAN-002 and SA-CHAN-003
+verification_commands:
+  - python -m pytest tests/channel_gateway/test_channel_preparation_common.py
+  - python -m ruff check .
+  - python -m mypy solana_agent gateway
+stop_conditions:
+  - channel_operation.py or channel_discovery.py is modified
+  - v1 commitment is rewritten
+  - transaction or execution support is claimed

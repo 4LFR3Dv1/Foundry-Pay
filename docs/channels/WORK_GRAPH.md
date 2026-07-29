@@ -45,6 +45,7 @@ after this foundation PR is merged without reopening accepted ADRs.
 | FC-CTRL-033 | done | FC-SOL-005 | record governance integration without authorizing deployment |
 | FC-CTRL-034 | done | SA-CHAN-001 | record descriptive discovery and release only the operation-commitment gate |
 | FC-CTRL-035 | done | SA-CHAN-001A | record operation-commitment integration and release only satisfied preparation contracts |
+| FC-CTRL-036 | done | FC-CTRL-035, SA-CHAN-001A | freeze funding identity and fixture-only preparation profile before functional preparation |
 
 ## Epic B — Channel protocol
 
@@ -88,8 +89,10 @@ No program implementation is authorized by `FOUNDATIONS-001`.
 | SA-CHAN-000 | done | FC-PROTO-007, FC-SEC-002, FC-CTRL-021 | draft capability contracts and adversarial fake adapter; offline fixture only, no ChannelVault compatibility claim |
 | SA-CHAN-001 | done | FC-PROTO-006, FC-SOL-003A | pinned fail-closed ChannelVault descriptor and descriptive capability discovery |
 | SA-CHAN-001A | done | SA-CHAN-001, FC-PROTO-006, FC-SOL-003A | durable canonical operation commitment and operation-ID conflict gate |
-| SA-CHAN-002 | ready | SA-CHAN-001, SA-CHAN-001A, FC-SOL-003 | open/top-up/activation preparation |
-| SA-CHAN-003 | ready | SA-CHAN-001, SA-CHAN-001A, FC-SOL-003 | settlement preparation |
+| SA-CHAN-001B | ready | SA-CHAN-001A, FC-SOL-003A, FC-CTRL-036 | fixture-only v2 profile, funding identity, and common preparation contract |
+| SA-CHAN-002 | blocked | SA-CHAN-001, SA-CHAN-001A, SA-CHAN-001B, FC-SOL-003 | initialize/funding/activation fixture preparation |
+| SA-CHAN-003 | blocked | SA-CHAN-001, SA-CHAN-001A, SA-CHAN-001B, FC-SOL-003 | settlement fixture preparation |
+| SA-CHAN-003A | blocked | SA-CHAN-001B, SA-CHAN-002, SA-CHAN-003 | binding and close/refund/finalization fixture preparation |
 | SA-CHAN-004 | blocked | SA-CHAN-002, SA-CHAN-003 | inspect/status/recovery |
 | SA-CHAN-005 | blocked | SA-CHAN-004, FC-PROTO-007 | channel evidence and conformance |
 
@@ -106,9 +109,15 @@ Solana-Agent PR #15 completed `SA-CHAN-001A`. It persists
 `operation_id → canonical operation commitment`, distinguishes identical
 replay, `OPERATION_CONFLICT`, and semantic alias conflict, and keeps stable
 operation identity separate from exact ephemeral transaction-message bytes.
-Only `SA-CHAN-002` and `SA-CHAN-003` become ready as preparation contracts.
-Handlers, signer access, RPC execution, local-validator execution, and every
-deployment environment remain blocked.
+FC-CTRL-036 then freezes a prospective correction before functional
+preparation: equal funding amounts require distinct `funding_request_hash`
+values, v1 `not_deployed` operations remain immutable, and a new v2
+`fixture_unexecuted` profile binds concrete offline instruction material.
+`SA-CHAN-001B` is the only newly ready integration item. `SA-CHAN-002` and
+`SA-CHAN-003` return to blocked until the common contract is integrated.
+`SA-CHAN-003A` explicitly owns binding and lifecycle preparation. Handlers,
+signer access, RPC execution, local-validator execution, and every deployment
+environment remain blocked.
 
 ## Epic F — Product and experience
 

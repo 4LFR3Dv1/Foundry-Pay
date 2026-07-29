@@ -1,0 +1,36 @@
+work_item: FC-CTRL-036
+objective: freeze funding identity and fixture-only preparation profile before functional preparation
+owner: program-integrator
+branch: agent/control/FC-CTRL-036
+allowed_paths:
+  - .agents/tasks/FC-CTRL-036.yaml
+  - .agents/tasks/SA-CHAN-001B.yaml
+  - docs/channels/capabilities/SA-CHAN-001B-CONTRACT.md
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - scripts/check_channel_foundation.py
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-036/**
+dependencies:
+  - FC-CTRL-035
+  - SA-CHAN-001A
+invariants:
+  - funding amount alone is never semantic identity
+  - v1 not_deployed commitments are never promoted
+  - fixture preparation uses a new version and profile
+  - support is declared per capability
+acceptance:
+  - SA-CHAN-001B is ready
+  - SA-CHAN-002 and SA-CHAN-003 depend on SA-CHAN-001B and are blocked
+  - SA-CHAN-003A owns the remaining preparation capabilities
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python scripts/check_channel_foundation.py
+  - python -m ruff format --check .
+  - python -m ruff check .
+  - python scripts/check_secrets.py
+stop_conditions:
+  - amount or timestamp alone identifies funding
+  - v1 is reinterpreted under fixture preparation
+  - support is overstated globally
+  - execution or deployment advances
