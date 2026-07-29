@@ -112,6 +112,18 @@ operation commitments. Preparation, execution, signer access, RPC, handlers,
 local-validator execution, and deployment are not implemented or authorized.
 External review remains `not_performed`.
 
+Solana-Agent PR #16 integrated the fixture-only preparation boundary with
+functional head `05613f8b...`, evidence head `ec21c25d...`, merge
+`6c893192...`, and green main CI run `30418386044`. The v1
+`not_deployed` profile remains unchanged and preparation-blocked. A separate
+v2 `fixture_unexecuted` profile requires `funding_request_hash`, allowing
+legitimate equal-amount top-ups with distinct identities while rejecting
+reused funding identities. The common contract re-reads durable reservations
+and binds exact instruction bytes and ordered account metas, but reports
+preparation, execution, and deployment support as false. No Solana message,
+transaction commitment, signer, RPC, handler, local-validator execution, or
+external review is inferred.
+
 ## Integrated security gate
 
 The frozen [FC-SEC-002 contract](security/FC-SEC-002-CONTRACT.md) separates:

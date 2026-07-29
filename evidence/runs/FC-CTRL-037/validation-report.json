@@ -1,0 +1,60 @@
+{
+  "work_item": "FC-CTRL-037",
+  "sa_chan_001b": {
+    "repository": "4LFR3Dv1/Solana-Agent",
+    "pr": 16,
+    "baseline": "4ab25fad32ceec8013d6a771225b3f48d4f611db",
+    "foundry_coordination": "c44f3d78adf88e48254840b39260905fc231c934",
+    "functional_head": "05613f8b85c0a4c26110287e585f6f625ec183d5",
+    "evidence_head": "ec21c25d749348d34ee52444f093fd50772c3518",
+    "merge_commit": "6c893192ae4f25e6ef6c89735ec2632d5c5a27ae",
+    "main_ci_run": 30418386044,
+    "targeted_tests": 25,
+    "full_tests": 238,
+    "full_passed": 236,
+    "full_skipped": 2,
+    "implementation": "complete",
+    "self_validation": "passed",
+    "external_review": "not_performed",
+    "v1_mutated": false,
+    "v2_profile": "fixture_unexecuted",
+    "funding_identity": "funding_request_hash",
+    "preparation_supported": false,
+    "execution_supported": false,
+    "deployment_authorized": false
+  },
+  "newly_released": [
+    "SA-CHAN-002",
+    "SA-CHAN-003"
+  ],
+  "validation": {
+    "foundation_contract_tests": {
+      "passed": 17,
+      "failed": 0
+    },
+    "full_pytest": {
+      "passed": 564,
+      "skipped": 12,
+      "failed": 0
+    },
+    "foundation_checker": "passed",
+    "ruff_format": "passed",
+    "ruff_check": "passed",
+    "secret_guard": {
+      "status": "passed",
+      "files_scanned": 1437
+    },
+    "diff_check": "passed"
+  },
+  "still_blocked": [
+    "SA-CHAN-003A",
+    "SA-CHAN-004",
+    "ChannelVault handlers",
+    "signer access",
+    "RPC execution",
+    "local-validator execution",
+    "devnet",
+    "mainnet",
+    "real value"
+  ]
+}
