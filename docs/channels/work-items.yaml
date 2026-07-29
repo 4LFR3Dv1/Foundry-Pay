@@ -1013,6 +1013,39 @@ work_items:
       - support for one capability is published as support for all capabilities
       - handler, signer, RPC, local-validator, or deployment authorization advances
 
+  - id: FC-CTRL-037
+    status: done
+    objective: record SA-CHAN-001B integration and release the isolated preparation branches
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - .agents/tasks/FC-CTRL-037.yaml
+      - docs/channels/WORK_GRAPH.md
+      - docs/channels/work-items.yaml
+      - docs/channels/EVIDENCE_INDEX.md
+      - tests/channels/test_foundation_contracts.py
+      - evidence/runs/FC-CTRL-037/**
+    dependencies: [SA-CHAN-001B]
+    invariants:
+      - exact Solana-Agent functional, evidence, merge, and main CI identifiers are recorded
+      - v1 remains unchanged and preparation-blocked
+      - funding identity includes funding_request_hash
+      - common preparation paths are read-only for both functional branches
+      - readiness grants no execution or deployment authority
+    acceptance:
+      - SA-CHAN-001B is done with self-validation passed and external review not performed
+      - SA-CHAN-002 and SA-CHAN-003 are ready on disjoint paths
+      - SA-CHAN-003A, SA-CHAN-004, handlers, signer, RPC, and deployment remain blocked
+    tests:
+      - executable exact-SHA, graph, maturity, funding identity, and authorization assertions
+    evidence:
+      - evidence/runs/FC-CTRL-037/validation-report.json
+    security_review: self-validated cross-repository coordination
+    stop_conditions:
+      - v1 is reinterpreted or modified
+      - functional branches can modify common preparation paths
+      - execution, handler, signer, RPC, local-validator, or deployment advances
+
   - id: FC-PROTO-001
     status: done
     objective: implement Channel and ChannelFunding validation and reference conservation
@@ -1739,7 +1772,7 @@ work_items:
       - handler, CPI, RPC, wallet, signer, or deployment enters scope
 
   - id: SA-CHAN-001B
-    status: ready
+    status: done
     objective: publish the fixture-only preparation profile, funding identity correction, and common prepared-instruction contract
     owner: solana-agent-maintainer
     repository: 4LFR3Dv1/Solana-Agent
@@ -1772,9 +1805,17 @@ work_items:
       - capability matrix and exact-byte mutations reject
     evidence:
       - immutable Solana-Agent PR and fixture-preparation contract evidence
+    implementation:
+      pr: 16
+      baseline: 4ab25fad32ceec8013d6a771225b3f48d4f611db
+      foundry_coordination: c44f3d78adf88e48254840b39260905fc231c934
+      functional_head: 05613f8b85c0a4c26110287e585f6f625ec183d5
+      evidence_head: ec21c25d749348d34ee52444f093fd50772c3518
+      merge_commit: 6c893192ae4f25e6ef6c89735ec2632d5c5a27ae
+      main_ci_run: 30418386044
     maturity_gate:
-      implementation: required
-      self_validation: required
+      implementation: complete
+      self_validation: passed
       external_review: not_performed
     deployment_authorization:
       local_validator: blocked
@@ -1789,7 +1830,7 @@ work_items:
       - handler, CPI, RPC, wallet, signer, or deployment enters scope
 
   - id: SA-CHAN-002
-    status: blocked
+    status: ready
     objective: prepare fixture-only channel initialize, funding, and activation instructions
     owner: solana-agent-maintainer
     repository: 4LFR3Dv1/Solana-Agent
@@ -1808,7 +1849,7 @@ work_items:
     stop_conditions: [adapter must infer economic intent]
 
   - id: SA-CHAN-003
-    status: blocked
+    status: ready
     objective: prepare fixture-only exact partial and total ChannelVault settlement instructions
     owner: solana-agent-maintainer
     repository: 4LFR3Dv1/Solana-Agent

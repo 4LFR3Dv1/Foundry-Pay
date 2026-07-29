@@ -1,0 +1,32 @@
+work_item: FC-CTRL-037
+objective: record SA-CHAN-001B integration and release isolated preparation branches
+owner: program-integrator
+branch: agent/control/FC-CTRL-037
+allowed_paths:
+  - .agents/tasks/FC-CTRL-037.yaml
+  - docs/channels/WORK_GRAPH.md
+  - docs/channels/work-items.yaml
+  - docs/channels/EVIDENCE_INDEX.md
+  - tests/channels/test_foundation_contracts.py
+  - evidence/runs/FC-CTRL-037/**
+dependencies:
+  - SA-CHAN-001B
+invariants:
+  - v1 remains immutable and preparation-blocked
+  - funding identity binds funding_request_hash
+  - common paths are read-only for SA-CHAN-002 and SA-CHAN-003
+  - readiness grants no execution or deployment authority
+acceptance:
+  - SA-CHAN-001B is done at exact integration identifiers
+  - SA-CHAN-002 and SA-CHAN-003 are ready
+  - SA-CHAN-003A and all execution/deployment work remain blocked
+verification_commands:
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - python scripts/check_channel_foundation.py
+  - python -m ruff format --check .
+  - python -m ruff check .
+  - python scripts/check_secrets.py
+stop_conditions:
+  - v1 is modified or reinterpreted
+  - a functional branch owns common files
+  - execution or deployment advances
