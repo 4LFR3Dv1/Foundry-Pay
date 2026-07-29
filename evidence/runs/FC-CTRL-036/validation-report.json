@@ -1,0 +1,42 @@
+{
+  "work_item": "FC-CTRL-036",
+  "baseline": "a6683028d0e954b4f312eb83b0d9608860bb48fb",
+  "finding": {
+    "capability": "channel.fund",
+    "severity": "medium",
+    "problem": "amount-only semantic identity aliases legitimate equal-amount top-ups",
+    "remediation": "v2 requires funding_request_hash"
+  },
+  "version_policy": {
+    "v1_domain": "foundry.channels.operation.v1",
+    "v1_profile": "not_deployed",
+    "v1_mutated": false,
+    "v2_domain": "foundry.channels.operation.v2",
+    "v2_profile": "fixture_unexecuted"
+  },
+  "newly_released": [
+    "SA-CHAN-001B"
+  ],
+  "returned_to_blocked": [
+    "SA-CHAN-002",
+    "SA-CHAN-003"
+  ],
+  "explicit_later_owner": "SA-CHAN-003A",
+  "coordination_validation": {
+    "foundation_contract_tests": 16,
+    "full_passed": 563,
+    "full_skipped": 12,
+    "ruff": "passed",
+    "secret_guard": "passed"
+  },
+  "still_blocked": [
+    "SA-CHAN-004",
+    "ChannelVault handlers",
+    "signer access",
+    "RPC execution",
+    "local-validator execution",
+    "devnet",
+    "mainnet",
+    "real value"
+  ]
+}

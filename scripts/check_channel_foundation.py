@@ -75,6 +75,9 @@ REQUIRED_WORK_ITEMS = {
     *(f"FC-PROD-{number:03d}" for number in range(1, 7)),
     *(f"FC-VAL-{number:03d}" for number in range(1, 6)),
     "SA-CHAN-000",
+    "SA-CHAN-001A",
+    "SA-CHAN-001B",
+    "SA-CHAN-003A",
     "FC-FAIL-003",
     "FC-GOV-001",
 }
