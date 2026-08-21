@@ -7,7 +7,8 @@ pub mod contract;
 pub mod ed25519;
 pub mod instruction;
 pub mod lifecycle;
-pub mod runtime_v2;
+mod runtime_v2;
+mod runtime_v2_authority;
 
 pub use contract::{
     account_contract, event_contract, AccountContract, AccountRequirement, AuthorityKind,
@@ -28,11 +29,14 @@ pub use lifecycle::{
     MAX_CLAIM_WINDOW_SECONDS, MIN_CLAIM_WINDOW_SECONDS,
 };
 pub use runtime_v2::{
-    channel_id_hash, decode_binding_nonce_u64, encode_binding_nonce_u64,
-    verify_recipient_binding_signed_message, verify_voucher_signed_message,
-    RuntimeAuthorityError, RuntimeInstructionV2, RuntimeInstructionV2DecodeError,
-    VerifiedRecipientBindingAuthority, VerifiedVoucherAuthority, INITIAL_BINDING_NONCE,
-    INITIAL_LATEST_VOUCHER_HASH, INSTRUCTION_CONTRACT_VERSION_V2, JSON_SAFE_UNSIGNED_MAX,
+    channel_id_hash, decode_binding_nonce_u64, encode_binding_nonce_u64, RuntimeAuthorityError,
+    RuntimeInstructionV2, RuntimeInstructionV2DecodeError, VerifiedRecipientBindingAuthority,
+    VerifiedVoucherAuthority, INITIAL_BINDING_NONCE, INITIAL_LATEST_VOUCHER_HASH,
+    INSTRUCTION_CONTRACT_VERSION_V2, JSON_SAFE_UNSIGNED_MAX,
+};
+pub use runtime_v2_authority::{
+    verify_initialize_v2, verify_recipient_binding_signed_message, verify_voucher_signed_message,
+    VerifiedInitializationV2,
 };
 
 // The maintainer's Windows application-control policy permits crate test
