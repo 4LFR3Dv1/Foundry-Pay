@@ -167,7 +167,7 @@ export NODE_OPTIONS="--dns-result-order=ipv4first"
 stage "validator-phase1-start"
 start_phase1_validator
 stage "validator-phase1-client"
-node "$RUNTIME_DIR/validator-client.mjs" phase1 | tee "$PHASE1_OUT"
+node "$RUNTIME_DIR/validator-client-runner.mjs" phase1 | tee "$PHASE1_OUT"
 stop_validator
 
 CLOSE_SLOT="$(node -e "const c=require(process.argv[1]); process.stdout.write(String(c.slot));" "$CONTEXT")"
@@ -176,7 +176,7 @@ WARP_SLOT="$((CLOSE_SLOT + 100000))"
 stage "validator-phase2-start"
 start_phase2_validator "$WARP_SLOT"
 stage "validator-phase2-client"
-node "$RUNTIME_DIR/validator-client.mjs" phase2 | tee "$PHASE2_OUT"
+node "$RUNTIME_DIR/validator-client-runner.mjs" phase2 | tee "$PHASE2_OUT"
 stop_validator
 
 stage "receipt"
