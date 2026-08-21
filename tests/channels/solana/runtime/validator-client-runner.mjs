@@ -147,11 +147,16 @@ Connection.prototype.sendTransaction = async function diagnoseVersionedTransacti
     );
   }
 
-  const signature = await originalSendTransaction.call(this, transaction, ...args);
+  // Submit the exact serialized bytes that were simulated above. This removes
+  // Connection.sendTransaction's VersionedTransaction wrapper as a variable;
+  // it does not create a second transaction, change the signature, or mutate
+  // the economic payload.
+  const options = args[0] ?? {};
+  const signature = await this.sendRawTransaction(serialized, options);
   trackedVersionedTransactions.set(signature, tracked);
   emitDiagnostic(
     "signed-v0-broadcast",
-    await runtimeSnapshot(this, tracked, signature, null, "post-broadcast"),
+    await runtimeSnapshot(this, tracked, signature, null, "post-broadcast-raw-rpc"),
   );
   return signature;
 };
