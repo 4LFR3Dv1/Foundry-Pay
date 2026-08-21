@@ -1,10 +1,54 @@
 # Foundry Pay evidence index
 
-This index is the claim boundary for the current Foundry Pay proof. Every
-completed claim below points to committed evidence. Live-chain observations
-are kept separate from deterministic and emulated failure tests.
+This document is the top-level claim boundary for the public Foundry Pay
+repository. It separates what has been demonstrated on a live blockchain from
+what has been demonstrated in deterministic runtimes, offline protocol models,
+and cross-repository integration fixtures.
 
-## Proof ledger
+Work-item completion, self-validation, external review, deployment
+authorization, and production readiness are different states. Evidence in this
+repository must not be read as authority to broaden any of those claims.
+
+## Evidence tracks
+
+Foundry Pay currently has two related but distinct evidence tracks.
+
+### External Execution
+
+This track demonstrates governed payment execution through an independent
+network executor. It includes exact-message authorization, signer isolation,
+one controlled broadcast, recovery after ambiguous outcomes, live Solana
+devnet settlement, source-diverse reconciliation, and deterministic failure
+labs.
+
+### Foundry Channels
+
+This track develops the protocol and security model for persistent funded
+stablecoin transfer relationships. Its current evidence includes offline
+accounting, cumulative vouchers, recipient binding, settlement/recovery,
+close/refund semantics, cross-language canonicalization, adversarial security
+validation, ChannelVault account/instruction/transition/governance models, and
+fixture-only Solana-Agent integration.
+
+Foundry Channels does **not** currently prove a deployed ChannelVault, live
+channel funding or settlement, signer/RPC execution, a hosted consumer product,
+or mainnet readiness.
+
+The detailed Channels ledger is maintained in
+[`docs/channels/EVIDENCE_INDEX.md`](channels/EVIDENCE_INDEX.md). The canonical
+ready/blocked execution state is maintained separately in
+[`docs/channels/WORK_GRAPH.md`](channels/WORK_GRAPH.md).
+
+## Evidence classes
+
+| Class | What it can prove | What it cannot prove |
+|---|---|---|
+| Live-chain evidence | A specific transaction and observed chain state existed on the named network | Mainnet readiness, production safety, or universal protocol correctness |
+| Deterministic runtime evidence | Exact protocol/runtime behavior under controlled inputs and faults | Real-chain behavior outside the demonstrated path |
+| Offline protocol/model evidence | Invariants, canonical bytes, rejection semantics, concurrency/model properties within published assumptions | A deployed program, validator/runtime behavior, custody safety, or real-value execution |
+| Cross-repository integration evidence | Two independently versioned repositories agree on frozen contracts and fixture boundaries | Production interoperability beyond those exact contracts |
+
+## External Execution proof ledger
 
 | Milestone | Environment | Demonstrated result | Evidence |
 |---|---|---|---|
@@ -17,7 +61,7 @@ are kept separate from deterministic and emulated failure tests.
 | FP-FAIL-001 | deterministic in-process | modeled failure states fail closed, preserve recovery state, and do not authorize blind retry | [`README`](../evidence/runs/FP-FAIL-001/README.md), [`manifest.json`](../evidence/runs/FP-FAIL-001/manifest.json) |
 | FP-FAIL-002 | real OS processes with deterministic upstream | eight gateway/proxy scenarios plus reconciliation convergence; every proxy send count is at most one | [`README`](../evidence/runs/FP-FAIL-002/README.md), [`master-demo.json`](../evidence/runs/FP-FAIL-002/master-demo.json), [`journal-root.json`](../evidence/runs/FP-FAIL-002/journal-root.json) |
 
-## Live devnet settlement
+## Canonical live devnet proof
 
 The governed transfer is publicly observable on
 [Solana Explorer](https://explorer.solana.com/tx/RzgQYATtgFZNG7eDgktPAaKh3R922BEjYNLRnvM7u96eFjsnSe4aFYQAtgaP4Hi7kyn91itF1eTEeo498NJ8uS4?cluster=devnet).
@@ -33,7 +77,8 @@ execution_commitment     sha256:1b79470062864179b011b5803843389f574d998d30e7afbf
 ```
 
 The transaction was finalized and the balance changes matched the approved
-obligation.
+obligation. The evidence supports this exact demonstrated path; it does not
+establish mainnet or production readiness.
 
 ## Source-diverse reconciliation
 
@@ -46,8 +91,9 @@ L2 observation  sha256:e465874ba90be369df1616edd226a083a0aaa5797001e4d4595f75397
 consensus       approved
 ```
 
-No credential-bearing endpoint is stored in the repository. L2 proves provider
-diversity; it is not an L3 or institutionally independent attestation.
+No credential-bearing endpoint is stored in the repository. L2 establishes
+provider diversity for this observation; it is not an L3 or institutionally
+independent attestation.
 
 ## Canonical recovery demonstration
 
@@ -82,21 +128,94 @@ journal_root   sha256:a48b2303b908a928e1901a099bec67c45a7e1302cb67fe158159d7ef08
 
 GitHub Actions run
 [`30049637775`](https://github.com/4LFR3Dv1/Foundry-Pay/actions/runs/30049637775)
-published the journal checkpoint outside the local runtime domain. The Foundry
-repository and its Actions artifacts currently require repository access.
+published the journal checkpoint outside the local runtime domain. The
+committed repository evidence is the primary public record; GitHub Actions
+artifact downloads are supplementary and may require GitHub authentication.
+
+## Foundry Channels evidence summary
+
+The Channels evidence is intentionally separated from live-chain claims. The
+following groups are integrated evidence, not production deployment claims.
+
+| Evidence group | Integrated work | Demonstrated boundary |
+|---|---|---|
+| Protocol runtime | `FC-PROTO-001` through `FC-PROTO-007` | accounting/funding, cumulative vouchers, dual-signature recipient binding, settlement/recovery, close/refund, normative canonicalization, and Python/TypeScript/Rust conformance |
+| Security | `FC-SEC-002`, `FC-SEC-003`, `FC-SEC-004` | replay/collision/downgrade rejection, claim-link secret handling, and offline concurrency/linearizability evidence |
+| Solana program models | `FC-SOL-002`, `FC-SOL-003`, `FC-SOL-003A`, `FC-SOL-004`, `FC-SOL-005` | fixed-width account/PDA model, instruction and Ed25519 contracts, transition invariants, concurrency preconditions, governance and rights-preserving migration policy |
+| Solana-Agent integration | `SA-CHAN-000`, `SA-CHAN-001`, `SA-CHAN-001A`, `SA-CHAN-001B` | fake capability adapter, pinned ChannelVault discovery, durable operation commitments, and fixture-only preparation contracts |
+
+Selected reproducible model depth includes:
+
+- `FC-PROTO-007`: independent Python, TypeScript, and Rust runners over frozen
+  positive and negative canonicalization vectors;
+- `FC-SOL-004`: 1,536 generated property cases, 703 explored states, 4,732
+  attempted transitions, and zero invariant violations within the published
+  model and bounds;
+- `FC-SEC-004`: 14 bounded commit schedules with 14 explicit serial witnesses
+  plus 512 property cases within the versioned-snapshot model.
+
+These results do not prove Solana runtime account locking, CPI rollback,
+validator scheduling, a deployed loader/program, formal verification, external
+security review, or real-value safety.
+
+Only a future authoritative ChannelVault observation may establish an
+`activated` channel right. The offline reference runtime may record states such
+as `issued`, `verified`, and `activation_requested`; it cannot manufacture an
+on-chain right.
+
+For exact commits, hashes, CI identifiers, and per-work-item evidence paths,
+read [`docs/channels/EVIDENCE_INDEX.md`](channels/EVIDENCE_INDEX.md).
+
+## How to verify the public evidence
+
+A reviewer can start without a wallet, RPC endpoint, Solana CLI, or funds:
+
+```text
+git clone https://github.com/4LFR3Dv1/Foundry-Pay.git
+cd Foundry-Pay
+python -m venv .venv
+python -m pip install -e ".[dev]"
+python examples/local_proof.py
+python -m pytest
+npm ci --prefix packages/external-execution-protocol/typescript
+npm test --prefix packages/external-execution-protocol/typescript
+npm ci --prefix packages/channel-protocol/typescript
+npm test --prefix packages/channel-protocol/typescript
+```
+
+The live transaction can then be checked independently through the Solana
+Explorer link above. The committed evidence directories contain manifests,
+fixtures, hashes, and explicit limitations for the individual claims.
+
+External reproduction is valuable evidence. A useful contribution is to run
+these paths in a clean environment and open an issue containing the exact
+environment, commands, and result. Do not publish secrets, seed phrases,
+private keys, or credential-bearing RPC URLs.
 
 ## Public disclosure boundary
 
-The public Solana-Agent repository contains a sanitized, machine-readable
-system snapshot and its executor-side proofs. Foundry retains the complete
-authorization, reconciliation, and scenario artifacts in this private
-repository. Public evidence excludes:
+`4LFR3Dv1/Foundry-Pay` is a public Apache-2.0 reference repository. Its public
+source, deterministic reference implementations, protocol contracts, tests,
+documentation, and sanitized evidence are intended to be inspectable and
+reproducible.
+
+The independent `4LFR3Dv1/Solana-Agent` repository is also public and preserves
+executor-side evidence without importing the Foundry Pay economic-authority
+kernel.
+
+Public evidence deliberately excludes:
 
 - private or ephemeral signing material;
 - authorization secrets;
 - credential-bearing RPC endpoints;
-- raw signed transaction bytes from chaos fixtures;
-- customer or production data.
+- raw signed transaction bytes from chaos fixtures where disclosure is not
+  required for the claim;
+- customer or production data;
+- production custody, proprietary connector, and private risk-rule material.
+
+Sanitization is not permission to broaden claims. Missing private material must
+not be inferred to exist, be production-ready, or have been independently
+audited.
 
 ## Claims not made
 
@@ -105,13 +224,25 @@ The current evidence does not claim:
 - exactly-once blockchain execution;
 - arbitrary-failure tolerance;
 - production or mainnet readiness;
-- L3 independent verification;
-- HSM/MPC production custody;
+- a deployed ChannelVault program;
+- live channel funding, activation, claim, settlement, close, or refund;
+- production HSM/MPC or custody safety;
 - externally audited security;
-- universal economic idempotency for arbitrary SPL transfers.
+- L3 independent verification;
+- universal economic idempotency for arbitrary token transfers;
+- a deployed consumer product, proven product demand, or independent adoption;
+- that self-validation or a merged work item is equivalent to external review
+  or deployment authorization.
 
-The defensible property is:
+The defensible External Execution property is:
 
 > At-most-one broadcast by the controlled runtime, with signature-first
 > recovery and no automatic rematerialization while the economic outcome is
 > unknown.
+
+The defensible Foundry Channels property is narrower:
+
+> The published offline protocol, conformance, security, and Solana program
+> models satisfy their committed invariants and rejection semantics within the
+> exact documented assumptions, fixtures, and bounds. They do not declare
+> on-chain rights or deployment readiness.
