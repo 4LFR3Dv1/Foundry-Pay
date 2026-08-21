@@ -33,8 +33,8 @@ work item grants that authority. It does not rewrite historical evidence.
 | Work item | Status | Repository | Capability |
 |---|---|---|---|
 | FC-BETA-001 | active | `4LFR3Dv1/Foundry-Channels` | public web/API runtime, fail-closed over authoritative state |
-| FC-SOL-003B | active | `4LFR3Dv1/Foundry-Pay` | close signed-preimage + initialization runtime operability gap |
-| FC-SOL-006 | blocked | `4LFR3Dv1/Foundry-Pay` | operational ChannelVault; waits on FC-SOL-003B |
+| FC-SOL-003B | done | `4LFR3Dv1/Foundry-Pay` | exact signed-preimage + initialization runtime operability correction integrated |
+| FC-SOL-006 | active | `4LFR3Dv1/Foundry-Pay` | operational ChannelVault implementation + local-validator evidence |
 | SA-CHAN-002 | ready | `4LFR3Dv1/Solana-Agent` | initialize/funding/activation preparation |
 | SA-CHAN-003 | ready | `4LFR3Dv1/Solana-Agent` | settlement preparation |
 | FC-FAIL-003 | ready | `4LFR3Dv1/Foundry-Pay` | offline settlement/lifecycle failure lab |
@@ -80,26 +80,23 @@ includes:
   conformance;
 - `FC-SEC-001..004` — threat model, adversarial protocol tests, claim-link
   handling and offline concurrency evidence;
-- `FC-SOL-001..005` plus `FC-SOL-003A` — 490-byte ChannelState, v1 instruction
-  and Ed25519 transport contracts, transition model and governance;
+- `FC-SOL-001..005`, `FC-SOL-003A`, and `FC-SOL-003B` — 490-byte ChannelState,
+  v1 transport contracts, exact FC-PROTO-006 runtime mapping, transition model,
+  and governance;
 - `SA-CHAN-000..001B` — capability contracts, descriptor, operation commitment,
   funding identity and fixture preparation boundary.
 
-These remain protocol/model evidence, not deployment evidence.
+These remain protocol/model evidence until the runtime capability itself is
+observed under `FC-SOL-006`.
 
 ## Runtime operability correction — FC-SOL-003B
 
-The first `FC-SOL-006` implementation pass exposed a real mismatch between the
-frozen transport contract and the exact FC-PROTO-006 signer authority.
+`FC-SOL-003B` is integrated through Foundry-Pay PR #76. The correction keeps
+the 490-byte account layout and historical v1 instruction bytes unchanged while
+adding explicit runtime instruction profile v2 and strict extraction/validation
+of the exact FC-PROTO-006 signed message.
 
-The v1 `activate_voucher` args do not contain every field present in the exact
-sender-signed canonical payload. The same is true for recipient binding, and
-`initialize_channel` does not provide all immutable identity fields needed to
-validate those payloads later.
-
-Therefore `FC-SOL-006` is blocked until `FC-SOL-003B` is integrated.
-
-`FC-SOL-003B` must preserve:
+The preserved boundary is:
 
 ```text
 ChannelState layout            490 bytes, unchanged
@@ -110,22 +107,28 @@ Ed25519 precompile layout      unchanged
 historical instruction v1     byte-reproducible
 ```
 
-It introduces an explicit runtime instruction version instead of silently
-changing v1. The runtime consumes the exact canonical message bytes from the
-immediately preceding Ed25519 instruction, validates their canonicality/hash,
-and binds every authority-bearing field to current state/instruction context.
+The runtime does not trust independently supplied voucher sequence, cumulative
+authority, destination, or binding nonce. Those authority-bearing values are
+derived from the signed canonical payload and checked against current state and
+instruction context.
+
+The beta signed-payload profile is `environment=devnet` /
+`network=solana:devnet`. Local-validator execution under `FC-SOL-006` may host
+that exact **DevnetFixture** profile as pre-deployment evidence; doing so does
+not turn local-validator execution into devnet deployment evidence.
+
 See
 [`solana/instructions/FC-SOL-003B-RUNTIME-PREIMAGE-CORRECTION.md`](solana/instructions/FC-SOL-003B-RUNTIME-PREIMAGE-CORRECTION.md).
 
 ## ChannelVault runtime gate — FC-SOL-006
 
-After `FC-SOL-003B`, `FC-SOL-006` may implement the first real ChannelVault
-entrypoint and handlers while preserving:
+`FC-SOL-006` is now active and owns the first real ChannelVault entrypoint and
+handler implementation while preserving:
 
 ```text
 ChannelState space       490 bytes
 network                  Solana
-first beta environment   devnet
+first beta profile       devnet / solana:devnet
 asset program            classic SPL Token only
 operations               8, closed registry
 ```
@@ -141,9 +144,17 @@ The operations remain:
 7. `refund_unallocated`
 8. `finalize_close`
 
-Local-validator execution belongs to `FC-SOL-006` evidence. Devnet deployment
-requires a later exact-artifact/Program-ID authorization after that evidence is
-reviewed.
+The work item may add a real Solana program entrypoint, account validation,
+state mutation, native Ed25519 introspection, and classic SPL Token CPI. All
+validation must precede an economic effect, arithmetic must be checked, and a
+failed handler may not publish a success event or partial transfer.
+
+Local-validator execution belongs to `FC-SOL-006` evidence. The local validator
+is a test execution environment; when signed FC-PROTO-006 fixtures are used,
+the account stores `EnvironmentCode::DevnetFixture` so the exact frozen devnet
+preimage can be consumed without rewriting it. A real devnet Program ID or
+deployment remains separately blocked until the local-validator artifact and
+evidence are reviewed and an exact-artifact authorization is recorded.
 
 ## Product runtime gate — FC-BETA-001
 
