@@ -1,0 +1,21 @@
+[package]
+name = "foundry-channel-vault-program"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85.1"
+license = "Apache-2.0"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+foundry-channel-vault-account-model = { path = ".." }
+foundry-channel-vault-instruction-contract = { path = "../instruction-contract" }
+foundry-channel-vault-transition-model = { path = "../transition-model" }
+solana-program = "=2.1.21"
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
