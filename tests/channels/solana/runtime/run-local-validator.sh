@@ -15,41 +15,68 @@ SBF_DIR="$TMP/sbf"
 PHASE1_OUT="$TMP/phase1.out"
 PHASE2_OUT="$TMP/phase2.out"
 VALIDATOR_PID=""
+CURRENT_STAGE="bootstrap"
+
+stage() {
+  CURRENT_STAGE="$1"
+  echo "FC-SOL-006 stage=$CURRENT_STAGE"
+}
 
 cleanup() {
+  local status=$?
   if [[ -n "$VALIDATOR_PID" ]] && kill -0 "$VALIDATOR_PID" 2>/dev/null; then
     kill "$VALIDATOR_PID" 2>/dev/null || true
     wait "$VALIDATOR_PID" 2>/dev/null || true
   fi
+  if [[ $status -ne 0 ]]; then
+    echo "FC-SOL-006 failed stage=$CURRENT_STAGE status=$status" >&2
+    for log in cargo-build-sbf.log validator.log npm-install.log phase1.out phase2.out; do
+      if [[ -s "$TMP/$log" ]]; then
+        echo "----- $log -----" >&2
+        tail -400 "$TMP/$log" >&2 || true
+      fi
+    done
+  fi
   rm -rf "$TMP"
+  exit "$status"
 }
 trap cleanup EXIT
 
 export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
 
+stage "agave-install"
 if ! command -v solana >/dev/null 2>&1 || ! solana --version | grep -q '2\.1\.21'; then
   curl -sSfL "https://release.anza.xyz/${AGAVE_VERSION}/install" | sh
   export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
 fi
 
+stage "toolchain-check"
 solana --version | grep -q '2\.1\.21'
 command -v solana-test-validator >/dev/null
 command -v cargo-build-sbf >/dev/null
 command -v node >/dev/null
 command -v npm >/dev/null
 
-npm install \
+stage "validator-client-install"
+if ! npm install \
   --prefix "$RUNTIME_DIR" \
   --ignore-scripts \
   --no-audit \
   --no-fund \
-  --no-package-lock >/dev/null
+  --no-package-lock >"$TMP/npm-install.log" 2>&1; then
+  cat "$TMP/npm-install.log" >&2
+  exit 1
+fi
 
+stage "cargo-build-sbf"
 mkdir -p "$SBF_DIR"
-cargo-build-sbf \
+if ! cargo-build-sbf \
   --manifest-path "$PROGRAM_MANIFEST" \
   --sbf-out-dir "$SBF_DIR" \
-  >"$TMP/cargo-build-sbf.log" 2>&1
+  >"$TMP/cargo-build-sbf.log" 2>&1; then
+  cat "$TMP/cargo-build-sbf.log" >&2
+  exit 1
+fi
 
 ARTIFACT="$SBF_DIR/foundry_channel_vault_program.so"
 test -f "$ARTIFACT"
@@ -115,17 +142,22 @@ export FC_SOL_006_PROGRAM_ID="$PROGRAM_ID"
 export FC_SOL_006_CONTEXT="$CONTEXT"
 export NODE_OPTIONS="--dns-result-order=ipv4first"
 
+stage "validator-phase1-start"
 start_phase1_validator
+stage "validator-phase1-client"
 node "$RUNTIME_DIR/validator-client.mjs" phase1 | tee "$PHASE1_OUT"
 stop_validator
 
 CLOSE_SLOT="$(node -e "const c=require(process.argv[1]); process.stdout.write(String(c.slot));" "$CONTEXT")"
 WARP_SLOT="$((CLOSE_SLOT + 100000))"
 
+stage "validator-phase2-start"
 start_phase2_validator "$WARP_SLOT"
+stage "validator-phase2-client"
 node "$RUNTIME_DIR/validator-client.mjs" phase2 | tee "$PHASE2_OUT"
 stop_validator
 
+stage "receipt"
 export SBF_SHA256 WARP_SLOT PHASE1_OUT PHASE2_OUT
 node <<'NODE'
 const fs = require('node:fs');
