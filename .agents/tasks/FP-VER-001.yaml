@@ -1,0 +1,54 @@
+work_item: FP-VER-001
+objective: obtain one valid independent external developer reproduction of the pinned public Foundry Pay baseline, or preserve a reproducible external non-reproduction finding
+owner: independent-external-verifier
+branch: external/verification/FP-VER-001
+allowed_paths:
+  - evidence/external/FP-VER-001/**
+  - docs/EVIDENCE.md
+dependencies:
+  - FP-DOC-004
+  - FP-FAIL-002
+  - FOUNDATIONS-001
+invariants:
+  - the verifier is outside the authoring loop for the exact baseline being verified
+  - the Foundry Pay baseline commit is immutable and recorded before execution begins
+  - the verifier operates the clean verification environment rather than a project maintainer
+  - committed expected outputs are never used as computation inputs for independent recomputation
+  - unfavorable reproducible findings remain visible and are not rewritten as invalid runs
+  - no private key, seed phrase, production credential, funded wallet, custody access, or private customer data is required
+  - external developer verification is not represented as a security audit, deployment authorization, mainnet readiness, or production readiness
+acceptance:
+  - a stable public external record identifies the verifier, independence disclosure, exact baseline, environment, commands, and observed results
+  - python examples/local_proof.py is executed from a clean clone of the pinned baseline
+  - the documented External Execution protocol test path is executed
+  - at least one documented Foundry Channels protocol or conformance suite is executed
+  - the canonical public Solana devnet transaction is independently inspected
+  - at least one material committed hash, invariant, or deterministic result is independently recomputed without expected-output input
+  - at least one recovery, replay, tamper-rejection, or cross-language conformance behavior is actively challenged
+  - the report records discrepancies and unresolved questions rather than only pass results
+  - the report ends with exactly one conclusion: reproduced, reproduced_with_findings, not_reproduced, or invalid_run
+  - any repository indexing preserves a link to the original verifier-authored record and does not rewrite its conclusion
+verification_commands:
+  - python -m pip install -e ".[dev]"
+  - python examples/local_proof.py
+  - python -m pytest
+  - npm ci --prefix packages/external-execution-protocol/typescript
+  - npm test --prefix packages/external-execution-protocol/typescript
+  - npm ci --prefix packages/channel-protocol/typescript
+  - npm test --prefix packages/channel-protocol/typescript
+evidence:
+  - verifier-authored public issue, fork report, or pull request bound to the immutable baseline
+  - optional sanitized mirror under evidence/external/FP-VER-001/**
+  - docs/EVIDENCE.md index entry only after a valid external record exists
+provenance:
+  - exact Foundry Pay baseline commit
+  - original verifier-authored external record URL
+stop_conditions:
+  - verifier materially contributed to the target baseline
+  - baseline changes after verification starts
+  - a secret or credential would need to be disclosed
+  - a required result can be obtained only by consuming the committed expected output
+  - project maintainers would need to operate the verifier environment
+  - evidence provenance cannot be resolved
+  - requested execution requires mainnet, real value, custody, production, or ChannelVault deployment authority
+  - change falls outside allowed paths

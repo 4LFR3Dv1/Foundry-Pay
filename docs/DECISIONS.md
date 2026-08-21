@@ -21,6 +21,8 @@ ADRs.
 | Foundry Channels owns its detailed protocol, execution graph, and decision ledger under `docs/channels/` | accepted delegation | `channels/WORK_GRAPH.md`, `channels/DECISIONS.md` |
 | Foundry Channels work completion, self-validation, external review, and deployment authorization are independent facts | accepted | `channels/ADR/FC-ADR-009-evidence-maturity-and-deployment-authorization.md` |
 | Roadmap direction, execution readiness, demonstrated evidence, external review, and deployment authorization are distinct surfaces | accepted operational boundary | `../ROADMAP.md`, `WORK_GRAPH.md`, `EVIDENCE.md`, `AGENTS.md` |
+| External developer verification must be bound to an immutable baseline and authored by a verifier outside that baseline's authoring loop; unfavorable reproducible findings remain evidence | accepted | `EXTERNAL_VERIFICATION.md`, `FP-VER-001` |
+| External developer verification is not a professional security audit and cannot authorize deployment, mainnet, custody, real value, or production | accepted | `EXTERNAL_VERIFICATION.md` |
 
 ## Delegated Foundry Channels decisions
 
@@ -46,7 +48,8 @@ execution/deployment decisions:
 - a second EVM executor/network;
 - Celo as an active execution environment;
 - production custody/signing architecture;
-- a production service or SLA.
+- a production service or SLA;
+- a completed professional external security audit.
 
 Those require explicit future decisions and the evidence/review gates applicable
 to the exact artifacts and environment.
