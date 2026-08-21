@@ -1,0 +1,205 @@
+version: 1
+program: foundry-channels-public-beta
+environment: solana:devnet
+status_values: [blocked, ready, active, review, done]
+
+work_items:
+  - id: FC-GOV-002
+    status: done
+    objective: authorize a public operational Foundry Channels beta on Solana devnet without authorizing mainnet, custody, or real-value production claims
+    owner: program-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - docs/channels/ADR/FC-ADR-010-public-beta-devnet.md
+      - docs/channels/beta/**
+      - docs/channels/WORK_GRAPH.md
+      - .agents/tasks/FC-GOV-002.yaml
+    dependencies: [FC-GOV-001, FC-SOL-005, SA-CHAN-001B]
+    invariants:
+      - beta means real software and real devnet execution, never fixture-backed consumer state
+      - mainnet and real-value use remain separately blocked
+      - project maintainers do not gain custody authority
+      - Foundry-Pay remains economic/protocol authority, Solana-Agent remains network executor, Foundry-Channels remains product/runtime surface
+    acceptance:
+      - operational ChannelVault implementation is explicitly released as a new bounded work item
+      - Foundry-Channels web/API implementation is explicitly released as a new bounded work item
+      - public deployment remains blocked until end-to-end devnet certification passes
+      - no existing offline/model evidence is relabeled as deployed evidence
+    tests:
+      - governance document review
+      - path and authority conflict review
+    evidence:
+      - docs/channels/ADR/FC-ADR-010-public-beta-devnet.md
+      - docs/channels/beta/work-items.yaml
+    security_review: program-governance-review
+    stop_conditions:
+      - mainnet or real-value authority is inferred from beta authorization
+      - hosted infrastructure receives wallet private keys or seed material
+      - a consumer-visible balance can be produced without authoritative runtime/network state
+
+  - id: FC-SOL-006
+    status: ready
+    objective: promote the frozen ChannelVault account, instruction, transition, concurrency, and governance models into an operational Solana program for local-validator and explicitly authorized devnet use
+    owner: solana-program-implementer
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - programs/foundry-channel-vault/**
+      - tests/channels/solana/runtime/**
+      - docs/channels/solana/runtime/**
+      - evidence/runs/FC-SOL-006/**
+      - .agents/tasks/FC-SOL-006.yaml
+    dependencies: [FC-GOV-002, FC-SOL-002, FC-SOL-003A, FC-SOL-004, FC-SOL-005]
+    invariants:
+      - the 490-byte ChannelState layout remains byte-compatible
+      - the eight-operation v1 registry remains closed
+      - classic SPL Token remains the only token program
+      - Ed25519 precompile mapping remains exact
+      - failed validation produces no partial economic effect
+      - no private key or production signer is embedded in the program or repository
+    acceptance:
+      - a real program entrypoint executes initialize, fund, activate, bind, settle, request-close, refund, and finalize semantics
+      - local-validator integration tests exercise all positive operations and frozen rejection classes
+      - account bytes and instruction behavior remain compatible with frozen vectors
+      - a reproducible BPF/SBF artifact and Program ID generation procedure exist
+      - devnet deployment requires an exact-artifact authorization record after local-validator evidence passes
+    tests:
+      - cargo test for account/instruction/transition/governance crates
+      - local-validator integration suite
+      - golden-vector compatibility
+      - negative account/meta/signature matrix
+    evidence:
+      - evidence/runs/FC-SOL-006/**
+    security_review: runtime-solana-review
+    stop_conditions:
+      - a frozen account offset or signed preimage changes without a new protocol version
+      - Token-2022 or a second asset model enters scope
+      - mainnet deployment is requested
+
+  - id: FC-BETA-001
+    status: active
+    objective: build the public Foundry Channels web/API product as a fail-closed runtime over authoritative ChannelVault state and durable application persistence
+    owner: product-runtime-implementer
+    repository: 4LFR3Dv1/Foundry-Channels
+    allowed_paths:
+      - "**"
+    dependencies: [FC-GOV-002, FC-PROTO-004, FC-SEC-003, FC-SOL-002, FC-SOL-003A]
+    invariants:
+      - no fixture, seed object, mock balance, fake transaction, or synthetic chain observation reaches a consumer screen
+      - absent Program ID, RPC, database, or incompatible state makes the runtime fail closed
+      - wallet signing remains client-controlled; hosted services never receive wallet secret material
+      - recovery never offers blind retry for an ambiguous submitted transaction
+      - protocol terminology stays behind verification/detail surfaces
+    acceptance:
+      - Next.js production build and healthcheck exist
+      - durable Postgres schema exists for channels, claims, operations, and recovery correlation
+      - ChannelState is decoded directly from the frozen 490-byte layout
+      - public Channel views can verify program ownership and authoritative on-chain state
+      - create/fund/activate/bind/settle/recover actions are enabled only when their real executor/program contracts are available
+      - no deployment is described as operational before end-to-end certification
+    tests:
+      - TypeScript typecheck
+      - production build
+      - state-decoder vectors
+      - API/runtime failure tests
+    evidence:
+      - Foundry-Channels pull requests and CI
+      - evidence/runs/FC-BETA-001/** after integration
+    security_review: web-runtime-and-wallet-boundary-review
+    stop_conditions:
+      - UI requires fabricated data to remain usable
+      - server requests wallet private keys or seed phrases
+      - an action bypasses Foundry-Pay/Solana-Agent authority boundaries
+
+  - id: SA-CHAN-002
+    status: ready
+    objective: complete initialize, funding, and activation preparation against the frozen v2 operation profile
+    owner: solana-agent-implementer
+    repository: 4LFR3Dv1/Solana-Agent
+    allowed_paths: delegated-by-solana-agent
+    dependencies: [SA-CHAN-001B, FC-SOL-003]
+    invariants: [no RPC execution is released by preparation alone]
+    acceptance: [real instruction preparation matches the frozen ChannelVault contract]
+    tests: [Solana-Agent channel preparation suite]
+    evidence: [Solana-Agent public evidence]
+    security_review: executor-preparation-review
+    stop_conditions: [runtime execution is added before its authority gate]
+
+  - id: SA-CHAN-003
+    status: ready
+    objective: complete settlement preparation against the frozen v2 operation profile
+    owner: solana-agent-implementer
+    repository: 4LFR3Dv1/Solana-Agent
+    allowed_paths: delegated-by-solana-agent
+    dependencies: [SA-CHAN-001B, FC-SOL-003]
+    invariants: [beneficiary is fixed by bound channel state]
+    acceptance: [settlement preparation is exact and permissionless-caller-safe]
+    tests: [Solana-Agent settlement preparation suite]
+    evidence: [Solana-Agent public evidence]
+    security_review: executor-preparation-review
+    stop_conditions: [caller can substitute economic beneficiary]
+
+  - id: FC-BETA-002
+    status: blocked
+    objective: certify one end-to-end real Foundry Channels beta flow on Solana devnet
+    owner: program-integrator
+    repository: multi-repository
+    allowed_paths:
+      - evidence/runs/FC-BETA-002/**
+      - docs/channels/beta/**
+    dependencies: [FC-SOL-006, FC-BETA-001, SA-CHAN-005]
+    invariants:
+      - every consumer-visible economic state is independently reconcilable with the deployed program
+      - ambiguous execution recovers without blind rebroadcast
+      - the proof uses devnet only
+    acceptance:
+      - one real sender wallet initializes and funds a channel
+      - cumulative value is activated on-chain
+      - one recipient claim binds a real destination wallet
+      - partial or full settlement executes on-chain
+      - an intentionally ambiguous operation is recovered without a second economic attempt
+      - close/refund/finalization semantics are exercised or explicitly deferred with a beta boundary
+      - reproducible evidence binds app, program, executor, transactions, and observations
+    tests:
+      - end-to-end devnet certification
+      - source-diverse reconciliation where available
+    evidence:
+      - evidence/runs/FC-BETA-002/**
+    security_review: end-to-end-beta-certification
+    stop_conditions:
+      - any step depends on mocked chain state
+      - mainnet or production-value assets are introduced
+
+  - id: FC-OPS-001
+    status: blocked
+    objective: deploy the certified Foundry Channels beta to production infrastructure and attach its own public domain
+    owner: production-operator
+    repository: 4LFR3Dv1/Foundry-Channels
+    allowed_paths:
+      - deployment configuration
+      - operations documentation
+      - evidence/runs/FC-OPS-001/**
+    dependencies: [FC-BETA-002]
+    invariants:
+      - the production service points only at the exact certified devnet Program ID
+      - database migrations are durable and repeatable
+      - healthcheck fails closed when RPC, database, or program authority is unavailable
+      - custom domain does not imply mainnet or production-value authorization
+    acceptance:
+      - public service is healthy on Railway
+      - Postgres is durable
+      - custom domain resolves with TLS
+      - runtime reports the exact program/network/version boundary
+      - a fresh browser can complete the certified beta flow without fixture data
+    tests:
+      - deploy healthcheck
+      - production smoke test
+      - domain/TLS verification
+    evidence:
+      - Railway deployment ID
+      - custom domain
+      - production smoke evidence
+    security_review: production-beta-ops-review
+    stop_conditions:
+      - production deploy points to an uncertified Program ID
+      - secrets are committed to GitHub
+      - deployment silently changes network or mint policy
