@@ -238,7 +238,18 @@ function deriveShortChannel(sender, mint) {
 }
 
 async function createLookupTable(relay, addresses) {
-  const recentSlot = await connection.getSlot("confirmed");
+  let recentSlot = 0;
+  for (let attempt = 0; attempt < 120; attempt += 1) {
+    const confirmedSlot = await connection.getSlot("confirmed");
+    const finalizedSlot = await connection.getSlot("finalized");
+    if (finalizedSlot > 0 && confirmedSlot > finalizedSlot) {
+      recentSlot = finalizedSlot;
+      break;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  assert(recentSlot > 0, "validator never produced a stable recent slot for lookup-table creation");
+
   const [createInstruction, address] = AddressLookupTableProgram.createLookupTable({
     authority: relay.publicKey,
     payer: relay.publicKey,
