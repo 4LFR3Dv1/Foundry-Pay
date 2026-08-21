@@ -283,6 +283,49 @@ async function createLookupTable(relay, addresses) {
   throw new Error("lookup table did not become active");
 }
 
+async function waitForSignature(signature, lastValidBlockHeight, label) {
+  for (let attempt = 0; attempt < 600; attempt += 1) {
+    const response = await connection.getSignatureStatuses([signature], {
+      searchTransactionHistory: true,
+    });
+    const status = response.value[0];
+    if (status) {
+      if (status.err) {
+        throw new Error(`${label} transaction ${signature} failed: ${JSON.stringify(status.err)}`);
+      }
+      if (status.confirmationStatus === "confirmed" || status.confirmationStatus === "finalized") {
+        return status;
+      }
+    }
+
+    if (attempt % 10 === 0) {
+      const blockHeight = await connection.getBlockHeight("confirmed");
+      if (blockHeight > lastValidBlockHeight) {
+        const finalResponse = await connection.getSignatureStatuses([signature], {
+          searchTransactionHistory: true,
+        });
+        const finalStatus = finalResponse.value[0];
+        if (finalStatus?.err) {
+          throw new Error(`${label} transaction ${signature} failed: ${JSON.stringify(finalStatus.err)}`);
+        }
+        if (
+          finalStatus?.confirmationStatus === "confirmed" ||
+          finalStatus?.confirmationStatus === "finalized"
+        ) {
+          return finalStatus;
+        }
+        throw new Error(
+          `${label} transaction ${signature} expired without confirmed status; ` +
+            `lastValidBlockHeight=${lastValidBlockHeight} currentBlockHeight=${blockHeight} ` +
+            `status=${JSON.stringify(finalStatus)}`,
+        );
+      }
+    }
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  throw new Error(`${label} transaction ${signature} confirmation polling timed out`);
+}
+
 async function sendV0(payer, instructions, lookupTable, label) {
   const latest = await connection.getLatestBlockhash("confirmed");
   const message = new TransactionMessage({
@@ -301,7 +344,7 @@ async function sendV0(payer, instructions, lookupTable, label) {
     skipPreflight: false,
     maxRetries: 5,
   });
-  await connection.confirmTransaction({ signature, ...latest }, "confirmed");
+  await waitForSignature(signature, latest.lastValidBlockHeight, label);
   return { signature, serializedBytes: serialized.length };
 }
 
