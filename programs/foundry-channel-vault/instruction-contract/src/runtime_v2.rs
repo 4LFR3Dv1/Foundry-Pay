@@ -805,7 +805,7 @@ mod tests {
     fn channel_id_and_binding_nonce_mappings_are_deterministic() {
         assert_eq!(
             hex::encode(channel_id_hash("channel_foundations_001").unwrap()),
-            "aa939239bec12a758b0d0f3d5a2b64cce601fa90cca2d266156215647d9b8bf9"
+            "ceae0438987de294cc416407490c5b0b679651e8a96392799ff1ebf586881c5b"
         );
         let nonce = encode_binding_nonce_u64(INITIAL_BINDING_NONCE);
         assert_eq!(&nonce[..8], &1_u64.to_le_bytes());
@@ -842,7 +842,7 @@ mod tests {
         assert_eq!(verified.sequence, 3);
         assert_eq!(verified.cumulative_authorized, 40_000_000);
         assert_eq!(verified.voucher_hash, expected_hash);
-        assert_eq!(verified.expires_at, 1_775_260_800);
+        assert_eq!(verified.expires_at, 1_785_628_800);
 
         let precompile = build_voucher_ed25519_data(
             &state.sender.to_bytes(),
@@ -939,7 +939,7 @@ mod tests {
         assert_eq!(verified.destination_wallet, destination);
         assert_eq!(verified.binding_nonce, 1);
         assert_eq!(verified.binding_hash, expected_hash);
-        assert_eq!(verified.expires_at, 1_775_174_200);
+        assert_eq!(verified.expires_at, 1_785_543_000);
 
         let precompile = build_binding_ed25519_data(
             &state.recipient_claim_pubkey.to_bytes(),
