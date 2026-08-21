@@ -1,0 +1,38 @@
+work_item: FC-GOV-002
+objective: authorize the Foundry Channels public beta campaign on Solana devnet while preserving mainnet, custody, and real-value gates
+owner: program-integrator
+branch: coordination/fc-gov-002-public-beta
+allowed_paths:
+  - .agents/tasks/FC-GOV-002.yaml
+  - docs/channels/ADR/FC-ADR-010-public-beta-devnet.md
+  - docs/channels/beta/**
+  - docs/channels/WORK_GRAPH.md
+dependencies:
+  - FC-GOV-001
+  - FC-SOL-005
+  - SA-CHAN-001B
+invariants:
+  - production-hosted beta and mainnet/value-production authority remain separate
+  - no consumer-visible state may be fixture-backed
+  - wallet private keys and seed phrases remain outside hosted infrastructure
+  - Foundry-Pay, Solana-Agent, and Foundry-Channels keep disjoint authority roles
+acceptance:
+  - beta registry exists and identifies active, ready, and blocked capabilities
+  - FC-BETA-001 is authorized for the public product repo
+  - FC-SOL-006 is authorized for operational ChannelVault implementation
+  - production custom-domain activation remains blocked behind end-to-end certification
+  - mainnet, custody, Celo/EVM, and real-value production remain unapproved
+verification_commands:
+  - python scripts/check_channel_foundation.py
+  - python -m pytest tests/channels/test_foundation_contracts.py
+  - git diff --check
+evidence:
+  - docs/channels/ADR/FC-ADR-010-public-beta-devnet.md
+  - docs/channels/beta/work-items.yaml
+provenance:
+  - explicit human product decision on 2026-08-21
+stop_conditions:
+  - a current offline/model result is relabeled as deployed evidence
+  - mainnet or real-value scope enters this authority PR
+  - a hosted service is granted wallet custody authority
+  - change falls outside allowed paths
