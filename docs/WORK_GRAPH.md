@@ -60,9 +60,35 @@ authorize an operational ChannelVault or any deployment environment.
 | FP-FAIL-001 | done | FP-E2E-001, FP-REC-001 | deterministic failure and recovery matrix |
 | FP-FAIL-002 | done | FP-FAIL-001, SA-CHAOS-001 | real-process chaos proxy, recovery, and external journal root |
 
-`FP-FAIL-002` is delivered. Its independent external review remains
+`FP-FAIL-002` is delivered. Its independent external security review remains
 `not_performed`; that maturity fact is recorded separately from work-item
 completion and must not be inferred from `done`.
+
+## External verification
+
+| Work item | Status | Depends on | Outcome |
+|---|---|---|---|
+| FP-VER-001 | ready | FP-DOC-004, FP-FAIL-002, FOUNDATIONS-001 | independent developer reproduces and challenges the pinned public baseline, or publishes a valid non-reproduction finding |
+
+`FP-VER-001` is the formal execution authority for the Roadmap's first external
+developer verification. Its normative contract is
+[`docs/EXTERNAL_VERIFICATION.md`](EXTERNAL_VERIFICATION.md), with the activation
+contract in [`.agents/tasks/FP-VER-001.yaml`](../.agents/tasks/FP-VER-001.yaml).
+
+`ready` does not mean an external verification has occurred. Activation requires
+an independent verifier, an immutable baseline commit, and a pre-recorded scope.
+The verifier must operate the clean environment. A maintainer may coordinate the
+run but cannot author the verifier's result and present it as independent.
+
+A valid run may conclude `reproduced`, `reproduced_with_findings`, or
+`not_reproduced`; `invalid_run` is reserved for a run whose independence,
+baseline, or evidence contract is invalid. An unfavorable reproducible result
+must remain visible.
+
+This work item creates **external developer verification** authority only. It
+does not create a professional security-audit gate, deployment authorization,
+mainnet authority, real-value authority, custody authority, or production
+readiness.
 
 ## Delegated Foundry Channels authority
 
@@ -103,9 +129,13 @@ task contract; readiness alone does not reserve files.
 |---|---|
 | FP-CTRL-005 | top-level operational governance: `AGENTS.md`, `docs/WORK_GRAPH.md`, `docs/PROGRAM.md`, `docs/DECISIONS.md`, contribution/governance documentation, and authority-delegation references |
 
-Before activating `FP-PROTO-004`, `FP-PROTO-005`, or `FP-PROTO-006`, create or
-reconcile its task contract, reserve exact paths, and verify that no delegated
-Channels item owns those paths.
+Before activating `FP-PROTO-004`, `FP-PROTO-005`, `FP-PROTO-006`, or
+`FP-VER-001`, bind the exact baseline and paths required by that run and verify
+that no active or delegated work owns them.
+
+For `FP-VER-001`, the verification target itself is read-only. Optional imported
+reports may use `evidence/external/FP-VER-001/**`; `docs/EVIDENCE.md` may be
+updated only after a valid original verifier-authored record exists.
 
 Channels path ownership is defined only in its delegated work-item contracts.
 
