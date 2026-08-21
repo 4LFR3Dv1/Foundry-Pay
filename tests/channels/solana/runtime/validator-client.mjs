@@ -240,33 +240,37 @@ function deriveShortChannel(sender, mint) {
 async function createLookupTable(relay, addresses) {
   let recentSlot = 0;
   for (let attempt = 0; attempt < 120; attempt += 1) {
-    const confirmedSlot = await connection.getSlot("confirmed");
-    const finalizedSlot = await connection.getSlot("finalized");
-    if (finalizedSlot > 0 && confirmedSlot > finalizedSlot) {
-      recentSlot = finalizedSlot;
-      break;
+    const currentSlot = await connection.getSlot("confirmed");
+    if (currentSlot > 1) {
+      const blocks = await connection.getBlocks(Math.max(0, currentSlot - 32), currentSlot - 1, "confirmed");
+      if (blocks.length > 0) {
+        recentSlot = blocks.at(-1);
+        break;
+      }
     }
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
-  assert(recentSlot > 0, "validator never produced a stable recent slot for lookup-table creation");
+  assert(recentSlot > 0, "validator never produced a recent block for lookup-table creation");
 
   const [createInstruction, address] = AddressLookupTableProgram.createLookupTable({
     authority: relay.publicKey,
     payer: relay.publicKey,
     recentSlot,
   });
+  await sendAndConfirmTransaction(connection, new Transaction().add(createInstruction), [relay], {
+    commitment: "confirmed",
+  });
+
   const extendInstruction = AddressLookupTableProgram.extendLookupTable({
     payer: relay.publicKey,
     authority: relay.publicKey,
     lookupTable: address,
     addresses,
   });
-  await sendAndConfirmTransaction(
-    connection,
-    new Transaction().add(createInstruction, extendInstruction),
-    [relay],
-    { commitment: "confirmed" },
-  );
+  await sendAndConfirmTransaction(connection, new Transaction().add(extendInstruction), [relay], {
+    commitment: "confirmed",
+  });
+
   const extensionSlot = await connection.getSlot("confirmed");
   for (let attempt = 0; attempt < 80; attempt += 1) {
     const slot = await connection.getSlot("confirmed");
