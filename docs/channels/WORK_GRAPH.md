@@ -33,7 +33,7 @@ work item grants that authority. It does not rewrite historical evidence.
 | Work item | Status | Repository | Capability |
 |---|---|---|---|
 | FC-BETA-001 | active | `4LFR3Dv1/Foundry-Channels` | public web/API runtime, fail-closed over authoritative state |
-| FC-SOL-003B | ready | `4LFR3Dv1/Foundry-Pay` | close signed-preimage + initialization runtime operability gap |
+| FC-SOL-003B | active | `4LFR3Dv1/Foundry-Pay` | close signed-preimage + initialization runtime operability gap |
 | FC-SOL-006 | blocked | `4LFR3Dv1/Foundry-Pay` | operational ChannelVault; waits on FC-SOL-003B |
 | SA-CHAN-002 | ready | `4LFR3Dv1/Solana-Agent` | initialize/funding/activation preparation |
 | SA-CHAN-003 | ready | `4LFR3Dv1/Solana-Agent` | settlement preparation |
