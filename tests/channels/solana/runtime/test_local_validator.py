@@ -37,20 +37,26 @@ def _rpc(url: str, method: str, params: list[object] | None = None) -> object:
         headers={"content-type": "application/json"},
         method="POST",
     )
-    with urllib.request.urlopen(request, timeout=3) as response:  # noqa: S310 - loopback RPC only
+    with urllib.request.urlopen(  # noqa: S310 - loopback RPC only
+        request, timeout=3
+    ) as response:
         payload = json.loads(response.read())
     if "error" in payload:
         raise RuntimeError(f"RPC {method} failed: {payload['error']}")
     return payload["result"]
 
 
-def _wait_for_rpc(url: str, process: subprocess.Popen[str], log_path: Path) -> None:
+def _wait_for_rpc(
+    url: str, process: subprocess.Popen[str], log_path: Path
+) -> None:
     deadline = time.monotonic() + 90
     last_error: Exception | None = None
     while time.monotonic() < deadline:
         if process.poll() is not None:
             tail = log_path.read_text(encoding="utf-8", errors="replace")[-12000:]
-            raise AssertionError(f"solana-test-validator exited {process.returncode}\n{tail}")
+            raise AssertionError(
+                f"solana-test-validator exited {process.returncode}\n{tail}"
+            )
         try:
             if _rpc(url, "getHealth") == "ok":
                 return
@@ -58,12 +64,22 @@ def _wait_for_rpc(url: str, process: subprocess.Popen[str], log_path: Path) -> N
             last_error = exc
         time.sleep(0.25)
     tail = log_path.read_text(encoding="utf-8", errors="replace")[-12000:]
-    raise AssertionError(f"validator RPC never became healthy: {last_error}\n{tail}")
+    raise AssertionError(
+        f"validator RPC never became healthy: {last_error}\n{tail}"
+    )
 
 
 def _install_agave_if_needed(tmp_path: Path) -> tuple[dict[str, str], Path]:
     env = os.environ.copy()
-    installed_bin = Path.home() / ".local" / "share" / "solana" / "install" / "active_release" / "bin"
+    installed_bin = (
+        Path.home()
+        / ".local"
+        / "share"
+        / "solana"
+        / "install"
+        / "active_release"
+        / "bin"
+    )
     env["PATH"] = os.pathsep.join([str(installed_bin), env.get("PATH", "")])
 
     validator = shutil.which("solana-test-validator", path=env["PATH"])
@@ -80,7 +96,10 @@ def _install_agave_if_needed(tmp_path: Path) -> tuple[dict[str, str], Path]:
         if "2.1.21" in version:
             return env, Path(validator)
 
-    if os.environ.get("GITHUB_ACTIONS") != "true" and os.environ.get("FC_SOL_006_RUN_VALIDATOR") != "1":
+    if (
+        os.environ.get("GITHUB_ACTIONS") != "true"
+        and os.environ.get("FC_SOL_006_RUN_VALIDATOR") != "1"
+    ):
         pytest.skip(
             "FC-SOL-006 real validator suite requires Agave 2.1.21; set "
             "FC_SOL_006_RUN_VALIDATOR=1 to bootstrap it outside GitHub Actions"
@@ -91,7 +110,7 @@ def _install_agave_if_needed(tmp_path: Path) -> tuple[dict[str, str], Path]:
         [
             "sh",
             "-c",
-            f'curl -sSfL https://release.anza.xyz/{AGAVE_VERSION}/install | sh',
+            f"curl -sSfL https://release.anza.xyz/{AGAVE_VERSION}/install | sh",
         ],
         cwd=tmp_path,
         env=env,
@@ -100,13 +119,17 @@ def _install_agave_if_needed(tmp_path: Path) -> tuple[dict[str, str], Path]:
         text=True,
         timeout=360,
     )
-    installer_log.write_text(completed.stdout + "\n" + completed.stderr, encoding="utf-8")
+    installer_log.write_text(
+        completed.stdout + "\n" + completed.stderr, encoding="utf-8"
+    )
     assert completed.returncode == 0, installer_log.read_text(encoding="utf-8")
 
     validator = shutil.which("solana-test-validator", path=env["PATH"])
     solana = shutil.which("solana", path=env["PATH"])
     cargo_build_sbf = shutil.which("cargo-build-sbf", path=env["PATH"])
-    assert validator and solana and cargo_build_sbf, installer_log.read_text(encoding="utf-8")
+    assert validator and solana and cargo_build_sbf, installer_log.read_text(
+        encoding="utf-8"
+    )
     version = subprocess.run(
         [solana, "--version"],
         check=True,
@@ -164,7 +187,9 @@ def _build_sbf(tmp_path: Path, env: dict[str, str]) -> tuple[Path, str]:
         timeout=600,
     )
     build_log = tmp_path / "cargo-build-sbf.log"
-    build_log.write_text(completed.stdout + "\n" + completed.stderr, encoding="utf-8")
+    build_log.write_text(
+        completed.stdout + "\n" + completed.stderr, encoding="utf-8"
+    )
     assert completed.returncode == 0, build_log.read_text(encoding="utf-8")
     artifact = out_dir / "foundry_channel_vault_program.so"
     assert artifact.is_file(), sorted(path.name for path in out_dir.iterdir())
@@ -194,7 +219,9 @@ def _validator(
         "127.0.0.1",
     ]
     if reset:
-        command.extend(["--reset", "--bpf-program", LOCAL_PROGRAM_ID, str(artifact)])
+        command.extend(
+            ["--reset", "--bpf-program", LOCAL_PROGRAM_ID, str(artifact)]
+        )
     if warp_slot is not None:
         command.extend(["--warp-slot", str(warp_slot)])
 
@@ -221,7 +248,9 @@ def _validator(
                 process.wait(timeout=10)
 
 
-def _run_client(env: dict[str, str], rpc: str, context: Path, phase: str) -> dict[str, object]:
+def _run_client(
+    env: dict[str, str], rpc: str, context: Path, phase: str
+) -> dict[str, object]:
     node = shutil.which("node", path=env["PATH"])
     assert node
     client_env = env.copy()
@@ -250,7 +279,9 @@ def _run_client(env: dict[str, str], rpc: str, context: Path, phase: str) -> dic
 
 def test_real_solana_test_validator_lifecycle(tmp_path: Path) -> None:
     if os.name == "nt":
-        pytest.skip("solana-test-validator is not a reliable native-Windows FC-SOL-006 target")
+        pytest.skip(
+            "solana-test-validator is not a reliable native-Windows FC-SOL-006 target"
+        )
 
     env, validator = _install_agave_if_needed(tmp_path)
     _install_validator_client(env)
