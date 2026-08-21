@@ -1,0 +1,79 @@
+{
+  "work_item": "FC-SOL-003B",
+  "manifest_version": 1,
+  "functional_head": "3876f26f155bfeecf322390c31543104aecc1ebe",
+  "validation_ci_run": 32494273091,
+  "identity_note": "Repository-file identities below are Git blob SHA-1 values returned by GitHub. Signed-payload SHA-256 values are protocol payload hashes, not Git blob hashes.",
+  "artifacts": [
+    {
+      "path": "programs/foundry-channel-vault/instruction-contract/src/runtime_v2.rs",
+      "kind": "functional_source",
+      "git_blob_sha1": "d53c68ca6001aeb84bd5fe73cff11b1012eb574c"
+    },
+    {
+      "path": "programs/foundry-channel-vault/instruction-contract/src/ed25519.rs",
+      "kind": "functional_source",
+      "git_blob_sha1": "ac2a0f2a21dcce6eab5f516791a8bc903adc58e5"
+    },
+    {
+      "path": "programs/foundry-channel-vault/instruction-contract/src/lib.rs",
+      "kind": "functional_source",
+      "git_blob_sha1": "73742cdcb6ecd68f086d270a86986aaf37f1cad2"
+    },
+    {
+      "path": "programs/foundry-channel-vault/instruction-contract/src/instruction.rs",
+      "kind": "frozen_v1_source",
+      "git_blob_sha1": "a2f71cf5cd5923260a34fc8f797688aa4bf658df",
+      "identical_on_main_and_functional_branch": true
+    },
+    {
+      "path": "programs/foundry-channel-vault/src/state.rs",
+      "kind": "frozen_account_source",
+      "git_blob_sha1": "d6e2f07e607051db4855a99b27adc2e4fda1c7d2",
+      "identical_on_main_and_functional_branch": true,
+      "channel_state_space": 490
+    },
+    {
+      "path": "contracts/channel/canonicalization/positive/voucher-payload-v1.json",
+      "kind": "frozen_fc_proto_006_input",
+      "git_blob_sha1": "496439b3a8efa3b2eeb0b8e60a439b6bb403a0d1",
+      "signed_payload_sha256": "sha256:8a3283d61a75e1bbe987941601e8f28708875913fd0dfef0fa399c6a7dd296e2"
+    },
+    {
+      "path": "contracts/channel/canonicalization/positive/recipient-binding-payload-v1.json",
+      "kind": "frozen_fc_proto_006_input",
+      "git_blob_sha1": "cb9570568a03a1e932f5d411df9adac6b9584314",
+      "signed_payload_sha256": "sha256:5ffc2a2ac51ebcbeb23d2cffa013251ce2680747eec9cbb570d5ee793a535192"
+    },
+    {
+      "path": "docs/channels/solana/instructions/FC-SOL-003B-RUNTIME-PREIMAGE-CORRECTION.md",
+      "kind": "normative_document",
+      "git_blob_sha1": "43532b064e0fa46c7c3beee917a54539158858ca"
+    },
+    {
+      "path": ".agents/tasks/FC-SOL-003B.yaml",
+      "kind": "task_contract",
+      "git_blob_sha1": "3a947c131353b43cf4281d15611698abf529b7a9"
+    },
+    {
+      "path": "evidence/runs/FC-SOL-003B/README.md",
+      "kind": "evidence_receipt",
+      "git_blob_sha1": "006c27ba1bbb71bb978a65be2a05ae7a43650ac1"
+    },
+    {
+      "path": "evidence/runs/FC-SOL-003B/validation-report.json",
+      "kind": "validation_report",
+      "git_blob_sha1": "37c6673788690448746f38872a7dc1d3f4294eff"
+    }
+  ],
+  "scope_absences": [
+    "solana_entrypoint",
+    "account_info_runtime",
+    "cpi",
+    "token_transfer",
+    "rpc",
+    "deployment",
+    "program_id_publication",
+    "consumer_integration"
+  ]
+}
