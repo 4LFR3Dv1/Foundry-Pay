@@ -2,9 +2,9 @@
 
 - Program: Foundry Channels
 - Foundation work item: `FOUNDATIONS-001`
-- Status: architecture foundation in review
-- Scope: public protocol and devnet MVP planning
-- Date: 2026-07-24
+- Status: foundation integrated; protocol/model baseline self-validated; operational execution not authorized
+- Scope: public protocol, executor-preparation contracts, product validation, and a gated future devnet vertical slice
+- Program opened: 2026-07-24
 
 ## Executive summary
 
@@ -18,44 +18,114 @@ The architecture has six strict authorities:
 1. the sender creates economic intent and signs cumulative vouchers;
 2. the public Foundry Channels protocol defines objects, hashes, invariants, and
    verification;
-3. the future ChannelVault program enforces funding, monotonic activation,
-   recipient binding, settlement, close, and refund on Solana;
+3. a future operational ChannelVault would enforce funding, monotonic
+   activation, recipient binding, settlement, close, and refund on Solana;
 4. a private Foundry Pay Cloud may resolve links, relay signed objects, notify,
    index, and orchestrate, but cannot manufacture rights;
 5. Solana-Agent prepares, simulates, executes, confirms, recovers, and produces
-   technical evidence under exact authorization;
+   technical evidence only under the capability and authorization boundaries
+   that have actually been implemented and released;
 6. a signer signs only the exact Solana message covered by a valid execution
-   commitment.
+   commitment and applicable authorization.
 
-The recommended safety decision is that an off-chain signed voucher is
-`issued`, while only a voucher sequence recorded by ChannelVault is `activated`
-and economically settleable. This is necessary because a verifier cannot know
-that a newer off-chain voucher exists unless a monotonic authority observes it.
-Activation may be relayed or sponsored, but requires the sender signature and
-cannot be fabricated by the relay.
+An off-chain signed voucher is `issued`; only a sequence accepted by an
+operational ChannelVault could become `activated` and economically settleable in
+v1. The existing offline ledger/model cannot create that on-chain authority.
 
-## Immutable baselines
+## Authority surfaces
+
+This program keeps direction, execution, and proof separate:
+
+- [`../../ROADMAP.md`](../../ROADMAP.md) — strategic direction;
+- [`WORK_GRAPH.md`](WORK_GRAPH.md) — human-readable execution authority;
+- [`work-items.yaml`](work-items.yaml) — executable work-item registry and path contracts;
+- [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md) — demonstrated results and limitations;
+- [`ADR/FC-ADR-009-evidence-maturity-and-deployment-authorization.md`](ADR/FC-ADR-009-evidence-maturity-and-deployment-authorization.md) — maturity and deployment-authorization policy.
+
+`done` means delivered/integrated. It does not mean externally reviewed or
+authorized for deployment/value.
+
+## Immutable origin baselines
+
+The original foundation pinned these evidence inputs:
 
 | Repository | Commit | Role |
 |---|---|---|
-| `4LFR3Dv1/Solana-Agent` | `914eaf3c9b407f787c6f51d9886c6e86ae542335` | external Solana execution, recovery, and technical evidence |
-| `4LFR3Dv1/Foundry-Pay` | `a8631b081f40029c18b16098508c44540efbf77f` | public protocol, authorization, reconciliation, conformance, and failure tooling |
+| `4LFR3Dv1/Solana-Agent` | `914eaf3c9b407f787c6f51d9886c6e86ae542335` | external Solana execution, recovery, and technical evidence baseline |
+| `4LFR3Dv1/Foundry-Pay` | `a8631b081f40029c18b16098508c44540efbf77f` | protocol, authorization, reconciliation, conformance, and failure-tooling baseline |
 
-The baselines are evidence inputs. No kernel is copied between repositories.
+These SHAs remain historical origin baselines, not claims that the program has
+stopped at those commits. Current evidence is indexed separately.
 
-## Program objective
+## Product thesis
 
-Produce an implementation-ready foundation in which:
+> Open a channel. Share a link. Send as often as you want.
 
-- a channel and its rights can be explained independently of code;
-- every authority and state transition has one owner;
-- on-chain and off-chain state are explicitly separated;
-- cumulative vouchers have domain separation and monotonic semantics;
-- receive, claim, and persistent-channel links have different threat models;
-- ambiguous broadcast outcomes stop and recover by signature;
-- a minimal vertical slice can be built without reopening core decisions.
+The link is a discovery/delivery surface, not economic authority. The right is
+represented by the signed, versioned protocol and—when operational execution is
+later authorized—funded on-chain state.
 
-## First product proof
+See [`PRODUCT_THESIS.md`](PRODUCT_THESIS.md) for the complete user model.
+
+## Current integrated baseline
+
+The program has moved well beyond the initial architecture foundation.
+Demonstrated offline/model/integration work includes:
+
+- `FC-PROTO-001` through `FC-PROTO-007`: channel/funding validation, cumulative
+  voucher semantics, recipient binding, settlement/reconciliation, close/refund,
+  canonicalization, and Python/TypeScript/Rust self-conformance;
+- `FC-SEC-001` through `FC-SEC-004`: threat modeling, adversarial/replay and
+  lifecycle properties, claim-link handling, and offline concurrency/
+  linearizability evidence;
+- `FC-SOL-001` through `FC-SOL-005`: ChannelVault design, account and instruction
+  contracts, transition invariants, concurrency-related model work, and
+  upgrade/migration/governance policy;
+- `SA-CHAN-000` through `SA-CHAN-001B`: fail-closed adapter contracts,
+  descriptive discovery, durable operation commitments, funding identity, and a
+  fixture-only common preparation boundary across the independent Solana-Agent
+  repository.
+
+These are protocol/model/integration results. They do **not** establish a
+deployed ChannelVault, transaction handlers, signer access, RPC execution, live
+channel funding, or deployment authorization.
+
+## Current execution frontier
+
+The delegated work graph currently exposes three technical items as ready:
+
+- `SA-CHAN-002` — initialize/funding/activation fixture preparation;
+- `SA-CHAN-003` — settlement fixture preparation;
+- `FC-FAIL-003` — offline settlement/lifecycle failure lab.
+
+After `SA-CHAN-002` and `SA-CHAN-003`, the graph can release the bounded
+successors for binding/lifecycle preparation, status/recovery, and channel
+evidence/conformance if their dependencies and contracts are satisfied.
+
+No operational ChannelVault implementation is authorized by this frontier.
+
+## Human validation frontier
+
+The public `FC-VAL-003` kit defines the 30-second proposition-comprehension
+protocol. The Roadmap correctly treats human comprehension as a current
+strategic priority, but the protocol itself records an unresolved authority
+gate:
+
+- raw research belongs outside this public repository;
+- no authorized private research-storage/consent system has yet been
+  established by the public work item;
+- recruitment therefore remains prohibited until the private checklist,
+  privacy review, immutable run manifest, and consent/storage boundaries are
+  actually approved.
+
+See [`validation/FC-VAL-003/README.md`](validation/FC-VAL-003/README.md).
+
+A `ready` work-item label must not be interpreted as permission to collect human
+data contrary to those stop conditions.
+
+## First end-to-end product proof target
+
+The original target remains useful and is still **not completed**:
 
 ```text
 Alice funds 100 fixture units on devnet
@@ -71,11 +141,14 @@ Alice funds 100 fixture units on devnet
 → channel remains active with 60 unallocated units
 ```
 
-This is a target vertical slice, not a completed proof.
+Reaching this proof requires a later explicit authorization step from the
+current model/fixture boundary into operational ChannelVault implementation and
+then an environment-specific local-validator/devnet gate.
 
-## MVP
+## MVP target
 
-Included:
+If and when the operational vertical slice is authorized, the bounded MVP target
+remains:
 
 - Solana devnet;
 - one explicitly identified SPL fixture;
@@ -83,66 +156,61 @@ Included:
 - one-way funded channel;
 - cumulative activated vouchers;
 - partial or total settlement;
-- top-up, expiry, close grace period, and refund;
+- top-up, close grace period, and refund according to the accepted protocol;
 - protected claim link and an existing recipient wallet;
-- non-authoritative hosted relay;
+- non-authoritative hosted relay where separately authorized;
 - recovery by persisted signature;
 - reproducible evidence.
 
-Excluded:
+Excluded from that MVP target:
 
-- mainnet, custody, fiat, card, swaps, bridges, DEX, token issuance;
+- mainnet or real-value operation;
+- custody, fiat, card, swaps, bridges, DEX, or token issuance;
 - bidirectional, multi-hop, cross-chain, or per-second streaming channels;
 - a complete wallet or native mobile application;
-- complex multi-tenancy, billing, automated compliance, or production SLAs.
+- production multi-tenancy, billing, automated compliance, or SLAs.
 
 ## Product and security principles
 
 - External-first: network execution remains outside Foundry Pay.
 - Protocol-first: signed rights use closed, versioned, canonical objects.
-- Hosted convenience, cryptographic right: the server may help find and
-  deliver a right but may not create it.
+- Hosted convenience, cryptographic right: a server may help find and deliver a
+  right but may not create it.
 - Monotonic cumulative state: authorized totals increase inside an epoch.
 - Fail closed: uncertainty becomes `needs_recovery` or `needs_review`.
-- Consumer-simple: the primary experience is “Open a channel. Share a link.
-  Send as often as you want.”
+- Consumer-simple: protocol complexity must not leak into the primary user
+  proposition.
+- Evidence-bounded: every claim names what was actually observed and what
+  remains unproven.
 
-## Current assets and gaps
+## Remaining capability gaps
 
-Existing assets already cover exact-message execution authorization, durable
-journals, signer isolation, replay rejection, status/recovery, source-diverse
-reconciliation, failure injection, and evidence integrity.
+The material gaps are no longer the original protocol foundation. They are:
 
-The material gaps are:
+- complete the remaining Solana-Agent fixture-preparation/status/recovery/
+  evidence boundaries;
+- establish authorized private research infrastructure and perform human
+  comprehension validation;
+- make a new explicit governance decision before implementing operational
+  ChannelVault handlers;
+- if authorized, prove the bounded local-validator/devnet vertical slice;
+- validate product usability and repeated-use intent only after prerequisite
+  comprehension/product gates are satisfied;
+- obtain independent external review where required before real-value or
+  mainnet authorization.
 
-- channel domain objects and canonical voucher bytes;
-- ChannelVault accounts and instruction contract;
-- on-chain cumulative sequence and conservation enforcement;
-- claim-key and destination-wallet binding;
-- close/refund treatment of outstanding recipient rights;
-- channel-specific Solana-Agent capabilities;
-- consumer and relay implementations.
+The detailed dependency truth lives in [`WORK_GRAPH.md`](WORK_GRAPH.md), not in
+this prose summary.
 
-See `INVENTORY.md` and `REUSE_MATRIX.md`.
+## Explicit non-claims
 
-## First milestone
+This program does not currently establish:
 
-The first implementation PR after this foundation should implement
-`FC-PROTO-001`: executable validation for `Channel` and `ChannelFunding` against
-the frozen schemas and fixtures in `contracts/channel/`. It must not contain a
-program, Cloud service, wallet, or network call.
-
-## Completion gates
-
-Foundation completion requires:
-
-- five accepted ADRs;
-- internally consistent schemas and semantic test vectors;
-- explicit authority and repository boundaries;
-- state machines and a complete MVP flow;
-- comprehensive threat model and adversarial review;
-- a work graph with five execution-ready items;
-- evidence tied to immutable baselines and validation commands.
-
-It does not establish mainnet readiness, production safety, safe custody,
-exactly-once blockchain execution, external audit, or proven scale.
+- a deployed or operational ChannelVault;
+- real channel funding, activation, claim, settlement, close, or refund;
+- safe production custody or hosted operations;
+- mainnet readiness or real-value authorization;
+- externally audited security where no exact-version review is recorded;
+- exactly-once blockchain execution;
+- proven user comprehension, product demand, or independent adoption;
+- production scale.
