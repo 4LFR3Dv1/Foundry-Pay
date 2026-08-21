@@ -1,0 +1,82 @@
+{
+  "work_item": "FC-SOL-003B",
+  "status": "passed",
+  "functional_head": "3876f26f155bfeecf322390c31543104aecc1ebe",
+  "pull_request": 76,
+  "github_actions": {
+    "run_id": 32494273091,
+    "tested_merge_ref": "1dec5d62d0fc008d6b575657f6cdc54db1f09d2d",
+    "conclusion": "success",
+    "protocol": {
+      "static_checks": "passed",
+      "secret_guard": {
+        "status": "passed",
+        "files_scanned": 645
+      },
+      "python_full_suite": {
+        "passed": 576,
+        "failed": 0
+      },
+      "external_execution_protocol_typescript": {
+        "passed": 8,
+        "failed": 0
+      },
+      "channel_protocol_typescript": {
+        "passed": 20,
+        "failed": 0
+      }
+    },
+    "conformance_python": "passed",
+    "conformance_typescript": "passed",
+    "conformance_rust": "passed",
+    "conformance_compare": "passed",
+    "conformance_poisoning": "passed"
+  },
+  "runtime_v2": {
+    "instruction_contract_version": 2,
+    "operation_count": 8,
+    "operation_names_changed": false,
+    "operation_discriminators_changed": false,
+    "activate_authority_source": "exact_fc_proto_006_signed_message_plus_v2_voucher_hash_commitment",
+    "binding_authority_source": "exact_fc_proto_006_double_signed_message_plus_v2_binding_hash_commitment",
+    "channel_id_hash": "sha256_utf8_channel_id",
+    "initial_binding_nonce": 1,
+    "binding_nonce_slot": "u64_le_first_8_bytes_plus_24_zero_bytes",
+    "initial_latest_voucher_hash": "32_zero_bytes"
+  },
+  "frozen_compatibility": {
+    "channel_state_space": 490,
+    "channel_state_blob_main": "d6e2f07e607051db4855a99b27adc2e4fda1c7d2",
+    "channel_state_blob_functional_branch": "d6e2f07e607051db4855a99b27adc2e4fda1c7d2",
+    "channel_state_source_identical": true,
+    "v1_instruction_blob_main": "a2f71cf5cd5923260a34fc8f797688aa4bf658df",
+    "v1_instruction_blob_functional_branch": "a2f71cf5cd5923260a34fc8f797688aa4bf658df",
+    "v1_instruction_source_identical": true,
+    "fc_proto_006_signed_bytes_changed": false
+  },
+  "frozen_vector_inputs": {
+    "voucher_vector_blob": "496439b3a8efa3b2eeb0b8e60a439b6bb403a0d1",
+    "voucher_expected_payload_sha256": "sha256:8a3283d61a75e1bbe987941601e8f28708875913fd0dfef0fa399c6a7dd296e2",
+    "recipient_binding_vector_blob": "cb9570568a03a1e932f5d411df9adac6b9584314",
+    "recipient_binding_expected_payload_sha256": "sha256:5ffc2a2ac51ebcbeb23d2cffa013251ce2680747eec9cbb570d5ee793a535192"
+  },
+  "scope_absences": {
+    "solana_entrypoint": false,
+    "account_info_runtime": false,
+    "cpi": false,
+    "token_transfer": false,
+    "rpc": false,
+    "deployment": false,
+    "program_id_publication": false,
+    "consumer_integration": false
+  },
+  "maturity": {
+    "implementation": "complete",
+    "self_validation": "passed",
+    "external_review": "not_performed",
+    "local_validator_runtime": "not_claimed_by_this_work_item",
+    "devnet_deployment": "blocked",
+    "mainnet": "blocked",
+    "real_value": "blocked"
+  }
+}
