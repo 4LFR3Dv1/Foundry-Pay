@@ -1,5 +1,5 @@
 work_item: FC-SOL-006
-objective: implement an operational ChannelVault program from the frozen v1 account/instruction/transition/governance contracts
+objective: implement an operational ChannelVault program from the frozen v1 account model, FC-SOL-003B runtime instruction profile, and integrated transition/governance contracts
 owner: solana-program-implementer
 branch: agent/solana/FC-SOL-006
 allowed_paths:
@@ -11,14 +11,15 @@ allowed_paths:
 dependencies:
   - FC-GOV-002
   - FC-SOL-002
-  - FC-SOL-003A
+  - FC-SOL-003B
   - FC-SOL-004
   - FC-SOL-005
 invariants:
   - CHANNEL_STATE_SPACE remains 490 bytes
   - existing discriminator, field offsets, PDA seeds, and classic-token vault relationship remain unchanged
-  - v1 instruction registry remains exactly initialize_channel, fund_channel, activate_voucher, bind_recipient, settle, request_close, refund_unallocated, finalize_close
+  - the operation registry remains exactly initialize_channel, fund_channel, activate_voucher, bind_recipient, settle, request_close, refund_unallocated, finalize_close
   - signed voucher and recipient-binding preimages remain byte-identical to FC-PROTO-006
+  - runtime consumes the explicit FC-SOL-003B instruction profile and exact signed-message bytes
   - Ed25519 validation uses the immediately preceding top-level native precompile instruction with self-contained references
   - all arithmetic is checked and failed validation produces no successful CPI or event
   - settlement beneficiary is fixed by bound channel state
@@ -28,11 +29,11 @@ acceptance:
   - all eight handlers execute against real program accounts under local validator
   - initialize creates the exact ChannelState PDA and canonical classic SPL Token vault
   - funding and settlement perform exact SPL Token CPI with invariant-preserving state updates
-  - activation and binding validate the frozen Ed25519 layouts and canonical preimages
+  - activation and binding validate the frozen Ed25519 layouts and exact FC-PROTO-006 canonical preimages through the FC-SOL-003B runtime mapping
   - close/refund/finalize preserve activated recipient rights and conservation
   - local-validator tests cover positive lifecycle and frozen negative classes
   - account serialization remains byte-compatible with FC-SOL-002 golden vectors
-  - instruction semantics remain compatible with FC-SOL-003/003A vectors
+  - v1 historical instruction vectors remain reproducible and runtime-v2 vectors pass FC-SOL-003B
   - reproducible SBF build procedure and artifact hash report exist
   - exact devnet Program ID/deployment is not claimed until separately authorized after evidence review
 verification_commands:
@@ -48,11 +49,13 @@ evidence:
   - evidence/runs/FC-SOL-006/sbf-build-report.json
 provenance:
   - FC-SOL-002 exact account model
-  - FC-SOL-003 and FC-SOL-003A exact instruction contract
+  - FC-SOL-003/003A historical instruction and Ed25519 contract
+  - FC-SOL-003B runtime preimage/initialization mapping
   - FC-SOL-004 transition model
   - FC-SOL-005 governance/migration model
 stop_conditions:
   - a v1 account offset or canonical signed preimage changes
+  - runtime would need to trust an economic field not bound to the signed canonical payload
   - Token-2022 or an unreviewed token extension enters scope
   - a handler requires hosted custody of a user wallet
   - mainnet deployment is requested
