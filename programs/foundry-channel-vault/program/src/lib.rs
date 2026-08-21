@@ -18,7 +18,7 @@ use foundry_channel_vault_transition_model::{
     apply as apply_model, AccountOwnership, Lifecycle, ModelError, ModelInstruction, ModelState,
 };
 use solana_program::{
-    account_info::{next_account_info, AccountInfo},
+    account_info::AccountInfo,
     clock::Clock,
     entrypoint,
     entrypoint::ProgramResult,
@@ -64,10 +64,11 @@ fn process_activate_voucher(
     accounts: &[AccountInfo],
     voucher_hash: [u8; 32],
 ) -> ProgramResult {
-    let mut account_iter = accounts.iter();
-    let channel = next_account_info(&mut account_iter)?;
-    let instructions_sysvar = next_account_info(&mut account_iter)?;
-    require_no_extra_accounts(&mut account_iter)?;
+    if accounts.len() != 2 {
+        return Err(custom(ContractErrorCode::WrongAccountAddress));
+    }
+    let channel = &accounts[0];
+    let instructions_sysvar = &accounts[1];
     require_instructions_sysvar(instructions_sysvar)?;
 
     let mut state = read_channel(program_id, channel)?;
@@ -115,10 +116,11 @@ fn process_bind_recipient(
     accounts: &[AccountInfo],
     binding_hash: [u8; 32],
 ) -> ProgramResult {
-    let mut account_iter = accounts.iter();
-    let channel = next_account_info(&mut account_iter)?;
-    let instructions_sysvar = next_account_info(&mut account_iter)?;
-    require_no_extra_accounts(&mut account_iter)?;
+    if accounts.len() != 2 {
+        return Err(custom(ContractErrorCode::WrongAccountAddress));
+    }
+    let channel = &accounts[0];
+    let instructions_sysvar = &accounts[1];
     require_instructions_sysvar(instructions_sysvar)?;
 
     let mut state = read_channel(program_id, channel)?;
@@ -167,10 +169,11 @@ fn process_request_close(
     accounts: &[AccountInfo],
     claim_deadline: i64,
 ) -> ProgramResult {
-    let mut account_iter = accounts.iter();
-    let channel = next_account_info(&mut account_iter)?;
-    let sender = next_account_info(&mut account_iter)?;
-    require_no_extra_accounts(&mut account_iter)?;
+    if accounts.len() != 2 {
+        return Err(custom(ContractErrorCode::WrongAccountAddress));
+    }
+    let channel = &accounts[0];
+    let sender = &accounts[1];
 
     let mut state = read_channel(program_id, channel)?;
     if !sender.is_signer {
@@ -189,17 +192,6 @@ fn process_request_close(
         claim_deadline
     );
     Ok(())
-}
-
-fn require_no_extra_accounts<'a, 'b, I>(accounts: &mut I) -> ProgramResult
-where
-    I: Iterator<Item = &'a AccountInfo<'b>>,
-{
-    if accounts.next().is_some() {
-        Err(custom(ContractErrorCode::WrongAccountAddress))
-    } else {
-        Ok(())
-    }
 }
 
 fn require_instructions_sysvar(account: &AccountInfo) -> ProgramResult {
@@ -247,9 +239,8 @@ fn apply_voucher_authority(
     authority: &VerifiedVoucherAuthority,
     now: i64,
 ) -> ProgramResult {
-    let model = model_state(state, channel_key)?;
     let transition = apply_model(
-        &model,
+        &model_state(state, channel_key)?,
         &ModelInstruction::Activate {
             sequence: authority.sequence,
             cumulative_authorized: authority.cumulative_authorized,
@@ -273,9 +264,8 @@ fn apply_binding_authority(
     authority: &VerifiedRecipientBindingAuthority,
     now: i64,
 ) -> ProgramResult {
-    let model = model_state(state, channel_key)?;
     let transition = apply_model(
-        &model,
+        &model_state(state, channel_key)?,
         &ModelInstruction::BindRecipient {
             recipient: authority.destination_wallet.to_bytes(),
         },
@@ -294,9 +284,8 @@ fn apply_close_request(
     claim_deadline: i64,
     now: i64,
 ) -> ProgramResult {
-    let model = model_state(state, channel_key)?;
     let transition = apply_model(
-        &model,
+        &model_state(state, channel_key)?,
         &ModelInstruction::RequestClose { claim_deadline },
         now,
     )
@@ -463,8 +452,7 @@ fn custom(code: ContractErrorCode) -> ProgramError {
 mod tests {
     use super::*;
     use foundry_channel_vault_account_model::{
-        encode_binding_nonce_u64 as _, EnvironmentCode, NetworkCode, CHANNEL_STATE_RESERVED_BYTES,
-        CHANNEL_STATE_VERSION_V1,
+        EnvironmentCode, NetworkCode, CHANNEL_STATE_RESERVED_BYTES, CHANNEL_STATE_VERSION_V1,
     };
     use foundry_channel_vault_instruction_contract::{
         encode_binding_nonce_u64, INITIAL_BINDING_NONCE,
