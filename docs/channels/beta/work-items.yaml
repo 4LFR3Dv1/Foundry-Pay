@@ -25,21 +25,52 @@ work_items:
       - Foundry-Channels web/API implementation is explicitly released as a new bounded work item
       - public deployment remains blocked until end-to-end devnet certification passes
       - no existing offline/model evidence is relabeled as deployed evidence
-    tests:
-      - governance document review
-      - path and authority conflict review
-    evidence:
-      - docs/channels/ADR/FC-ADR-010-public-beta-devnet.md
-      - docs/channels/beta/work-items.yaml
+    tests: [governance document review, path and authority conflict review]
+    evidence: [docs/channels/ADR/FC-ADR-010-public-beta-devnet.md, docs/channels/beta/work-items.yaml]
     security_review: program-governance-review
     stop_conditions:
       - mainnet or real-value authority is inferred from beta authorization
       - hosted infrastructure receives wallet private keys or seed material
       - a consumer-visible balance can be produced without authoritative runtime/network state
 
-  - id: FC-SOL-006
+  - id: FC-SOL-003B
     status: ready
-    objective: promote the frozen ChannelVault account, instruction, transition, concurrency, and governance models into an operational Solana program for local-validator and explicitly authorized devnet use
+    objective: close the runtime signed-preimage and initialization operability gap while preserving the v1 account layout and FC-PROTO-006 bytes
+    owner: protocol-runtime-integrator
+    repository: 4LFR3Dv1/Foundry-Pay
+    allowed_paths:
+      - programs/foundry-channel-vault/instruction-contract/**
+      - docs/channels/solana/instructions/**
+      - tests/channels/solana/instructions/**
+      - evidence/runs/FC-SOL-003B/**
+      - .agents/tasks/FC-SOL-003B.yaml
+    dependencies: [FC-SOL-003A, FC-PROTO-006]
+    invariants:
+      - ChannelState remains exactly 490 bytes with unchanged discriminator, offsets, PDA seeds, and reserved-byte semantics
+      - FC-PROTO-006 voucher and binding canonical signed bytes remain byte-identical
+      - all v1 instruction vectors remain unchanged and reproducible
+      - the eight operation names and Ed25519 layouts remain unchanged
+      - runtime v2 consumes the exact signed message and cannot advance an economic field not bound to it
+    acceptance:
+      - explicit instruction contract version 2 exists while v1 remains reproducible
+      - initialize v2 carries genesis_hash, channel_id_hash, environment, and policy_flags
+      - channel_id_hash and fixed binding-nonce encoding are normative and deterministic
+      - signed-message extraction and substitution-rejection vectors are deterministic
+      - no entrypoint, CPI, transfer, or deployment enters scope
+    tests:
+      - instruction-contract Rust suite
+      - Solana instruction contract Python suite
+      - foundation checker
+    evidence: [evidence/runs/FC-SOL-003B/**]
+    security_review: protocol-runtime-operability-review
+    stop_conditions:
+      - a signed preimage or ChannelState byte changes
+      - a second signer preimage is introduced
+      - entrypoint/CPI/deployment scope enters the correction
+
+  - id: FC-SOL-006
+    status: blocked
+    objective: promote the frozen ChannelVault account, corrected runtime instruction, transition, concurrency, and governance models into an operational Solana program for local-validator and explicitly authorized devnet use
     owner: solana-program-implementer
     repository: 4LFR3Dv1/Foundry-Pay
     allowed_paths:
@@ -48,10 +79,10 @@ work_items:
       - docs/channels/solana/runtime/**
       - evidence/runs/FC-SOL-006/**
       - .agents/tasks/FC-SOL-006.yaml
-    dependencies: [FC-GOV-002, FC-SOL-002, FC-SOL-003A, FC-SOL-004, FC-SOL-005]
+    dependencies: [FC-GOV-002, FC-SOL-002, FC-SOL-003B, FC-SOL-004, FC-SOL-005]
     invariants:
       - the 490-byte ChannelState layout remains byte-compatible
-      - the eight-operation v1 registry remains closed
+      - the eight-operation registry remains closed
       - classic SPL Token remains the only token program
       - Ed25519 precompile mapping remains exact
       - failed validation produces no partial economic effect
@@ -59,7 +90,7 @@ work_items:
     acceptance:
       - a real program entrypoint executes initialize, fund, activate, bind, settle, request-close, refund, and finalize semantics
       - local-validator integration tests exercise all positive operations and frozen rejection classes
-      - account bytes and instruction behavior remain compatible with frozen vectors
+      - account bytes remain compatible with frozen vectors and runtime instructions consume FC-SOL-003B
       - a reproducible BPF/SBF artifact and Program ID generation procedure exist
       - devnet deployment requires an exact-artifact authorization record after local-validator evidence passes
     tests:
@@ -67,8 +98,7 @@ work_items:
       - local-validator integration suite
       - golden-vector compatibility
       - negative account/meta/signature matrix
-    evidence:
-      - evidence/runs/FC-SOL-006/**
+    evidence: [evidence/runs/FC-SOL-006/**]
     security_review: runtime-solana-review
     stop_conditions:
       - a frozen account offset or signed preimage changes without a new protocol version
@@ -80,8 +110,7 @@ work_items:
     objective: build the public Foundry Channels web/API product as a fail-closed runtime over authoritative ChannelVault state and durable application persistence
     owner: product-runtime-implementer
     repository: 4LFR3Dv1/Foundry-Channels
-    allowed_paths:
-      - "**"
+    allowed_paths: ["**"]
     dependencies: [FC-GOV-002, FC-PROTO-004, FC-SEC-003, FC-SOL-002, FC-SOL-003A]
     invariants:
       - no fixture, seed object, mock balance, fake transaction, or synthetic chain observation reaches a consumer screen
@@ -96,14 +125,8 @@ work_items:
       - public Channel views can verify program ownership and authoritative on-chain state
       - create/fund/activate/bind/settle/recover actions are enabled only when their real executor/program contracts are available
       - no deployment is described as operational before end-to-end certification
-    tests:
-      - TypeScript typecheck
-      - production build
-      - state-decoder vectors
-      - API/runtime failure tests
-    evidence:
-      - Foundry-Channels pull requests and CI
-      - evidence/runs/FC-BETA-001/** after integration
+    tests: [TypeScript typecheck, production build, state-decoder vectors, API/runtime failure tests]
+    evidence: [Foundry-Channels pull requests and CI, evidence/runs/FC-BETA-001/** after integration]
     security_review: web-runtime-and-wallet-boundary-review
     stop_conditions:
       - UI requires fabricated data to remain usable
@@ -143,9 +166,7 @@ work_items:
     objective: certify one end-to-end real Foundry Channels beta flow on Solana devnet
     owner: program-integrator
     repository: multi-repository
-    allowed_paths:
-      - evidence/runs/FC-BETA-002/**
-      - docs/channels/beta/**
+    allowed_paths: [evidence/runs/FC-BETA-002/**, docs/channels/beta/**]
     dependencies: [FC-SOL-006, FC-BETA-001, SA-CHAN-005]
     invariants:
       - every consumer-visible economic state is independently reconcilable with the deployed program
@@ -159,11 +180,8 @@ work_items:
       - an intentionally ambiguous operation is recovered without a second economic attempt
       - close/refund/finalization semantics are exercised or explicitly deferred with a beta boundary
       - reproducible evidence binds app, program, executor, transactions, and observations
-    tests:
-      - end-to-end devnet certification
-      - source-diverse reconciliation where available
-    evidence:
-      - evidence/runs/FC-BETA-002/**
+    tests: [end-to-end devnet certification, source-diverse reconciliation where available]
+    evidence: [evidence/runs/FC-BETA-002/**]
     security_review: end-to-end-beta-certification
     stop_conditions:
       - any step depends on mocked chain state
@@ -174,10 +192,7 @@ work_items:
     objective: deploy the certified Foundry Channels beta to production infrastructure and attach its own public domain
     owner: production-operator
     repository: 4LFR3Dv1/Foundry-Channels
-    allowed_paths:
-      - deployment configuration
-      - operations documentation
-      - evidence/runs/FC-OPS-001/**
+    allowed_paths: [deployment configuration, operations documentation, evidence/runs/FC-OPS-001/**]
     dependencies: [FC-BETA-002]
     invariants:
       - the production service points only at the exact certified devnet Program ID
@@ -190,14 +205,8 @@ work_items:
       - custom domain resolves with TLS
       - runtime reports the exact program/network/version boundary
       - a fresh browser can complete the certified beta flow without fixture data
-    tests:
-      - deploy healthcheck
-      - production smoke test
-      - domain/TLS verification
-    evidence:
-      - Railway deployment ID
-      - custom domain
-      - production smoke evidence
+    tests: [deploy healthcheck, production smoke test, domain/TLS verification]
+    evidence: [Railway deployment ID, custom domain, production smoke evidence]
     security_review: production-beta-ops-review
     stop_conditions:
       - production deploy points to an uncertified Program ID
