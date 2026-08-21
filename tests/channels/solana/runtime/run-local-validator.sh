@@ -4,7 +4,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 RUNTIME_DIR="$ROOT/tests/channels/solana/runtime"
 PROGRAM_MANIFEST="$ROOT/programs/foundry-channel-vault/program/Cargo.toml"
-AGAVE_VERSION="v2.1.21"
+BUILD_AGAVE_VERSION="v3.1.5"
+VALIDATOR_AGAVE_VERSION="v2.1.21"
 PLATFORM_TOOLS_VERSION="v1.52"
 PROGRAM_ID="11111111111111111111111111111112"
 RPC_PORT="${FC_SOL_006_RPC_PORT:-18999}"
@@ -17,6 +18,7 @@ PHASE1_OUT="$TMP/phase1.out"
 PHASE2_OUT="$TMP/phase2.out"
 VALIDATOR_PID=""
 CURRENT_STAGE="bootstrap"
+ACTIVE_BIN="$HOME/.local/share/solana/install/active_release/bin"
 
 stage() {
   CURRENT_STAGE="$1"
@@ -43,18 +45,15 @@ cleanup() {
 }
 trap cleanup EXIT
 
-export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+export PATH="$ACTIVE_BIN:$PATH"
 
-stage "agave-install"
-if ! command -v solana >/dev/null 2>&1 || ! solana --version | grep -q '2\.1\.21'; then
-  curl -sSfL "https://release.anza.xyz/${AGAVE_VERSION}/install" | sh
-  export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
-fi
+install_agave() {
+  local version="$1"
+  curl -sSfL "https://release.anza.xyz/${version}/install" | sh
+  export PATH="$ACTIVE_BIN:$PATH"
+}
 
 stage "toolchain-check"
-solana --version | grep -q '2\.1\.21'
-command -v solana-test-validator >/dev/null
-command -v cargo-build-sbf >/dev/null
 command -v node >/dev/null
 command -v npm >/dev/null
 
@@ -68,6 +67,20 @@ if ! npm install \
   cat "$TMP/npm-install.log" >&2
   exit 1
 fi
+
+# Build and runtime are intentionally pinned independently. The program still
+# depends on solana-program 2.1.21, while the SBF compiler must satisfy the
+# repository's Rust 1.85.1 MSRV. Agave 3.1.5 ships cargo-build-sbf with
+# platform-tools v1.52; the executable artifact is then run on Agave 2.1.21.
+stage "build-agave-install"
+if ! command -v solana >/dev/null 2>&1 || ! solana --version | grep -q '3\.1\.5'; then
+  install_agave "$BUILD_AGAVE_VERSION"
+fi
+solana --version | grep -q '3\.1\.5'
+command -v cargo-build-sbf >/dev/null
+cargo-build-sbf --version | tee "$TMP/cargo-build-sbf-version.log"
+grep -q '3\.1\.5' "$TMP/cargo-build-sbf-version.log"
+grep -q 'platform-tools v1\.52' "$TMP/cargo-build-sbf-version.log"
 
 stage "cargo-build-sbf"
 mkdir -p "$SBF_DIR"
@@ -83,6 +96,13 @@ fi
 ARTIFACT="$SBF_DIR/foundry_channel_vault_program.so"
 test -f "$ARTIFACT"
 SBF_SHA256="$(sha256sum "$ARTIFACT" | awk '{print $1}')"
+
+stage "validator-agave-install"
+if ! solana --version | grep -q '2\.1\.21'; then
+  install_agave "$VALIDATOR_AGAVE_VERSION"
+fi
+solana --version | grep -q '2\.1\.21'
+command -v solana-test-validator >/dev/null
 
 wait_rpc() {
   local attempt
@@ -160,7 +180,8 @@ node "$RUNTIME_DIR/validator-client.mjs" phase2 | tee "$PHASE2_OUT"
 stop_validator
 
 stage "receipt"
-export SBF_SHA256 WARP_SLOT PHASE1_OUT PHASE2_OUT PLATFORM_TOOLS_VERSION
+export SBF_SHA256 WARP_SLOT PHASE1_OUT PHASE2_OUT PLATFORM_TOOLS_VERSION \
+  BUILD_AGAVE_VERSION VALIDATOR_AGAVE_VERSION
 node <<'NODE'
 const fs = require('node:fs');
 const lastJson = (path) => {
@@ -171,8 +192,10 @@ const phase1 = lastJson(process.env.PHASE1_OUT);
 const phase2 = lastJson(process.env.PHASE2_OUT);
 process.stdout.write(JSON.stringify({
   ok: true,
-  agaveVersion: 'v2.1.21',
+  sbfBuildAgaveVersion: process.env.BUILD_AGAVE_VERSION,
+  validatorAgaveVersion: process.env.VALIDATOR_AGAVE_VERSION,
   platformToolsVersion: process.env.PLATFORM_TOOLS_VERSION,
+  programSdkVersion: '2.1.21',
   programIdScope: 'ephemeral_local_validator_only',
   programId: '11111111111111111111111111111112',
   sbfSha256: process.env.SBF_SHA256,
