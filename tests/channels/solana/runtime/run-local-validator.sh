@@ -39,6 +39,14 @@ cleanup() {
         tail -400 "$TMP/$log" >&2 || true
       fi
     done
+    if [[ -s "$LEDGER/validator.log" ]]; then
+      echo "----- ledger/validator.log transport diagnostics -----" >&2
+      grep -E -i \
+        'transaction|packet|tpu|sanitize|sanitiz|cost|address.?lookup|lookup.?table|blockhash|signature|drop|discard|forward|bank|error|fail' \
+        "$LEDGER/validator.log" | tail -600 >&2 || true
+      echo "----- ledger/validator.log tail -----" >&2
+      tail -400 "$LEDGER/validator.log" >&2 || true
+    fi
   fi
   rm -rf "$TMP"
   exit "$status"
