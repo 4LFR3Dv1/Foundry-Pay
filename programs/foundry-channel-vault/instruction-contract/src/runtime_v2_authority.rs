@@ -5,8 +5,8 @@
 //! closes initialization invariants and schema constraints before any future
 //! runtime is allowed to consume returned authority.
 
-use foundry_channel_vault_account_model::{ChannelState, EnvironmentCode};
 use foundry_channel_vault_account_model::state::KNOWN_POLICY_FLAGS;
+use foundry_channel_vault_account_model::{ChannelState, EnvironmentCode};
 use solana_pubkey::Pubkey;
 
 use crate::runtime_v2::{
@@ -121,19 +121,35 @@ mod tests {
         "../../../../contracts/channel/canonicalization/positive/voucher-payload-v1.json"
     );
 
-    #[test]
-    fn initialize_v2_closes_beta_environment_policy_and_genesis_values() {
-        let valid = RuntimeInstructionV2::InitializeChannel {
+    fn initialize_fixture(
+        environment: u8,
+        policy_flags: u32,
+        binding_nonce: u64,
+        genesis_hash: [u8; 32],
+        channel_id_hash: [u8; 32],
+    ) -> RuntimeInstructionV2 {
+        RuntimeInstructionV2::InitializeChannel {
             channel_nonce: [1; 32],
             recipient_claim_pubkey: Pubkey::new_from_array([2; 32]),
             decimals: 6,
             channel_expiry: 1_800_000_000,
-            genesis_hash: [3; 32],
-            channel_id_hash: [4; 32],
-            environment: EnvironmentCode::DevnetFixture as u8,
-            policy_flags: KNOWN_POLICY_FLAGS,
-            binding_nonce: INITIAL_BINDING_NONCE,
-        };
+            genesis_hash,
+            channel_id_hash,
+            environment,
+            policy_flags,
+            binding_nonce,
+        }
+    }
+
+    #[test]
+    fn initialize_v2_closes_beta_environment_policy_and_genesis_values() {
+        let valid = initialize_fixture(
+            EnvironmentCode::DevnetFixture as u8,
+            KNOWN_POLICY_FLAGS,
+            INITIAL_BINDING_NONCE,
+            [3; 32],
+            [4; 32],
+        );
         let verified = verify_initialize_v2(&valid).unwrap();
         assert_eq!(verified.genesis_hash, [3; 32]);
         assert_eq!(verified.channel_id_hash, [4; 32]);
@@ -145,46 +161,61 @@ mod tests {
         );
         assert_eq!(verified.latest_activated_voucher_hash, [0; 32]);
 
-        let local = RuntimeInstructionV2::InitializeChannel {
-            environment: EnvironmentCode::LocalValidator as u8,
-            ..valid.clone()
-        };
+        let local = initialize_fixture(
+            EnvironmentCode::LocalValidator as u8,
+            KNOWN_POLICY_FLAGS,
+            INITIAL_BINDING_NONCE,
+            [3; 32],
+            [4; 32],
+        );
         assert_eq!(
             verify_initialize_v2(&local),
             Err(RuntimeAuthorityError::UnsupportedEnvironment)
         );
 
-        let unknown_flags = RuntimeInstructionV2::InitializeChannel {
-            policy_flags: KNOWN_POLICY_FLAGS | (1 << 31),
-            ..valid.clone()
-        };
+        let unknown_flags = initialize_fixture(
+            EnvironmentCode::DevnetFixture as u8,
+            KNOWN_POLICY_FLAGS | (1 << 31),
+            INITIAL_BINDING_NONCE,
+            [3; 32],
+            [4; 32],
+        );
         assert_eq!(
             verify_initialize_v2(&unknown_flags),
             Err(RuntimeAuthorityError::InvalidField("policy_flags"))
         );
 
-        let wrong_nonce = RuntimeInstructionV2::InitializeChannel {
-            binding_nonce: 2,
-            ..valid.clone()
-        };
+        let wrong_nonce = initialize_fixture(
+            EnvironmentCode::DevnetFixture as u8,
+            KNOWN_POLICY_FLAGS,
+            2,
+            [3; 32],
+            [4; 32],
+        );
         assert_eq!(
             verify_initialize_v2(&wrong_nonce),
             Err(RuntimeAuthorityError::InvalidField("binding_nonce"))
         );
 
-        let zero_genesis = RuntimeInstructionV2::InitializeChannel {
-            genesis_hash: [0; 32],
-            ..valid.clone()
-        };
+        let zero_genesis = initialize_fixture(
+            EnvironmentCode::DevnetFixture as u8,
+            KNOWN_POLICY_FLAGS,
+            INITIAL_BINDING_NONCE,
+            [0; 32],
+            [4; 32],
+        );
         assert_eq!(
             verify_initialize_v2(&zero_genesis),
             Err(RuntimeAuthorityError::InvalidField("genesis_hash"))
         );
 
-        let zero_channel_id = RuntimeInstructionV2::InitializeChannel {
-            channel_id_hash: [0; 32],
-            ..valid
-        };
+        let zero_channel_id = initialize_fixture(
+            EnvironmentCode::DevnetFixture as u8,
+            KNOWN_POLICY_FLAGS,
+            INITIAL_BINDING_NONCE,
+            [3; 32],
+            [0; 32],
+        );
         assert_eq!(
             verify_initialize_v2(&zero_channel_id),
             Err(RuntimeAuthorityError::InvalidField("channel_id_hash"))
