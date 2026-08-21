@@ -1,211 +1,249 @@
 # Foundry Channels work graph
 
-This file is the human-readable execution-authority surface for Foundry
-Channels. The machine-oriented work-item registry is
-[`work-items.yaml`](work-items.yaml).
+This is the human-readable execution-authority surface for Foundry Channels.
+It answers one question:
+
+> What work is currently integrated, blocked, ready, or active?
+
+It does not define strategic priority or evidence maturity. Those remain in the
+repository Roadmap and evidence indexes.
 
 Status values are `blocked`, `ready`, `active`, `review`, and `done`.
-
-Status semantics:
-
-- `blocked`: a dependency, authority gate, or stop condition prevents the work;
-- `ready`: dependencies permit bounded work under its task contract, but no path
-  is owned until the item is activated;
-- `active`: the work item owns its allowed paths and is being executed;
-- `review`: implementation/evidence is awaiting its required integration gate;
-- `done`: delivered and integrated; this does not imply external review or
-  deployment authorization.
-
-`FOUNDATIONS-001` is integrated. Its completion established the architecture
-foundation but did **not** authorize an operational ChannelVault, a deployment
-environment, mainnet, or real-value use.
-
-The maturity/deployment rule is governed by
-[`ADR/FC-ADR-009-evidence-maturity-and-deployment-authorization.md`](ADR/FC-ADR-009-evidence-maturity-and-deployment-authorization.md):
 
 ```text
 work item delivered
 != self-validation passed
 != external review passed
 != deployment authorized
+!= production/mainnet ready
 ```
 
-Evidence and historical integration records live in
-[`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md). Strategic priority lives in the
-repository [`ROADMAP.md`](../../ROADMAP.md). Neither surface releases work by
-itself.
+## Authority registries
+
+Foundry Channels now has two explicit work registries:
+
+- [`work-items.yaml`](work-items.yaml) — historical/current protocol, model,
+  security, validation, and pre-beta Solana-Agent work;
+- [`beta/work-items.yaml`](beta/work-items.yaml) — the operational public-beta
+  campaign authorized by `FC-ADR-010`.
+
+The beta registry may release capabilities only where
+[`ADR/FC-ADR-010-public-beta-devnet.md`](ADR/FC-ADR-010-public-beta-devnet.md)
+explicitly grants that authority. It does not rewrite historical evidence.
 
 ## Current frontier
 
-The current executable technical frontier is intentionally narrow:
-
-| Work item | Status | Capability |
-|---|---|---|
-| SA-CHAN-002 | ready | initialize/funding/activation fixture preparation |
-| SA-CHAN-003 | ready | settlement fixture preparation |
-| FC-FAIL-003 | ready | offline settlement/lifecycle failure lab |
-
-When `SA-CHAN-002` and `SA-CHAN-003` are integrated, their exact successors may
-become eligible according to the graph below. No handler, signer access, RPC
-execution, local-validator execution, or deployment environment is released by
-these `ready` states.
-
-Human validation is a separate authority boundary. `FC-VAL-003` has a public
-protocol kit and remains `ready` at the work-item level for bounded
-protocol/privacy preparation, but **human recruitment is currently prohibited**.
-The private research-storage, consent, privacy-review, and immutable-run-manifest
-gates in
-[`validation/FC-VAL-003/README.md`](validation/FC-VAL-003/README.md) must be
-satisfied before participant work begins. `ready` does not override that stop
-condition.
-
-## Epic A — Control and decision
-
-| Work item | Status | Depends on | Outcome |
+| Work item | Status | Repository | Capability |
 |---|---|---|---|
-| FC-CTRL-001 | done | FOUNDATIONS-001 | program, thesis, scope, and non-goals |
-| FC-CTRL-002 | done | FC-CTRL-001 | authority, state machines, and work graph |
-| FC-CTRL-003 | done | FC-CTRL-001 | immutable origin baselines |
-| FC-CTRL-004 | done | FC-CTRL-003 | reuse ledger and gap matrix |
-| FC-CTRL-005 | done | FC-CTRL-001 | public/private and repository boundary |
-| FC-CTRL-006 | done | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003, FC-SEC-003 | reconcile initial integrated protocol gates |
-| FC-CTRL-007 | done | FC-PROTO-004 | reconcile settlement integration |
-| FC-CTRL-008 | done | FC-CTRL-007 | authorize close-race vector migration |
-| FC-CTRL-009 | done | FC-CTRL-008 | authorize close-race checker migration |
-| FC-CTRL-010 | done | FC-PROTO-005 | reconcile close/refund integration |
-| FC-CTRL-011 | done | FC-CTRL-010 | authorize FC-PROTO-006 normative paths |
-| FC-CTRL-012 | done | FC-CTRL-011 | authorize canonicalization package marker |
-| FC-CTRL-013 | done | FC-PROTO-006 | reconcile canonicalization integration |
-| FC-CTRL-014 | done | FC-CTRL-013 | freeze cross-language conformance contract |
-| FC-GOV-001 | done | FC-CTRL-014 | separate delivery, review, maturity, and deployment authorization |
-| FC-CTRL-015 | done | FC-PROTO-007, FC-GOV-001 | reconcile governed conformance integration |
-| FC-CTRL-016 | done | FC-CTRL-015, FC-GOV-001 | freeze FC-SEC-002 contract |
-| FC-CTRL-017 | done | FC-CTRL-016 | classify forbidden vs permitted rejection effects |
-| FC-CTRL-018 | done | FC-CTRL-017 | align FC-SEC-002 dependencies |
-| FC-CTRL-019 | done | FC-SEC-002 | reconcile security integration |
-| FC-CTRL-020 | done | FC-CTRL-019, FC-SEC-002 | freeze fixed-width account model contract |
-| FC-CTRL-021 | done | FC-CTRL-019, SA-CHAN-000 | freeze authority-free fake-adapter contract |
-| FC-CTRL-022 | done | FC-SOL-002, SA-CHAN-000 | reconcile account model and fake adapter |
-| FC-CTRL-023 | done | FC-CTRL-022, FC-SOL-002, FC-SEC-002 | freeze instruction-contract boundary |
-| FC-CTRL-024 | done | FC-SOL-003 | reconcile instruction-contract integration |
-| FC-CTRL-025 | done | FC-CTRL-024, FC-SOL-003 | freeze ABI implementability corrections |
-| FC-CTRL-026 | done | FC-SOL-003A | reconcile operability correction |
-| FC-CTRL-027 | done | FC-CTRL-026, FC-SOL-003A | freeze transition-model semantics |
-| FC-CTRL-028 | done | FC-CTRL-027, FC-SOL-003A | make historical manifest verification commit-aware |
-| FC-CTRL-029 | done | FC-SOL-004 | reconcile transition-model integration |
-| FC-CTRL-030 | done | FC-CTRL-029, FC-SOL-004 | freeze concurrency/linearization contract |
-| FC-CTRL-031 | done | FC-SEC-004 | reconcile concurrency integration |
-| FC-CTRL-032 | done | FC-SEC-004, FC-SOL-003A | freeze governance/migration preconditions |
-| FC-CTRL-033 | done | FC-SOL-005 | reconcile governance integration without deployment authority |
-| FC-CTRL-034 | done | SA-CHAN-001 | reconcile descriptive discovery |
-| FC-CTRL-035 | done | SA-CHAN-001A | reconcile operation-commitment integration |
-| FC-CTRL-036 | done | FC-CTRL-035, SA-CHAN-001A | freeze funding identity and fixture-only preparation profile |
-| FC-CTRL-037 | done | SA-CHAN-001B | reconcile common fixture-preparation boundary |
+| FC-BETA-001 | active | `4LFR3Dv1/Foundry-Channels` | public web/API beta runtime, fail-closed over authoritative state |
+| FC-SOL-006 | ready | `4LFR3Dv1/Foundry-Pay` | promote frozen ChannelVault models into an operational Solana program |
+| SA-CHAN-002 | ready | `4LFR3Dv1/Solana-Agent` | initialize/funding/activation preparation |
+| SA-CHAN-003 | ready | `4LFR3Dv1/Solana-Agent` | settlement preparation |
+| FC-FAIL-003 | ready | `4LFR3Dv1/Foundry-Pay` | offline settlement/lifecycle failure lab |
+| FC-BETA-002 | blocked | multi-repository | end-to-end real Solana devnet certification |
+| FC-OPS-001 | blocked | `4LFR3Dv1/Foundry-Channels` | production deployment + custom domain |
 
-## Epic B — Channel protocol
+`FC-BETA-001` is allowed to build the real product in parallel with program and
+executor work, but consumer actions must remain fail-closed until the exact
+runtime capability exists. It may not substitute fixture data for unavailable
+chain state.
 
-| Work item | Status | Depends on | Outcome |
-|---|---|---|---|
-| FC-PROTO-001 | done | FOUNDATIONS-001 | executable `Channel` and `ChannelFunding` validation |
-| FC-PROTO-002 | done | FOUNDATIONS-001 | cumulative voucher verifier and monotonic reference ledger |
-| FC-PROTO-003 | done | FOUNDATIONS-001 | claim and dual-signature recipient binding verifier |
-| FC-PROTO-004 | done | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | settlement and reconciled receipt reference runtime |
-| FC-PROTO-005 | done | FC-PROTO-001, FC-PROTO-002 | close, expiry, epoch, and refund semantics |
-| FC-PROTO-006 | done | FC-PROTO-001, FC-PROTO-002, FC-PROTO-003 | normative canonicalization and hashes |
-| FC-PROTO-007 | done | FC-PROTO-006, FC-CTRL-014, FC-GOV-001 | self-validated Python/TypeScript/Rust conformance |
+## Public beta decision
 
-## Epic C — Security
+`FC-GOV-002` / `FC-ADR-010` changes the product sequencing deliberately.
+Foundry Channels is now authorized to become a public operational beta on
+**Solana devnet**.
 
-| Work item | Status | Depends on | Outcome |
-|---|---|---|---|
-| FC-SEC-001 | done | FOUNDATIONS-001 | comprehensive design threat model |
-| FC-SEC-002 | done | FC-PROTO-002, FC-PROTO-006, FC-PROTO-007, FC-CTRL-017 | replay, semantic-collision, downgrade, and lifecycle property suite |
-| FC-SEC-003 | done | FOUNDATIONS-001 | claim-link handling and secret non-disclosure kit |
-| FC-SEC-004 | done | FC-PROTO-004, FC-SOL-004, FC-CTRL-030 | offline concurrency and linearizability evidence |
-| FC-SEC-005 | blocked | FC-PROTO-004, SA-CHAN-004 | Cloud outage and self-recovery proof |
+The topology is:
 
-## Epic D — ChannelVault model
+```text
+Foundry-Pay
+  protocol + economic authority + ChannelVault
+          |
+          v
+Solana-Agent
+  preparation + execution + status + recovery
+          |
+          v
+Foundry-Channels
+  public web/API + durable product state
+```
 
-| Work item | Status | Depends on | Outcome |
-|---|---|---|---|
-| FC-SOL-001 | done | FOUNDATIONS-001 | ChannelVault design specification |
-| FC-SOL-002 | done | FC-PROTO-001, FC-SEC-002 | fixed-width ChannelState PDA and classic SPL Token vault layout model |
-| FC-SOL-003 | done | FC-PROTO-002, FC-PROTO-003, FC-PROTO-004, FC-PROTO-005, FC-SOL-002, FC-SEC-002 | instruction/account-meta/Ed25519/lifecycle/event/error contracts; fixture model only |
-| FC-SOL-003A | done | FC-SOL-003, FC-CTRL-025 | initialization-meta correction, permissionless settlement, bounded claim window |
-| FC-SOL-004 | done | FC-SOL-003A, FC-SEC-002, FC-CTRL-027 | pure transition invariants and bounded/property exploration |
-| FC-SOL-005 | done | FC-SOL-003A, FC-SEC-004, FC-CTRL-032 | upgrade, migration, rights-preservation, and governance policy |
+The beta may use real wallets, a real deployed devnet program, real devnet
+transactions, durable Postgres state, recovery, reconciliation, Railway, and a
+custom public domain after certification.
 
-**No operational ChannelVault program implementation is authorized by these
-items.** A later governance decision must explicitly release implementation and
-then environment-specific execution.
+The beta may **not** infer authority for:
 
-## Epic E — Solana-Agent integration
+- Solana mainnet;
+- real-value production claims;
+- custody of user wallet secret material;
+- a second blockchain/network;
+- Celo/EVM execution;
+- production HSM/MPC claims;
+- product-market-fit claims.
 
-| Work item | Status | Depends on | Outcome |
-|---|---|---|---|
-| SA-CHAN-000 | done | FC-PROTO-007, FC-SEC-002, FC-CTRL-021 | draft capability contracts and adversarial fake adapter; offline only |
-| SA-CHAN-001 | done | FC-PROTO-006, FC-SOL-003A | pinned fail-closed descriptor and descriptive discovery |
-| SA-CHAN-001A | done | SA-CHAN-001, FC-PROTO-006, FC-SOL-003A | durable canonical operation commitment and conflict gate |
-| SA-CHAN-001B | done | SA-CHAN-001A, FC-SOL-003A, FC-CTRL-036 | fixture-only v2 profile, funding identity, and common preparation contract |
-| SA-CHAN-002 | ready | SA-CHAN-001, SA-CHAN-001A, SA-CHAN-001B, FC-SOL-003 | initialize/funding/activation fixture preparation |
-| SA-CHAN-003 | ready | SA-CHAN-001, SA-CHAN-001A, SA-CHAN-001B, FC-SOL-003 | settlement fixture preparation |
-| SA-CHAN-003A | blocked | SA-CHAN-001B, SA-CHAN-002, SA-CHAN-003 | binding and close/refund/finalization fixture preparation |
-| SA-CHAN-004 | blocked | SA-CHAN-002, SA-CHAN-003 | inspect/status/recovery |
-| SA-CHAN-005 | blocked | SA-CHAN-004, FC-PROTO-007 | channel evidence and conformance |
+A production-hosted beta and a mainnet/value-production authorization are
+separate facts.
 
-`SA-CHAN-001` through `SA-CHAN-005` execute in the independent Solana-Agent
-repository under their own exact path contracts. The currently integrated
-profiles remain fixture-only: handlers, signer access, RPC execution,
-local-validator execution, Program ID publication, and all deployment
-environments remain blocked.
+## Integrated protocol/model baseline
 
-## Epic F — Product and experience
+The historical registry and evidence index record the exact individual items.
+The integrated baseline includes:
 
-| Work item | Status | Depends on | Outcome |
-|---|---|---|---|
-| FC-PROD-001 | blocked | FC-VAL-003 | receive-link prototype |
-| FC-PROD-002 | blocked | FC-SEC-003, FC-VAL-003 | protected claim-link prototype |
-| FC-PROD-003 | blocked | FC-PROD-001, FC-PROD-002 | persistent-channel experience |
-| FC-PROD-004 | blocked | FC-PROTO-003, FC-VAL-004 | recipient onboarding |
-| FC-PROD-005 | blocked | FC-PROTO-004, SA-CHAN-003 | settlement/recovery experience |
-| FC-PROD-006 | blocked | FC-PROTO-004 | receipts and sharing |
+- `FC-PROTO-001..007` — channel accounting, funding, cumulative vouchers,
+  recipient binding, settlement/recovery, close/refund, canonicalization, and
+  Python/TypeScript/Rust conformance;
+- `FC-SEC-001..004` — threat model, adversarial protocol tests, claim-link
+  secret handling, and offline concurrency/linearizability evidence;
+- `FC-SOL-001..005` plus `FC-SOL-003A` — the frozen 490-byte ChannelState,
+  instruction/Ed25519 contracts, transition model, concurrency preconditions,
+  governance, migration, and rights-preservation policy;
+- `SA-CHAN-000..001B` — capability contracts, pinned descriptor, durable
+  operation commitments, funding identity, and fixture-only preparation
+  boundary.
 
-Product work does not become authorized merely because protocol prerequisites
-exist. Validation and repository/privacy boundaries remain independent gates.
+These integrated items remain model/protocol evidence. They are not silently
+relabeled as deployed evidence by the beta decision.
 
-## Epic G — Validation
+## ChannelVault runtime gate
 
-| Work item | Status | Depends on | Outcome |
-|---|---|---|---|
-| FC-VAL-001 | blocked | FC-VAL-003 | interviews with stablecoin senders |
-| FC-VAL-002 | blocked | FC-VAL-003 | interviews with stablecoin recipients |
-| FC-VAL-003 | ready | FOUNDATIONS-001 | public 30-second comprehension protocol; human recruitment blocked by private/privacy gates |
-| FC-VAL-004 | blocked | FC-PROD-002, FC-PROD-004 | claim-link and wallet-binding usability |
-| FC-VAL-005 | blocked | FC-PROD-003 | repeated-channel reuse intent |
+`FC-SOL-006` is the first work item allowed to implement a real ChannelVault
+entrypoint and economic handlers.
 
-## Epic H — Offline failure validation
+It must preserve the existing frozen inputs:
 
-| Work item | Status | Depends on | Outcome |
-|---|---|---|---|
-| FC-FAIL-003 | ready | FC-PROTO-004, FC-PROTO-005, SA-CHAN-000 | offline settlement/lifecycle failure lab without on-chain claims |
+```text
+ChannelState space       490 bytes
+network                  Solana
+first beta environment   devnet
+asset program            classic SPL Token only
+v1 operations            8, closed registry
+```
 
-`FC-FAIL-003` validates only the controlled reference model. It cannot satisfy a
-real-executor, deployed-program, Cloud-outage, devnet, or mainnet gate by
-itself.
+The eight operations remain:
 
-## Path ownership rule
+1. `initialize_channel`
+2. `fund_channel`
+3. `activate_voucher`
+4. `bind_recipient`
+5. `settle`
+6. `request_close`
+7. `refund_unallocated`
+8. `finalize_close`
 
-The exact `allowed_paths`, invariants, acceptance tests, evidence requirements,
-and stop conditions live in [`work-items.yaml`](work-items.yaml) and the
-applicable task contract.
+Local-validator execution belongs to `FC-SOL-006` evidence. A devnet deployment
+must be bound to an exact built artifact and Program ID before it can feed the
+beta certification gate.
 
-A `ready` item owns no path until activated. Two active items may not claim the
-same mutable path. A cross-repository item must also satisfy the independent
-repository's own authority surface before work begins there.
+## Product runtime gate
+
+`FC-BETA-001` owns the new public product repository.
+
+Consumer-visible economic state is forbidden unless it can be traced to the
+configured authoritative runtime. In particular:
+
+```text
+no Program ID
+or no RPC
+or no durable database
+or wrong program owner
+or invalid ChannelState bytes
+        => fail closed
+```
+
+No fixture, hard-coded example, seeded balance, fake transaction, or synthetic
+chain observation may be used to keep a consumer flow apparently operational.
+
+Wallet secret material remains client-controlled. Hosted infrastructure may
+prepare, persist, relay, observe, reconcile, and recover only within its exact
+work-item authority.
+
+## Solana-Agent path
+
+The pre-beta Solana-Agent sequence remains:
+
+```text
+SA-CHAN-002  initialize / funding / activation preparation
+        \
+         +--> SA-CHAN-003A  binding / close / refund / finalization
+        /
+SA-CHAN-003  settlement preparation
+                 |
+                 v
+          SA-CHAN-004  inspect / status / recovery
+                 |
+                 v
+          SA-CHAN-005  evidence / conformance
+```
+
+Preparation work does not itself authorize RPC execution. The Solana-Agent
+repository must release its own runtime/execution authority before a live beta
+operation uses it.
+
+## Certification and deployment
+
+`FC-BETA-002` remains blocked until the exact dependencies in the beta registry
+are integrated. Its target is a real end-to-end Solana devnet proof:
+
+```text
+real sender wallet
+-> initialize ChannelVault
+-> fund channel
+-> activate cumulative value
+-> recipient claim + wallet binding
+-> partial/full settlement
+-> ambiguous-response recovery without blind retry
+-> independent reconciliation
+-> close/refund/finalize boundary
+-> reproducible multi-repository evidence
+```
+
+Only after that certification may `FC-OPS-001` attach the operational public
+custom domain.
+
+Engineering preview deployments may exist earlier, but they must not be
+presented as the certified public beta.
+
+## Product validation
+
+`FC-VAL-003` remains a valid comprehension protocol, but it is no longer a
+prerequisite for all beta implementation. The explicit product decision is to
+validate comprehension/usability against the operational beta.
+
+Human recruitment is still separately blocked until its private research
+storage, consent, privacy-review, and immutable-run-manifest requirements are
+satisfied. Building the beta does not waive those privacy gates and does not
+prove comprehension, repeated use, or demand.
+
+The historical `FC-PROD-*` prototype sequence remains historical/blocked under
+the old registry. The public beta is governed by `FC-BETA-*` instead of silently
+changing those old records.
+
+## Evidence and path ownership
+
+Historical evidence remains in [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md).
+Beta evidence must be added only after the corresponding real capability is
+observed.
+
+Exact paths, invariants, acceptance criteria, tests, and stop conditions live in
+the governing registry/task contract.
+
+A `ready` item owns no path until activated. Two active items must not own the
+same mutable path. A cross-repository item must also satisfy the authority
+surface of the repository where it executes.
 
 ## Deployment rule
 
-No sequence of `done` offline/model items implicitly releases deployment.
-Operational ChannelVault implementation, local-validator execution, devnet,
-mainnet, and real-value operation each require the explicit artifact/environment
-authorization applicable at that boundary.
+The operational ladder is explicit:
+
+```text
+implementation
+-> local execution evidence
+-> exact artifact authorization
+-> devnet deployment
+-> end-to-end devnet certification
+-> production-hosted beta + custom domain
+```
+
+None of those steps implies mainnet or real-value authority.
