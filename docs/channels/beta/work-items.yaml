@@ -34,7 +34,7 @@ work_items:
       - a consumer-visible balance can be produced without authoritative runtime/network state
 
   - id: FC-SOL-003B
-    status: ready
+    status: active
     objective: close the runtime signed-preimage and initialization operability gap while preserving the v1 account layout and FC-PROTO-006 bytes
     owner: protocol-runtime-integrator
     repository: 4LFR3Dv1/Foundry-Pay
