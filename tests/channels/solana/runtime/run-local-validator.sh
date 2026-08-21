@@ -5,6 +5,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 RUNTIME_DIR="$ROOT/tests/channels/solana/runtime"
 PROGRAM_MANIFEST="$ROOT/programs/foundry-channel-vault/program/Cargo.toml"
 AGAVE_VERSION="v2.1.21"
+PLATFORM_TOOLS_VERSION="v1.52"
 PROGRAM_ID="11111111111111111111111111111112"
 RPC_PORT="${FC_SOL_006_RPC_PORT:-18999}"
 RPC="http://127.0.0.1:${RPC_PORT}"
@@ -71,6 +72,7 @@ fi
 stage "cargo-build-sbf"
 mkdir -p "$SBF_DIR"
 if ! cargo-build-sbf \
+  --tools-version "$PLATFORM_TOOLS_VERSION" \
   --manifest-path "$PROGRAM_MANIFEST" \
   --sbf-out-dir "$SBF_DIR" \
   >"$TMP/cargo-build-sbf.log" 2>&1; then
@@ -158,7 +160,7 @@ node "$RUNTIME_DIR/validator-client.mjs" phase2 | tee "$PHASE2_OUT"
 stop_validator
 
 stage "receipt"
-export SBF_SHA256 WARP_SLOT PHASE1_OUT PHASE2_OUT
+export SBF_SHA256 WARP_SLOT PHASE1_OUT PHASE2_OUT PLATFORM_TOOLS_VERSION
 node <<'NODE'
 const fs = require('node:fs');
 const lastJson = (path) => {
@@ -170,6 +172,7 @@ const phase2 = lastJson(process.env.PHASE2_OUT);
 process.stdout.write(JSON.stringify({
   ok: true,
   agaveVersion: 'v2.1.21',
+  platformToolsVersion: process.env.PLATFORM_TOOLS_VERSION,
   programIdScope: 'ephemeral_local_validator_only',
   programId: '11111111111111111111111111111112',
   sbfSha256: process.env.SBF_SHA256,
