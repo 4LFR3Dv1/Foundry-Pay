@@ -23,6 +23,12 @@ pub enum Ed25519ContractError {
     WrongMessage,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ExtractedBindingMessage<'a> {
+    pub destination_wallet: [u8; 32],
+    pub message: &'a [u8],
+}
+
 pub fn build_voucher_ed25519_data(
     sender: &[u8; 32],
     signature: &[u8; 64],
@@ -70,6 +76,36 @@ pub fn verify_voucher_ed25519_data(
         return Err(Ed25519ContractError::WrongMessage);
     }
     Ok(())
+}
+
+pub fn extract_voucher_ed25519_message<'a>(
+    program_id: &[u8; 32],
+    ed25519_instruction_index: usize,
+    channel_instruction_index: usize,
+    data: &'a [u8],
+    expected_sender: &[u8; 32],
+) -> Result<&'a [u8], Ed25519ContractError> {
+    verify_position_and_program(
+        program_id,
+        ed25519_instruction_index,
+        channel_instruction_index,
+    )?;
+    ensure_header(data, 1)?;
+    if data.len() < 112 {
+        return Err(Ed25519ContractError::WrongLength);
+    }
+    let message_len = data.len() - 112;
+    ensure_u16(message_len)?;
+    let zeros = vec![0_u8; message_len];
+    let expected = build_voucher_ed25519_data(expected_sender, &[0; 64], &zeros)?;
+    if data[2..VOUCHER_HEADER] != expected[2..VOUCHER_HEADER] {
+        ensure_self_contained(&data[2..VOUCHER_HEADER])?;
+        return Err(Ed25519ContractError::NonCanonicalOffsets);
+    }
+    if &data[16..48] != expected_sender {
+        return Err(Ed25519ContractError::WrongPublicKey);
+    }
+    Ok(&data[112..])
 }
 
 pub fn build_binding_ed25519_data(
@@ -153,6 +189,72 @@ pub fn verify_binding_ed25519_data(
         return Err(Ed25519ContractError::WrongMessage);
     }
     Ok(())
+}
+
+pub fn extract_binding_ed25519_message<'a>(
+    program_id: &[u8; 32],
+    ed25519_instruction_index: usize,
+    channel_instruction_index: usize,
+    data: &'a [u8],
+    expected_claim_key: &[u8; 32],
+) -> Result<ExtractedBindingMessage<'a>, Ed25519ContractError> {
+    verify_position_and_program(
+        program_id,
+        ed25519_instruction_index,
+        channel_instruction_index,
+    )?;
+    ensure_header(data, 2)?;
+    if data.len() < 222 {
+        return Err(Ed25519ContractError::WrongLength);
+    }
+    let duplicated_message_bytes = data.len() - 222;
+    if duplicated_message_bytes % 2 != 0 {
+        return Err(Ed25519ContractError::WrongLength);
+    }
+    let message_len = duplicated_message_bytes / 2;
+    ensure_u16(message_len)?;
+    let zeros = vec![0_u8; message_len];
+    let expected = build_binding_ed25519_data(
+        expected_claim_key,
+        &[0; 64],
+        &[0; 32],
+        &[0; 64],
+        &zeros,
+    )?;
+    if data[2..BINDING_HEADER] != expected[2..BINDING_HEADER] {
+        ensure_self_contained(&data[2..BINDING_HEADER])?;
+        return Err(Ed25519ContractError::NonCanonicalOffsets);
+    }
+    if &data[BINDING_HEADER..BINDING_HEADER + 32] != expected_claim_key {
+        return Err(Ed25519ContractError::WrongPublicKey);
+    }
+
+    let second_key_offset = 126_usize
+        .checked_add(message_len)
+        .ok_or(Ed25519ContractError::WrongLength)?;
+    let second_message_offset = 222_usize
+        .checked_add(message_len)
+        .ok_or(Ed25519ContractError::WrongLength)?;
+    let end = second_message_offset
+        .checked_add(message_len)
+        .ok_or(Ed25519ContractError::WrongLength)?;
+    if end != data.len() || second_key_offset + 32 > data.len() {
+        return Err(Ed25519ContractError::WrongLength);
+    }
+
+    let first_message = &data[126..126 + message_len];
+    let second_message = &data[second_message_offset..end];
+    if first_message != second_message {
+        return Err(Ed25519ContractError::WrongMessage);
+    }
+    let destination_wallet: [u8; 32] = data[second_key_offset..second_key_offset + 32]
+        .try_into()
+        .map_err(|_| Ed25519ContractError::WrongLength)?;
+
+    Ok(ExtractedBindingMessage {
+        destination_wallet,
+        message: first_message,
+    })
 }
 
 fn verify_position_and_program(
@@ -242,7 +344,7 @@ mod tests {
     }
 
     #[test]
-    fn voucher_layout_is_exact_and_self_contained() {
+    fn voucher_layout_is_exact_self_contained_and_extractable() {
         let message = b"foundry.channels.voucher/v1";
         let data = build_voucher_ed25519_data(&[1; 32], &[2; 64], message).unwrap();
         assert_eq!(data.len(), 112 + message.len());
@@ -250,10 +352,20 @@ mod tests {
             verify_voucher_ed25519_data(&ED25519_PROGRAM_ID_BYTES, 3, 4, &data, &[1; 32], message),
             Ok(())
         );
+        assert_eq!(
+            extract_voucher_ed25519_message(
+                &ED25519_PROGRAM_ID_BYTES,
+                3,
+                4,
+                &data,
+                &[1; 32]
+            ),
+            Ok(message.as_slice())
+        );
     }
 
     #[test]
-    fn binding_layout_duplicates_exact_message_without_overlap() {
+    fn binding_layout_duplicates_exact_message_without_overlap_and_extracts() {
         let message = b"foundry.channels.recipient-binding/v1";
         let data =
             build_binding_ed25519_data(&[1; 32], &[2; 64], &[3; 32], &[4; 64], message).unwrap();
@@ -269,6 +381,38 @@ mod tests {
                 message
             ),
             Ok(())
+        );
+        assert_eq!(
+            extract_binding_ed25519_message(
+                &ED25519_PROGRAM_ID_BYTES,
+                8,
+                9,
+                &data,
+                &[1; 32]
+            ),
+            Ok(ExtractedBindingMessage {
+                destination_wallet: [3; 32],
+                message: message.as_slice(),
+            })
+        );
+    }
+
+    #[test]
+    fn extraction_rejects_nonidentical_binding_message_copies() {
+        let message = b"binding";
+        let mut data =
+            build_binding_ed25519_data(&[1; 32], &[2; 64], &[3; 32], &[4; 64], message).unwrap();
+        let last = data.len() - 1;
+        data[last] ^= 1;
+        assert_eq!(
+            extract_binding_ed25519_message(
+                &ED25519_PROGRAM_ID_BYTES,
+                1,
+                2,
+                &data,
+                &[1; 32]
+            ),
+            Err(Ed25519ContractError::WrongMessage)
         );
     }
 
