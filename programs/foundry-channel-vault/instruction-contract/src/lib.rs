@@ -1,4 +1,4 @@
-//! Deterministic FC-SOL-003 instruction contracts and fixtures.
+//! Deterministic Foundry Channels instruction contracts and fixtures.
 //!
 //! This crate has no program entrypoint, economic handler, CPI, token transfer,
 //! deployment support, or production signature verifier.
@@ -7,6 +7,7 @@ pub mod contract;
 pub mod ed25519;
 pub mod instruction;
 pub mod lifecycle;
+pub mod runtime_v2;
 
 pub use contract::{
     account_contract, event_contract, AccountContract, AccountRequirement, AuthorityKind,
@@ -14,8 +15,9 @@ pub use contract::{
     EVENT_CONTRACTS,
 };
 pub use ed25519::{
-    build_binding_ed25519_data, build_voucher_ed25519_data, verify_binding_ed25519_data,
-    verify_voucher_ed25519_data, Ed25519ContractError, ED25519_PROGRAM_ID_BYTES,
+    build_binding_ed25519_data, build_voucher_ed25519_data, extract_binding_ed25519_message,
+    extract_voucher_ed25519_message, verify_binding_ed25519_data, verify_voucher_ed25519_data,
+    Ed25519ContractError, ExtractedBindingMessage, ED25519_PROGRAM_ID_BYTES,
 };
 pub use instruction::{
     instruction_discriminator, ChannelInstruction, InstructionDecodeError, InstructionKind,
@@ -24,6 +26,13 @@ pub use instruction::{
 pub use lifecycle::{
     derive_lifecycle_phase, validate_claim_deadline, LifecycleContractError, LifecyclePhase,
     MAX_CLAIM_WINDOW_SECONDS, MIN_CLAIM_WINDOW_SECONDS,
+};
+pub use runtime_v2::{
+    channel_id_hash, decode_binding_nonce_u64, encode_binding_nonce_u64,
+    verify_recipient_binding_signed_message, verify_voucher_signed_message,
+    RuntimeAuthorityError, RuntimeInstructionV2, RuntimeInstructionV2DecodeError,
+    VerifiedRecipientBindingAuthority, VerifiedVoucherAuthority, INITIAL_BINDING_NONCE,
+    INITIAL_LATEST_VOUCHER_HASH, INSTRUCTION_CONTRACT_VERSION_V2, JSON_SAFE_UNSIGNED_MAX,
 };
 
 // The maintainer's Windows application-control policy permits crate test
