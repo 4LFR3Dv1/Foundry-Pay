@@ -34,7 +34,7 @@ work_items:
       - a consumer-visible balance can be produced without authoritative runtime/network state
 
   - id: FC-SOL-003B
-    status: active
+    status: done
     objective: close the runtime signed-preimage and initialization operability gap while preserving the v1 account layout and FC-PROTO-006 bytes
     owner: protocol-runtime-integrator
     repository: 4LFR3Dv1/Foundry-Pay
@@ -67,9 +67,19 @@ work_items:
       - a signed preimage or ChannelState byte changes
       - a second signer preimage is introduced
       - entrypoint/CPI/deployment scope enters the correction
+    implementation:
+      pr: 76
+      head: 64653ba62b9f3c3f5f28add8cf17c7ab3ed3a00e
+      merge_commit: 19d513fe0717c731d5103b15dcd0b0d9aa8d29a3
+      pr_ci_run: 32495843990
+    maturity:
+      implementation: complete
+      self_validation: passed
+      external_review: not_performed
+      deployment: not_authorized_by_this_item
 
   - id: FC-SOL-006
-    status: blocked
+    status: active
     objective: promote the frozen ChannelVault account, corrected runtime instruction, transition, concurrency, and governance models into an operational Solana program for local-validator and explicitly authorized devnet use
     owner: solana-program-implementer
     repository: 4LFR3Dv1/Foundry-Pay
