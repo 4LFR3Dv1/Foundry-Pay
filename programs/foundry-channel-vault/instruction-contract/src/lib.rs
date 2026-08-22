@@ -7,6 +7,7 @@ pub mod contract;
 pub mod ed25519;
 pub mod instruction;
 pub mod lifecycle;
+mod runtime_ed25519;
 mod runtime_v2;
 mod runtime_v2_authority;
 
@@ -16,7 +17,8 @@ pub use contract::{
     EVENT_CONTRACTS,
 };
 pub use ed25519::{
-    build_binding_ed25519_data, build_voucher_ed25519_data, extract_binding_ed25519_message,
+    build_binding_ed25519_data, build_voucher_ed25519_data,
+    extract_binding_ed25519_message as extract_binding_ed25519_message_duplicated_v1,
     extract_voucher_ed25519_message, verify_binding_ed25519_data, verify_voucher_ed25519_data,
     Ed25519ContractError, ExtractedBindingMessage, ED25519_PROGRAM_ID_BYTES,
 };
@@ -27,6 +29,11 @@ pub use instruction::{
 pub use lifecycle::{
     derive_lifecycle_phase, validate_claim_deadline, LifecycleContractError, LifecyclePhase,
     MAX_CLAIM_WINDOW_SECONDS, MIN_CLAIM_WINDOW_SECONDS,
+};
+pub use runtime_ed25519::{
+    build_runtime_binding_ed25519_data,
+    extract_runtime_binding_ed25519_message as extract_binding_ed25519_message,
+    verify_runtime_binding_ed25519_data,
 };
 pub use runtime_v2::{
     channel_id_hash, decode_binding_nonce_u64, encode_binding_nonce_u64, RuntimeAuthorityError,

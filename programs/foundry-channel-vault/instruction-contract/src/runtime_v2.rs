@@ -6,10 +6,12 @@
 //! instruction bytes and the 490-byte ChannelState layout.
 
 use foundry_channel_vault_account_model::{ChannelState, EnvironmentCode};
-use serde_json::{Map, Value};
 use sha2::{Digest, Sha256};
 use solana_pubkey::Pubkey;
 use std::{fmt, str::FromStr};
+
+#[cfg(test)]
+use serde_json::Value;
 
 use crate::instruction::{instruction_discriminator, InstructionKind};
 
@@ -225,6 +227,36 @@ pub enum RuntimeAuthorityError {
     BindingNonceEncoding,
 }
 
+const MAX_CANONICAL_FIELDS: usize = 19;
+
+#[derive(Clone, Copy, Debug)]
+struct CanonicalObject<'a> {
+    fields: [Option<CanonicalField<'a>>; MAX_CANONICAL_FIELDS],
+}
+
+#[derive(Clone, Copy, Debug)]
+struct CanonicalField<'a> {
+    name: &'a str,
+    value: CanonicalValue<'a>,
+}
+
+#[derive(Clone, Copy, Debug)]
+enum CanonicalValue<'a> {
+    String(&'a str),
+    Unsigned(u64),
+    Other,
+}
+
+impl<'a> CanonicalObject<'a> {
+    fn field(&self, name: &str) -> Option<CanonicalValue<'a>> {
+        self.fields
+            .iter()
+            .flatten()
+            .find(|field| field.name == name)
+            .map(|field| field.value)
+    }
+}
+
 impl fmt::Display for RuntimeAuthorityError {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(formatter, "{self:?}")
@@ -277,10 +309,7 @@ pub fn verify_voucher_signed_message(
     if sha256(message) != expected_voucher_hash {
         return Err(RuntimeAuthorityError::HashMismatch);
     }
-    let value = canonical_object(message, VOUCHER_FIELDS)?;
-    let object = value
-        .as_object()
-        .expect("canonical_object already requires an object");
+    let object = canonical_object(message, VOUCHER_FIELDS)?;
 
     expect_literal(object, "domain", "foundry.channels.voucher")?;
     verify_common_context(object, state, program_id, channel_account)?;
@@ -328,10 +357,7 @@ pub fn verify_recipient_binding_signed_message(
     if sha256(message) != expected_binding_hash {
         return Err(RuntimeAuthorityError::HashMismatch);
     }
-    let value = canonical_object(message, BINDING_FIELDS)?;
-    let object = value
-        .as_object()
-        .expect("canonical_object already requires an object");
+    let object = canonical_object(message, BINDING_FIELDS)?;
 
     expect_literal(
         object,
@@ -449,36 +475,182 @@ fn decode_v2_payload(
     }
 }
 
-fn canonical_object(
-    message: &[u8],
+fn canonical_object<'a>(
+    message: &'a [u8],
     required_fields: &[&'static str],
-) -> Result<Value, RuntimeAuthorityError> {
-    let value: Value = serde_json::from_slice(message).map_err(|_| RuntimeAuthorityError::InvalidJson)?;
-    if !value.is_object() {
-        return Err(RuntimeAuthorityError::WrongObjectShape);
+) -> Result<CanonicalObject<'a>, RuntimeAuthorityError> {
+    if message.first() != Some(&b'{') {
+        if message.first().is_some_and(|byte| byte.is_ascii_whitespace()) {
+            return Err(RuntimeAuthorityError::NonCanonicalJson);
+        }
+        return Err(if matches!(message.first(), Some(b'[' | b'"' | b't' | b'f' | b'n'))
+        {
+            RuntimeAuthorityError::WrongObjectShape
+        } else {
+            RuntimeAuthorityError::InvalidJson
+        });
     }
-    let canonical = serde_json::to_vec(&value).map_err(|_| RuntimeAuthorityError::InvalidJson)?;
-    if canonical.as_slice() != message {
+
+    let mut cursor = 1;
+    let mut previous_key: Option<&str> = None;
+    let mut fields: [Option<CanonicalField<'a>>; MAX_CANONICAL_FIELDS] = [None; MAX_CANONICAL_FIELDS];
+    let mut field_count = 0;
+    let mut unknown_field = false;
+
+    if message.get(cursor) == Some(&b'}') {
+        cursor += 1;
+    } else {
+        loop {
+            let key = parse_canonical_string(message, &mut cursor)?;
+            if previous_key.is_some_and(|previous| previous >= key) {
+                return Err(RuntimeAuthorityError::NonCanonicalJson);
+            }
+            previous_key = Some(key);
+
+            if message.get(cursor) != Some(&b':') {
+                return Err(if message.get(cursor).is_some_and(|byte| byte.is_ascii_whitespace()) {
+                    RuntimeAuthorityError::NonCanonicalJson
+                } else {
+                    RuntimeAuthorityError::InvalidJson
+                });
+            }
+            cursor += 1;
+            if message.get(cursor).is_some_and(|byte| byte.is_ascii_whitespace()) {
+                return Err(RuntimeAuthorityError::NonCanonicalJson);
+            }
+            let value = parse_canonical_value(message, &mut cursor)?;
+
+            if required_fields.contains(&key) {
+                if fields[..field_count]
+                    .iter()
+                    .flatten()
+                    .any(|field| field.name == key)
+                {
+                    return Err(RuntimeAuthorityError::NonCanonicalJson);
+                }
+                fields[field_count] = Some(CanonicalField { name: key, value });
+                field_count += 1;
+            } else {
+                unknown_field = true;
+            }
+
+            match message.get(cursor) {
+                Some(b',') => {
+                    cursor += 1;
+                    if message.get(cursor).is_some_and(|byte| byte.is_ascii_whitespace()) {
+                        return Err(RuntimeAuthorityError::NonCanonicalJson);
+                    }
+                }
+                Some(b'}') => {
+                    cursor += 1;
+                    break;
+                }
+                Some(byte) if byte.is_ascii_whitespace() => {
+                    return Err(RuntimeAuthorityError::NonCanonicalJson)
+                }
+                _ => return Err(RuntimeAuthorityError::InvalidJson),
+            }
+        }
+    }
+
+    if cursor != message.len() {
         return Err(RuntimeAuthorityError::NonCanonicalJson);
     }
-    let object = value.as_object().expect("object checked above");
+    if unknown_field {
+        return Err(RuntimeAuthorityError::UnknownField);
+    }
     for field in required_fields {
-        if !object.contains_key(*field) {
+        if !fields[..field_count]
+            .iter()
+            .flatten()
+            .any(|candidate| candidate.name == *field)
+        {
             return Err(RuntimeAuthorityError::MissingField(field));
         }
     }
-    if object.len() != required_fields.len()
-        || object
-            .keys()
-            .any(|field| !required_fields.contains(&field.as_str()))
-    {
-        return Err(RuntimeAuthorityError::UnknownField);
+
+    Ok(CanonicalObject {
+        fields,
+    })
+}
+
+fn parse_canonical_string<'a>(
+    message: &'a [u8],
+    cursor: &mut usize,
+) -> Result<&'a str, RuntimeAuthorityError> {
+    if message.get(*cursor) != Some(&b'"') {
+        return Err(if message.get(*cursor).is_some_and(|byte| byte.is_ascii_whitespace()) {
+            RuntimeAuthorityError::NonCanonicalJson
+        } else {
+            RuntimeAuthorityError::InvalidJson
+        });
     }
-    Ok(value)
+    *cursor += 1;
+    let start = *cursor;
+    while let Some(byte) = message.get(*cursor) {
+        match *byte {
+            b'"' => {
+                let value = std::str::from_utf8(&message[start..*cursor])
+                    .map_err(|_| RuntimeAuthorityError::InvalidJson)?;
+                *cursor += 1;
+                return Ok(value);
+            }
+            b'\\' => return Err(RuntimeAuthorityError::NonCanonicalJson),
+            byte if byte < 0x20 => return Err(RuntimeAuthorityError::InvalidJson),
+            _ => *cursor += 1,
+        }
+    }
+    Err(RuntimeAuthorityError::InvalidJson)
+}
+
+fn parse_canonical_value<'a>(
+    message: &'a [u8],
+    cursor: &mut usize,
+) -> Result<CanonicalValue<'a>, RuntimeAuthorityError> {
+    match message.get(*cursor) {
+        Some(b'"') => Ok(CanonicalValue::String(parse_canonical_string(message, cursor)?)),
+        Some(byte) if byte.is_ascii_digit() || *byte == b'-' => {
+            let start = *cursor;
+            while let Some(byte) = message.get(*cursor) {
+                if *byte == b',' || *byte == b'}' {
+                    break;
+                }
+                if byte.is_ascii_whitespace() {
+                    return Err(RuntimeAuthorityError::NonCanonicalJson);
+                }
+                *cursor += 1;
+            }
+            let raw = &message[start..*cursor];
+            if raw.len() == 1 || (raw.first() != Some(&b'0') && !raw.starts_with(b"-0")) {
+                if raw.iter().all(u8::is_ascii_digit) {
+                    if let Some(value) = std::str::from_utf8(raw)
+                        .ok()
+                        .and_then(|value| value.parse::<u64>().ok())
+                    {
+                        return Ok(CanonicalValue::Unsigned(value));
+                    }
+                }
+            }
+            Ok(CanonicalValue::Other)
+        }
+        Some(b't') if message.get(*cursor..).is_some_and(|value| value.starts_with(b"true")) => {
+            *cursor += 4;
+            Ok(CanonicalValue::Other)
+        }
+        Some(b'f') if message.get(*cursor..).is_some_and(|value| value.starts_with(b"false")) => {
+            *cursor += 5;
+            Ok(CanonicalValue::Other)
+        }
+        Some(b'n') if message.get(*cursor..).is_some_and(|value| value.starts_with(b"null")) => {
+            *cursor += 4;
+            Ok(CanonicalValue::Other)
+        }
+        _ => Err(RuntimeAuthorityError::InvalidJson),
+    }
 }
 
 fn verify_common_context(
-    object: &Map<String, Value>,
+    object: CanonicalObject<'_>,
     state: &ChannelState,
     program_id: &Pubkey,
     channel_account: &Pubkey,
@@ -509,7 +681,7 @@ fn verify_common_context(
 }
 
 fn expect_literal(
-    object: &Map<String, Value>,
+    object: CanonicalObject<'_>,
     field: &'static str,
     expected: &str,
 ) -> Result<(), RuntimeAuthorityError> {
@@ -520,7 +692,7 @@ fn expect_literal(
 }
 
 fn expect_pubkey(
-    object: &Map<String, Value>,
+    object: CanonicalObject<'_>,
     field: &'static str,
     expected: &Pubkey,
 ) -> Result<(), RuntimeAuthorityError> {
@@ -531,23 +703,23 @@ fn expect_pubkey(
 }
 
 fn string_field<'a>(
-    object: &'a Map<String, Value>,
+    object: CanonicalObject<'a>,
     field: &'static str,
 ) -> Result<&'a str, RuntimeAuthorityError> {
-    object
-        .get(field)
-        .and_then(Value::as_str)
-        .ok_or(RuntimeAuthorityError::InvalidField(field))
+    match object.field(field) {
+        Some(CanonicalValue::String(value)) => Ok(value),
+        _ => Err(RuntimeAuthorityError::InvalidField(field)),
+    }
 }
 
 fn safe_integer(
-    object: &Map<String, Value>,
+    object: CanonicalObject<'_>,
     field: &'static str,
 ) -> Result<u64, RuntimeAuthorityError> {
-    let value = object
-        .get(field)
-        .and_then(Value::as_u64)
-        .ok_or(RuntimeAuthorityError::InvalidField(field))?;
+    let value = match object.field(field) {
+        Some(CanonicalValue::Unsigned(value)) => value,
+        _ => return Err(RuntimeAuthorityError::InvalidField(field)),
+    };
     if value > JSON_SAFE_UNSIGNED_MAX {
         return Err(RuntimeAuthorityError::InvalidField(field));
     }
@@ -555,7 +727,7 @@ fn safe_integer(
 }
 
 fn pubkey_field(
-    object: &Map<String, Value>,
+    object: CanonicalObject<'_>,
     field: &'static str,
 ) -> Result<Pubkey, RuntimeAuthorityError> {
     Pubkey::from_str(string_field(object, field)?)
@@ -563,7 +735,7 @@ fn pubkey_field(
 }
 
 fn hash_field(
-    object: &Map<String, Value>,
+    object: CanonicalObject<'_>,
     field: &'static str,
 ) -> Result<[u8; 32], RuntimeAuthorityError> {
     parse_sha256_text(string_field(object, field)?, field)
@@ -590,7 +762,7 @@ fn parse_sha256_text(
 }
 
 fn amount_field(
-    object: &Map<String, Value>,
+    object: CanonicalObject<'_>,
     field: &'static str,
 ) -> Result<u64, RuntimeAuthorityError> {
     let value = string_field(object, field)?;
@@ -606,7 +778,7 @@ fn amount_field(
 }
 
 fn timestamp_field(
-    object: &Map<String, Value>,
+    object: CanonicalObject<'_>,
     field: &'static str,
 ) -> Result<i64, RuntimeAuthorityError> {
     parse_utc_timestamp(string_field(object, field)?, field)
