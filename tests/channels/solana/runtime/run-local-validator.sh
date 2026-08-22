@@ -176,9 +176,41 @@ export FC_SOL_006_VALIDATOR_LOG="$LEDGER/validator.log"
 export NODE_OPTIONS="--dns-result-order=ipv4first"
 CONTROLS_ONLY="${FC_SOL_006_TRANSPORT_CONTROLS_ONLY:-0}"
 BIND_PROBE_ONLY="${FC_SOL_006_BIND_COMPUTE_PROBE:-0}"
+NEGATIVE_MATRIX="${FC_SOL_006_NEGATIVE_MATRIX:-0}"
+NEGATIVE_OUT="$TMP/negative.out"
 
 stage "validator-phase1-start"
 start_phase1_validator
+
+if [[ "$NEGATIVE_MATRIX" == "1" ]]; then
+  stage "validator-negative-client"
+  node "$RUNTIME_DIR/validator-negative-client.mjs" | tee "$NEGATIVE_OUT"
+  cp "$NEGATIVE_OUT" "$ROOT/evidence/runs/FC-SOL-006/negative-local-validator-run.jsonl"
+  stop_validator
+  stage "negative-receipt"
+  export SBF_SHA256 PLATFORM_TOOLS_VERSION BUILD_AGAVE_VERSION VALIDATOR_AGAVE_VERSION NEGATIVE_OUT
+  node <<'NODE'
+const fs = require('node:fs');
+const lines = fs.readFileSync(process.env.NEGATIVE_OUT, 'utf8').trim().split(/\r?\n/);
+const negative = JSON.parse(lines.reverse().find((line) => line.startsWith('{')));
+process.stdout.write(JSON.stringify({
+  ok: true,
+  mode: 'negative-local-validator',
+  agaveVersion: process.env.VALIDATOR_AGAVE_VERSION,
+  sbfBuildAgaveVersion: process.env.BUILD_AGAVE_VERSION,
+  validatorAgaveVersion: process.env.VALIDATOR_AGAVE_VERSION,
+  platformToolsVersion: process.env.PLATFORM_TOOLS_VERSION,
+  programSdkVersion: '2.1.21',
+  programIdScope: 'ephemeral_local_validator_only',
+  programId: '11111111111111111111111111111112',
+  sbfSha256: process.env.SBF_SHA256,
+  negative,
+  claimsNotAuthorized: ['devnet_deployment', 'mainnet', 'real_value'],
+}) + '\n');
+NODE
+  exit 0
+fi
+
 stage "validator-phase1-client"
 node "$RUNTIME_DIR/validator-client-runner.mjs" phase1 | tee "$PHASE1_OUT"
 stop_validator

@@ -97,8 +97,13 @@ vault               0
 recipient    60000000
 ```
 
-The negative validator matrix remains a separate merge gate. No devnet or
-real-value execution is implied.
+The negative validator matrix is now locally certified as a separate
+fail-closed gate: 18/18 rejection cases matched the expected error registry
+code and preserved the economic state. No devnet or real-value execution is
+implied.
+
+The complete per-case receipt is preserved in
+`evidence/runs/FC-SOL-006/negative-local-validator-run.jsonl`.
 
 ## Validation receipt — first slice
 

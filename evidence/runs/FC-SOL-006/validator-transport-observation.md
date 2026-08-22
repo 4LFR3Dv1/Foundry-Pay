@@ -696,3 +696,55 @@ sender    = 140000000
 
 The receipt was local-only. Devnet, mainnet, and real-value execution remain
 unauthorized.
+
+## Negative local-validator certification
+
+The negative harness used two fresh fixtures: `Active` with a bound recipient
+for account, settlement, voucher, and binding cases; and `Closing` with the
+claim window still open for refund/finalization cases. Each case performed one
+pre-simulation, one raw broadcast (`broadcastCount=1`), status/transaction
+observation, and confirmed pre/post economic snapshots. No negative case
+changed the ChannelState hash or any measured token balance.
+
+Validator/build evidence:
+
+```text
+validator Agave  = v2.1.21
+build Agave      = v3.1.5
+platform-tools   = v1.52
+SBF SHA-256      = 50d23a20c3fa6db3d75ee57be6afd97490b9fb2e4f2e451f7a01fac696cc3482
+cases            = 18
+allFailClosed    = true
+```
+
+| case | serialized bytes | expected/actual code | tx SHA-256 | state/balances |
+| --- | ---: | ---: | --- | --- |
+| wrong Channel PDA | 625 | 2002 / 2002 | `7decb2d4b0567d0fb78bbf7a46a998ba40ead6d7354847aa0ab76415253bd752` | unchanged |
+| wrong account owner | 384 | 2001 / 2001 | `d307cd2ef351fb466565573984d5ed37e8be8a2bcf529eb7cb16aea621da3ed0` | unchanged |
+| wrong mint | 384 | 3000 / 3000 | `46dedc6bc12bc7a50252bbe4dcbd55dc12675b5a9e9532beb9915d79cb1c5fc5` | unchanged |
+| Token-2022 program | 384 | 3003 / 3003 | `108fe7e60c8afbfad4c8f0b847aa29a6f9c7697076031c2927f6c45276f73971` | unchanged |
+| missing required signer | 253 | 2000 / 2000 | `8c6e0f5af7b9b9f4dbbcdcebed5c536f7ffd94bd6814d3088210f55ded3a6ad4` | unchanged |
+| wrong recipient ATA | 384 | 6003 / 6003 | `7cab0bf145e3d1b8ab60a310a56a3aa3752c7181d84867c72c438d936c8e14a2` | unchanged |
+| settle above activated | 384 | 7002 / 7002 | `579b4ed9002c211b9ae4aa8e5f56d99d7d0701e368be7c08bc64f3db40b48e83` | unchanged |
+| refund before deadline | 481 | 4000 / 4000 | `db131f9b98e80456498e7eb73c3687e436a7b71fb588867729f9c4400f7c9cc7` | unchanged |
+| finalize with pending rights | 374 | 7000 / 7000 | `84eed1438c58a820c794a1946d02a1d4aa83db23a23c136753da00dd79cf89de` | unchanged |
+| finalize with nonzero vault | 374 | 7000 / 7000 | `8cda7f46fafe0d4ad5120b75ccc6cc23cf9be9063fd0de270789a92767f2847b` | unchanged |
+| Ed25519 predecessor absent | 251 | 5001 / 5001 | `8d24511f06bfe6b5439b4a1bf6a1373ad3a94fc936114ffe581e5fe05736dfc9` | unchanged |
+| Ed25519 predecessor position wrong | 1162 | 5000 / 5000 | `1e62eefaf6ab08fd1baf6dae1dbd63015ad744918e4861eafe7217c548e8729d` | unchanged |
+| Ed25519 public key wrong | 1122 | 5005 / 5005 | `30f8895296b935bb81bc9b93a10f7012edbc06880a7bcc01880d13ad50bcbc09` | unchanged |
+| signed preimage altered | 1122 | 5006 / 5006 | `7e827650a18f392677f7de13955f6b4705d507f591dbbada58dfc1bb755e0b3e` | unchanged |
+| voucher replay / sequence regression | 1122 | 6001 / 6001 | `80f640d90c45df9140a77141f12e4436b5832ba192b574817311e1bed6a682cf` | unchanged |
+| voucher sequence zero | 1122 | 5006 / 5006 | `8c476dcb8af480e8fb61d19141ad7984e2ed93358120ee64e06d83d75e6778c4` | unchanged |
+| double recipient bind | 1224 | 6002 / 6002 | `8dad9210502e3fdf185fb07f4ab572b6d662787daa86a6ec64f95a26c57d0229` | unchanged |
+| different recipient after bind | 1224 | 6002 / 6002 | `e90d99e9ff7bdb97fc62a8e2207b89fe0cc0db8a266cad4981748bfc3513db65` | unchanged |
+
+For every case, the detailed record includes simulation error/logs and
+units, broadcast signature/status, `preStateHash`, `postStateHash`, vault,
+recipient, sender token balances, and sender lamports. The complete JSONL
+receipt is preserved at
+`evidence/runs/FC-SOL-006/negative-local-validator-run.jsonl`.
+
+The exact replay is classified by the frozen runtime as
+`SEQUENCE_REGRESSION` (6001). A different recipient after an already consumed
+binding nonce is classified as `BINDING_NONCE_CONSUMED` (6002). Both are
+fail-closed and produced no economic effect.
