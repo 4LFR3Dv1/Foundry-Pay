@@ -589,3 +589,36 @@ sender    = 140000000
 manual rehydration, retry, ChannelVault change, economic-state change, or warp
 semantics change was made. The receipt remains local-only; devnet, mainnet, and
 real-value execution are not authorized.
+
+## Remote CI attempt on reconciled head
+
+GitHub Actions run `32542766151` evaluated head
+`d23c59888934dad043fe5069fe251eba4b80fd98`. The independent conformance lanes
+passed, including Python, Rust, TypeScript, poisoning, and comparison. The
+`protocol` lane reported `578 passed` and one failure from the real validator
+lifecycle.
+
+The remote validator reproduced the snapshot-backed persistence boundary:
+
+```text
+checkpointSlot   = 45
+finalizedSlot    = 101
+fullSnapshotSlot = 100
+WARP_SLOT        = 100100
+phase2 accounts  = all present at finalized
+ChannelState     = Closing
+```
+
+It then stopped before `refund_unallocated` because the warped validator clock
+had not reached the frozen claim deadline:
+
+```text
+validator clock = 1787361436
+claim deadline  = 1787362613
+error           = validator clock ... has not reached deadline ...
+```
+
+This is a remote harness/time-boundary failure, not an account persistence or
+economic-state failure. The PR remains draft; no warp semantic, claim window,
+ChannelVault, refund, or deployment authorization change was made to hide the
+failure.
