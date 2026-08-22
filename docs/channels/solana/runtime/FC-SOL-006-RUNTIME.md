@@ -1,8 +1,8 @@
 # FC-SOL-006 — executable ChannelVault runtime
 
-Status: positive local lifecycle passed; certification gates remain
+Status: positive lifecycle and local-validator certification passed; review/deployment gates remain
 Current evidence class: observed local-validator lifecycle
-Local-validator evidence: positive lifecycle passed, negative matrix pending
+Local-validator evidence: positive lifecycle passed, negative matrix 18/18 fail-closed
 Devnet deployment: not authorized
 
 ## Runtime boundary
@@ -105,7 +105,29 @@ implied.
 The complete per-case receipt is preserved in
 `evidence/runs/FC-SOL-006/negative-local-validator-run.jsonl`.
 
-## Validation receipt — first slice
+## Current validation receipt
+
+Current branch head:
+
+```text
+a84a1c3c2db6c37ccc1fdd8c8570484ab8eec376
+```
+
+GitHub Actions CI:
+
+```text
+run       32545518056
+result    PASS
+positive local-validator    PASS
+negative local-validator    18/18 PASS
+human review                PENDING
+```
+
+The negative result is certified by the local-validator run recorded in
+`evidence/runs/FC-SOL-006/negative-local-validator-run.jsonl`; it is not a
+remote negative certification.
+
+## Historical host validation receipt
 
 Functional head:
 
@@ -143,14 +165,14 @@ suite does not compile/pass.
 
 ## What this evidence does not prove
 
-The historical receipt above proves host compilation and deterministic
-handler/state tests. The current local lifecycle evidence proves positive
-validator execution, but does **not** yet prove:
+The current receipts prove the observed local-validator lifecycle, the
+18/18 fail-closed local negative matrix, and the CI result for the current
+head. They do not prove:
 
-- the frozen negative account/meta/signature matrix under validator execution;
 - a trusted/deployed Program ID;
 - Solana devnet deployment;
-- mainnet or real-value readiness.
+- mainnet or real-value execution/readiness;
+- independent external review or audit.
 
 The positive lifecycle artifact and run details are recorded in
 `evidence/runs/FC-SOL-006/validator-transport-observation.md`.

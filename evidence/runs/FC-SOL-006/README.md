@@ -1,11 +1,12 @@
 # FC-SOL-006 evidence
 
-Status: **positive lifecycle and negative local-validator certification passed — remote/deployment gates remain**
+Status: **positive lifecycle and negative local-validator certification passed — review/deployment gates remain**
 
 This directory records the evidence lineage for the operational ChannelVault
 work item. The positive local-validator lifecycle is observed end to end. The
 negative validator matrix is now also certified locally as fail-closed; this
-does not certify devnet or real-value execution.
+does not represent remote negative certification, devnet, or real-value
+execution.
 
 ## Positive local-validator gate
 
@@ -40,6 +41,21 @@ vault, sender-token, and recipient-token balances.
 
 The complete per-case receipt is
 [`negative-local-validator-run.jsonl`](negative-local-validator-run.jsonl).
+
+## Current validation receipt
+
+```text
+head                         a84a1c3c2db6c37ccc1fdd8c8570484ab8eec376
+CI workflow                  CI
+CI run                       32545518056
+CI result                    PASS
+positive local-validator    PASS
+negative local-validator    18/18 PASS
+human review                PENDING
+```
+
+The negative result above is a local-validator certification. It is not a
+remote negative certification and does not expand the evidence boundary.
 
 ## Historical host slice
 
@@ -77,7 +93,7 @@ classic SPL Token CPI             observed under validator
 snapshot-backed restart           observed
 terminal conservation             observed
 negative validator matrix         observed; 18/18 fail-closed
-SBF artifact                      locally hashed; remote CI pending
+SBF artifact                      locally hashed; CI 32545518056 PASS on current head
 Program ID                        not assigned/authorized
 devnet deployment                 not performed
 mainnet / real value             not authorized
