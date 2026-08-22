@@ -1,8 +1,8 @@
 # FC-SOL-006 — executable ChannelVault runtime
 
-Status: active implementation  
-Current evidence class: host-compiled executable slice  
-Local-validator evidence: not yet performed  
+Status: positive local lifecycle passed; certification gates remain
+Current evidence class: observed local-validator lifecycle
+Local-validator evidence: positive lifecycle passed, negative matrix pending
 Devnet deployment: not authorized
 
 ## Runtime boundary
@@ -77,20 +77,28 @@ The handler requires the sender signature, applies the frozen bounded claim
 window through the transition model and persists `Closing`, request time and
 claim deadline.
 
-## Operations still fail closed
+## Positive local-validator lifecycle
 
-The entrypoint decodes the complete v2 eight-operation registry, but these five
-operations deliberately return `InvalidInstructionData` until their runtime
-contracts enter the executable slice:
+All eight ChannelVault operations were observed in one complete local-validator
+lifecycle under Agave `v2.1.21`: initialization, funding, voucher activation,
+recipient binding, settlement, close request, snapshot-backed restart/warp,
+refund, final settlement, and finalization. The validator produced a full
+snapshot at or after the finalized close checkpoint before restart; all required
+accounts and `ChannelState=Closing` persisted across the restart.
 
-- `initialize_channel`;
-- `fund_channel`;
-- `settle`;
-- `refund_unallocated`;
-- `finalize_close`.
+The terminal observed conservation was:
 
-No System Program or SPL Token CPI is present yet. This prevents a partial CPI
-implementation from being mistaken for an operational payment path.
+```text
+funded     100000000
+activated   60000000
+settled     60000000
+refunded    40000000
+vault               0
+recipient    60000000
+```
+
+The negative validator matrix remains a separate merge gate. No devnet or
+real-value execution is implied.
 
 ## Validation receipt — first slice
 
@@ -130,17 +138,14 @@ suite does not compile/pass.
 
 ## What this evidence does not prove
 
-This receipt proves host compilation and deterministic handler/state tests for
-the first executable slice. It does **not** prove:
+The historical receipt above proves host compilation and deterministic
+handler/state tests. The current local lifecycle evidence proves positive
+validator execution, but does **not** yet prove:
 
-- SBF/BPF reproducible artifact production;
-- execution under `solana-test-validator`;
-- native Ed25519 transaction execution under a validator;
-- System/SPL CPI correctness;
-- all eight positive operations;
 - the frozen negative account/meta/signature matrix under validator execution;
-- a Program ID;
+- a trusted/deployed Program ID;
 - Solana devnet deployment;
 - mainnet or real-value readiness.
 
-Those remain gates of the active FC-SOL-006 work item.
+The positive lifecycle artifact and run details are recorded in
+`evidence/runs/FC-SOL-006/validator-transport-observation.md`.

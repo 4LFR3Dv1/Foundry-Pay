@@ -5,7 +5,8 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 RUNTIME_DIR="$ROOT/tests/channels/solana/runtime"
 PROGRAM_MANIFEST="$ROOT/programs/foundry-channel-vault/program/Cargo.toml"
 BUILD_AGAVE_VERSION="v3.1.5"
-VALIDATOR_AGAVE_VERSION="v2.1.21"
+VALIDATOR_AGAVE_VERSION="${FC_SOL_006_VALIDATOR_AGAVE_VERSION:-v2.1.21}"
+VALIDATOR_VERSION="${VALIDATOR_AGAVE_VERSION#v}"
 PLATFORM_TOOLS_VERSION="v1.52"
 PROGRAM_ID="11111111111111111111111111111112"
 RPC_PORT="${FC_SOL_006_RPC_PORT:-18999}"
@@ -79,7 +80,8 @@ fi
 # Build and runtime are intentionally pinned independently. The program still
 # depends on solana-program 2.1.21, while the SBF compiler must satisfy the
 # repository's Rust 1.85.1 MSRV. Agave 3.1.5 ships cargo-build-sbf with
-# platform-tools v1.52; the executable artifact is then run on Agave 2.1.21.
+# platform-tools v1.52; the executable artifact is then run against the
+# selected local validator version.
 stage "build-agave-install"
 if ! command -v solana >/dev/null 2>&1 || ! solana --version | grep -q '3\.1\.5'; then
   install_agave "$BUILD_AGAVE_VERSION"
@@ -106,10 +108,10 @@ test -f "$ARTIFACT"
 SBF_SHA256="$(sha256sum "$ARTIFACT" | awk '{print $1}')"
 
 stage "validator-agave-install"
-if ! solana --version | grep -q '2\.1\.21'; then
+if ! solana --version | grep -q "${VALIDATOR_VERSION//./\\.}"; then
   install_agave "$VALIDATOR_AGAVE_VERSION"
 fi
-solana --version | grep -q '2\.1\.21'
+solana --version | grep -q "${VALIDATOR_VERSION//./\\.}"
 command -v solana-test-validator >/dev/null
 
 wait_rpc() {
@@ -170,7 +172,10 @@ start_phase2_validator() {
 export FC_SOL_006_RPC="$RPC"
 export FC_SOL_006_PROGRAM_ID="$PROGRAM_ID"
 export FC_SOL_006_CONTEXT="$CONTEXT"
+export FC_SOL_006_VALIDATOR_LOG="$LEDGER/validator.log"
 export NODE_OPTIONS="--dns-result-order=ipv4first"
+CONTROLS_ONLY="${FC_SOL_006_TRANSPORT_CONTROLS_ONLY:-0}"
+BIND_PROBE_ONLY="${FC_SOL_006_BIND_COMPUTE_PROBE:-0}"
 
 stage "validator-phase1-start"
 start_phase1_validator
@@ -178,14 +183,19 @@ stage "validator-phase1-client"
 node "$RUNTIME_DIR/validator-client-runner.mjs" phase1 | tee "$PHASE1_OUT"
 stop_validator
 
-CLOSE_SLOT="$(node -e "const c=require(process.argv[1]); process.stdout.write(String(c.slot));" "$CONTEXT")"
-WARP_SLOT="$((CLOSE_SLOT + 100000))"
+if [[ "$CONTROLS_ONLY" != "1" && "$BIND_PROBE_ONLY" != "1" ]]; then
+  FULL_SNAPSHOT_SLOT="$(node -e "const c=require(process.argv[1]); process.stdout.write(String(c.snapshotBoundary.fullSnapshotSlot));" "$CONTEXT")"
+  WARP_SLOT="$((FULL_SNAPSHOT_SLOT + 100000))"
 
-stage "validator-phase2-start"
-start_phase2_validator "$WARP_SLOT"
-stage "validator-phase2-client"
-node "$RUNTIME_DIR/validator-client-runner.mjs" phase2 | tee "$PHASE2_OUT"
-stop_validator
+  stage "validator-phase2-start"
+  start_phase2_validator "$WARP_SLOT"
+  stage "validator-phase2-client"
+  node "$RUNTIME_DIR/validator-client-runner.mjs" phase2 | tee "$PHASE2_OUT"
+  stop_validator
+else
+  WARP_SLOT="0"
+  : >"$PHASE2_OUT"
+fi
 
 stage "receipt"
 export SBF_SHA256 WARP_SLOT PHASE1_OUT PHASE2_OUT PLATFORM_TOOLS_VERSION \
@@ -197,9 +207,11 @@ const lastJson = (path) => {
   return JSON.parse(lines.reverse().find((line) => line.startsWith('{')));
 };
 const phase1 = lastJson(process.env.PHASE1_OUT);
-const phase2 = lastJson(process.env.PHASE2_OUT);
+const phase2Lines = fs.readFileSync(process.env.PHASE2_OUT, 'utf8').trim();
+const phase2 = phase2Lines ? lastJson(process.env.PHASE2_OUT) : null;
 process.stdout.write(JSON.stringify({
   ok: true,
+  agaveVersion: process.env.VALIDATOR_AGAVE_VERSION,
   sbfBuildAgaveVersion: process.env.BUILD_AGAVE_VERSION,
   validatorAgaveVersion: process.env.VALIDATOR_AGAVE_VERSION,
   platformToolsVersion: process.env.PLATFORM_TOOLS_VERSION,

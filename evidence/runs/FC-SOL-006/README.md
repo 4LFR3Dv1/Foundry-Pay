@@ -1,11 +1,35 @@
 # FC-SOL-006 evidence
 
-Status: **partial implementation evidence — work item remains active**
+Status: **positive local lifecycle passed — negative and remote gates remain**
 
-This directory begins the evidence lineage for the operational ChannelVault
-work item. It does not certify local-validator or devnet execution.
+This directory records the evidence lineage for the operational ChannelVault
+work item. The positive local-validator lifecycle is observed end to end; this
+does not certify the negative validator matrix, devnet, or real-value execution.
 
-## First executable slice
+## Positive local-validator gate
+
+All eight operations were observed in one complete lifecycle under validator
+Agave `v2.1.21`, built with Agave `v3.1.5` and platform-tools `v1.52`.
+
+The lifecycle included a finalized `request_close`, full-snapshot boundary,
+restart with `WARP_SLOT = fullSnapshotSlot + 100000`, repeated finalized account
+and `ChannelState=Closing` checks, refund, final settlement, and finalization.
+
+Terminal conservation:
+
+```text
+funded     100000000
+activated   60000000
+settled     60000000
+refunded    40000000
+vault               0
+recipient    60000000
+```
+
+See `validator-transport-observation.md` for the exact signature, snapshot
+slots, account snapshots, SBF hash, transaction evidence, and receipt.
+
+## Historical host slice
 
 Functional head:
 
@@ -13,32 +37,14 @@ Functional head:
 
 Pull request: `#78`
 
-PR CI run: `32497047070`
+Historical PR CI run: `32497047070`
 
-Observed on GitHub Actions:
-
-- repository pytest: `578 passed`;
-- executable `foundry-channel-vault-program` host suite invoked through pytest
-  and returned success;
-- TypeScript External Execution Protocol: `8 passed`;
-- TypeScript Channel Protocol: `20 passed`;
-- Python/TypeScript/Rust conformance lanes: passed;
-- poisoning-independence lane: passed;
-- cross-language comparison lane: passed;
-- secret guard: `650 files scanned`, passed.
-
-The executable program slice currently contains real handlers for:
-
-1. `activate_voucher`;
-2. `bind_recipient`;
-3. `request_close`.
-
-The remaining operations intentionally fail closed until System/SPL CPI and
-closure semantics are implemented and exercised.
+The historical host/conformance evidence remains preserved and is not
+reinterpreted by the local-validator result.
 
 ## Preserved frozen material
 
-This slice does not modify:
+This evidence does not modify:
 
 - `CHANNEL_STATE_SPACE = 490`;
 - ChannelState discriminator/offsets;
@@ -51,17 +57,19 @@ This slice does not modify:
 
 ```text
 host compile/test                 observed
-program entrypoint                implemented
-real AccountInfo handlers         implemented for 3/8 operations
-instructions-sysvar integration   implemented, host compiled
-Clock integration                 implemented, host compiled
-System Program CPI                not implemented
-classic SPL Token CPI             not implemented
-local-validator execution         not yet observed
-SBF artifact                      not yet certified
+real AccountInfo handlers         observed for 8/8 positive operations
+instructions-sysvar integration   observed under validator
+Clock integration                 observed under validator
+System Program CPI                observed under validator
+classic SPL Token CPI             observed under validator
+snapshot-backed restart           observed
+terminal conservation             observed
+negative validator matrix         pending
+SBF artifact                      locally hashed; remote CI pending
 Program ID                        not assigned/authorized
 devnet deployment                 not performed
+mainnet / real value             not authorized
 ```
 
-No item below `host compile/test` is to be promoted to deployment evidence
-without a separate observed run.
+No positive local evidence is deployment authorization. Devnet, mainnet, and
+real-value execution remain blocked.

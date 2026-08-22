@@ -1,10 +1,24 @@
+import fs from "node:fs";
 import crypto from "node:crypto";
-import { Connection, VersionedTransaction } from "@solana/web3.js";
+import { Connection, PublicKey, VersionedTransaction } from "@solana/web3.js";
 
 const originalConfirmTransaction = Connection.prototype.confirmTransaction;
 const originalSendTransaction = Connection.prototype.sendTransaction;
 const originalGetSignatureStatuses = Connection.prototype.getSignatureStatuses;
 const trackedVersionedTransactions = new Map();
+const VALIDATOR_LOG_PATH = process.env.FC_SOL_006_VALIDATOR_LOG ?? null;
+
+const VALIDATOR_LOG_CATEGORIES = [
+  ["send_transaction_service", /send_transaction_service/i],
+  ["tpu", /\btpu(?:\b|[_-])/i],
+  ["packet", /packet/i],
+  ["sigverify", /sigverify/i],
+  ["sanitize", /sanitiz/i],
+  ["cost", /cost/i],
+  ["address_lookup", /address.?lookup|lookup.?table/i],
+  ["banking_stage", /banking.?stage/i],
+  ["blockhash", /blockhash/i],
+];
 
 function jsonSafe(value) {
   return JSON.parse(
@@ -45,7 +59,7 @@ async function lookupTableSnapshot(connection, accountKey) {
 }
 
 async function runtimeSnapshot(connection, tracked, signature = null, status = null, reason) {
-  const [slotResult, heightResult, validityResult, transactionResult, ...lookupResults] =
+  const [slotResult, heightResult, validityResult, transactionResult, economicStateResult, ...lookupResults] =
     await Promise.allSettled([
       connection.getSlot("confirmed"),
       connection.getBlockHeight("confirmed"),
@@ -56,6 +70,7 @@ async function runtimeSnapshot(connection, tracked, signature = null, status = n
             maxSupportedTransactionVersion: 0,
           })
         : Promise.resolve(null),
+      economicStateSnapshot(connection, tracked),
       ...tracked.lookupKeys.map((key) => lookupTableSnapshot(connection, key)),
     ]);
 
@@ -67,9 +82,12 @@ async function runtimeSnapshot(connection, tracked, signature = null, status = n
   const transaction = transactionResult.status === "fulfilled" ? transactionResult.value : null;
   return {
     reason,
+    label: tracked.label,
+    channel: tracked.channel,
     signature,
     transactionSha256: tracked.transactionSha256,
     serializedBytes: tracked.serializedBytes,
+    metadata: tracked.metadata,
     recentBlockhash: tracked.blockhash,
     lastValidBlockHeight: tracked.lastValidBlockHeight ?? null,
     slot: resultValue(slotResult),
@@ -87,12 +105,125 @@ async function runtimeSnapshot(connection, tracked, signature = null, status = n
       : transactionResult.status === "rejected"
         ? resultValue(transactionResult)
         : null,
+    economicState: resultValue(economicStateResult),
     lookupTables: lookupResults.map(resultValue),
   };
 }
 
 function emitDiagnostic(kind, payload) {
   console.error(`FC-SOL-006 ${kind} ${JSON.stringify(jsonSafe(payload))}`);
+}
+
+function validatorLogCategories(line) {
+  return VALIDATOR_LOG_CATEGORIES
+    .filter(([, pattern]) => pattern.test(line))
+    .map(([category]) => category);
+}
+
+function createValidatorLogCursor() {
+  const cursor = {
+    path: VALIDATOR_LOG_PATH,
+    offset: 0,
+    remainder: "",
+    resetCount: 0,
+    error: null,
+  };
+  if (!VALIDATOR_LOG_PATH) {
+    cursor.error = "FC_SOL_006_VALIDATOR_LOG is not set";
+    return cursor;
+  }
+  try {
+    cursor.offset = fs.statSync(VALIDATOR_LOG_PATH).size;
+  } catch (error) {
+    cursor.error = error instanceof Error ? error.message : String(error);
+  }
+  return cursor;
+}
+
+function emitValidatorLogCursor(tracked, reason) {
+  emitDiagnostic("validator-log-cursor", {
+    label: tracked.label,
+    reason,
+    path: tracked.validatorLog.path,
+    offset: tracked.validatorLog.offset,
+    error: tracked.validatorLog.error,
+  });
+}
+
+function captureValidatorLogDelta(tracked, reason) {
+  const cursor = tracked.validatorLog;
+  if (!cursor.path) {
+    emitDiagnostic("validator-log-delta", {
+      label: tracked.label,
+      reason,
+      path: null,
+      offsetStart: cursor.offset,
+      offsetEnd: cursor.offset,
+      lines: [],
+      error: cursor.error,
+    });
+    return;
+  }
+
+  try {
+    const bytes = fs.readFileSync(cursor.path);
+    const offsetStart = cursor.offset;
+    if (bytes.length < cursor.offset) {
+      cursor.offset = 0;
+      cursor.remainder = "";
+      cursor.resetCount += 1;
+    }
+    const delta = bytes.subarray(cursor.offset);
+    cursor.offset = bytes.length;
+    const completeLines = (cursor.remainder + delta.toString("utf8")).split(/\r?\n/);
+    cursor.remainder = completeLines.pop() ?? "";
+    const lines = completeLines
+      .map((line) => ({ line, categories: validatorLogCategories(line) }))
+      .filter(({ categories }) => categories.length > 0);
+    emitDiagnostic("validator-log-delta", {
+      label: tracked.label,
+      reason,
+      path: cursor.path,
+      offsetStart,
+      offsetEnd: cursor.offset,
+      resetCount: cursor.resetCount,
+      lines,
+    });
+  } catch (error) {
+    emitDiagnostic("validator-log-delta", {
+      label: tracked.label,
+      reason,
+      path: cursor.path,
+      offsetStart: cursor.offset,
+      offsetEnd: cursor.offset,
+      lines: [],
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+}
+
+async function economicStateSnapshot(connection, tracked) {
+  if (!tracked.channel) return null;
+  try {
+    const channel = new PublicKey(tracked.channel);
+    const info = await connection.getAccountInfo(channel, "confirmed");
+    if (!info) return { channel: tracked.channel, exists: false };
+    const data = Buffer.from(info.data);
+    return {
+      channel: tracked.channel,
+      exists: true,
+      owner: info.owner.toBase58(),
+      dataLength: data.length,
+      status: data.length > 11 ? data[11] : null,
+      activatedAuthorizedTotal: data.length >= 334 ? data.readBigUInt64LE(326).toString() : null,
+      latestActivatedSequence: data.length >= 358 ? data.readBigUInt64LE(350).toString() : null,
+    };
+  } catch (error) {
+    return {
+      channel: tracked.channel,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
 }
 
 Connection.prototype.sendTransaction = async function diagnoseVersionedTransaction(
@@ -105,12 +236,16 @@ Connection.prototype.sendTransaction = async function diagnoseVersionedTransacti
 
   const serialized = transaction.serialize();
   const tracked = {
+    label: transaction.__fcSol006Label ?? null,
+    channel: process.env.FC_SOL_006_CHANNEL ?? null,
     blockhash: transaction.message.recentBlockhash,
     lastValidBlockHeight: null,
     lookupKeys: transaction.message.addressTableLookups.map((lookup) => lookup.accountKey),
     transactionSha256: crypto.createHash("sha256").update(serialized).digest("hex"),
     serializedBytes: serialized.length,
+    metadata: transaction.__fcSol006Metadata ?? null,
     polls: 0,
+    validatorLog: createValidatorLogCursor(),
   };
 
   try {
@@ -152,8 +287,10 @@ Connection.prototype.sendTransaction = async function diagnoseVersionedTransacti
   // it does not create a second transaction, change the signature, or mutate
   // the economic payload.
   const options = args[0] ?? {};
+  emitValidatorLogCursor(tracked, "immediately-before-raw-broadcast");
   const signature = await this.sendRawTransaction(serialized, options);
   trackedVersionedTransactions.set(signature, tracked);
+  captureValidatorLogDelta(tracked, "immediately-after-raw-broadcast");
   emitDiagnostic(
     "signed-v0-broadcast",
     await runtimeSnapshot(this, tracked, signature, null, "post-broadcast-raw-rpc"),
@@ -179,6 +316,10 @@ Connection.prototype.getSignatureStatuses = async function diagnoseSignatureStat
       status?.confirmationStatus === "confirmed" ||
       status?.confirmationStatus === "finalized";
     const shouldSnapshot = terminal || tracked.polls === 1 || tracked.polls % 25 === 0;
+
+    if (tracked.polls <= 3) {
+      captureValidatorLogDelta(tracked, `poll-${tracked.polls}`);
+    }
 
     if (shouldSnapshot) {
       emitDiagnostic(

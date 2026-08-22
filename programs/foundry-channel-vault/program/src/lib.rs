@@ -13,13 +13,14 @@ use foundry_channel_vault_account_model::{
     CHANNEL_STATE_VERSION_V1,
 };
 use foundry_channel_vault_instruction_contract::{
-    extract_binding_ed25519_message, extract_voucher_ed25519_message,
-    verify_initialize_v2, verify_recipient_binding_signed_message, verify_voucher_signed_message,
-    ContractErrorCode, Ed25519ContractError, RuntimeAuthorityError, RuntimeInstructionV2,
+    extract_binding_ed25519_message, extract_voucher_ed25519_message, verify_initialize_v2,
+    verify_recipient_binding_signed_message, verify_voucher_signed_message, ContractErrorCode,
+    Ed25519ContractError, RuntimeAuthorityError, RuntimeInstructionV2,
     RuntimeInstructionV2DecodeError, VerifiedRecipientBindingAuthority, VerifiedVoucherAuthority,
 };
 use foundry_channel_vault_transition_model::{
-    apply as apply_model, AccountOwnership, Lifecycle, ModelError, ModelInstruction, ModelState,
+    apply as apply_model, canonical_recipient_ata, AccountOwnership, Lifecycle, ModelError,
+    ModelInstruction, ModelState,
 };
 use solana_program::{
     account_info::AccountInfo,
@@ -27,6 +28,7 @@ use solana_program::{
     entrypoint,
     entrypoint::ProgramResult,
     instruction::{AccountMeta, Instruction},
+    log::sol_log_compute_units,
     msg,
     program::{invoke, invoke_signed},
     program_error::ProgramError,
@@ -424,6 +426,8 @@ fn process_bind_recipient(
     accounts: &[AccountInfo],
     binding_hash: [u8; 32],
 ) -> ProgramResult {
+    msg!("FC-SOL-006 bind checkpoint=entry");
+    sol_log_compute_units();
     if accounts.len() != 2 {
         return Err(custom(ContractErrorCode::WrongAccountAddress));
     }
@@ -432,6 +436,8 @@ fn process_bind_recipient(
     require_instructions_sysvar(instructions_sysvar)?;
 
     let mut state = read_channel(program_id, channel)?;
+    msg!("FC-SOL-006 bind checkpoint=after_read_channel");
+    sol_log_compute_units();
     let current_index = load_current_index_checked(instructions_sysvar)
         .map_err(|_| custom(ContractErrorCode::Ed25519NotImmediatelyPreceding))?;
     if current_index == 0 {
@@ -440,6 +446,8 @@ fn process_bind_recipient(
     let previous_index = current_index - 1;
     let previous = load_instruction_at_checked(previous_index as usize, instructions_sysvar)
         .map_err(|_| custom(ContractErrorCode::Ed25519NotImmediatelyPreceding))?;
+    msg!("FC-SOL-006 bind checkpoint=after_load_instruction_at_checked");
+    sol_log_compute_units();
 
     let extracted = extract_binding_ed25519_message(
         &previous.program_id.to_bytes(),
@@ -449,6 +457,8 @@ fn process_bind_recipient(
         &state.recipient_claim_pubkey.to_bytes(),
     )
     .map_err(map_ed25519_error)?;
+    msg!("FC-SOL-006 bind checkpoint=after_extract_binding_ed25519_message");
+    sol_log_compute_units();
     let destination = Pubkey::new_from_array(extracted.destination_wallet);
 
     let authority = verify_recipient_binding_signed_message(
@@ -460,10 +470,16 @@ fn process_bind_recipient(
         channel.key,
     )
     .map_err(map_runtime_authority_error)?;
+    msg!("FC-SOL-006 bind checkpoint=after_verify_recipient_binding_signed_message");
+    sol_log_compute_units();
 
     let now = Clock::get()?.unix_timestamp;
     apply_binding_authority(&mut state, channel.key, &authority, now)?;
+    msg!("FC-SOL-006 bind checkpoint=after_apply_binding_authority");
+    sol_log_compute_units();
     write_channel(channel, &state)?;
+    msg!("FC-SOL-006 bind checkpoint=after_write_channel");
+    sol_log_compute_units();
 
     msg!(
         "foundry_channel_vault:event=RecipientBound destination={}",
@@ -498,12 +514,16 @@ fn process_settle(
         return Err(custom(ContractErrorCode::RecipientSubstitution));
     }
     let destination_before = read_classic_token_account(recipient_token, token_program.key)?;
-    if destination_before.mint != state.mint || destination_before.authority != state.recipient_wallet {
+    if destination_before.mint != state.mint
+        || destination_before.authority != state.recipient_wallet
+    {
         return Err(custom(ContractErrorCode::RecipientSubstitution));
     }
     let vault_before = validate_runtime_vault(&state, channel.key, program_id, vault, token_program)?;
     require_vault_matches_state(&state, vault_before.amount)?;
 
+    let modeled_destination =
+        canonical_recipient_ata(state.recipient_wallet.to_bytes(), state.mint.to_bytes());
     let now = Clock::get()?.unix_timestamp;
     let transition = apply_model(
         &model_state(&state, channel.key)?,
@@ -511,11 +531,14 @@ fn process_settle(
             caller: [0; 32],
             amount,
             obligation_hash,
-            supplied_destination: recipient_token.key.to_bytes(),
+            supplied_destination: modeled_destination,
         },
         now,
     )
     .map_err(map_model_error)?;
+    if transition.settlement_destination != Some(modeled_destination) {
+        return Err(custom(ContractErrorCode::RecipientSubstitution));
+    }
 
     let transfer = token_transfer_checked_instruction(
         vault.key,
