@@ -622,3 +622,77 @@ This is a remote harness/time-boundary failure, not an account persistence or
 economic-state failure. The PR remains draft; no warp semantic, claim window,
 ChannelVault, refund, or deployment authorization change was made to hide the
 failure.
+
+## Deterministic Clock boundary: local lifecycle resumed
+
+The phase2 harness now reads the validator Clock sysvar at `finalized` only
+after the required-account persistence check and the `ChannelState=Closing`,
+`closeRequested=1` check. If the timestamp is below the frozen deadline, it
+polls without transactions at 250 ms intervals, with an explicit 1800-second
+wall-clock bound. No warp, airdrop, account rehydration, economic retry, or
+state mutation is performed during the wait.
+
+The new local run completed the full lifecycle under the pinned runtime:
+
+```text
+validator Agave         = v2.1.21
+build Agave             = v3.1.5
+platform-tools          = v1.52
+program SDK             = 2.1.21
+SBF SHA-256             = 50d23a20c3fa6db3d75ee57be6afd97490b9fb2e4f2e451f7a01fac696cc3482
+checkpointSlot          = 88
+finalizedSlot           = 101
+fullSnapshotSlot        = 100
+incrementalSnapshotSlot = null
+WARP_SLOT               = 100100
+closeSignature          = 4waU572FrLCC4hFpNzkFwwHbSu4HumvJbEMhHJn5EupDKEg18Zk9mdYh8o66uz2cDjL55fW7Vea2DtitxjkcmUwD
+```
+
+The post-restart finalized checks passed for sender, relay, channel, vault,
+mint, sender ATA, and recipient ATA. The channel remained Closing with
+`closeRequested=1` and the original deadline:
+
+```text
+ChannelState status       = 4
+closeRequested            = 1
+claimDeadline             = 1787363891
+```
+
+Clock boundary evidence:
+
+```text
+clockAtRestart.commitment       = finalized
+clockAtRestart.slot             = 100115
+clockAtRestart.unixTimestamp    = 1787402698
+claimDeadline                   = 1787363891
+initialRemainingSeconds         = 0
+clockPolls                      = 0
+clockReachedAt.slot             = 100115
+clockReachedAt.unixTimestamp    = 1787402698
+totalWaitSeconds                = 0
+maxWaitSeconds                  = 1800
+```
+
+The deadline was already satisfied after restart. Therefore no polling
+transaction or economic operation occurred before the boundary; the existing
+phase2 sequence then executed exactly once per operation:
+`refund_unallocated`, final `settle`, and `finalize_close`.
+
+The final settle envelope was 424 bytes, SHA-256
+`fbb6396f62b4d1c9d2ffc46ea95e53505796790f77541d16fbaa484c6029be51`, with a
+300000 compute-unit limit; simulation returned `err=null` and consumed
+192993 units. The terminal state was:
+
+```text
+status    = 5
+funded    = 100000000
+activated = 60000000
+settled   = 60000000
+refunded  = 40000000
+vault     = 0
+recipient = 60000000
+sender    = 140000000
+```
+
+The receipt was local-only. Devnet, mainnet, and real-value execution remain
+unauthorized.

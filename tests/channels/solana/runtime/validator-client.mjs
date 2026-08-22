@@ -11,6 +11,7 @@ import {
   PublicKey,
   sendAndConfirmTransaction,
   SystemProgram,
+  SYSVAR_CLOCK_PUBKEY,
   SYSVAR_INSTRUCTIONS_PUBKEY,
   Transaction,
   TransactionInstruction,
@@ -35,6 +36,8 @@ const CONTEXT_PATH = process.env.FC_SOL_006_CONTEXT;
 const MODE = process.argv[2];
 const MAX_TRANSACTION_BYTES = 1232;
 const SETTLE_COMPUTE_LIMIT = 300_000;
+const CLAIM_CLOCK_WAIT_TIMEOUT_MS = 1_800_000;
+const CLAIM_CLOCK_POLL_INTERVAL_MS = 250;
 const DECIMALS = 6;
 const FUND_AMOUNT = 100_000_000n;
 const ACTIVATED_AMOUNT = 60_000_000n;
@@ -313,6 +316,59 @@ async function waitForFullSnapshotAtOrAfter(checkpointSlot) {
     await new Promise((resolve) => setTimeout(resolve, 250));
   }
   throw new Error(`full snapshot did not reach checkpoint slot ${checkpointSlot}`);
+}
+
+async function readValidatorClock(commitment = "finalized") {
+  const account = await connection.getAccountInfo(SYSVAR_CLOCK_PUBKEY, commitment);
+  assert(account, `validator Clock sysvar missing at ${commitment}`);
+  const data = Buffer.from(account.data);
+  assert(data.length >= 40, `validator Clock sysvar has invalid data length ${data.length}`);
+  return {
+    commitment,
+    slot: data.readBigUInt64LE(0),
+    epochStartTimestamp: data.readBigInt64LE(8),
+    epoch: data.readBigUInt64LE(16),
+    leaderScheduleEpoch: data.readBigUInt64LE(24),
+    unixTimestamp: data.readBigInt64LE(32),
+  };
+}
+
+async function waitForClaimDeadline(clockAtRestart, claimDeadline) {
+  const startedAt = Date.now();
+  const initialRemainingSeconds = claimDeadline > clockAtRestart.unixTimestamp
+    ? claimDeadline - clockAtRestart.unixTimestamp
+    : 0n;
+  let clock = clockAtRestart;
+  let clockPolls = 0;
+
+  while (clock.unixTimestamp < claimDeadline) {
+    const elapsedMs = Date.now() - startedAt;
+    if (elapsedMs >= CLAIM_CLOCK_WAIT_TIMEOUT_MS) {
+      throw new Error(JSON.stringify(jsonSafe({
+        error: "claim deadline clock wait timed out",
+        clockAtRestart,
+        claimDeadline,
+        initialRemainingSeconds,
+        clockPolls,
+        lastClock: clock,
+        totalWaitSeconds: elapsedMs / 1000,
+        maxWaitSeconds: CLAIM_CLOCK_WAIT_TIMEOUT_MS / 1000,
+      })));
+    }
+    await new Promise((resolve) => setTimeout(resolve, CLAIM_CLOCK_POLL_INTERVAL_MS));
+    clock = await readValidatorClock("finalized");
+    clockPolls += 1;
+  }
+
+  return {
+    clockAtRestart,
+    claimDeadline,
+    initialRemainingSeconds,
+    clockPolls,
+    clockReachedAt: clock,
+    totalWaitSeconds: (Date.now() - startedAt) / 1000,
+    maxWaitSeconds: CLAIM_CLOCK_WAIT_TIMEOUT_MS / 1000,
+  };
 }
 
 async function airdrop(pubkey, sol = 5) {
@@ -1652,9 +1708,14 @@ async function phase2() {
     },
   })) + "\n");
 
+  const clockAtRestart = await readValidatorClock("finalized");
+  const clockBoundary = await waitForClaimDeadline(clockAtRestart, deadline);
+  process.stdout.write(JSON.stringify(jsonSafe({
+    phase2ClockBoundary: clockBoundary,
+  })) + "\n");
+
   const currentSlot = await connection.getSlot("confirmed");
-  const chainNow = BigInt((await connection.getBlockTime(currentSlot)) ?? 0);
-  assert(chainNow >= deadline, `validator clock ${chainNow} has not reached deadline ${deadline}`);
+  const chainNow = clockBoundary.clockReachedAt.unixTimestamp;
 
   await sendLegacy(sender, [
     customInstruction("refund_unallocated", [
